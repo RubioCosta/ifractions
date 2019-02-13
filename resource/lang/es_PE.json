@@ -1,0 +1,22 @@
+{
+    "loading":"CARGANDO",
+    "title":"Fracciones",
+    "menu_title":"SELECCIONE UN JUEGO",
+    "difficulty": "Dificultad",
+    "level": "Nivel",
+    "game_menu_title": "SELECCIONA LA OPERACION Y DIFICULTAD",
+    "good_job": "Bien hecho",
+    "retry": "Inténtalo de nuevo",
+    "menu_world" : "SELECCION DE IDIOMA",
+    "menu_list" : "REGRESAR AL MENU",
+    "menu_back" : "REGRESAR",
+    "menu_help" : "VER SOLUCION",
+    "circle_name": "CIRCULOS",
+    "square_name" :"CUADRILATEROS",
+    "label_name": "ETIQUETAS",
+    "mode_name": "MODO",
+    "with_name": "CON",
+    "without_name": "SIN",
+    "insert_name" : "INGRESA TU NOMBRE",
+    "ready" : "LISTO"
+}
