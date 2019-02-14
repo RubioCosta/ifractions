@@ -1,8 +1,49 @@
+
+/*
+    var menuSquareOne = {
+        create: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadMap: function(){}
+    };
+
+    var mapSquareOne = {
+        create: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadGame: function()
+    };
+
+    var gameSquareOne = {
+        create: function(){},
+        updateCounter: function(){},
+        overSquare: function(){},
+        outSquare: function(){},
+        clickSquare: function(){},
+            //setPlace: function(){},
+        postScore: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        viewHelp: function(){},
+            //checkOverlap: function(){}
+    };
+
+    var endSquareOne = {
+        create: function(){},
+        update: function(){},
+        verPrincipal: function(){},
+        verMenu: function(){}
+    };
+*/
+
 // Tractor and Square states
 
 /****************************** MENU ****************************/
 var stairsRight, stairsLeft;
-var menuSquareOne={
+
+var menuSquareOne = {
     create: function() {
         
         // Creating sound variable
@@ -150,7 +191,8 @@ var menuSquareOne={
 };
 
 /****************************** MAP ****************************/
-var mapSquareOne={
+
+var mapSquareOne = {
     create: function() {
                 
         // Creating sound variable
@@ -339,22 +381,18 @@ var mapSquareOne={
 };
 
 /****************************** GAME ****************************/
+
 var clicked, hideLabels, animate, checkCollide, result, move, moveCounter, moveEnd, hasFigure;
-
 var startX, tractor, arrow;
-
 var maxBlocks, blocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator;
-
 var blockWidth, endPosition, blockIndex;
-
 var floorBlocks, floorIndex, floorCount, floorClicked;
 var arrowPlace, fractionClicked, fractionIndex;
-
 var okImg, errorImg;
 var curFloor;
-
 var detail;
-var gameSquareOne={
+
+var gameSquareOne = {
     create: function() {  
         
         //timer
@@ -698,6 +736,7 @@ var gameSquareOne={
             }
         }
     },
+
     outSquare: function(){
         if(!clicked){
             if(oneType=="A"){
@@ -773,6 +812,7 @@ var gameSquareOne={
             }
         }
     },
+
     postScore: function (){
         
         var abst = "numBlocks:"+numBlocks+", valBlocks: " + detail+" blockIndex: " + blockIndex + ", floorIndex: " + floorIndex;
@@ -952,8 +992,10 @@ var gameSquareOne={
     }
     
 };
+
 /****************************** END ****************************/
-var endSquareOne={
+
+var endSquareOne = {
     create: function() {  
         
         // Creating sound variable

@@ -1,6 +1,50 @@
+/*
+    var menuSquareTwo = {
+        create: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadMap: function(){}
+    };
+
+    var mapSquareTwo = {
+        create: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadGame: function()
+    };
+
+    var gameSquareTwo = {
+        create: function(){},
+        updateCounter: function(){},
+        overSquare: function(){},
+        outSquare: function(){},
+        clickSquare: function(){},
+            //setPlace: function(){},
+        postScore: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+    
+        loadGame: function(){}
+        getRndDivisor
+            //viewHelp: function(){},
+            //checkOverlap: function(){}
+    };
+
+    var endSquareTwo = {
+        create: function(){},
+        update: function(){},
+        verPrincipal: function(){},
+        verMenu: function(){}
+    };
+*/
+
 // Fractions Comparison Square states
+
 /****************************** MENU ****************************/
-var menuSquareTwo={
+
+var menuSquareTwo = {
     create: function() {
         
         // Creating sound variable
@@ -160,6 +204,7 @@ var menuSquareTwo={
 };
 
 /****************************** MAP ****************************/
+
 var mapSquareTwo={
     create: function() {
                 
@@ -355,6 +400,7 @@ var mapSquareTwo={
 };
 
 /****************************** GAME ****************************/
+
 var sizeA, sizeB, valueA, valueB;
 var clickA, clickB, animateA, animateB, result, animate, cDelay, eDelay;
 var blocksA, blocksB, auxblqA, auxblqB;
@@ -363,7 +409,7 @@ var kid, kidDirection, equals, counter, endCounter;
 var xA, yA, xB, yB, blockW, blockH;
 var okImg, errorImg;
 
-var gameSquareTwo={
+var gameSquareTwo = {
     create: function() {  
         
         //timer
@@ -635,6 +681,7 @@ var gameSquareTwo={
             fractionB.setText(this.indice +1);
         }
     },
+
     outSquare: function(){
         if(!clickA && this.who=="A"){
             for(var i=0;i<=this.indice;i++){
@@ -828,8 +875,10 @@ var gameSquareTwo={
     }
     
 };
+
 /****************************** END ****************************/
-var endSquareTwo={
+
+var endSquareTwo = {
     create: function() {  
         
         // Creating sound variable

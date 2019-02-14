@@ -1,10 +1,22 @@
+
 var menu1, menu2, menu3, menu4;
 var m_info, m_world, m_menu, m_back, m_help;
 var beepSound;
-
 var words;
 var lbl_game;
-var menuState={
+
+/*
+    var menuState = {
+        create: function(){},
+        loadGame: function(){},
+        showTitle: function(){},
+        clearTitle: function(){},
+        showOption: function(){},
+        loadState: function(){}
+    }
+*/
+
+var menuState = {
     create: function() {
         
         // Creating sound variable
@@ -151,19 +163,20 @@ var menuState={
             game.state.start('menuSTwo');
         }
     },
+
     showTitle: function(){
         
         var title = "";
         var type = "";
         
         if( (this.num==1 || this.num==2) ){
-            type = "A";
+            type = "I";
         }
         if( (this.num==3 || this.num==4) ){
-            type = "B";
+            type = "II";
         }
         if( this.num==5 && this.shape=="Square"){
-            type = "C";
+            type = "III";
         }
         
         if(this.shape=="Circle"){
@@ -173,17 +186,22 @@ var menuState={
         }
         
         if(type!=""){
-            title  += ", "+words.mode_name+ " "+type;
+          //circ/quad  ,   modo                 A/B/C
+          //title  += ", "+words.mode_name+ " "+type;
+            title  += " " + type;
         }
         
         if(this.label){
-            title += ", " + words.with_name + " " + words.label_name;
+                     //-    sem/com               legendas
+          //title += "- " + words.with_name + " " + words.label_name;
+            title += " - " + words.with_name + " " + words.label_name;
         }else{
-            title += ", " + words.without_name + " " + words.label_name;
+            title += " - " + words.without_name + " " + words.label_name;
         }
         
         lbl_game.text = title;
     },
+
     clearTitle: function(){
         lbl_game.text = "";
     },

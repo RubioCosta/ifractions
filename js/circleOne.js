@@ -1,9 +1,50 @@
+
+/*
+    var menuCircleOne = {
+        create: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadMap: function(){}
+    };
+
+    var mapCircleOne = {
+        create: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        loadGame: function()
+    };
+
+    var gameCircleOne = {
+        create: function(){},
+        updateCounter: function(){},
+        overCircle: function(){},
+        outCircle: function(){},
+        clickCircle: function(){},
+        setPlace: function(){},
+        postScore: function(){},
+        update: function(){},
+        showOption: function(){},
+        loadState: function(){},
+        viewHelp: function(){},
+        checkOverlap: function(){}
+    };
+
+    var endCircleOne = {
+        create: function(){},
+        update: function(){},
+        verPrincipal: function(){},
+        verMenu: function(){}
+    };
+*/
+
 // Kid and Circle states, games 1 and 2
 
 /****************************** MENU ****************************/
+
 var stairsPlus, stairsMinus, stairsMixed;
 
-var menuCircleOne={
+var menuCircleOne = {
     create: function() {
         
         // Creating sound variable
@@ -192,8 +233,9 @@ var menuCircleOne={
     
 };
 
-/****************************** MAP ****************************/
-var mapCircleOne={
+/****************************** MAP *****************************/
+
+var mapCircleOne = {
     create: function() {
         
         // Creating sound variable
@@ -382,23 +424,20 @@ var mapCircleOne={
 };
 
 /****************************** GAME ****************************/
+
 var okSound, errorSound; //sounds
 var startX; //start position
-
 var clicked, hideLabels, animate, checkCollide, result, hasFigure; //control variables
 var fly, flyCounter, flyend; //flyvariables
 var trace; //circle trace
 var kid_walk, balloon, basket;
-
 //Balloon and blocks control
 var maxBlocks, blockSize, blocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator, blockAngle, blockTraceColor, endPosition;
-
 var balloonPlace, fractionClicked, fractionIndex, numPlus, endIndex;
-
 var okImg, errorImg;
-
 var detail;
-var gameCircleOne={
+
+var gameCircleOne = {
     create: function() {
         
         //timer
@@ -692,6 +731,7 @@ var gameCircleOne={
         }
 
     },
+
     outCircle: function(){
         if(!clicked){
             for(var i=0;i<=this.indice;i++){
@@ -756,6 +796,7 @@ var gameCircleOne={
             }
         }
     },
+
     postScore: function (){
         
         var abst = "numCircles:"+numBlocks+", valCircles: " + detail+" balloonX: " + basket.x + ", selIndex: " + fractionIndex;
@@ -966,8 +1007,10 @@ var gameCircleOne={
     }
     
 };
+
 /****************************** END ****************************/
-var endCircleOne={
+
+var endCircleOne = {
     create: function() {  
         
         // Creating sound variable
