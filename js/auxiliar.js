@@ -13,7 +13,8 @@
     name = ""; //player name
     lang = ""; //language
 
-    // Game One 
+    // Game One : kid and truck
+
     onePosition = 0; //Map position
     oneMove = false; //Move to next position
     oneDifficulty = 0; //From one to five 
@@ -23,7 +24,8 @@
     oneType = ""; // A - Place distance; B - Select blocks
     oneMenu = true;
 
-    // Game Two
+    // Game Two : fractions association
+
     twoPosition = 0; //Map position
     twoMove = false; //Move to next position
     twoDifficulty = 0; //From one to five 

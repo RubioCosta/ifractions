@@ -16,12 +16,33 @@
         <script type="text/javascript" src="js/squareOne.js"></script>
         <script type="text/javascript" src="js/squareTwo.js"></script>
         <script type="text/javascript" src="js/auxiliar.js"></script>
-    
+
+        <style>
+        	#text-field-div{
+			  position: absolute;
+			  top: 300px;
+			  margin-left: 340px;
+			  visibility: hidden;
+			}
+
+			input[type=text] {
+			  background-color: rgb(239, 245, 245);
+			  padding: 15px 40px;
+			  box-sizing: border-box;
+			  border: 3px solid #ccc;
+			  font-size: 44px;
+			  font-family: Arial;
+			  color: rgb(0, 0, 0);
+			  text-align: center;
+			}
+        </style>
+
     </head>
 
     <body>
 
 	    <div class="container">
+
 	    	<div class="clearfix"></div>
 	        
 	        <div class="panel panel-primary">
@@ -70,21 +91,16 @@
 	          </div>
 	        </div>
 
-	        <!--
-			<div class="panel panel-danger">
-	          <div class="panel-heading">TESTE</div>
-	          <div class="panel-body">
-	            <center>
-			        <form action="" method="">
-						<legend>DIGITE SEU NOME</legend>
-						><input type="name_textfield" name="name" value="" size="22" maxlength="20"><<br><br>
-					</form>
-				</center>
+	        <div id="text-field-div">
+				<form onsubmit="return false">
+					<input type="text" id="name_id" value="" size="13" maxlength="40">
+				</form>
 			</div>
-			-->
 
 	    </div>
-        
+
     </body>
+
+
 
 </html>

@@ -1,17 +1,16 @@
 
-var nameLbl;
+var username;
 
 /*
     var bootState = {
         preload: function(){},
         create: function(){},
-        setLang: function(){}
+        setLang: function(){} //calls loadState
     };
     
     var loadState = {
         preload: function(){},
-        preload: function(){},
-        create: function(){}
+        create: function(){} //calls nameState
     };
         
     var nameState = {
@@ -19,21 +18,22 @@ var nameLbl;
         create: function(){},
         clearName: function(){},
         keyPressed: function( char ){},
-        ready: function(){}
+        ready: function(){} //calls menu.js -> menuState
     };
 */
 
 // choose language screen
 var bootState = {
     
-    preload: function () {
+    preload: function() {
         //Progress bar image
-        game.load.image('progressBar', 'resource/img/global/pgbar.png');
+        game.load.image('progressBar', 'assets/img/pgbar.png');
+
         //loading flags (manually)
-        game.load.image('flag_BR', 'resource/img/flag/BRAZ.jpg');
-        game.load.image('flag_PE', 'resource/img/flag/PERU.jpg');
-        game.load.image('flag_US', 'resource/img/flag/UNST.jpg');
-        game.load.image('flag_FR', 'resource/img/flag/FRAN.jpg');
+        game.load.image('flag_BR', 'assets/img/flag/BRAZ.jpg');
+        game.load.image('flag_PE', 'assets/img/flag/PERU.jpg');
+        game.load.image('flag_US', 'assets/img/flag/UNST.jpg');
+        game.load.image('flag_FR', 'assets/img/flag/FRAN.jpg');
     },
 
     create: function() {
@@ -95,13 +95,7 @@ var bootState = {
 // loading screen (+loading assets)
 var loadState = {
     
-    //called on setPreloadImage
-    preload: function () {
-        //Progress bar image
-        game.load.image('progressBar', 'resource/img/global/pgbar.png');
-    },
-    
-    preload: function () {
+    preload: function() {
         
         // Displaying the progress bar
         var progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
@@ -114,10 +108,10 @@ var loadState = {
         }
         
         // Loading dictionary
-        game.load.json('dictionary', 'resource/lang/'+lang+'.json');
+        game.load.json('dictionary', 'assets/languages/'+lang+'.json');
                 
         // Loading global assets (sprites and images)
-        var imgsrc = 'resource/img/';
+        var imgsrc = 'assets/img/';
         
         game.load.image('bgimage', imgsrc+'bg.jpg');
         game.load.image('bgmap', imgsrc+'bg_map.png');
@@ -181,9 +175,9 @@ var loadState = {
         game.load.image('tree4', imgsrc+'tree4.png');
         
         // Loadind Sound Effects
-        game.load.audio('sound_ok', ['resource/fx/ok.ogg', 'resource/fx/ok.mp3']);
-        game.load.audio('sound_error', ['resource/fx/error.ogg', 'resource/fx/error.mp3']);
-        game.load.audio('sound_beep', ['resource/fx/beep.ogg', 'resource/fx/beep.mp3']);
+        game.load.audio('sound_ok', ['assets/fx/ok.ogg', 'assets/fx/ok.mp3']);
+        game.load.audio('sound_error', ['assets/fx/error.ogg', 'assets/fx/error.mp3']);
+        game.load.audio('sound_beep', ['assets/fx/beep.ogg', 'assets/fx/beep.mp3']);
         
     },
 
@@ -196,46 +190,25 @@ var loadState = {
 var nameState = {
 
     preload: function () {
-        //textbox
-
     },
 
     create: function() {
-        //game settings
         game.stage.backgroundColor = '#cce5ff';
         
+        // gets selected language from json
         var words =  game.cache.getJSON('dictionary');
         
         game.physics.startSystem(Phaser.Physics.ARCADE);
+        
         var style = { font: '30px Arial', fill: '#00804d', align: 'center' };
         var styleName = { font: '44px Arial', fill: '#000000', align: 'center' };
         
-        //generating language selection
-        var titulo = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, words.insert_name, style);
-        titulo.anchor.setTo(0.5);
+        // title
+        var title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, words.insert_name, style);
+        title.anchor.setTo(0.5);
         
-        var lineColor = 0x000000;
-        var fillColor = 0xfffff0;
-        
-        var nameBox = game.add.graphics(this.game.world.centerX - 200, this.game.world.centerY - 50);
-        nameBox.lineStyle(2, lineColor);
-        nameBox.beginFill(fillColor);
-        nameBox.drawRect(0, 0, 400, 100);
-        nameBox.alpha = 0.5;
-        nameBox.endFill();
-
-        nameLbl = game.add.text(this.game.world.centerX, this.game.world.centerY, "", styleName);
-        nameLbl.anchor.setTo(0.5);
-        
-        var clear = game.add.sprite(game.world.centerX + 250, game.world.centerY, 'eraser');
-        clear.scale.setTo(0.8);
-        clear.anchor.setTo(0.5);
-        
-        clear.inputEnabled = true;
-        clear.input.useHandCursor = true;
-        clear.events.onInputDown.add(this.clearName, null);
-        
-        var btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY +70);
+        // "READY" button
+        var btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
         btn.lineStyle(1, 0x293d3d);
         btn.beginFill(0x3d5c5c);
         btn.drawRect(0, 0, 168, 60);
@@ -246,37 +219,34 @@ var nameState = {
         btn.input.useHandCursor = true;
         btn.events.onInputDown.add(this.ready, null);
         
-        var listo = game.add.text(this.game.world.centerX+1, this.game.world.centerY + 102, words.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
-        listo.anchor.setTo(0.5);
+        var ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, words.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
+        ready.anchor.setTo(0.5);  
         
-        game.input.keyboard.addCallbacks(this, null, null, this.keyPress);
+        document.getElementById("text-field-div").style.visibility = "visible";
         
-
+        document.getElementById("name_id").addEventListener('keypress', function(e){
+            var keycode = e.keycode ? e.keycode : e.which; 
+            //se apertar enter vai para ready, assim como o botão
+            if(keycode == 13){ 
+                nameState["ready"]();
+            }     
+        });
     },
+         
+    //var ready = function readyFunction() {...},
+    //var ready = function() {...},                
+    ready: function() {
 
-    clearName: function(){
-        nameLbl.text  = "";
-    },
-    
-    keyPress: function(char) {
-
-        var RegExpression = /^[a-zA-Z\s]*$/; 
-
-        if (RegExpression.test(char)) {
-            nameLbl.text += char;
-        }        
-    },
-
-    ready: function(){
-        //var txt = nameLbl.text.trim;
-        console.log(nameLbl.text.length);
-        if(nameLbl.text.trim().length==0){
-            nameLbl.text  = "";
-            return;
-        }
-        name = nameLbl.text.trim();
-        console.log("name is " + name);
         
+        // saves the typed name on username variable
+        username = document.getElementById("name_id").value;
+        console.log("user is " + username);        
+
+        document.getElementById("text-field-div").style.visibility = "hidden";
+
+        //clears the text field again
+        document.getElementById("name_id").value = "";
+
         if(oneMenu){ //If menu, normal game
             // Go to the menu state
             game.state.start('menu');

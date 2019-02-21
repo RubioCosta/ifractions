@@ -18,5 +18,6 @@
     "with_name": "COM",
     "without_name": "SEM",
     "insert_name" : "DIGITE SEU NOME",
-    "ready" : "PRONTO"
+    "ready" : "PRONTO",
+    "welcome" : "Bem vindo"
 }

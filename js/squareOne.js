@@ -819,7 +819,7 @@ var gameSquareOne = {
         
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
-        var url = "resource/cn/save.php";
+        var url = "assets/cn/save.php";
         var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+oneShape+"&s_mode="+oneType;
         vars += "&s_oper="+oneOperator+"&s_leve="+oneDifficulty+"&s_posi="+onePosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
         

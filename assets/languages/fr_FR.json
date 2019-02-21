@@ -1,7 +1,7 @@
 {
     "loading":"CHARGEMENT",
     "title":"Fractions",
-    "menu_title":"GAME SELECT",
+    "menu_title":"SÉLECTIONNER UN JEU",
     "difficulty": "Difficulté",
     "level": "Niveau",
     "game_menu_title": "OPERATION SELECT ET DIFFICULTÉ",
@@ -18,5 +18,6 @@
     "with_name": "AVEC",
     "without_name": "SANS",
     "insert_name" : "ENTREZ VOTRE NOM",
-    "ready" : "PRET"
+    "ready" : "PRET",
+    "welcome" : "Bienvenue"
 }

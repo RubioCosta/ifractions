@@ -18,5 +18,6 @@
     "with_name": "WITH",
     "without_name": "WITHOUT",
     "insert_name" : "ENTER YOUR NAME",
-    "ready" : "READY"
+    "ready" : "READY",
+    "welcome" : "Welcome"
 }
