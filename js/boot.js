@@ -1,39 +1,113 @@
-
-var username;
+var username, errorEmptyName, words;
 
 /*
     var bootState = {
         preload: function(){},
         create: function(){},
+        --------------------------------------- end of phaser functions
         setLang: function(){} //calls loadState
     };
     
     var loadState = {
         preload: function(){},
         create: function(){} //calls nameState
+        -------------------------------------- end of phaser functions
     };
         
     var nameState = {
         preload: function(){},
         create: function(){},
-        clearName: function(){},
-        keyPressed: function( char ){},
+        ------------------------------------------------ end of phaser functions
         ready: function(){} //calls menu.js -> menuState
     };
 */
 
 // choose language screen
 var bootState = {
-    
-    preload: function() {
-        //Progress bar image
-        game.load.image('progressBar', 'assets/img/pgbar.png');
 
-        //loading flags (manually)
-        game.load.image('flag_BR', 'assets/img/flag/BRAZ.jpg');
-        game.load.image('flag_PE', 'assets/img/flag/PERU.jpg');
-        game.load.image('flag_US', 'assets/img/flag/UNST.jpg');
-        game.load.image('flag_FR', 'assets/img/flag/FRAN.jpg');
+    //Loading all assets   
+    preload: function() {
+        
+        var imgsrc = 'assets/img/';
+
+        //Progress bar image
+        game.load.image('progressBar', imgsrc+'pgbar.png');
+
+        //flags
+        game.load.image('flag_BR', imgsrc+'flag/BRAZ.jpg');
+        game.load.image('flag_PE', imgsrc+'flag/PERU.jpg');
+        game.load.image('flag_US', imgsrc+'flag/UNST.jpg');
+        game.load.image('flag_FR', imgsrc+'flag/FRAN.jpg');
+
+        //scenario
+        game.load.image('bgimage', imgsrc+'bg.jpg');
+        game.load.image('bgmap', imgsrc+'bg_map.png');
+        game.load.image('cloud', imgsrc+'cloud.png');
+        game.load.image('floor', imgsrc+'floor.png');
+        game.load.image('road', imgsrc+'road.png');
+        
+        //game phases buttons list
+        game.load.image('game1c', imgsrc+'game/one-c.png');
+        game.load.image('game2c', imgsrc+'game/two-c.png');
+        game.load.image('game3c', imgsrc+'game/three-c.png');
+        game.load.image('game4c', imgsrc+'game/four-c.png');
+        game.load.image('game1s', imgsrc+'game/one-s.png');
+        game.load.image('game2s', imgsrc+'game/two-s.png');
+        game.load.image('game3s', imgsrc+'game/three-s.png');
+        game.load.image('game4s', imgsrc+'game/four-s.png');
+        game.load.image('game5s', imgsrc+'game/five-s.png');
+        
+        //header menu buttons
+        game.load.image('back', imgsrc+'menu/back.png');
+        game.load.image('home', imgsrc+'menu/home.png');
+        game.load.image('info', imgsrc+'menu/info.png');
+        game.load.image('world', imgsrc+'menu/language.png');
+        game.load.image('list', imgsrc+'menu/menu.png');
+        game.load.image('help', imgsrc+'menu/help.png');
+        game.load.image('pgbar', imgsrc+'menu/progressBar.png');
+        game.load.image('block', imgsrc+'menu/block.png');
+        game.load.image('eraser', imgsrc+'menu/eraser.png');
+        
+        //operators
+        game.load.image('add', imgsrc+'operator/add.png');
+        game.load.image('subtract', imgsrc+'operator/subtract.png');
+        game.load.image('separator', imgsrc+'operator/separator.png');
+        game.load.image('equal', imgsrc+'operator/equal.png');
+        
+        //feedback
+        game.load.image('h_arrow', imgsrc+'help/arrow.png');
+        game.load.image('h_double', imgsrc+'help/double.png');
+        game.load.image('h_error', imgsrc+'help/error.png');
+        game.load.image('h_ok', imgsrc+'help/ok.png');
+        game.load.image('down', imgsrc+'help/down.png');        
+        game.load.image('pointer', imgsrc+'help/pointer.png');
+        
+        // Loading assets based on language        
+        game.load.spritesheet('kid_run', imgsrc+'kid/run.png', 82, 178, 12);
+        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 24);
+        game.load.spritesheet('kid_lost', imgsrc+'kid/lost.png', 72, 170, 6);
+        game.load.spritesheet('tractor', imgsrc+'tractor/frame.png', 201, 144, 10);
+        game.load.image('balloon', imgsrc+'airballoon_upper.png');
+        game.load.image('balloon_basket', imgsrc+'airballoon_base.png');
+        game.load.image('birch', imgsrc+'birch.png');
+        game.load.image('flag', imgsrc+'flag.png');
+        game.load.image('house', imgsrc+'house.png');
+        game.load.image('place_a', imgsrc+'place_a.png');
+        game.load.image('place_b', imgsrc+'place_b.png');
+        game.load.image('garage', imgsrc+'garage.png');
+        game.load.image('farm', imgsrc+'farm.png');
+        game.load.image('rock', imgsrc+'rock.png');
+        game.load.image('school', imgsrc+'school.png');
+        game.load.image('sign', imgsrc+'sign.png');
+        game.load.image('tree1', imgsrc+'tree.png');
+        game.load.image('tree2', imgsrc+'tree2.png');
+        game.load.image('tree3', imgsrc+'tree3.png');
+        game.load.image('tree4', imgsrc+'tree4.png');
+        
+        // Loadind Sound Effects
+        game.load.audio('sound_ok', ['assets/fx/ok.ogg', 'assets/fx/ok.mp3']);
+        game.load.audio('sound_error', ['assets/fx/error.ogg', 'assets/fx/error.mp3']);
+        game.load.audio('sound_beep', ['assets/fx/beep.ogg', 'assets/fx/beep.mp3']);
     },
 
     create: function() {
@@ -109,75 +183,6 @@ var loadState = {
         
         // Loading dictionary
         game.load.json('dictionary', 'assets/languages/'+lang+'.json');
-                
-        // Loading global assets (sprites and images)
-        var imgsrc = 'assets/img/';
-        
-        game.load.image('bgimage', imgsrc+'bg.jpg');
-        game.load.image('bgmap', imgsrc+'bg_map.png');
-        game.load.image('cloud', imgsrc+'cloud.png');
-        game.load.image('floor', imgsrc+'floor.png');
-        game.load.image('road', imgsrc+'road.png');
-        
-         //games list buttons
-        game.load.image('game1c', imgsrc+'game/one-c.png');
-		game.load.image('game2c', imgsrc+'game/two-c.png');
-		game.load.image('game3c', imgsrc+'game/three-c.png');
-		game.load.image('game4c', imgsrc+'game/four-c.png');
-        game.load.image('game1s', imgsrc+'game/one-s.png');
-		game.load.image('game2s', imgsrc+'game/two-s.png');
-		game.load.image('game3s', imgsrc+'game/three-s.png');
-		game.load.image('game4s', imgsrc+'game/four-s.png');
-		game.load.image('game5s', imgsrc+'game/five-s.png');
-         //header menu
-        game.load.image('back', imgsrc+'menu/back.png');
-        game.load.image('home', imgsrc+'menu/home.png');
-        game.load.image('info', imgsrc+'menu/info.png');
-        game.load.image('world', imgsrc+'menu/language.png');
-        game.load.image('list', imgsrc+'menu/menu.png');
-        game.load.image('help', imgsrc+'menu/help.png');
-        game.load.image('pgbar', imgsrc+'menu/progressBar.png');
-        game.load.image('block', imgsrc+'menu/block.png');
-        game.load.image('eraser', imgsrc+'menu/eraser.png');
-         //operators
-		game.load.image('add', imgsrc+'operator/add.png');
-		game.load.image('subtract', imgsrc+'operator/subtract.png');
-		game.load.image('separator', imgsrc+'operator/separator.png');
-		game.load.image('equal', imgsrc+'operator/equal.png');
-         //helpers
-		game.load.image('h_arrow', imgsrc+'help/arrow.png');
-		game.load.image('h_double', imgsrc+'help/double.png');
-		game.load.image('h_error', imgsrc+'help/error.png');
-		game.load.image('h_ok', imgsrc+'help/ok.png');
-        game.load.image('down', imgsrc+'help/down.png');        
-        game.load.image('pointer', imgsrc+'help/pointer.png');
-        
-        // Loading assets based on lang        
-        game.load.spritesheet('kid_run', imgsrc+'kid/run.png', 82, 178, 12);
-        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 24);
-        game.load.spritesheet('kid_lost', imgsrc+'kid/lost.png', 72, 170, 6);
-        game.load.spritesheet('tractor', imgsrc+'tractor/frame.png', 201, 144, 10);
-        game.load.image('balloon', imgsrc+'airballoon_upper.png');
-        game.load.image('balloon_basket', imgsrc+'airballoon_base.png');
-        game.load.image('birch', imgsrc+'birch.png');
-        game.load.image('flag', imgsrc+'flag.png');
-        game.load.image('house', imgsrc+'house.png');
-        game.load.image('place_a', imgsrc+'place_a.png');
-        game.load.image('place_b', imgsrc+'place_b.png');
-        game.load.image('garage', imgsrc+'garage.png');
-        game.load.image('farm', imgsrc+'farm.png');
-        game.load.image('rock', imgsrc+'rock.png');
-        game.load.image('school', imgsrc+'school.png');
-        game.load.image('sign', imgsrc+'sign.png');
-        game.load.image('tree1', imgsrc+'tree.png');
-        game.load.image('tree2', imgsrc+'tree2.png');
-        game.load.image('tree3', imgsrc+'tree3.png');
-        game.load.image('tree4', imgsrc+'tree4.png');
-        
-        // Loadind Sound Effects
-        game.load.audio('sound_ok', ['assets/fx/ok.ogg', 'assets/fx/ok.mp3']);
-        game.load.audio('sound_error', ['assets/fx/error.ogg', 'assets/fx/error.mp3']);
-        game.load.audio('sound_beep', ['assets/fx/beep.ogg', 'assets/fx/beep.mp3']);
         
     },
 
@@ -190,13 +195,14 @@ var loadState = {
 var nameState = {
 
     preload: function () {
+        
     },
 
     create: function() {
         game.stage.backgroundColor = '#cce5ff';
         
         // gets selected language from json
-        var words =  game.cache.getJSON('dictionary');
+        words = game.cache.getJSON('dictionary');
         
         game.physics.startSystem(Phaser.Physics.ARCADE);
         
@@ -217,30 +223,41 @@ var nameState = {
         
         btn.inputEnabled = true;
         btn.input.useHandCursor = true;
-        btn.events.onInputDown.add(this.ready, null);
+        btn.events.onInputDown.add(this.nameIsEmpty, null);
         
         var ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, words.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
-        ready.anchor.setTo(0.5);  
-        
+        ready.anchor.setTo(0.5);
+
+        errorEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", {font: '18px Arial', fill: '#330000', align: 'center'});
+        errorEmptyName.anchor.setTo(0.5);
+
         document.getElementById("text-field-div").style.visibility = "visible";
-        
         document.getElementById("name_id").addEventListener('keypress', function(e){
             var keycode = e.keycode ? e.keycode : e.which; 
             //se apertar enter vai para ready, assim como o botão
-            if(keycode == 13){ 
-                nameState["ready"]();
+            if(keycode == 13){
+                nameState["nameIsEmpty"]();
             }     
         });
     },
          
+    nameIsEmpty: function() {
+        if(document.getElementById("name_id").value!=""){
+            nameState["ready"]();
+            errorEmptyName.setText("");
+        }else{
+            errorEmptyName.setText(words.empty_name);
+        }
+
+    },
+
     //var ready = function readyFunction() {...},
     //var ready = function() {...},                
     ready: function() {
-
         
         // saves the typed name on username variable
         username = document.getElementById("name_id").value;
-        console.log("user is " + username);        
+        console.log("user is" + username);        
 
         document.getElementById("text-field-div").style.visibility = "hidden";
 

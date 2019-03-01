@@ -17,6 +17,8 @@
 
     var gameSquareOne = {
         create: function(){},
+        loadState: function(){},
+        ---------------------------- end of phaser functions
         updateCounter: function(){},
         overSquare: function(){},
         outSquare: function(){},
@@ -25,9 +27,9 @@
         postScore: function(){},
         update: function(){},
         showOption: function(){},
-        loadState: function(){},
         viewHelp: function(){},
             //checkOverlap: function(){}
+            //getRndDivisor: function(){}
     };
 
     var endSquareOne = {
@@ -252,7 +254,7 @@ var mapSquareOne = {
         'y': [ 486, 422, 358, 294, 230, 166 ]
         };
 
-          //Garage
+        //Garage
         var garage = game.add.image(this.points.x[0], this.points.y[0], 'garage');
         garage.scale.setTo(0.4);
         garage.anchor.setTo(0.5, 1);
@@ -393,6 +395,7 @@ var curFloor;
 var detail;
 
 var gameSquareOne = {
+
     create: function() {  
         
         //timer
@@ -708,6 +711,135 @@ var gameSquareOne = {
             arrow.alpha = 0.5;
     },
     
+    update: function() {
+                
+        if(!clicked){
+            if(!move){
+                if(oneType=='A'){
+                    //Follow mouse
+                    if (game.physics.arcade.distanceToPointer(arrow, game.input.activePointer) > 8){
+                        var xPos = game.input.mousePointer.x;
+                        arrow.x = xPos;
+                    }                    
+                }
+            }
+        }
+        
+        //Start animation
+        if(animate){
+
+            if(blockDirection[curBlock]=='Right'){
+                tractor.x+=2;
+            }else if(blockDirection[curBlock]=='Left'){
+                tractor.x-=2;
+            }
+                        
+            for(var i=0;i<numBlocks;i++){ //Moving every block
+                if(blockDirection[curBlock]=='Right'){
+                    blocks.children[i].x +=2;
+                }else{
+                    blocks.children[i].x -=2;
+                }
+            }
+            
+            var extra = 80-blockDistance[curBlock];
+            
+            if(blockDirection[curBlock]=='Right'){
+                if(blocks.children[curBlock].x>=nextEnd+extra){
+                    blocks.children[curBlock].alpha = 0;
+                    blocks.y += 40;
+                    curBlock +=1;
+                    nextEnd += blockDistance[curBlock];
+                    for(var i=0; i<=floorIndex; i++ ){
+                        if(floorBlocks.children[i].x<(blocks.children[curBlock-1].x+blockDistance[curBlock-1])){
+                            floorBlocks.children[i].alpha = 0.2;
+                            curFloor = i;
+                        }
+                    }
+                }
+            }else if(blockDirection[curBlock]=='Left'){
+                if(blocks.children[curBlock].x<=(nextEnd-extra)){
+                    blocks.children[curBlock].alpha = 0;
+                    blocks.y += 40;
+                    curBlock+=1;
+                    nextEnd -= blockDistance[curBlock];
+                    for(var i=0; i<=floorIndex; i++ ){
+                        if(floorBlocks.children[i].x>(blocks.children[curBlock-1].x-blockDistance[curBlock-1])){
+                            floorBlocks.children[i].alpha = 0.2;
+                            curFloor = i;
+                        }
+                    }
+                }
+            }
+            
+            if( curBlock>blockIndex || curFloor>=floorIndex){ //Final position
+                animate= false;
+                checkCollide = true;
+            }       
+        }
+        
+        //Check if tractor has blocks left or floor holes
+        if(checkCollide){
+            tractor.animations.stop();
+            timer.stop();
+            //Check left blocks
+            var resultBlock = true;
+            for(var i=0; i<=blockIndex; i++){
+                if(blocks.children[i].alpha==1) resultBlock = false;
+            }
+            
+            //check floor Holes
+            var resultFloor = true;
+            for(var i=0; i<=floorIndex; i++){
+                if(floorBlocks.children[i].alpha==1) resultFloor = false;
+            }
+                        
+            if(resultBlock && resultFloor){
+                result = true;
+            }else{
+                result = false;
+            }
+            this.postScore();
+            move = true;
+            checkCollide = false;
+        }
+        
+        //Continue moving animation
+        if(move){
+            
+            if(moveCounter==0){
+                if(result){
+                    tractor.animations.play('right', 6, true);
+                    okSound.play();
+                    okImg.alpha = 1;
+                }else{
+                    errorSound.play();
+                    errorImg.alpha = 1;
+                }
+            }
+            
+            moveCounter += 1;
+            
+            if(result){
+                if(oneOperator=='Minus'){
+                    tractor.x -=2;
+                }else{
+                    tractor.x +=2;
+                }
+            }
+            
+            if(moveCounter>=moveEnd){
+                if(result){
+                    oneMove = true;
+                }else{
+                    oneMove = false;
+                }
+                game.state.start('mapSOne');
+            }
+        }
+        
+    },
+
     updateCounter: function() {
         totalTime++;
     },
@@ -837,135 +969,6 @@ var gameSquareOne = {
         hr.send(vars); // Actually execute the request
         console.log("processing...");
     },       
-    
-    update: function() {
-                
-        if(!clicked){
-            if(!move){
-                if(oneType=='A'){
-                    //Follow mouse
-                    if (game.physics.arcade.distanceToPointer(arrow, game.input.activePointer) > 8){
-                        var xPos = game.input.mousePointer.x;
-                        arrow.x = xPos;
-                    }                    
-                }
-            }
-        }
-        
-        //Start animation
-        if(animate){
-
-            if(blockDirection[curBlock]=='Right'){
-                tractor.x+=2;
-            }else if(blockDirection[curBlock]=='Left'){
-                tractor.x-=2;
-            }
-                        
-            for(var i=0;i<numBlocks;i++){ //Moving every block
-                if(blockDirection[curBlock]=='Right'){
-                    blocks.children[i].x +=2;
-                }else{
-                    blocks.children[i].x -=2;
-                }
-            }
-            
-            var extra = 80-blockDistance[curBlock];
-            
-            if(blockDirection[curBlock]=='Right'){
-                if(blocks.children[curBlock].x>=nextEnd+extra){
-                    blocks.children[curBlock].alpha = 0;
-                    blocks.y += 40;
-                    curBlock +=1;
-                    nextEnd += blockDistance[curBlock];
-                    for(var i=0; i<=floorIndex; i++ ){
-                        if(floorBlocks.children[i].x<(blocks.children[curBlock-1].x+blockDistance[curBlock-1])){
-                            floorBlocks.children[i].alpha = 0.2;
-                            curFloor = i;
-                        }
-                    }
-                }
-            }else if(blockDirection[curBlock]=='Left'){
-                if(blocks.children[curBlock].x<=(nextEnd-extra)){
-                    blocks.children[curBlock].alpha = 0;
-                    blocks.y += 40;
-                    curBlock+=1;
-                    nextEnd -= blockDistance[curBlock];
-                    for(var i=0; i<=floorIndex; i++ ){
-                        if(floorBlocks.children[i].x>(blocks.children[curBlock-1].x-blockDistance[curBlock-1])){
-                            floorBlocks.children[i].alpha = 0.2;
-                            curFloor = i;
-                        }
-                    }
-                }
-            }
-            
-            if( curBlock>blockIndex || curFloor>=floorIndex){ //Final position
-                animate= false;
-                checkCollide = true;
-            }       
-        }
-        
-        //Check if tractor has blocks left or floor holes
-        if(checkCollide){
-            tractor.animations.stop();
-            timer.stop();
-            //Check left blocks
-            var resultBlock = true;
-            for(var i=0; i<=blockIndex; i++){
-                if(blocks.children[i].alpha==1) resultBlock = false;
-            }
-            
-            //check floor Holes
-            var resultFloor = true;
-            for(var i=0; i<=floorIndex; i++){
-                if(floorBlocks.children[i].alpha==1) resultFloor = false;
-            }
-                        
-            if(resultBlock && resultFloor){
-                result = true;
-            }else{
-                result = false;
-            }
-            this.postScore();
-            move = true;
-            checkCollide = false;
-        }
-        
-        //Continue moving animation
-        if(move){
-            
-            if(moveCounter==0){
-                if(result){
-                    tractor.animations.play('right', 6, true);
-                    okSound.play();
-                    okImg.alpha = 1;
-                }else{
-                    errorSound.play();
-                    errorImg.alpha = 1;
-                }
-            }
-            
-            moveCounter += 1;
-            
-            if(result){
-                if(oneOperator=='Minus'){
-                    tractor.x -=2;
-                }else{
-                    tractor.x +=2;
-                }
-            }
-            
-            if(moveCounter>=moveEnd){
-                if(result){
-                    oneMove = true;
-                }else{
-                    oneMove = false;
-                }
-                game.state.start('mapSOne');
-            }
-        }
-        
-    },
     
     //Navigation functions,
     

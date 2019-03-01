@@ -9,6 +9,7 @@ var lbl_game;
     var menuState = {
         create: function(){},
         loadGame: function(){},
+        ---------------------------- end of phaser functions
         showTitle: function(){},
         clearTitle: function(){},
         showOption: function(){},
@@ -137,8 +138,9 @@ var menuState = {
         
     },
     
-    //calls the selected game
+    //calls the selected game menu screen
     loadGame: function(){
+        
         this.beep.play();
         if( (this.num==1 || this.num==2) && this.shape=="Circle"){
             oneShape = this.shape;

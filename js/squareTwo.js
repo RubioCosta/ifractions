@@ -1,6 +1,7 @@
 /*
     var menuSquareTwo = {
         create: function(){},
+        ---
         showOption: function(){},
         loadState: function(){},
         loadMap: function(){}
@@ -9,6 +10,7 @@
     var mapSquareTwo = {
         create: function(){},
         update: function(){},
+        ---
         showOption: function(){},
         loadState: function(){},
         loadGame: function()
@@ -16,6 +18,8 @@
 
     var gameSquareTwo = {
         create: function(){},
+        loadGame: function(){},
+        ---------------------------- end of phaser functions
         updateCounter: function(){},
         overSquare: function(){},
         outSquare: function(){},
@@ -25,19 +29,20 @@
         update: function(){},
         showOption: function(){},
         loadState: function(){},
-    
-        loadGame: function(){}
-        getRndDivisor
             //viewHelp: function(){},
             //checkOverlap: function(){}
+        getRndDivisor: function(){}
+            
     };
 
     var endSquareTwo = {
         create: function(){},
         update: function(){},
+        ---
         verPrincipal: function(){},
         verMenu: function(){}
     };
+        }
 */
 
 // Fractions Comparison Square states
@@ -45,6 +50,7 @@
 /****************************** MENU ****************************/
 
 var menuSquareTwo = {
+
     create: function() {
         
         // Creating sound variable
@@ -54,16 +60,19 @@ var menuSquareTwo = {
         var words = game.cache.getJSON('dictionary');
           
         // Menu options
-          //information label
+        
+        //information label
         m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-          // Return to language button
+        
+        // Return to language button
         m_world = game.add.sprite(10, 10, 'world'); 
         m_world.inputEnabled = true;
         m_world.input.useHandCursor = true;
         m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
         m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
         m_world.events.onInputOut.add(this.showOption, {message: ""});
-          // Return to menu button
+        
+        // Return to menu button
         m_list = game.add.sprite(60, 10, 'list'); 
         m_list.inputEnabled = true;
         m_list.input.useHandCursor = true;
@@ -77,9 +86,9 @@ var menuSquareTwo = {
         title.anchor.setTo(1, 0.5);
         
         //Showing Games and Levels
-        var maxHeight = 120; //Max height of a stair
+        var maxHeight = 120;  //Max height of a stair
         var stairHeight = 29; //height growth of a stair
-        var stairWidth = 80; //Width of a stair
+        var stairWidth = 80;  //Width of a stair
         var startStair = 240;
         var startSymbol = 150;
         var startSquare = (startSymbol/2)+startStair+stairWidth*5;
@@ -89,8 +98,7 @@ var menuSquareTwo = {
             bplus.scale.setTo(0.7);
             bplus.anchor.setTo(0.5,0.5);
             
-         //First stairs, 6 levels
-
+        //First stairs, 6 levels
         var stairsA = [];
         for(var i=1;i<=5;i++){
             //stair
@@ -117,7 +125,8 @@ var menuSquareTwo = {
             var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         }
-                
+
+        //second stairs        
         var stairsB = [];
         for(var i=1;i<=5;i++){
             //stair
@@ -145,7 +154,7 @@ var menuSquareTwo = {
                 label.anchor.setTo(0.5, 0.4);
         } 
         
-                
+        //third stair        
         var stairsC = [];
         for(var i=1;i<=5;i++){
             //stair
@@ -184,8 +193,7 @@ var menuSquareTwo = {
     loadState: function(){
         this.beep.play();
         game.state.start(this.state);
-    },
-        
+    },  
         
     //MapLoading function
     loadMap: function(){
@@ -206,6 +214,7 @@ var menuSquareTwo = {
 /****************************** MAP ****************************/
 
 var mapSquareTwo={
+
     create: function() {
                 
         // Creating sound variable
@@ -265,24 +274,16 @@ var mapSquareTwo={
         'y': [ 486, 422, 358, 294, 230, 166 ]
         };
 
-        
-         //Road
-        this.points = {
-        'x': [ 90, 204, 318, 432, 546, 660 ],
-        'y': [ 486, 422, 358, 294, 230, 166 ]
-        };
-        
-          //House
+        //House
         var house = game.add.image(this.points.x[0], this.points.y[0], 'house');
         house.scale.setTo(0.7);
         house.anchor.setTo(0.7, 0.8);
-         //School
+        //School
         var school = game.add.image(this.points.x[5], this.points.y[5], 'school');
         school.scale.setTo(0.35);
         school.anchor.setTo(0.2, 0.7);
         
-         //Trees and Rocks
-        
+        //Trees and Rocks
         this.rocks = {
              'x': [156, 275, 276, 441, 452, 590, 712],
              'y': [309, 543, 259, 156, 419, 136, 316]
@@ -410,6 +411,7 @@ var xA, yA, xB, yB, blockW, blockH;
 var okImg, errorImg;
 
 var gameSquareTwo = {
+
     create: function() {  
         
         //timer
@@ -469,7 +471,8 @@ var gameSquareTwo = {
         result = false; //Game is correct
         animate = null; //Final animation sequence
         
-         //generator
+        //generator
+        console.log("----------");
         console.log("Diff " + twoDifficulty + ", ini " + ((twoDifficulty-1)*2+1) + ", end " + ((twoDifficulty-1)*2+3));
         var rPoint = game.rnd.integerInRange((twoDifficulty-1)*2+1,(twoDifficulty-1)*2+3);
         sizeA = points[rPoint];
@@ -645,40 +648,146 @@ var gameSquareTwo = {
         errorImg.anchor.setTo(0.5);
         errorImg.alpha = 0;
         
+        //error text
+        errorTextA = game.add.text(game.world.centerX, game.world.centerY-225, "", {font: "20px Arial", fill: "#330000", align: "center" });
+        errorTextA.anchor.setTo(0.5, 0.5);
+        errorTextB = game.add.text(game.world.centerX, game.world.centerY-45, "", {font: "20px Arial", fill: "#330000", align: "center" });
+        errorTextB.anchor.setTo(0.5, 0.5);
+
         counter = 0;
         endCounter = 100;
         cDelay = 0;
         eDelay = 60;
     },
     
+    update: function() {
+        
+        // kid walking cycle during the phase
+        if(!(clickA && clickB) && !animate){
+            if(kidDirection=='right'){
+                kid.x += 1;
+                if(kid.x>=800){
+                    kidDirection='left';
+                    kid.animations.play('left', 8, true);
+                }
+            }else{
+                kid.x -= 1;
+                if(kid.x<=100){
+                    kidDirection='right';
+                    kid.animations.play('right', 8, true);
+                }
+            }
+        }
+
+        //If clicked A only, animate
+        if(animateA){
+            for(var i=0;i<valueA;i++){
+                blocksA.children[i].y +=2;
+            }
+            if(blocksA.children[0].y>=auxblqA.children[0].y){
+                animateA = false;
+                fractionA.alpha = 1;
+                fractionA.setText(valueA+"\n"+sizeA);
+                separatorA.alpha = 1;
+            }
+        }
+
+        //If clicked B only, animate
+        if(animateB){ 
+            for(var i=0;i<valueB;i++){
+                blocksB.children[i].y +=2;
+            }
+            if(blocksB.children[0].y>=auxblqB.children[0].y){
+                animateB = false;
+                fractionB.alpha = 1;
+                fractionB.setText(valueB+"\n"+sizeB);
+                separatorB.alpha = 1;
+            }
+        }
+        
+        //if clicked A and B
+        if(clickA && clickB && !this.animate){
+            //Check result
+            timer.stop();
+            cDelay++;
+            if(cDelay>=eDelay){
+                //fractions are equivalent : correct
+                if((valueA/sizeA) == (valueB/sizeB)){
+                    result = true;
+                    twoMove = true;
+                    okSound.play();
+                    okImg.alpha = 1;
+                //fractions are not equivalent
+                }else{
+                    result = false;
+                    twoMove = false;
+                    errorSound.play();
+                    kid.animations.stop();
+                    errorImg.alpha = 1;
+                }
+                this.postScore();
+                clickA = false;
+                clickB = false;
+                animate = true;
+            }
+        }
+        
+        if(animate){
+            counter++;
+            if(result){
+                kid.x += 2;
+                kidDirection='right';
+                kid.animations.play('right', 8, true);
+            }
+            if(counter>endCounter){
+                game.state.start('mapSTwo');
+            }
+        }
+    },
+
     updateCounter: function() {
         totalTime++;
     },
     
     overSquare: function(){
         if(!clickA && this.who=="A"){
-            for(var i=0;i<sizeA;i++){
-                if(i<=this.indice){
-                    blocksA.children[i].alpha = 1;
-                }else{
-                    blocksA.children[i].alpha = 0.5;
+            if(this.indice == sizeA-1){
+                errorTextA.setText(words.error_msg);
+                errorTextB.setText("");
+            }else{    
+                errorTextA.setText("");
+                errorTextB.setText("");
+                for(var i=0;i<sizeA;i++){
+                    if(i<=this.indice){
+                        blocksA.children[i].alpha = 1;
+                    }else{
+                        blocksA.children[i].alpha = 0.5;
+                    }
                 }
+                fractionA.x = xA+((this.indice +1)*(blockW/sizeA))+40;
+                fractionA.alpha = 1;
+                fractionA.setText(this.indice +1);
             }
-            fractionA.x = xA+((this.indice +1)*(blockW/sizeA))+40;
-            fractionA.alpha = 1;
-            fractionA.setText(this.indice +1);
         }
+
         if(!clickB && this.who=="B"){
-            for(var i=0;i<sizeB;i++){
-                if(i<=this.indice){
-                    blocksB.children[i].alpha = 1;
-                }else{
-                    blocksB.children[i].alpha = 0.5;
+            if(this.indice == sizeB-1){
+                errorTextB.setText(words.error_msg);
+                errorTextA.setText("");
+            }else{
+                errorTextA.setText("");
+                errorTextB.setText("");
+                for(var i=0;i<sizeB;i++){
+                    if(i<=this.indice){
+                        blocksB.children[i].alpha = 1;
+                    }else{
+                        blocksB.children[i].alpha = 0.5;
+                    }
                 }
+                fractionB.x = xB+((this.indice +1)*(blockW/sizeB))+40;
+                fractionB.alpha = 1;
+                fractionB.setText(this.indice +1);
             }
-            fractionB.x = xB+((this.indice +1)*(blockW/sizeB))+40;
-            fractionB.alpha = 1;
-            fractionB.setText(this.indice +1);
         }
     },
 
@@ -698,7 +807,7 @@ var gameSquareTwo = {
     },
     
     clickSquare: function(){
-        if(!clickA && this.who=="A"){
+        if(!clickA && this.who=="A" && this.indice!=sizeA-1){
             for(var i=0;i<sizeA;i++){
                 blocksA.children[i].inputEnabled = false;
                 if(i<=this.indice){
@@ -716,7 +825,8 @@ var gameSquareTwo = {
             separatorA.x = fractionA.x
             animateA = true;
         }
-        if(!clickB && this.who=="B"){
+
+        if(!clickB && this.who=="B" && this.indice!=sizeB-1){
             for(var i=0;i<sizeB;i++){
                 blocksB.children[i].inputEnabled = false;
                 if(i<=this.indice){
@@ -761,85 +871,6 @@ var gameSquareTwo = {
         console.log("processing...");
     },
 
-    update: function() {
-        
-        if(!(clickA && clickB) && !animate){
-            if(kidDirection=='right'){
-                kid.x += 1;
-                if(kid.x>=800){
-                    kidDirection='left';
-                    kid.animations.play('left', 8, true);
-                }
-            }else{
-                kid.x -= 1;
-                if(kid.x<=100){
-                    kidDirection='right';
-                    kid.animations.play('right', 8, true);
-                }
-            }
-        }
-
-        
-        if(animateA){ //If clicked A only, animate
-            for(var i=0;i<valueA;i++){
-                blocksA.children[i].y +=2;
-            }
-            if(blocksA.children[0].y>=auxblqA.children[0].y){
-                animateA = false;
-                fractionA.alpha = 1;
-                fractionA.setText(valueA+"\n"+sizeA);
-                separatorA.alpha = 1;
-            }
-        }
-        if(animateB){ //If clicked B only, animate
-            for(var i=0;i<valueB;i++){
-                blocksB.children[i].y +=2;
-            }
-            if(blocksB.children[0].y>=auxblqB.children[0].y){
-                animateB = false;
-                fractionB.alpha = 1;
-                fractionB.setText(valueB+"\n"+sizeB);
-                separatorB.alpha = 1;
-            }
-        }
-        
-        if(clickA && clickB && !this.animate){
-            //Check result
-            timer.stop();
-            cDelay++;
-            if(cDelay>=eDelay){
-                if((valueA/sizeA) == (valueB/sizeB)){
-                    result = true;
-                    twoMove = true;
-                    okSound.play();
-                    okImg.alpha = 1;
-                }else{
-                    result = false;
-                    twoMove = false;
-                    errorSound.play();
-                    kid.animations.stop();
-                    errorImg.alpha = 1;
-                }
-                this.postScore();
-                clickA = false;
-                clickB = false;
-                animate = true;
-            }
-        }
-        
-        if(animate){
-            counter++;
-            if(result){
-                kid.x += 2;
-                kidDirection='right';
-                kid.animations.play('right', 8, true);
-            }
-            if(counter>endCounter){
-                game.state.start('mapSTwo');
-            }
-        }
-    },
-  
     //Navigation functions,
     
     showOption: function(){
@@ -879,6 +910,7 @@ var gameSquareTwo = {
 /****************************** END ****************************/
 
 var endSquareTwo = {
+
     create: function() {  
         
         // Creating sound variable

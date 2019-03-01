@@ -19,5 +19,7 @@
     "without_name": "SIN",
     "insert_name" : "INGRESA TU NOMBRE",
     "ready" : "LISTO",
-    "welcome" : "Bienvenido"
+    "welcome" : "Bienvenid@",
+    "error_msg" : "Debes seleccionar una porción más pequeña que su tamaño completo",
+    "empty_name" : "Usted ha olvidado de escribir su nombre"
 }

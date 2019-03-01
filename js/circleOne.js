@@ -17,17 +17,19 @@
 
     var gameCircleOne = {
         create: function(){},
+        update: function(){},
+        ---------------------------- end of phaser functions
         updateCounter: function(){},
         overCircle: function(){},
         outCircle: function(){},
         clickCircle: function(){},
         setPlace: function(){},
         postScore: function(){},
-        update: function(){},
         showOption: function(){},
         loadState: function(){},
         viewHelp: function(){},
         checkOverlap: function(){}
+            //getRndDivisor: function(){}
     };
 
     var endCircleOne = {
@@ -438,6 +440,7 @@ var okImg, errorImg;
 var detail;
 
 var gameCircleOne = {
+
     create: function() {
         
         //timer
@@ -714,114 +717,6 @@ var gameCircleOne = {
         errorImg.alpha = 0;
     },
     
-    updateCounter: function() {
-        totalTime++;
-    },
-        
-    overCircle: function(){
-        
-        if(!clicked){
-            for(var i=0;i<numBlocks;i++){
-                if(i<=this.indice){
-                    blocks.children[i].alpha = 1;
-                }else{
-                    blocks.children[i].alpha = 0.5;
-                }
-            }
-        }
-
-    },
-
-    outCircle: function(){
-        if(!clicked){
-            for(var i=0;i<=this.indice;i++){
-                blocks.children[i].alpha = 0.5;
-            }
-        }
-    },
-    
-    clickCircle: function(){
-        if(!clicked){
-            var minusBlocks = 0;
-            
-            for(var i=0;i<numBlocks;i++){
-                if(i<=this.indice){
-                    fractionIndex = this.indice;
-                    blocks.children[i].alpha = 1;
-                }else{
-                    blocks.children[i].visible = false; //Delete unselected block
-                    minusBlocks +=1; //number of blocks to reduce
-                    kid_walk.y += blockSize; //Lowering kid
-                }
-            }
-            
-            numBlocks -= minusBlocks; //Final reduced blocks
-
-            balloon.alpha = 1;
-            clicked = true;
-            animate = true;
-            beepSound.play();
-            if(blockDirection[curBlock]=='Right'){
-                kid_walk.animations.play('right', 6, true);
-            }else{
-                kid_walk.animations.play('left', 6, true);
-            }
-
-            if(oneLabel){ //Hiding labels
-                blockLabel.visible = false;
-                blockSeparator.visible = false;
-            }
-        }
-    },
-
-    setPlace: function(){
-        if(!clicked){
-            
-            balloon.x = game.input.x;
-            basket.x = game.input.x;
-
-            balloon.alpha = 1;
-            clicked = true;
-            animate = true;
-            beepSound.play();
-            if(blockDirection[curBlock]=='Right'){
-                kid_walk.animations.play('right', 6, true);
-            }else{
-                kid_walk.animations.play('left', 6, true);
-            }
-
-            if(oneLabel){ //Hiding labels
-                blockLabel.visible = false;
-                blockSeparator.visible = false;
-            }
-        }
-    },
-
-    postScore: function (){
-        
-        var abst = "numCircles:"+numBlocks+", valCircles: " + detail+" balloonX: " + basket.x + ", selIndex: " + fractionIndex;
-        
-        var hr = new XMLHttpRequest();
-        // Create some variables we need to send to our PHP file
-        var url = "assets/cn/save.php";
-        var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+oneShape+"&s_mode="+oneType;
-        vars += "&s_oper="+oneOperator+"&s_leve="+oneDifficulty+"&s_posi="+onePosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
-        
-        hr.open("POST", url, true);
-        hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        hr.onreadystatechange = function() {
-            console.log(hr);
-
-            if(hr.readyState == 4 && hr.status == 200) {
-                var return_data = hr.responseText;
-                console.log(return_data);
-            }
-        }
-        // Send the data to PHP now... and wait for response to update the status div
-        hr.send(vars); // Actually execute the request
-        console.log("processing...");
-    },
-        
     update: function() {
        
         if (game.input.activePointer.isDown && !fly && !clicked){
@@ -969,6 +864,114 @@ var gameCircleOne = {
                 game.state.start('mapCOne');
             }
         }
+    },
+
+    updateCounter: function() {
+        totalTime++;
+    },
+        
+    overCircle: function(){
+        
+        if(!clicked){
+            for(var i=0;i<numBlocks;i++){
+                if(i<=this.indice){
+                    blocks.children[i].alpha = 1;
+                }else{
+                    blocks.children[i].alpha = 0.5;
+                }
+            }
+        }
+
+    },
+
+    outCircle: function(){
+        if(!clicked){
+            for(var i=0;i<=this.indice;i++){
+                blocks.children[i].alpha = 0.5;
+            }
+        }
+    },
+    
+    clickCircle: function(){
+        if(!clicked){
+            var minusBlocks = 0;
+            
+            for(var i=0;i<numBlocks;i++){
+                if(i<=this.indice){
+                    fractionIndex = this.indice;
+                    blocks.children[i].alpha = 1;
+                }else{
+                    blocks.children[i].visible = false; //Delete unselected block
+                    minusBlocks +=1; //number of blocks to reduce
+                    kid_walk.y += blockSize; //Lowering kid
+                }
+            }
+            
+            numBlocks -= minusBlocks; //Final reduced blocks
+
+            balloon.alpha = 1;
+            clicked = true;
+            animate = true;
+            beepSound.play();
+            if(blockDirection[curBlock]=='Right'){
+                kid_walk.animations.play('right', 6, true);
+            }else{
+                kid_walk.animations.play('left', 6, true);
+            }
+
+            if(oneLabel){ //Hiding labels
+                blockLabel.visible = false;
+                blockSeparator.visible = false;
+            }
+        }
+    },
+
+    setPlace: function(){
+        if(!clicked){
+            
+            balloon.x = game.input.x;
+            basket.x = game.input.x;
+
+            balloon.alpha = 1;
+            clicked = true;
+            animate = true;
+            beepSound.play();
+            if(blockDirection[curBlock]=='Right'){
+                kid_walk.animations.play('right', 6, true);
+            }else{
+                kid_walk.animations.play('left', 6, true);
+            }
+
+            if(oneLabel){ //Hiding labels
+                blockLabel.visible = false;
+                blockSeparator.visible = false;
+            }
+        }
+    },
+
+    postScore: function (){
+        
+        var abst = "numCircles:"+numBlocks+", valCircles: " + detail+" balloonX: " + basket.x + ", selIndex: " + fractionIndex;
+        
+        var hr = new XMLHttpRequest();
+        // Create some variables we need to send to our PHP file
+        var url = "assets/cn/save.php";
+        var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+oneShape+"&s_mode="+oneType;
+        vars += "&s_oper="+oneOperator+"&s_leve="+oneDifficulty+"&s_posi="+onePosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
+        
+        hr.open("POST", url, true);
+        hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        hr.onreadystatechange = function() {
+            console.log(hr);
+
+            if(hr.readyState == 4 && hr.status == 200) {
+                var return_data = hr.responseText;
+                console.log(return_data);
+            }
+        }
+        // Send the data to PHP now... and wait for response to update the status div
+        hr.send(vars); // Actually execute the request
+        console.log("processing...");
     },
     
     //Navigation functions,
