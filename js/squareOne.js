@@ -3,7 +3,6 @@
     var menuSquareOne = {
         create: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadMap: function(){}
     };
 
@@ -11,13 +10,12 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadGame: function()
     };
 
     var gameSquareOne = {
         create: function(){},
-        loadState: function(){},
+        update: function(){},
         ---------------------------- end of phaser functions
         updateCounter: function(){},
         overSquare: function(){},
@@ -25,7 +23,6 @@
         clickSquare: function(){},
             //setPlace: function(){},
         postScore: function(){},
-        update: function(){},
         viewHelp: function(){},
             //checkOverlap: function(){}
             //getRndDivisor: function(){}
@@ -53,42 +50,10 @@ var menuSquareOne = {
         var beepSound = game.add.audio('sound_beep');
           
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        // Return to menu button
-        m_list = game.add.sprite(10, 10, 'list'); 
-        m_list.inputEnabled = true;
-        m_list.input.useHandCursor = true;
-        m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-        m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-        m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-        // Return to diffculty
-        m_back = game.add.sprite(60, 10, 'back'); 
-        m_back.inputEnabled = true;
-        m_back.input.useHandCursor = true;
-        m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
-        m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-        m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        // Return to language button
-        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        // change audio status button
-        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-        m_audio.inputEnabled = true;
-        m_audio.input.useHandCursor = true;
-        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+        buttonSettings["addButtons"](1,1,
+                                    0,1,0,
+                                    1,0,
+                                    0,0);
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
@@ -182,15 +147,6 @@ var menuSquareOne = {
                 label.anchor.setTo(0.5, 0.4);
         } 
     },
-    
-    //Navigation functions,
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
         
     //MapLoading function
     loadMap: function(){
@@ -223,26 +179,10 @@ var mapSquareOne = {
         game.add.image(0, 40, 'bgmap');
         
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-
-        if(oneMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        }
+        buttonSettings["addButtons"](1,0,
+                                    1,1,0,
+                                    0,0,
+                                    "menuSOne",0);
         
         // Styles for labels
         var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
@@ -370,15 +310,6 @@ var mapSquareOne = {
             }
         }
     },
-    
-    //Navigation functions,  
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
         
     //MapLoading function
     loadGame: function(){
@@ -428,6 +359,12 @@ var gameSquareOne = {
         // Background
         game.add.image(0, 0, 'bgimage');
         
+        // Menu options
+        buttonSettings["addButtons"](1,1,
+                                    1,1,1,
+                                    1,0,
+                                    "menuSOne", this.viewHelp);
+
         //Clouds
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
@@ -671,54 +608,6 @@ var gameSquareOne = {
             game.add.text(posX, 560, i , stylePlace).anchor.setTo(0.5, 0.5); 
         }
         
-        // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        if(oneMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-            // Return to language button
-            m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-            m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-            m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-            // change audio status button
-            m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-            m_audio.inputEnabled = true;
-            m_audio.input.useHandCursor = true;
-            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-            m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-            m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        }
-         // Help button
-        
-        m_help = game.add.sprite(110, 10, 'help');
-        m_help.inputEnabled = true;
-        m_help.input.useHandCursor = true;
-        m_help.events.onInputDown.add(this.viewHelp, {beep: this.beepSound});
-        m_help.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_help});
-        m_help.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-        
         //ok and error images
         okImg = game.add.image(game.world.centerX, game.world.centerY, 'h_ok');
         okImg.anchor.setTo(0.5);
@@ -734,6 +623,7 @@ var gameSquareOne = {
             arrow.alpha = 0;
         else if(oneType=="A")
             arrow.alpha = 0.5;
+
     },
     
     update: function() {
@@ -874,6 +764,7 @@ var gameSquareOne = {
     },
     
     overSquare: function(){
+
         if(!clicked){
             if(oneType=="A"){
                 for(var i=0;i<floorCount;i++){
@@ -896,9 +787,11 @@ var gameSquareOne = {
                 blockIndex = this.indice;
             }
         }
+
     },
 
     outSquare: function(){
+
         if(!clicked){
             if(oneType=="A"){
                 for(var i=0;i<floorCount;i++){
@@ -912,9 +805,11 @@ var gameSquareOne = {
                 blockIndex = -1;
             }
         }
+
     },
     
     clickSquare: function(){
+
         if(!clicked && !move){
             
             if(oneType=='A'){
@@ -975,6 +870,7 @@ var gameSquareOne = {
                 }
             }
         }
+
     },
 
     postScore: function (){
@@ -1000,18 +896,11 @@ var gameSquareOne = {
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
         console.log("processing...");
-    },       
-    
-    //Navigation functions,
 
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
+    },       
         
     viewHelp: function(){
+
         if(!clicked){
             var pointer;
             if(oneType=='A'){
@@ -1022,6 +911,7 @@ var gameSquareOne = {
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
         }
+
     }
     
 };
@@ -1080,6 +970,7 @@ var endSquareOne = {
     },
 
     update: function() {
+
         if(this.tractor.x<=700){
             this.tractor.x += 2;
         }else{
@@ -1089,6 +980,7 @@ var endSquareOne = {
                 this.tractor.animations.stop();
             }
         }
+
     },
     
     verPrincipal: function(){
@@ -1096,9 +988,11 @@ var endSquareOne = {
     },
     
     verMenu: function(){
+
         if(oneMenu){
             game.state.start('menu');
         }
+
     }     
 
 };

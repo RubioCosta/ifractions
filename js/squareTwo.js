@@ -2,7 +2,6 @@
     var menuSquareTwo = {
         create: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadMap: function(){}
     };
 
@@ -10,13 +9,12 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadGame: function()
     };
 
     var gameSquareTwo = {
         create: function(){},
-        loadGame: function(){},
+        update: function(){},
         ---------------------------- end of phaser functions
         updateCounter: function(){},
         overSquare: function(){},
@@ -24,8 +22,6 @@
         clickSquare: function(){},
             //setPlace: function(){},
         postScore: function(){},
-        update: function(){},
-        loadState: function(){},
             //viewHelp: function(){},
             //checkOverlap: function(){}
         getRndDivisor: function(){}
@@ -54,42 +50,10 @@ var menuSquareTwo = {
         var beepSound = game.add.audio('sound_beep');
           
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        // Return to menu button
-        m_list = game.add.sprite(10, 10, 'list'); 
-        m_list.inputEnabled = true;
-        m_list.input.useHandCursor = true;
-        m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-        m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-        m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-        // Return to diffculty
-        m_back = game.add.sprite(60, 10, 'back'); 
-        m_back.inputEnabled = true;
-        m_back.input.useHandCursor = true;
-        m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
-        m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-        m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        // Return to language button
-        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        // change audio status button
-        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-        m_audio.inputEnabled = true;
-        m_audio.input.useHandCursor = true;
-        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+        buttonSettings["addButtons"](1,1,
+                                    0,1,0,
+                                    1,0,
+                                    0,0);
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
@@ -194,18 +158,10 @@ var menuSquareTwo = {
         } 
 
     },
-    
-    //Navigation functions,
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },  
         
     //MapLoading function
     loadMap: function(){
+
         if(audioStatus){
             this.beep.play();
         }
@@ -218,6 +174,7 @@ var menuSquareTwo = {
         }else{
             game.state.start('unofinal');
         }
+
     },
     
 };
@@ -235,26 +192,10 @@ var mapSquareTwo={
         game.add.image(0, 40, 'bgmap');
         
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-
-        if(twoMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        }
+        buttonSettings["addButtons"](1,0,
+                                    1,1,0,
+                                    0,0,
+                                    "menuSTwo",0);
         
         // Styles for labels
         var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
@@ -348,6 +289,7 @@ var mapSquareTwo={
         // Delay to next level
         this.count = 0;
         this.wait = 60;
+
     },
 
     update: function() {
@@ -380,17 +322,12 @@ var mapSquareTwo={
                 twoPosition += 1; //Update position
             }
         }
+
     }, 
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
         
     //MapLoading function
     loadGame: function(){
+
         if(audioStatus){
            beepSound.play();
         }
@@ -399,6 +336,7 @@ var mapSquareTwo={
         }else{
             game.state.start('endSTwo');
         }
+
     }
 };
 
@@ -430,6 +368,12 @@ var gameSquareTwo = {
         // Background
         game.add.image(0, 0, 'bgimage');
         
+        // Menu options
+        buttonSettings["addButtons"](1,1,
+                                    1,1,0,
+                                    1,0,
+                                    "menuSOne", 0);
+
         //Clouds
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
@@ -612,46 +556,6 @@ var gameSquareTwo = {
         fractionB.alpha = 0;
         separatorB.alpha = 0;
         
-        // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        if(twoMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-            // Return to language button
-            m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-            m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-            m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-            // change audio status button
-            m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-            m_audio.inputEnabled = true;
-            m_audio.input.useHandCursor = true;
-            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-            m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-            m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        }
-        
         //ok and error images
         okImg = game.add.image(game.world.centerX, game.world.centerY, 'h_ok');
         okImg.anchor.setTo(0.5);
@@ -670,6 +574,7 @@ var gameSquareTwo = {
         endCounter = 100;
         cDelay = 0;
         eDelay = 60;
+
     },
     
     update: function() {
@@ -759,6 +664,7 @@ var gameSquareTwo = {
                 game.state.start('mapSTwo');
             }
         }
+
     },
 
     updateCounter: function() {
@@ -766,6 +672,7 @@ var gameSquareTwo = {
     },
     
     overSquare: function(){
+
         if(!clickA && this.who=="A"){
             if(this.indice == sizeA-1){
                 if(yA==90){
@@ -815,9 +722,11 @@ var gameSquareTwo = {
                 fractionB.setText(this.indice +1);
             }
         }
+
     },
 
     outSquare: function(){
+
         if(!clickA && this.who=="A"){
             for(var i=0;i<=this.indice;i++){
                 blocksA.children[i].alpha = 0.5;
@@ -830,9 +739,11 @@ var gameSquareTwo = {
             }
             fractionB.alpha = 0;
         }
+
     },
     
     clickSquare: function(){
+
         if(!clickA && this.who=="A" && this.indice!=sizeA-1){
             for(var i=0;i<sizeA;i++){
                 blocksA.children[i].inputEnabled = false;
@@ -874,6 +785,7 @@ var gameSquareTwo = {
             separatorB.x = fractionB.x
             animateB = true;
         }
+
     },
     
     postScore: function (){
@@ -899,30 +811,12 @@ var gameSquareTwo = {
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
         console.log("processing...");
+
     },
 
-    //Navigation functions,
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
-    
-    //MapLoading function
-    loadGame: function(){
-        if(audioStatus){
-            beepSound.play();
-        }
-        if(onePosition<5){
-            game.state.start('gameSOne');
-        }else{
-            game.state.start('endSOne');
-        }
-    },
     //Calculation help functions
     getRndDivisor: function(number){ //Get random divisor for a number
+
         var div = []; //Divisors found
         var p = 0; //current dividor index
         for(var i=2; i<number;i++){
@@ -933,6 +827,7 @@ var gameSquareTwo = {
         }
         var x = game.rnd.integerInRange(0,p-1);
         return div[x];
+
     },
     
 };
@@ -986,9 +881,11 @@ var endSquareTwo = {
         this.kid.scale.setTo(0.7);
         this.kid.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11]);
         this.kid.animations.play('walk', 6, true);
+
     },
 
     update: function() {
+
         if(this.kid.x<=700){
             this.kid.x += 2;
         }else{
@@ -998,6 +895,7 @@ var endSquareTwo = {
                 this.kid.animations.stop();
             }
         }
+
     },
     
     verPrincipal: function(){
@@ -1005,8 +903,10 @@ var endSquareTwo = {
     },
     
     verMenu: function(){
+
         if(twoMenu){
             game.state.start('menu');
         }
+
     }               
 };

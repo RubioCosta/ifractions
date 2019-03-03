@@ -3,7 +3,6 @@
     var menuCircleOne = {
         create: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadMap: function(){}
     };
 
@@ -11,7 +10,6 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        loadState: function(){},
         loadGame: function()
     };
 
@@ -25,9 +23,8 @@
         clickCircle: function(){},
         setPlace: function(){},
         postScore: function(){},
-        loadState: function(){},
         viewHelp: function(){},
-        checkOverlap: function(){}
+        checkOverlap: function(_,_){}
             //getRndDivisor: function(){}
     };
 
@@ -53,42 +50,10 @@ var menuCircleOne = {
         var beepSound = game.add.audio('sound_beep');
                 
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        // Return to menu button
-        m_list = game.add.sprite(10, 10, 'list'); 
-        m_list.inputEnabled = true;
-        m_list.input.useHandCursor = true;
-        m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-        m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-        m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-        // Return to diffculty
-        m_back = game.add.sprite(60, 10, 'back'); 
-        m_back.inputEnabled = true;
-        m_back.input.useHandCursor = true;
-        m_back.events.onInputDown.add(this.loadState, {state: "menuCOne", beep: beepSound});
-        m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-        m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        // Return to language button
-        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        // change audio status button
-        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-        m_audio.inputEnabled = true;
-        m_audio.input.useHandCursor = true;
-        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+        buttonSettings["addButtons"](1,1,
+                                    0,1,0,
+                                    1,0,
+                                    0,0);        
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
@@ -224,17 +189,12 @@ var menuCircleOne = {
             var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
-    },
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
+
     },
         
     //MapLoading function
     loadMap: function(){
+
         if(audioStatus){
             this.beep.play();
         }
@@ -247,6 +207,7 @@ var menuCircleOne = {
         }else{
             game.state.start('unofinal');
         }
+
     }
     
 };
@@ -254,6 +215,7 @@ var menuCircleOne = {
 /****************************** MAP *****************************/
 
 var mapCircleOne = {
+
     create: function() {
         
         // Creating sound variable
@@ -263,26 +225,10 @@ var mapCircleOne = {
         game.add.image(0, 40, 'bgmap');
         
         // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-
-        if(oneMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuCOne", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-        }
+        buttonSettings["addButtons"](1,0,
+                                    1,1,0,
+                                    0,0,
+                                    "menuCOne",0);
         
         // Styles for labels
         var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
@@ -410,15 +356,6 @@ var mapCircleOne = {
             }
         }
     },
-    
-    //Navigation functions,
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
         
     //MapLoading function
     loadGame: function(){
@@ -467,6 +404,12 @@ var gameCircleOne = {
 
         // Background
         game.add.image(0, 0, 'bgimage');
+
+        // Menu options
+        buttonSettings["addButtons"](1,1,
+                                    1,1,1,
+                                    1,0,
+                                    "menuCOne", this.viewHelp);
         
         //Clouds
         game.add.image(300, 100, 'cloud');
@@ -516,7 +459,7 @@ var gameCircleOne = {
         trace.addToWorld();
         trace.clear();
                 
-         //generator
+        //generator
         //Circles and fractions
         var maxBlocks = onePosition+1; //Maximum blocks according to difficulty
         if(oneType=='B' || oneOperator=='Mixed') maxBlocks = 6;
@@ -680,53 +623,6 @@ var gameCircleOne = {
         basket = game.add.sprite(balloonPlace, 472, 'balloon_basket');
         basket.anchor.setTo(0.5, 0.5);
         
-        // Menu options
-        //information label
-        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-
-        if(oneMenu){
-            // Return to menu button
-            m_list = game.add.sprite(10, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-            // Return to diffculty
-            m_back = game.add.sprite(60, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: "menuCOne", beep: beepSound});
-            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-
-            // Return to language button
-            m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-            m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-            m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-            // change audio status button
-            m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-            m_audio.inputEnabled = true;
-            m_audio.input.useHandCursor = true;
-            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-            m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-            m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-        }
-         // Help button
-        m_help = game.add.sprite(110, 10, 'help');
-        m_help.inputEnabled = true;
-        m_help.input.useHandCursor = true;
-        m_help.events.onInputDown.add(this.viewHelp, {beep: this.beepSound});
-        m_help.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_help});
-        m_help.events.onInputOut.add(function(){ this.m_info_left.text = ""});
-        
         //ok and error images
         okImg = game.add.image(game.world.centerX, game.world.centerY, 'h_ok');
         okImg.anchor.setTo(0.5);
@@ -734,6 +630,7 @@ var gameCircleOne = {
         errorImg = game.add.image(game.world.centerX, game.world.centerY, 'h_error');
         errorImg.anchor.setTo(0.5);
         errorImg.alpha = 0;
+
     },
     
     update: function() {
@@ -843,9 +740,13 @@ var gameCircleOne = {
         
         //Check if kid is inside the basket
         if(checkCollide){
-            kid_walk.animations.stop();
+            kid_walk.animations.stop();            
             timer.stop();
             if(this.checkOverlap(basket,kid_walk)){
+            	if(kid_walk.frame < 12)
+            		kid_walk.frame = 24;	            
+            	else
+            		kid_walk.frame = 25;	            
                 result = true;
             }else{
                 result = false;
@@ -889,6 +790,7 @@ var gameCircleOne = {
                 game.state.start('mapCOne');
             }
         }
+
     },
 
     updateCounter: function() {
@@ -915,9 +817,11 @@ var gameCircleOne = {
                 blocks.children[i].alpha = 0.5;
             }
         }
+
     },
     
     clickCircle: function(){
+
         if(!clicked){
             var minusBlocks = 0;
             
@@ -951,9 +855,11 @@ var gameCircleOne = {
                 blockSeparator.visible = false;
             }
         }
+
     },
 
     setPlace: function(){
+
         if(!clicked){
             
             balloon.x = game.input.x;
@@ -976,6 +882,7 @@ var gameCircleOne = {
                 blockSeparator.visible = false;
             }
         }
+
     },
 
     postScore: function (){
@@ -1001,18 +908,11 @@ var gameCircleOne = {
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
         console.log("processing...");
+
     },
-    
-    //Navigation functions, 
-    
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
-        
+            
     viewHelp: function(){
+
         if(!clicked){
             var pointer;
             if(oneType=='A'){
@@ -1023,17 +923,20 @@ var gameCircleOne = {
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
         }
+
     },
     
     checkOverlap: function (spriteA, spriteB) {
+
         var xA = spriteA.x;
         var xB = spriteB.x;
                 
-        if(Math.abs(xA-xB)>25){
+        if(Math.abs(xA-xB)>14){
             return false;
         }else{
             return true;
         }
+
     }
     
 };
@@ -1092,9 +995,11 @@ var endCircleOne = {
         this.balloon.anchor.setTo(0.5,0.5);
         this.basket = game.add.sprite(0, -150, 'balloon_basket');
         this.basket.anchor.setTo(0.5,0.5);
+    
     },
 
-    update: function() {                
+    update: function() {   
+
         if(this.kid.y>=460){
             this.kid.animations.play('walk', 6, true);
             if(this.kid.x<=700){
@@ -1114,6 +1019,7 @@ var endCircleOne = {
             this.basket.x += 1;
             this.kid.x +=1;
         }
+
     },
     
     verPrincipal: function(){
@@ -1121,8 +1027,10 @@ var endCircleOne = {
     },
     
     verMenu: function(){
+
         if(oneMenu){
             game.state.start('menu');
         }
+        
     }        
 };

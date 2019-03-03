@@ -15,10 +15,15 @@ var errorEmptyName;
     };
         
     var nameState = {
-        preload: function(){},
         create: function(){},
         ------------------------------------------------ end of phaser functions
+        nameIsEmpty: function(){}
         ready: function(){} //calls menu.js -> menuState
+    };
+
+    var buttonSettings = {
+        addButtons: function(_,_,_,_,_,_,_,_,_){},
+        loadState: function(){}
     };
 */
 
@@ -70,10 +75,12 @@ var langState = {
     },
     
     setLang: function(){
+
         //set language
         lang = this.lang;
         //start resource loading
         game.state.start('load');
+
     }
 
 };
@@ -94,10 +101,17 @@ var loadState = {
     },
 
     create: function() {  
+
         // gets selected language from json
         lang = game.cache.getJSON('dictionary');
         audio_lang_aux = lang.audio_on;
-        game.state.start('name');
+        if(!nameStatus){
+        	nameStatus = true;
+        	game.state.start('name');
+        }else{
+        	game.state.start('menu');
+        }
+    
     }
 
 };
@@ -140,9 +154,11 @@ var nameState = {
                 nameState["nameIsEmpty"]();
             }     
         });
+
     },
          
     nameIsEmpty: function() {
+
         if(document.getElementById("name_id").value!=""){
             nameState["ready"]();
             errorEmptyName.setText("");
@@ -151,9 +167,7 @@ var nameState = {
         }
 
     },
-
-    //var ready = function readyFunction() {...},
-    //var ready = function() {...},                
+              
     ready: function() {
         
         // saves the typed name on username variable
@@ -190,6 +204,94 @@ var nameState = {
             
         }
         
+    }
+
+};
+
+var m_info_right, m_info_left;
+var m_world, m_menu, m_back, m_help, m_audio;
+
+var buttonSettings = {
+
+    addButtons: function(left, right, b0Esq, b1Esq, b2Esq, b0Dir, b1Dir, phase, helpBtn){
+
+        var xEsq = 10;
+        var xDir = (game.world.width - 50 - 10);
+        
+        if(left == 1){
+            m_info_left = game.add.text(xEsq, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        }
+        if(right == 1){
+            m_info_right = game.add.text(xDir+50, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+            m_info_right.anchor.setTo(1,0.02);
+        }
+        //left buttons
+        if(b0Esq == 1){
+            // Return to diffculty
+            m_back = game.add.sprite(xEsq, 10, 'back'); 
+            m_back.inputEnabled = true;
+            m_back.input.useHandCursor = true;
+            m_back.events.onInputDown.add(this.loadState, {state: phase, beep: beepSound});
+            m_back.events.onInputOver.add(function(){ m_info_left.text = lang.menu_back});
+            m_back.events.onInputOut.add(function(){ m_info_left.text = ""});
+            
+            xEsq+=50;
+        }
+        if(b1Esq == 1){
+            // Return to menu button
+            m_list = game.add.sprite(xEsq, 10, 'list'); 
+            m_list.inputEnabled = true;
+            m_list.input.useHandCursor = true;
+            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
+            m_list.events.onInputOver.add(function(){ m_info_left.text = lang.menu_list});
+            m_list.events.onInputOut.add(function(){ m_info_left.text = ""});
+            
+            xEsq+=50;
+        }
+        if(b2Esq == 1){
+            // Help button
+            m_help = game.add.sprite(xEsq, 10, 'help');
+            m_help.inputEnabled = true;
+            m_help.input.useHandCursor = true;
+            m_help.events.onInputDown.add(helpBtn, {beep: beepSound});
+            m_help.events.onInputOver.add(function(){ m_info_left.text = lang.menu_help});
+            m_help.events.onInputOut.add(function(){ m_info_left.text = ""});
+            
+            xEsq+=50;
+        }
+        //rightButtons
+        if(b0Dir == 1){
+            m_audio = game.add.sprite(xDir, 10, 'audio');
+            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+            m_audio.inputEnabled = true;
+            m_audio.input.useHandCursor = true;
+            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+            m_audio.events.onInputOver.add(function(){ m_info_right.text = lang.audio });
+            m_audio.events.onInputOut.add(function(){ m_info_right.text = "" });
+
+            xDir-=50;
+        }
+        if(b1Dir == 1){
+            // Return to language button
+            m_world = game.add.sprite(xDir, 10, 'world'); 
+            m_world.inputEnabled = true;
+            m_world.input.useHandCursor = true;
+            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+            m_world.events.onInputOver.add(function(){ m_info_right.text = lang.menu_world });
+            m_world.events.onInputOut.add(function(){ m_info_right.text = "" });
+                  
+            xDir-=50;
+        }
+
+    },
+
+    loadState: function(){
+
+        if(audioStatus){
+            this.beep.play();
+        }
+        game.state.start(this.state);
+    
     }
 
 };

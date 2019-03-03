@@ -1,6 +1,5 @@
 
 var menu1, menu2, menu3, menu4;
-var m_info, m_world, m_menu, m_back, m_help, m_audio;
 var lbl_game;
 
 /*
@@ -10,7 +9,6 @@ var lbl_game;
         ---------------------------- end of phaser functions
         showTitle: function(){},
         clearTitle: function(){},
-        loadState: function(){}
     }
 */
 
@@ -38,27 +36,10 @@ var menuState = {
         var player_info = game.add.text(this.game.world.centerX, 40, lang.welcome + ", " + username + "!", { font: "20px Arial", fill: "#330000", align: "center" });        
         player_info.anchor.setTo(0.5,0.5);
 
-        // Menu options
-
-        //information label
-        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-        m_info_right.anchor.setTo(1,0.02);
-        // Return to language button
-        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
-        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-              
-        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
-        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-        m_audio.inputEnabled = true;
-        m_audio.input.useHandCursor = true;
-        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
-        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
-
+        buttonSettings["addButtons"](0,1,
+                                    0,0,0,
+                                    1,1,
+                                    0,0);
         //game buttons 
 
         // loading button sprites
@@ -147,6 +128,7 @@ var menuState = {
     
     //calls the selected game menu screen
     loadGame: function(){
+
         if(audioStatus){
             this.beep.play();
         }
@@ -181,6 +163,7 @@ var menuState = {
             twoType = "";
             game.state.start('menuSTwo');
         }
+
     },
 
     showTitle: function(){
@@ -217,17 +200,11 @@ var menuState = {
         }
         
         lbl_game.text = title;
+
     },
 
     clearTitle: function(){
         lbl_game.text = "";
-    },
+    }
     
-    loadState: function(){
-        if(audioStatus){
-            this.beep.play();
-        }
-        game.state.start(this.state);
-    },
-
 };

@@ -8,6 +8,7 @@
     var timer, totalTime;
 
     var audioStatus = true;
+    var nameStatus = false;
 
     // Initialize the game
     var game = new Phaser.Game(
@@ -125,7 +126,7 @@
 	        
 	        // Loading assets based on language        
 	        game.load.spritesheet('kid_run', imgsrc+'kid/run.png', 82, 178, 12);
-	        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 24);
+	        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 26);
 	        game.load.spritesheet('kid_lost', imgsrc+'kid/lost.png', 72, 170, 6);
 	        game.load.spritesheet('tractor', imgsrc+'tractor/frame.png', 201, 144, 10);
 	        game.load.image('balloon', imgsrc+'airballoon_upper.png');
@@ -149,12 +150,16 @@
 	        game.load.audio('sound_ok', ['assets/fx/ok.ogg', 'assets/fx/ok.mp3']);
 	        game.load.audio('sound_error', ['assets/fx/error.ogg', 'assets/fx/error.mp3']);
 	        game.load.audio('sound_beep', ['assets/fx/beep.ogg', 'assets/fx/beep.mp3']);
+
     	},
 
     	create: function(){
+
     		game.physics.startSystem(Phaser.Physics.ARCADE);
 		    game.state.start('language');
+    	
     	}
+    	
     };
 
     //starting to boot game
