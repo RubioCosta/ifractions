@@ -21,5 +21,6 @@
     "ready" : "PRONTO",
     "welcome" : "Bem vind@",
     "error_msg" : "Você deve selecionar uma porção menor que o seu tamanho total",
-    "empty_name" : "Você esqueceu de digitar seu nome"
+    "empty_name" : "Você esqueceu de digitar seu nome",
+    "audio" : "ÁUDIO" 
 }

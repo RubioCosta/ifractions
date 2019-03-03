@@ -21,5 +21,6 @@
     "ready" : "READY",
     "welcome" : "Welcome",
     "error_msg" :  "You should select a smaller portion than it's full size",
-    "empty_name" : "You forgot to type your name"
+    "empty_name" : "You forgot to type your name",
+    "audio" : "AUDIO"
 }

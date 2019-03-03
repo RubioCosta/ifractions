@@ -21,5 +21,6 @@
     "ready" : "PRET",
     "welcome" : "Bienvenue",
     "error_msg" : "Vous devriez choisir une portion plus petite que sa taille totale",
-    "empty_name" : "Vous avez oublié de taper votre nom"
+    "empty_name" : "Vous avez oublié de taper votre nom",
+    "audio" : "AUDIO"
 }

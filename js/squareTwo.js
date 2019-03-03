@@ -1,8 +1,7 @@
 /*
     var menuSquareTwo = {
         create: function(){},
-        ---
-        showOption: function(){},
+        ---------------------------- end of phaser functions
         loadState: function(){},
         loadMap: function(){}
     };
@@ -10,8 +9,7 @@
     var mapSquareTwo = {
         create: function(){},
         update: function(){},
-        ---
-        showOption: function(){},
+        ---------------------------- end of phaser functions
         loadState: function(){},
         loadGame: function()
     };
@@ -27,7 +25,6 @@
             //setPlace: function(){},
         postScore: function(){},
         update: function(){},
-        showOption: function(){},
         loadState: function(){},
             //viewHelp: function(){},
             //checkOverlap: function(){}
@@ -38,7 +35,7 @@
     var endSquareTwo = {
         create: function(){},
         update: function(){},
-        ---
+        ---------------------------- end of phaser functions
         verPrincipal: function(){},
         verMenu: function(){}
     };
@@ -55,35 +52,49 @@ var menuSquareTwo = {
         
         // Creating sound variable
         var beepSound = game.add.audio('sound_beep');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
           
         // Menu options
-        
         //information label
-        m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
         
-        // Return to language button
-        m_world = game.add.sprite(10, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-        m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-        m_world.events.onInputOut.add(this.showOption, {message: ""});
-        
+        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+        m_info_right.anchor.setTo(1,0.02);
+
         // Return to menu button
-        m_list = game.add.sprite(60, 10, 'list'); 
+        m_list = game.add.sprite(10, 10, 'list'); 
         m_list.inputEnabled = true;
         m_list.input.useHandCursor = true;
         m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-        m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-        m_list.events.onInputOut.add(this.showOption, {message: ""});
+        m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+        m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+        // Return to diffculty
+        m_back = game.add.sprite(60, 10, 'back'); 
+        m_back.inputEnabled = true;
+        m_back.input.useHandCursor = true;
+        m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
+        m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+        m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
+        // Return to language button
+        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
+        m_world.inputEnabled = true;
+        m_world.input.useHandCursor = true;
+        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
+        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+        // change audio status button
+        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
+        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+        m_audio.inputEnabled = true;
+        m_audio.input.useHandCursor = true;
+        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
+        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
-        var title = game.add.text(860, 40, words.game_menu_title, style);
-        title.anchor.setTo(1, 0.5);
+        var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        title.anchor.setTo(0.5, 0.5);
         
         //Showing Games and Levels
         var maxHeight = 120;  //Max height of a stair
@@ -186,18 +197,18 @@ var menuSquareTwo = {
     
     //Navigation functions,
     
-    showOption: function(){
-        m_info.text = this.message;
-    },    
-    
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },  
         
     //MapLoading function
     loadMap: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         twoPosition = 0; //Map position
         twoMove = true; //Move no next point
         twoDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
@@ -207,7 +218,7 @@ var menuSquareTwo = {
         }else{
             game.state.start('unofinal');
         }
-    }
+    },
     
 };
 
@@ -219,38 +230,30 @@ var mapSquareTwo={
                 
         // Creating sound variable
         beepSound = game.add.audio('sound_beep');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 40, 'bgmap');
         
-        if(oneMenu){
-            // Menu options
-              //information label
-            m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-              // Return to language button
-            m_world = game.add.sprite(10, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-            m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-            m_world.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to menu button
-            m_list = game.add.sprite(60, 10, 'list'); 
+        // Menu options
+        //information label
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+
+        if(twoMenu){
+            // Return to menu button
+            m_list = game.add.sprite(10, 10, 'list'); 
             m_list.inputEnabled = true;
             m_list.input.useHandCursor = true;
             m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-            m_list.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to diffculty
-            m_back = game.add.sprite(110, 10, 'back'); 
+            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+            // Return to diffculty
+            m_back = game.add.sprite(60, 10, 'back'); 
             m_back.inputEnabled = true;
             m_back.input.useHandCursor = true;
             m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
-            m_back.events.onInputOver.add(this.showOption, {message: words.menu_back});
-            m_back.events.onInputOut.add(this.showOption, {message: ""});
+            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
         }
         
         // Styles for labels
@@ -265,7 +268,7 @@ var mapSquareTwo={
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(840, 10, percentText+'%', styleMenu);
-        game.add.text(670, 10, words.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(680, 10, 'pgbar');
         
          //Road
@@ -377,21 +380,20 @@ var mapSquareTwo={
                 twoPosition += 1; //Update position
             }
         }
-    },
-    //Navigation functions
-    
-    showOption: function(){
-        m_info.text = this.message;
-    },    
+    }, 
     
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },
         
     //MapLoading function
     loadGame: function(){
-        beepSound.play();
+        if(audioStatus){
+           beepSound.play();
+        }
         if(twoPosition<5){
             game.state.start('gameSTwo');
         }else{
@@ -401,14 +403,12 @@ var mapSquareTwo={
 };
 
 /****************************** GAME ****************************/
-
 var sizeA, sizeB, valueA, valueB;
 var clickA, clickB, animateA, animateB, result, animate, cDelay, eDelay;
 var blocksA, blocksB, auxblqA, auxblqB;
 var labelA, fractionA, separatorA, labelB, fractionB, separatorB;
 var kid, kidDirection, equals, counter, endCounter;
 var xA, yA, xB, yB, blockW, blockH;
-var okImg, errorImg;
 
 var gameSquareTwo = {
 
@@ -426,9 +426,6 @@ var gameSquareTwo = {
         beepSound = game.add.audio('sound_beep');
         okSound = game.add.audio('sound_ok');
         errorSound = game.add.audio('sound_error');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 0, 'bgimage');
@@ -474,9 +471,12 @@ var gameSquareTwo = {
         //generator
         console.log("----------");
         console.log("Diff " + twoDifficulty + ", ini " + ((twoDifficulty-1)*2+1) + ", end " + ((twoDifficulty-1)*2+3));
+        
         var rPoint = game.rnd.integerInRange((twoDifficulty-1)*2+1,(twoDifficulty-1)*2+3);
         sizeA = points[rPoint];
+        
         console.log("Rpoint " + rPoint + ", val " + sizeA);
+        
         sizeB =  this.getRndDivisor(sizeA);
         blockB = game.rnd.integerInRange(1, sizeB);
         blockA = (sizeA/sizeB) * blockB;
@@ -612,32 +612,44 @@ var gameSquareTwo = {
         fractionB.alpha = 0;
         separatorB.alpha = 0;
         
+        // Menu options
+        //information label
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
         
-          //information label
-        m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        
+        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+        m_info_right.anchor.setTo(1,0.02);
+
         if(twoMenu){
-              // Return to language button
-            m_world = game.add.sprite(10, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-            m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-            m_world.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to menu button
-            m_list = game.add.sprite(60, 10, 'list'); 
+            // Return to menu button
+            m_list = game.add.sprite(10, 10, 'list'); 
             m_list.inputEnabled = true;
             m_list.input.useHandCursor = true;
             m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-            m_list.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to diffculty
-            m_back = game.add.sprite(110, 10, 'back'); 
+            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+            // Return to diffculty
+            m_back = game.add.sprite(60, 10, 'back'); 
             m_back.inputEnabled = true;
             m_back.input.useHandCursor = true;
             m_back.events.onInputDown.add(this.loadState, {state: "menuSTwo", beep: beepSound});
-            m_back.events.onInputOver.add(this.showOption, {message: words.menu_back});
-            m_back.events.onInputOut.add(this.showOption, {message: ""});
+            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
+            // Return to language button
+            m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
+            m_world.inputEnabled = true;
+            m_world.input.useHandCursor = true;
+            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+            m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
+            m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+            // change audio status button
+            m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
+            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+            m_audio.inputEnabled = true;
+            m_audio.input.useHandCursor = true;
+            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+            m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
+            m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
         }
         
         //ok and error images
@@ -715,13 +727,17 @@ var gameSquareTwo = {
                 if((valueA/sizeA) == (valueB/sizeB)){
                     result = true;
                     twoMove = true;
-                    okSound.play();
+                    if(audioStatus){
+                        okSound.play();
+                    }
                     okImg.alpha = 1;
                 //fractions are not equivalent
                 }else{
                     result = false;
                     twoMove = false;
-                    errorSound.play();
+                    if(audioStatus){
+                        errorSound.play();
+                    }
                     kid.animations.stop();
                     errorImg.alpha = 1;
                 }
@@ -752,8 +768,13 @@ var gameSquareTwo = {
     overSquare: function(){
         if(!clickA && this.who=="A"){
             if(this.indice == sizeA-1){
-                errorTextA.setText(words.error_msg);
-                errorTextB.setText("");
+                if(yA==90){
+                    errorTextA.setText(lang.error_msg);
+                    errorTextB.setText("");
+                }else{
+                    errorTextA.setText("");
+                    errorTextB.setText(lang.error_msg);
+                }
             }else{    
                 errorTextA.setText("");
                 errorTextB.setText("");
@@ -772,8 +793,13 @@ var gameSquareTwo = {
 
         if(!clickB && this.who=="B"){
             if(this.indice == sizeB-1){
-                errorTextB.setText(words.error_msg);
-                errorTextA.setText("");
+                if(yA==90){
+                    errorTextA.setText("");
+                    errorTextB.setText(lang.error_msg);
+                }else{
+                    errorTextA.setText(lang.error_msg);
+                    errorTextB.setText("");
+                }
             }else{
                 errorTextA.setText("");
                 errorTextB.setText("");
@@ -818,7 +844,9 @@ var gameSquareTwo = {
                 }
             }
             labelA.alpha = 0;
-            beepSound.play();
+            if(audioStatus){
+                beepSound.play();
+            }
             clickA = true;
             valueA = this.indice+1;
             fractionA.x = xA+(valueA*(blockW/sizeA))+40;
@@ -837,7 +865,9 @@ var gameSquareTwo = {
                 }
             }
             labelB.alpha = 0;
-            beepSound.play();
+            if(audioStatus){
+                beepSound.play();
+            }
             clickB = true;
             valueB = this.indice+1;
             fractionB.x = xB+(valueB*(blockW/sizeB))+40;
@@ -873,18 +903,18 @@ var gameSquareTwo = {
 
     //Navigation functions,
     
-    showOption: function(){
-        m_info.text = this.message;
-    },    
-    
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },
     
     //MapLoading function
     loadGame: function(){
-        beepSound.play();
+        if(audioStatus){
+            beepSound.play();
+        }
         if(onePosition<5){
             game.state.start('gameSOne');
         }else{
@@ -903,7 +933,7 @@ var gameSquareTwo = {
         }
         var x = game.rnd.integerInRange(0,p-1);
         return div[x];
-    }
+    },
     
 };
 
@@ -917,9 +947,6 @@ var endSquareTwo = {
         beepSound = game.add.audio('sound_beep');
         okSound = game.add.audio('sound_ok');
         errorSound = game.add.audio('sound_error');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 0, 'bgimage');
@@ -945,7 +972,7 @@ var endSquareTwo = {
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(660, 10, words.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(660, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(670, 10, 'pgbar');
         
         //School and trees

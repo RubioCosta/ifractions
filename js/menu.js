@@ -1,8 +1,6 @@
 
 var menu1, menu2, menu3, menu4;
-var m_info, m_world, m_menu, m_back, m_help;
-var beepSound;
-var words;
+var m_info, m_world, m_menu, m_back, m_help, m_audio;
 var lbl_game;
 
 /*
@@ -12,7 +10,6 @@ var lbl_game;
         ---------------------------- end of phaser functions
         showTitle: function(){},
         clearTitle: function(){},
-        showOption: function(){},
         loadState: function(){}
     }
 */
@@ -26,11 +23,11 @@ var menuState = {
         beepSound = game.add.audio('sound_beep');
         
         // Reading dictionary
-        words = game.cache.getJSON('dictionary');
+        lang = game.cache.getJSON('dictionary');
         
         // Title
         var style = { font: "32px Arial", fill: "#00804d", align: "center" };
-        var title = game.add.text(this.game.world.centerX, 80, words.menu_title, style);
+        var title = game.add.text(this.game.world.centerX, 80, lang.menu_title, style);
         title.anchor.setTo(0.5,0.5);
         
         // Subtitle : game mode 
@@ -38,20 +35,30 @@ var menuState = {
         lbl_game = game.add.text(this.game.world.centerX, 110, "", style_game);
         lbl_game.anchor.setTo(0.5,0.5);
         
-        var player_info = game.add.text(this.game.world.centerX, 40, words.welcome + ", " + username + "!", { font: "20px Arial", fill: "#330000", align: "center" });        
+        var player_info = game.add.text(this.game.world.centerX, 40, lang.welcome + ", " + username + "!", { font: "20px Arial", fill: "#330000", align: "center" });        
         player_info.anchor.setTo(0.5,0.5);
 
         // Menu options
 
-         // button : return to select button menu
-        m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-        m_world = game.add.sprite(10, 10, 'world'); 
+        //information label
+        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+        m_info_right.anchor.setTo(1,0.02);
+        // Return to language button
+        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
         m_world.inputEnabled = true;
         m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-        m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-        m_world.events.onInputOut.add(this.showOption, {message: ""});
-                
+        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
+        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+              
+        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
+        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+        m_audio.inputEnabled = true;
+        m_audio.input.useHandCursor = true;
+        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
+        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+
         //game buttons 
 
         // loading button sprites
@@ -140,8 +147,10 @@ var menuState = {
     
     //calls the selected game menu screen
     loadGame: function(){
-        
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
+
         if( (this.num==1 || this.num==2) && this.shape=="Circle"){
             oneShape = this.shape;
             oneLabel = this.label;
@@ -190,9 +199,9 @@ var menuState = {
         }
         
         if(this.shape=="Circle"){
-            title += words.circle_name;
+            title += lang.circle_name;
         }else if(this.shape=="Square"){
-            title += words.square_name;
+            title += lang.square_name;
         }
         
         if(type!=""){
@@ -202,9 +211,9 @@ var menuState = {
         
         if(this.label){
                      //-    sem/com                  legendas
-            title += " - " + words.with_name + " " + words.label_name;
+            title += " - " + lang.with_name + " " + lang.label_name;
         }else{
-            title += " - " + words.without_name + " " + words.label_name;
+            title += " - " + lang.without_name + " " + lang.label_name;
         }
         
         lbl_game.text = title;
@@ -214,14 +223,11 @@ var menuState = {
         lbl_game.text = "";
     },
     
-    showOption: function(){
-        m_info.text = this.message;
-    },    
-    
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
-    }
-    
-};
+    },
 
+};

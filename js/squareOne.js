@@ -2,7 +2,7 @@
 /*
     var menuSquareOne = {
         create: function(){},
-        showOption: function(){},
+        ---------------------------- end of phaser functions
         loadState: function(){},
         loadMap: function(){}
     };
@@ -10,7 +10,7 @@
     var mapSquareOne = {
         create: function(){},
         update: function(){},
-        showOption: function(){},
+        ---------------------------- end of phaser functions
         loadState: function(){},
         loadGame: function()
     };
@@ -26,7 +26,6 @@
             //setPlace: function(){},
         postScore: function(){},
         update: function(){},
-        showOption: function(){},
         viewHelp: function(){},
             //checkOverlap: function(){}
             //getRndDivisor: function(){}
@@ -35,6 +34,7 @@
     var endSquareOne = {
         create: function(){},
         update: function(){},
+        ---------------------------- end of phaser functions
         verPrincipal: function(){},
         verMenu: function(){}
     };
@@ -46,36 +46,54 @@
 var stairsRight, stairsLeft;
 
 var menuSquareOne = {
+	
     create: function() {
         
         // Creating sound variable
         var beepSound = game.add.audio('sound_beep');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
           
         // Menu options
-          //information label
-        m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-          // Return to language button
-        m_world = game.add.sprite(10, 10, 'world'); 
-        m_world.inputEnabled = true;
-        m_world.input.useHandCursor = true;
-        m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-        m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-        m_world.events.onInputOut.add(this.showOption, {message: ""});
-          // Return to menu button
-        m_list = game.add.sprite(60, 10, 'list'); 
+        //information label
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        
+        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+        m_info_right.anchor.setTo(1,0.02);
+
+        // Return to menu button
+        m_list = game.add.sprite(10, 10, 'list'); 
         m_list.inputEnabled = true;
         m_list.input.useHandCursor = true;
         m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-        m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-        m_list.events.onInputOut.add(this.showOption, {message: ""});
+        m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+        m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+        // Return to diffculty
+        m_back = game.add.sprite(60, 10, 'back'); 
+        m_back.inputEnabled = true;
+        m_back.input.useHandCursor = true;
+        m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
+        m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+        m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
+        // Return to language button
+        m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
+        m_world.inputEnabled = true;
+        m_world.input.useHandCursor = true;
+        m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+        m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
+        m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+        // change audio status button
+        m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
+        audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+        m_audio.inputEnabled = true;
+        m_audio.input.useHandCursor = true;
+        m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+        m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
+        m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
-        var title = game.add.text(860, 40, words.game_menu_title, style);
-        title.anchor.setTo(1, 0.5);
+        var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        title.anchor.setTo(0.5, 0.5);
         
         //Showing Games and Levels
         var maxHeight = 120; //Max height of a stair
@@ -167,18 +185,18 @@ var menuSquareOne = {
     
     //Navigation functions,
     
-    showOption: function(){
-        m_info.text = this.message;
-    },    
-    
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },
         
     //MapLoading function
     loadMap: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         onePosition = 0; //Map position
         oneMove = true; //Move no next point
         oneDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
@@ -195,42 +213,35 @@ var menuSquareOne = {
 /****************************** MAP ****************************/
 
 var mapSquareOne = {
+
     create: function() {
                 
         // Creating sound variable
         beepSound = game.add.audio('sound_beep');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 40, 'bgmap');
         
+        // Menu options
+        //information label
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+
         if(oneMenu){
-            // Menu options
-              //information label
-            m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-              // Return to language button
-            m_world = game.add.sprite(10, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-            m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-            m_world.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to menu button
-            m_list = game.add.sprite(60, 10, 'list'); 
+            // Return to menu button
+            m_list = game.add.sprite(10, 10, 'list'); 
             m_list.inputEnabled = true;
             m_list.input.useHandCursor = true;
             m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-            m_list.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to diffculty
-            m_back = game.add.sprite(110, 10, 'back'); 
+            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+            // Return to diffculty
+            m_back = game.add.sprite(60, 10, 'back'); 
             m_back.inputEnabled = true;
             m_back.input.useHandCursor = true;
             m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
-            m_back.events.onInputOver.add(this.showOption, {message: words.menu_back});
-            m_back.events.onInputOut.add(this.showOption, {message: ""});
+            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
         }
         
         // Styles for labels
@@ -245,7 +256,7 @@ var mapSquareOne = {
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(840, 10, percentText+'%', styleMenu);
-        game.add.text(670, 10, words.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(680, 10, 'pgbar');
         
          //Road
@@ -360,39 +371,43 @@ var mapSquareOne = {
         }
     },
     
-    //Navigation functions,
-    
-    showOption: function(){
-        m_info.text = this.message;
-    },    
+    //Navigation functions,  
     
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },
         
     //MapLoading function
     loadGame: function(){
-        beepSound.play();
+        if(audioStatus){
+            beepSound.play();
+        }
         if(onePosition<5){
             game.state.start('gameSOne');
         }else{
             game.state.start('endSOne');
         }
     }
+
 };
 
 /****************************** GAME ****************************/
-
-var clicked, hideLabels, animate, checkCollide, result, move, moveCounter, moveEnd, hasFigure;
-var startX, tractor, arrow;
-var maxBlocks, blocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator;
-var blockWidth, endPosition, blockIndex;
-var floorBlocks, floorIndex, floorCount, floorClicked;
-var arrowPlace, fractionClicked, fractionIndex;
-var okImg, errorImg;
-var curFloor;
+var startX;
+var clicked, hideLabels, animate, checkCollide, result, hasFigure;
 var detail;
+var endPosition;
+var fractionClicked, fractionIndex;
+//Balloon and blocks control
+var blocks, maxBlocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator;
+
+var blockWidth, blockIndex;
+var floorBlocks, floorIndex, floorCount, floorClicked, curFloor;
+var move, moveCounter, moveEnd;
+var tractor, arrow;
+var arrowPlace;
 
 var gameSquareOne = {
 
@@ -409,9 +424,6 @@ var gameSquareOne = {
         beepSound = game.add.audio('sound_beep');
         okSound = game.add.audio('sound_ok');
         errorSound = game.add.audio('sound_error');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 0, 'bgimage');
@@ -659,41 +671,54 @@ var gameSquareOne = {
             game.add.text(posX, 560, i , stylePlace).anchor.setTo(0.5, 0.5); 
         }
         
+        // Menu options
+        //information label
+        m_info_left = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        
+        m_info_right = game.add.text(game.world.width - 10, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+        m_info_right.anchor.setTo(1,0.02);
+
         if(oneMenu){
-            // Menu options
-              //information label
-            m_info = game.add.text(14, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
-              // Return to language button
-            m_world = game.add.sprite(10, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "boot", beep: beepSound});
-            m_world.events.onInputOver.add(this.showOption, {message: words.menu_world});
-            m_world.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to menu button
-            m_list = game.add.sprite(60, 10, 'list'); 
+            // Return to menu button
+            m_list = game.add.sprite(10, 10, 'list'); 
             m_list.inputEnabled = true;
             m_list.input.useHandCursor = true;
             m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(this.showOption, {message: words.menu_list});
-            m_list.events.onInputOut.add(this.showOption, {message: ""});
-              // Return to diffculty
-            m_back = game.add.sprite(110, 10, 'back'); 
+            m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list});
+            m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+            // Return to diffculty
+            m_back = game.add.sprite(60, 10, 'back'); 
             m_back.inputEnabled = true;
             m_back.input.useHandCursor = true;
             m_back.events.onInputDown.add(this.loadState, {state: "menuSOne", beep: beepSound});
-            m_back.events.onInputOver.add(this.showOption, {message: words.menu_back});
-            m_back.events.onInputOut.add(this.showOption, {message: ""});
+            m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back});
+            m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+
+            // Return to language button
+            m_world = game.add.sprite(game.world.width - 120, 10, 'world'); 
+            m_world.inputEnabled = true;
+            m_world.input.useHandCursor = true;
+            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+            m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world });
+            m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" });
+            // change audio status button
+            m_audio = game.add.sprite(game.world.width - 60, 10, 'audio');
+            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
+            m_audio.inputEnabled = true;
+            m_audio.input.useHandCursor = true;
+            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
+            m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio });
+            m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" });
         }
          // Help button
-        /*
-        m_help = game.add.sprite(160, 10, 'help');
+        
+        m_help = game.add.sprite(110, 10, 'help');
         m_help.inputEnabled = true;
         m_help.input.useHandCursor = true;
         m_help.events.onInputDown.add(this.viewHelp, {beep: this.beepSound});
-        m_help.events.onInputOver.add(this.showOption, {message: words.menu_help});
-        m_help.events.onInputOut.add(this.showOption, {message: ""});
-        */
+        m_help.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_help});
+        m_help.events.onInputOut.add(function(){ this.m_info_left.text = ""});
+        
         //ok and error images
         okImg = game.add.image(game.world.centerX, game.world.centerY, 'h_ok');
         okImg.anchor.setTo(0.5);
@@ -810,10 +835,14 @@ var gameSquareOne = {
             if(moveCounter==0){
                 if(result){
                     tractor.animations.play('right', 6, true);
-                    okSound.play();
+                    if(audioStatus){
+                        okSound.play();
+                    }
                     okImg.alpha = 1;
                 }else{
-                    errorSound.play();
+                    if(audioStatus){
+                        errorSound.play();
+                    }
                     errorImg.alpha = 1;
                 }
             }
@@ -893,8 +922,9 @@ var gameSquareOne = {
                 arrow.alpha = 1;
                 clicked = true;
                 animate = true;
-                beepSound.play();
-                
+                if(audioStatus){
+                    beepSound.play();
+                }            
                 tractor.animations.play('right', 5, true);
                 
                 if(oneLabel){ //Hiding labels
@@ -934,7 +964,9 @@ var gameSquareOne = {
                 arrow.alpha = 1;
                 clicked = true;
                 animate = true;
-                beepSound.play();
+                if(audioStatus){
+                    beepSound.play();
+                }
                 tractor.animations.play('right', 5, true);
 
                 if(oneLabel){ //Hiding labels
@@ -971,13 +1003,11 @@ var gameSquareOne = {
     },       
     
     //Navigation functions,
-    
-    showOption: function(){
-        m_info.text = this.message;
-    },    
-    
+
     loadState: function(){
-        this.beep.play();
+        if(audioStatus){
+            this.beep.play();
+        }
         game.state.start(this.state);
     },
         
@@ -999,15 +1029,13 @@ var gameSquareOne = {
 /****************************** END ****************************/
 
 var endSquareOne = {
+
     create: function() {  
         
         // Creating sound variable
         this.beepSound = game.add.audio('sound_beep');
         this.okSound = game.add.audio('sound_ok');
         this.errorSound = game.add.audio('sound_error');
-        
-        // Reading dictionary
-        var words = game.cache.getJSON('dictionary');
 
         // Background
         game.add.image(0, 0, 'bgimage');
@@ -1033,7 +1061,7 @@ var endSquareOne = {
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(830, 10, '100%', styleMenu);
-        game.add.text(670, 10, words.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(680, 10, 'pgbar');
         
         //Farm and trees
@@ -1071,5 +1099,6 @@ var endSquareOne = {
         if(oneMenu){
             game.state.start('menu');
         }
-    }        
+    }     
+
 };
