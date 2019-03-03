@@ -39,38 +39,46 @@ var langState = {
         //pt_BR
         var title1 = game.add.text(this.game.world.centerX - 220, this.game.world.centerY - 100, 'FRAÇÕES  ', style);
         title1.anchor.setTo(1, 0.5);
-        var flag1 = game.add.sprite(this.game.world.centerX - 220, this.game.world.centerY - 100, 'flag_BR');       
-        flag1.anchor.setTo(0, 0.5);
+        var flag1 = game.add.sprite(this.game.world.centerX - 120, this.game.world.centerY - 100, 'flag_BR');       
+        flag1.anchor.setTo(0.5, 0.5);
         flag1.inputEnabled = true;
         flag1.input.useHandCursor = true;
         flag1.events.onInputDown.add(this.setLang,{lang:'pt_BR'});
+        flag1.events.onInputOver.add(function(){ flag1.scale.setTo(1.05) });
+        flag1.events.onInputOut.add(function(){ flag1.scale.setTo(1) });
 
         //es_PE
         var title2 = game.add.text(this.game.world.centerX + 200, this.game.world.centerY - 100, 'FRACCIONES  ', style);
         title2.anchor.setTo(1, 0.5);
-        var flag2 = game.add.sprite(this.game.world.centerX + 200, this.game.world.centerY - 100, 'flag_PE');       
-        flag2.anchor.setTo(0, 0.5);
+        var flag2 = game.add.sprite(this.game.world.centerX + 300, this.game.world.centerY - 100, 'flag_PE');       
+        flag2.anchor.setTo(0.5, 0.5);
         flag2.inputEnabled = true;
         flag2.input.useHandCursor = true;
         flag2.events.onInputDown.add(this.setLang,{lang:'es_PE'});
+        flag2.events.onInputOver.add(function(){ flag2.scale.setTo(1.05) });
+        flag2.events.onInputOut.add(function(){ flag2.scale.setTo(1) });
 
         //en_US
         var title3 = game.add.text(this.game.world.centerX - 220, this.game.world.centerY + 100, 'FRACTIONS  ', style);
         title3.anchor.setTo(1, 0.5);
-        var flag3 = game.add.sprite(this.game.world.centerX - 220, this.game.world.centerY + 100, 'flag_US');       
-        flag3.anchor.setTo(0, 0.5);
+        var flag3 = game.add.sprite(this.game.world.centerX - 120, this.game.world.centerY + 100, 'flag_US');       
+        flag3.anchor.setTo(0.5, 0.5);
         flag3.inputEnabled = true;
         flag3.input.useHandCursor = true;
         flag3.events.onInputDown.add(this.setLang,{lang:'en_US'});
+        flag3.events.onInputOver.add(function(){ flag3.scale.setTo(1.05) });
+        flag3.events.onInputOut.add(function(){ flag3.scale.setTo(1) });
 
         //fr_FR
         var title4 = game.add.text(this.game.world.centerX + 200, this.game.world.centerY + 100, 'FRACTIONS  ', style);
         title4.anchor.setTo(1, 0.5);
-        var flag4 = game.add.sprite(this.game.world.centerX + 200, this.game.world.centerY + 100, 'flag_FR');       
-        flag4.anchor.setTo(0, 0.5);
+        var flag4 = game.add.sprite(this.game.world.centerX + 300, this.game.world.centerY + 100, 'flag_FR');       
+        flag4.anchor.setTo(0.5, 0.5);
         flag4.inputEnabled = true;
         flag4.input.useHandCursor = true;
         flag4.events.onInputDown.add(this.setLang,{lang:'fr_FR'});
+        flag4.events.onInputOver.add(function(){ flag4.scale.setTo(1.05) });
+        flag4.events.onInputOut.add(function(){ flag4.scale.setTo(1) });
         
     },
     
@@ -139,6 +147,8 @@ var nameState = {
         btn.inputEnabled = true;
         btn.input.useHandCursor = true;
         btn.events.onInputDown.add(this.nameIsEmpty, null);
+        btn.events.onInputOver.add(function(){ btn.alpha=0.4 });
+        btn.events.onInputOut.add(function(){ btn.alpha=0.5 });
         
         var ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
         ready.anchor.setTo(0.5);

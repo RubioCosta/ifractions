@@ -60,64 +60,64 @@ var menuState = {
         menu1.inputEnabled = true;
         menu1.input.useHandCursor = true;
         menu1.events.onInputDown.add(this.loadGame,{num:1, beep: beepSound, shape : "Circle", label : true});
-        menu1.events.onInputOver.add(this.showTitle,{num:1, beep: beepSound, shape : "Circle", label : true});
-        menu1.events.onInputOut.add(this.clearTitle);
+        menu1.events.onInputOver.add(this.showTitle,{num:1, beep: beepSound, shape : "Circle", label : true, menu: menu1});
+        menu1.events.onInputOut.add(this.clearTitle, {menu: menu1});
         
         menu2.anchor.setTo(0.5, 0.5);
         menu2.inputEnabled = true;
         menu2.input.useHandCursor = true;
         menu2.events.onInputDown.add(this.loadGame,{num:2, beep: beepSound, shape : "Circle", label : false});
-        menu2.events.onInputOver.add(this.showTitle,{num:2, beep: beepSound, shape : "Circle", label : false});
-        menu2.events.onInputOut.add(this.clearTitle);
+        menu2.events.onInputOver.add(this.showTitle,{num:2, beep: beepSound, shape : "Circle", label : false, menu: menu2});
+        menu2.events.onInputOut.add(this.clearTitle, {menu: menu2});
         
         menu3.anchor.setTo(0.5, 0.5);
         menu3.inputEnabled = true;
         menu3.input.useHandCursor = true;
         menu3.events.onInputDown.add(this.loadGame,{num:3, beep: beepSound, shape : "Circle", label : true});
-        menu3.events.onInputOver.add(this.showTitle,{num:3, beep: beepSound, shape : "Circle", label : true});
-        menu3.events.onInputOut.add(this.clearTitle);
+        menu3.events.onInputOver.add(this.showTitle,{num:3, beep: beepSound, shape : "Circle", label : true, menu: menu3});
+        menu3.events.onInputOut.add(this.clearTitle, {menu: menu3});
         
         menu4.anchor.setTo(0.5, 0.5);
         menu4.inputEnabled = true;
         menu4.input.useHandCursor = true;
         menu4.events.onInputDown.add(this.loadGame,{num:4, beep: beepSound, shape : "Circle", label : false});
-        menu4.events.onInputOver.add(this.showTitle,{num:4, beep: beepSound, shape : "Circle", label : false});
-        menu4.events.onInputOut.add(this.clearTitle);
+        menu4.events.onInputOver.add(this.showTitle,{num:4, beep: beepSound, shape : "Circle", label : false, menu: menu4});
+        menu4.events.onInputOut.add(this.clearTitle, {menu: menu4});
         
         menu5.anchor.setTo(0.5, 0.5);
         menu5.inputEnabled = true;
         menu5.input.useHandCursor = true;
         menu5.events.onInputDown.add(this.loadGame,{num:1, beep: beepSound, shape : "Square", label : true});
-        menu5.events.onInputOver.add(this.showTitle,{num:1, beep: beepSound, shape : "Square", label : true});
-        menu5.events.onInputOut.add(this.clearTitle);
+        menu5.events.onInputOver.add(this.showTitle,{num:1, beep: beepSound, shape : "Square", label : true, menu: menu5});
+        menu5.events.onInputOut.add(this.clearTitle, {menu: menu5});
         
         menu6.anchor.setTo(0.5, 0.5);
         menu6.inputEnabled = true;
         menu6.input.useHandCursor = true;
         menu6.events.onInputDown.add(this.loadGame,{num:2, beep: beepSound, shape : "Square", label : false});
-        menu6.events.onInputOver.add(this.showTitle,{num:2, beep: beepSound, shape : "Square", label : false});
-        menu6.events.onInputOut.add(this.clearTitle);
+        menu6.events.onInputOver.add(this.showTitle,{num:2, beep: beepSound, shape : "Square", label : false, menu: menu6});
+        menu6.events.onInputOut.add(this.clearTitle, {menu: menu6});
         
         menu7.anchor.setTo(0.5, 0.5);
         menu7.inputEnabled = true;
         menu7.input.useHandCursor = true;
         menu7.events.onInputDown.add(this.loadGame,{num:3, beep: beepSound, shape : "Square", label : true});
-        menu7.events.onInputOver.add(this.showTitle,{num:3, beep: beepSound, shape : "Square", label : true});
-        menu7.events.onInputOut.add(this.clearTitle);
+        menu7.events.onInputOver.add(this.showTitle,{num:3, beep: beepSound, shape : "Square", label : true, menu: menu7});
+        menu7.events.onInputOut.add(this.clearTitle, {menu: menu7});
         
         menu8.anchor.setTo(0.5, 0.5);
         menu8.inputEnabled = true;
         menu8.input.useHandCursor = true;
         menu8.events.onInputDown.add(this.loadGame,{num:4, beep: beepSound, shape : "Square", label : false});
-        menu8.events.onInputOver.add(this.showTitle,{num:4, beep: beepSound, shape : "Square", label : false});
-        menu8.events.onInputOut.add(this.clearTitle);
+        menu8.events.onInputOver.add(this.showTitle,{num:4, beep: beepSound, shape : "Square", label : false, menu: menu8});
+        menu8.events.onInputOut.add(this.clearTitle, {menu: menu8});
         
         menu9.anchor.setTo(0.5, 0.5);
         menu9.inputEnabled = true;
         menu9.input.useHandCursor = true;
         menu9.events.onInputDown.add(this.loadGame,{num:5, beep: beepSound, shape : "Square", label : false});
-        menu9.events.onInputOver.add(this.showTitle,{num:5, beep: beepSound, shape : "Square", label : false});
-        menu9.events.onInputOut.add(this.clearTitle);
+        menu9.events.onInputOver.add(this.showTitle,{num:5, beep: beepSound, shape : "Square", label : false, menu: menu9});
+        menu9.events.onInputOut.add(this.clearTitle, {menu: menu9});
 
         // Floor
         for(var i=0;i<9;i++){
@@ -201,10 +201,16 @@ var menuState = {
         
         lbl_game.text = title;
 
+        this.menu.scale.setTo(1.05);
+
     },
 
     clearTitle: function(){
+        
         lbl_game.text = "";
+        
+        this.menu.scale.setTo(1.0);
+
     }
     
 };

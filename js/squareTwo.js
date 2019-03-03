@@ -372,7 +372,7 @@ var gameSquareTwo = {
         buttonSettings["addButtons"](1,1,
                                     1,1,0,
                                     1,0,
-                                    "menuSOne", 0);
+                                    "menuSTwo", 0);
 
         //Clouds
         game.add.image(300, 100, 'cloud');
