@@ -238,12 +238,12 @@ var mapCircleOne = {
         var percentText = onePosition*25;
         var percentBlocks = onePosition;
         for(var p=0;p<percentBlocks;p++){
-            var block = game.add.image(680+p*37, 10, 'block');
+            var block = game.add.image(660+p*37, 10, 'block');
             block.scale.setTo(2.5, 1); //Scaling to double width
         }
-        game.add.text(840, 10, percentText+'%', styleMenu);
-        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(680, 10, 'pgbar');
+        game.add.text(820, 10, percentText+'%', styleMenu);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
          //Road
         this.points = {
@@ -888,12 +888,14 @@ var gameCircleOne = {
     postScore: function (){
         
         var abst = "numCircles:"+numBlocks+", valCircles: " + detail+" balloonX: " + basket.x + ", selIndex: " + fractionIndex;
-        
+
+        var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
+
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         var url = "assets/cn/save.php";
-        var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+oneShape+"&s_mode="+oneType;
-        vars += "&s_oper="+oneOperator+"&s_leve="+oneDifficulty+"&s_posi="+onePosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
+        var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + oneShape + "&s_mode=" + oneType;
+        vars += "&s_oper=" + oneOperator + "&s_leve=" + oneDifficulty + "&s_posi=" + onePosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -972,12 +974,12 @@ var endCircleOne = {
         
         // Progress bar
         for(var p=1;p<=5;p++){
-            var block = game.add.image(672+(p-1)*30, 10, 'block');
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(660, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(670, 10, 'pgbar');
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
         //School and trees
         game.add.sprite(600, 222 , 'school').scale.setTo(0.7);

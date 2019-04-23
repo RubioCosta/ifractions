@@ -83,12 +83,10 @@ var langState = {
     },
     
     setLang: function(){
-
         //set language
         lang = this.lang;
         //start resource loading
         game.state.start('load');
-
     }
 
 };
@@ -114,10 +112,10 @@ var loadState = {
         lang = game.cache.getJSON('dictionary');
         audio_lang_aux = lang.audio_on;
         if(!nameStatus){
-        	nameStatus = true;
-        	game.state.start('name');
+          nameStatus = true;
+          game.state.start('name');
         }else{
-        	game.state.start('menu');
+          game.state.start('menu');
         }
     
     }
@@ -170,10 +168,11 @@ var nameState = {
     nameIsEmpty: function() {
 
         if(document.getElementById("name_id").value!=""){
-            nameState["ready"]();
-            errorEmptyName.setText("");
+          nameState["ready"]();
+          errorEmptyName.setText("");
         }else{
-            errorEmptyName.setText(lang.empty_name);
+          errorEmptyName.setText(lang.empty_name);
+          //D alert('js/preMenu.js: errorEmptyName.setText=' + lang.empty_name);
         }
 
     },

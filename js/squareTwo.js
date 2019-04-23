@@ -3,7 +3,7 @@
         create: function(){},
         ---------------------------- end of phaser functions
         loadMap: function(){}
-    }  ;
+    };
 
     var mapSquareTwo = {
         create: function(){},
@@ -205,12 +205,12 @@ var mapSquareTwo={
         var percentText = onePosition*20;
         var percentBlocks = onePosition;
         for(var p=1;p<=percentBlocks;p++){
-            var block = game.add.image(680+(p-1)*30, 10, 'block');
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
-        game.add.text(840, 10, percentText+'%', styleMenu);
-        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(680, 10, 'pgbar');
+        game.add.text(820, 10, percentText+'%', styleMenu);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
          //Road
         this.points = {
@@ -256,7 +256,6 @@ var mapSquareTwo={
             sprite.scale.setTo(0.6);
             sprite.anchor.setTo(0.5, 0.95);
         }
-
         
         // places
         for (var p = 1; p < this.points.x.length -1; p++){
@@ -391,13 +390,16 @@ var gameSquareTwo = {
         }
              
         //kid
-        kid = game.add.sprite(100, 470, 'kid_walk');
+        kid = game.add.sprite(100, 470, 'kid_lost');
         kid.anchor.setTo(0.5, 0.7);
         kid.scale.setTo(0.8);
-        kid.animations.add('right',[0,1,2,3,4,5,6,7,8,9,10,11]);
-        kid.animations.add('left',[23,22,21,20,19,18,17,16,15,14,13,12]);
-        kidDirection = 'right';
-        kid.animations.play('right', 6, true);
+        //kid.animations.add('right',[0,1,2,3,4,5,6,7,8,9,10,11]);
+        //kid.animations.add('left',[23,22,21,20,19,18,17,16,15,14,13,12]);
+        kid.animations.add('front', [3,4,5])
+        kidDirection = 'front';
+        kidLeftLimit  = 100;
+        kidRightLimit = 800;
+        kid.animations.play('front', 6, true);
                 
         //Control variables
         sizeA = 0; //Size of first block
@@ -577,25 +579,32 @@ var gameSquareTwo = {
 
     },
     
-    update: function() {
-        
-        // kid walking cycle during the phase
-        if(!(clickA && clickB) && !animate){
-            if(kidDirection=='right'){
-                kid.x += 1;
-                if(kid.x>=800){
-                    kidDirection='left';
-                    kid.animations.play('left', 8, true);
-                }
-            }else{
-                kid.x -= 1;
-                if(kid.x<=100){
-                    kidDirection='right';
-                    kid.animations.play('right', 8, true);
-                }
-            }
+    update: function() 
+    {
+    	if (game.physics.arcade.distanceToPointer(kid, game.input.activePointer) > 20 )
+	    {	
+    		    		
+        	var xPos = game.input.mousePointer.x;
+        	
+        	/*if (xPos < kid.x + 10){
+        		kidDirection='right';
+        		kid.animations.play('right', 8, true);
+        	}else if (xPos > kid.x){
+        		kidDirection='right';
+        		kid.animations.play('right', 8, true);
+        	}*/
+        			
+        	//set limit to the arrow  
+        	if  (xPos < kidLeftLimit){
+        		xPos = kidLeftLimit;
+        	}
+        	if  (xPos > kidRightLimit){
+        		xPos = kidRightLimit;
+        	}
+            
+        	kid.x = xPos;
         }
-
+    	
         //If clicked A only, animate
         if(animateA){
             for(var i=0;i<valueA;i++){
@@ -635,6 +644,7 @@ var gameSquareTwo = {
                     if(audioStatus){
                         okSound.play();
                     }
+                    kid.animations.stop();
                     okImg.alpha = 1;
                 //fractions are not equivalent
                 }else{
@@ -656,9 +666,9 @@ var gameSquareTwo = {
         if(animate){
             counter++;
             if(result){
-                kid.x += 2;
-                kidDirection='right';
-                kid.animations.play('right', 8, true);
+//              kid.x += 2;
+//            	kidDirection='right';
+//				kid.animations.play('right', 8, true);
             }
             if(counter>endCounter){
                 game.state.start('mapSTwo');
@@ -791,12 +801,13 @@ var gameSquareTwo = {
     postScore: function (){
         
         var abst = "numBlocksA:"+sizeA+", valueA: " + valueA +", numBlocksB: " + sizeB + ", valueB: " + valueB;
-        
+
+        var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         var url = "assets/cn/save.php";
-        var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+twoShape+"&s_mode="+twoType;
-        vars += "&s_oper=Equal&s_leve="+twoDifficulty+"&s_posi="+twoPosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
+        var vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang_str + "&s_game=" + twoShape + "&s_mode=" + twoType;
+        vars += "&s_oper=Equal&s_leve=" + twoDifficulty + "&s_posi=" + twoPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -863,12 +874,12 @@ var endSquareTwo = {
         
         // Progress bar
         for(var p=1;p<=5;p++){
-            var block = game.add.image(672+(p-1)*30, 10, 'block');
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(660, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(670, 10, 'pgbar');
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
         //School and trees
         game.add.sprite(600, 222 , 'school').scale.setTo(0.7);

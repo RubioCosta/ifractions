@@ -193,7 +193,7 @@ var menuState = {
         }
         
         if(this.label){
-                     //-    sem/com                  legendas
+          //-    sem/com                  legendas
             title += " - " + lang.with_name + " " + lang.label_name;
         }else{
             title += " - " + lang.without_name + " " + lang.label_name;

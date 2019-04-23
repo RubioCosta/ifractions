@@ -192,12 +192,12 @@ var mapSquareOne = {
         var percentText = onePosition*20;
         var percentBlocks = onePosition;
         for(var p=1;p<=percentBlocks;p++){
-            var block = game.add.image(680+(p-1)*30, 10, 'block');
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
-        game.add.text(840, 10, percentText+'%', styleMenu);
-        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(680, 10, 'pgbar');
+        game.add.text(820, 10, percentText+'%', styleMenu);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
          //Road
         this.points = {
@@ -632,8 +632,13 @@ var gameSquareOne = {
             if(!move){
                 if(oneType=='A'){
                     //Follow mouse
-                    if (game.physics.arcade.distanceToPointer(arrow, game.input.activePointer) > 8){
-                        var xPos = game.input.mousePointer.x;
+                    if (game.physics.arcade.distanceToPointer(arrow, game.input.activePointer) > 8 )
+				    {	
+                    	var xPos = game.input.mousePointer.x;
+			            //set left limit to the arrow  
+                    	if  (xPos < 250){
+                    		xPos = 250;
+                    	}
                         arrow.x = xPos;
                     }                    
                 }
@@ -874,20 +879,55 @@ var gameSquareOne = {
     },
 
     postScore: function (){
-        
+
+        var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
+	var aux;
+        // Get correct information about username and default language
+	// Variables 'username' and 'lang' is define on: js/menu.js
+	// Variable 'lang' has all the JSON content of 'assets/languages/pt_BR.json', 'lang.lang' defined in 'js/preMenu.js' (setLang())
+	// TODO: nao descobri esquema para pegar 'lang' (como 'pt_BR' ou 'en_US'), 'lang' esta' com o dicinario de lingua (definido em 'assets/languages/pt_BR.json').
+        if (name=='') name = username; //leo the correct is 'username'
+        // assets/languages/pt_BR.json
+
+        //DEBUG Testar 'lang'
+	/*
+        var contact = "";
+        if (typeof lang === 'object') {
+          //contact = JSON.parse(lang);
+          for (var i in lang) // will enumerate values of 'assets/languages/pt_BR.json'
+             contact += lang[i];
+          // Finaliza com os valores de 'assets/languages/pt_BR.json': 'CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
+          // SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO'
+          lang_str = contact; aux = 1;
+          }
+	else
+        // if (lang === 'undefined') lang_str = "pt_BR";
+        */
+
         var abst = "numBlocks:"+numBlocks+", valBlocks: " + detail+" blockIndex: " + blockIndex + ", floorIndex: " + floorIndex;
-        
+
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         var url = "assets/cn/save.php";
-        var vars = "s_ip="+hip+"&s_name="+name+"&s_lang="+lang+"&s_game="+oneShape+"&s_mode="+oneType;
-        vars += "&s_oper="+oneOperator+"&s_leve="+oneDifficulty+"&s_posi="+onePosition+"&s_resu="+result+"&s_time="+totalTime+"&s_deta="+abst;
-        
+        var vars = "s_ip="+hip+"&s_name=" + name+"&s_lang=" + lang_str + "&s_game=" + oneShape + "&s_mode=" + oneType;
+        vars += "&s_oper=" + oneOperator + "&s_leve=" + oneDifficulty + "&s_posi=" + onePosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
+
+        //D alert('/js/squareOne.js: url=' + url + '; aux=' + aux + ', lang_str=' + lang_str + ', lang=' + lang); //  + ', this.lang=" + this.lang
+        //D /js/squareOne.js: url=assets/cn/save.php; aux=1, lang_str=CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
+        //D SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO, lang=[object Object]
+
+        // Sobre nome do usuario:
+	// * js/squareOne.js: name
+	// * js/pt_BR.json:   welcome="Ola'", insert_name="DIGITE SEU NOME"
+	// * assets/cn/save.php : $play = $_REQUEST["s_name"];
+	// * js/preMenu.js : insert_name, game.add.text(...), username = document.getElementById("name_id").value;
+
+	// Pegar valor de PHP para JS: echo("<script language='javascript'>location.href='download.php?arquivo=$nome_arquivo&dir=$dir&id_exer=$id_exer'</script>");
+
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
             console.log(hr);
-
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
                 console.log(return_data);
@@ -947,12 +987,12 @@ var endSquareOne = {
         
         // Progress bar
         for(var p=1;p<=5;p++){
-            var block = game.add.image(680+(p-1)*30, 10, 'block');
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
-        game.add.text(830, 10, '100%', styleMenu);
-        game.add.text(670, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(680, 10, 'pgbar');
+        game.add.text(820, 10, '100%', styleMenu);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.image(660, 10, 'pgbar');
         
         //Farm and trees
         game.add.sprite(650, 260 , 'farm').scale.setTo(1.1);
