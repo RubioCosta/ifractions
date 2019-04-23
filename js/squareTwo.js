@@ -3,7 +3,7 @@
         create: function(){},
         ---------------------------- end of phaser functions
         loadMap: function(){}
-    };
+    }  ;
 
     var mapSquareTwo = {
         create: function(){},
