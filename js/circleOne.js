@@ -75,9 +75,14 @@ var menuCircleOne = {
             blueCircle.beginFill(0xefeff5);
             blueCircle.drawCircle(0, 0, 60);
             blueCircle.endFill();
-        var r_arrow = game.add.sprite(startSymbol, 195, 'h_arrow'); 
-            r_arrow.scale.setTo(0.7);
+        var r_arrow = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
+            r_arrow.scale.setTo(0.35);
             r_arrow.anchor.setTo(0.5,0.5);
+            r_arrow.alpha = 0.8;
+        var r_arrow2 = game.add.sprite(startSymbol, 195, 'kid_walk'); 
+            r_arrow2.scale.setTo(0.6);
+            r_arrow2.anchor.setTo(0.5,0.5);
+            r_arrow2.alpha = 0.8;
         
         stairsPlus = [];
         for(var i=1;i<=5;i++){
@@ -113,10 +118,17 @@ var menuCircleOne = {
             redCircle.beginFill(0xefeff5);
             redCircle.drawCircle(0, 0, 60);
             redCircle.endFill();
-        var l_arrow = game.add.sprite(startSymbol, 350, 'h_arrow');
-            l_arrow.scale.setTo(-0.7, 0.7);
+
+        var l_arrow2 = game.add.sprite(startSymbol, 350, 'h_arrow');
+            l_arrow2.scale.setTo(-0.35, 0.35);
+            l_arrow2.anchor.setTo(0.5,0.5);
+            l_arrow2.alpha = 0.8;
+        var l_arrow = game.add.sprite(startSymbol+40, 350, 'kid_walk');
+            l_arrow.scale.setTo(-0.6, 0.6);
             l_arrow.anchor.setTo(0.5,0.5);
-        
+            l_arrow.alpha = 0.8;
+
+
         var stairsMinus = [];
         for(var i=1;i<=5;i++){
             //stair
@@ -160,8 +172,9 @@ var menuCircleOne = {
             rCircle.endFill();
         
         var d_arrow = game.add.sprite(startSymbol, 500, 'h_double'); 
-            d_arrow.scale.setTo(0.7);
+            d_arrow.scale.setTo(0.5);
             d_arrow.anchor.setTo(0.5,0.5);
+            d_arrow.alpha = 0.8;
         
         var stairsMixed = [];
         for(var i=1;i<=5;i++){
@@ -900,16 +913,16 @@ var gameCircleOne = {
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
-            console.log(hr);
+            if(debugmode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
-                console.log(return_data);
+                if(debugmode) console.log(return_data);
             }
         }
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
-        console.log("processing...");
+        if(debugmode) console.log("processing...");
 
     },
             

@@ -1,6 +1,6 @@
 
 var errorEmptyName;
-
+var debugmode = false;
 /*
     var langState = {
         create: function(){},
@@ -181,7 +181,7 @@ var nameState = {
         
         // saves the typed name on username variable
         username = document.getElementById("name_id").value;
-        console.log("user is" + username);        
+        if(debugmode) console.log("user is" + username);        
 
         document.getElementById("text-field-div").style.visibility = "hidden";
 

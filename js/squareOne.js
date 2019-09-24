@@ -65,7 +65,7 @@ var menuSquareOne = {
         var stairHeight = 40; //height growth of a stair
         var stairWidth = 100; //Width of a stair
         var startStair = 320;
-        var startSymbol = 150;
+        var startSymbol = 180; 
         var startSquare = (startSymbol/2)+startStair+stairWidth*3;
         
          //First stairs, plus, 3 levels, blue square
@@ -75,11 +75,18 @@ var menuSquareOne = {
             blueSquare.beginFill(0xefeff5);
             blueSquare.drawRect(0, 0, 80, 40);
             blueSquare.endFill();
-        var bplus = game.add.sprite(startSymbol, 195, 'h_arrow');
-            bplus.frame = 0;
-            bplus.scale.setTo(0.7);
+        var bplus = game.add.sprite(startSymbol+30, 215, 'tractor_green');
+            //bplus.frame = 0;
+            bplus.scale.setTo(0.5);
+            bplus.alpha = 0.9;
             bplus.anchor.setTo(0.5,0.5);
         
+        var bplus2 = game.add.sprite(startSymbol+100, 215, 'h_arrow');
+            bplus2.scale.setTo(0.3);
+            bplus2.alpha = 0.9;
+            bplus2.anchor.setTo(0.5,0.5);
+        
+
         var stairsPlus = [];
         for(var i=1;i<=3;i++){
             //stair
@@ -114,12 +121,20 @@ var menuSquareOne = {
             redSquare.beginFill(0xefeff5);
             redSquare.drawRect(0, 0, 80, 40);
             redSquare.endFill();
-        var rminus = game.add.sprite(startSymbol, 350, 'h_arrow');
-            rminus.frame = 5;
-            rminus.scale.setTo(0.7);
-            rminus.scale.x *= -1;
+        var rminus = game.add.sprite(startSymbol+70, 370, 'tractor_red');
+            //rminus.frame = 5;
+            rminus.scale.setTo(0.5);
+            rminus.alpha = 0.9;
+            //rminus.scale.x *= -1;
             rminus.anchor.setTo(0.5,0.5);
         
+        var rminus2 = game.add.sprite(startSymbol, 370, 'h_arrow');
+            rminus2.scale.setTo(0.3);
+            rminus2.alpha = 0.9;
+            rminus2.scale.x *= -1;
+            rminus2.anchor.setTo(0.5,0.5);
+        
+
         var stairsMinus = [];
         for(var i=1;i<=3;i++){
             //stair
@@ -272,7 +287,7 @@ var mapSquareOne = {
         game.physics.arcade.enable(this.tractor);
         var walk = this.tractor.animations.add('walk',[0,1,2,3,4]);
         this.tractor.animations.play('walk', 5, true);
-        this.tractor.angle -= 10;
+        this.tractor.angle -= 25;
         
         // Delay to next level
         this.count = 0;
@@ -409,14 +424,17 @@ var gameSquareOne = {
             tractor.scale.x *= -1;
         }
         
-         //generator
+        //generator
         //Blocks and fractions
-        console.log("pos " +onePosition);
+        if(debugmode) console.log("pos " +onePosition);
+        
         maxBlocks = onePosition+4; //Maximum blocks
         if(oneType=='B' || oneOperator=='Mixed') maxBlocks = 10;
         blocks = game.add.group(); //Fraction arrays (apilled)
         numBlocks = game.rnd.integerInRange(onePosition+2, maxBlocks); //Number of blocks
-        console.log("num " + numBlocks+", min " + (onePosition+2) + ", max " + maxBlocks);
+        
+        if(debugmode) console.log("num " + numBlocks+", min " + (onePosition+2) + ", max " + maxBlocks);
+        
         curBlock = 0; //Actual index block
         blockDirection = []; //Directions right(plus), left (minus)
         blockDistance = []; //Displacement distance of the blocks
@@ -427,12 +445,14 @@ var gameSquareOne = {
         endPosition = startX; //Ending position, accumulative
         if(oneOperator=='Minus') endPosition -= blockWidth;
         else endPosition += blockWidth;
+        
         //Game A exclusive variables 
         floorBlocks = game.add.group(); //Selectable floor blocks
         floorIndex = -1; //Selected floor block
         floorCount = 8; //Number of floor blocks
         floorClicked = false; //If clicked portion of floor
         curFloor = -1;
+        
         //Game B exclusive variables
         arrowPlace = startX; //Fixed place for help arrow
         if(oneOperator=='Minus') arrowPlace  -= blockWidth;
@@ -441,6 +461,7 @@ var gameSquareOne = {
         fractionIndex = -1; //Index of clicked fraction (game B)
         
         hasFigure = false;
+
         for(var p=0;p<numBlocks;p++){
 
             var portion = game.rnd.integerInRange(1, oneDifficulty); //Portion of the square, according to difficulty
@@ -453,18 +474,20 @@ var gameSquareOne = {
             
             if(oneOperator=='Plus'){
                 direction = 'Right';    
-                lineColor = 0x31314e;
+                lineColor = 0x31314e; //plus block: "black'
             }else if(oneOperator=='Minus'){
                 direction = 'Left';
-                lineColor = 0xb30000;
+                lineColor = 0xb30000;//minus block : "red"
             }
             
+            //blocks close to tractor
             var block = game.add.graphics(startX, 460-p*blockHeight);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(2, lineColor);
                 block.beginFill(0xefeff5);
-            
+
             blockDirection[p] = direction;
+            
             if(portion==1){
                 block.drawRect(0, 0, blockWidth, blockHeight);
                 
@@ -481,6 +504,7 @@ var gameSquareOne = {
                 }
             }else{
                 if(portion==3) portion = 4;
+                
                 var distance = blockWidth/portion;
                 
                 block.drawRect(0, 0, distance, blockHeight);
@@ -554,12 +578,13 @@ var gameSquareOne = {
         floorCount = 8*oneDifficulty;
         
         var widFloor = blockWidth/oneDifficulty;
+
         if(oneDifficulty==3){
             floorCount = 8*4;
             widFloor = blockWidth/4;
         }
         
-        for(var i = 0; i<floorCount; i++){
+        for(var i = 0; i < floorCount; i++){
             var posX = startX;
             
             if(oneOperator=='Minus') posX -= (blockWidth + i*widFloor);
@@ -580,10 +605,12 @@ var gameSquareOne = {
                     }
                 }
             }
+
+            // blocks on the floor
             var block = game.add.graphics(posX, 500);
                 block.anchor.setTo(0.5, 0);
-                block.lineStyle(0.2, 0xffffff);
-                block.beginFill(0x000000);
+                block.lineStyle(0.9, 0xffffff);
+                block.beginFill(0xa8c0e6);
                 block.drawRect(0, 0, widFloor, blockHeight);
                 block.endFill();
             if(oneOperator=='Minus') block.scale.x *= -1;
@@ -771,6 +798,7 @@ var gameSquareOne = {
     overSquare: function(){
 
         if(!clicked){
+            //on level type A
             if(oneType=="A"){
                 for(var i=0;i<floorCount;i++){
                     if(i<=this.indice){
@@ -780,13 +808,13 @@ var gameSquareOne = {
                     }
                 }
                 floorIndex = this.indice;
+            //on level type B
             }else if(oneType=="B"){
-                
                 for(var i=0;i<numBlocks;i++){
                     if(i<=this.indice){
-                        blocks.children[i].alpha = 1;
-                    }else{
                         blocks.children[i].alpha = 0.5;
+                    }else{
+                        blocks.children[i].alpha = 0.2;
                     }
                 }
                 blockIndex = this.indice;
@@ -798,13 +826,15 @@ var gameSquareOne = {
     outSquare: function(){
 
         if(!clicked){
+            //on level type A
             if(oneType=="A"){
                 for(var i=0;i<floorCount;i++){
                     floorBlocks.children[i].alpha = 0.5;
                 }
                 floorIndex = -1;
+            //on level type B
             }else if(oneType=="B"){
-                for(var i=0;i<=this.indice;i++){
+                for(var i=0;i<numBlocks;i++){
                     blocks.children[i].alpha = 0.5;
                 }
                 blockIndex = -1;
@@ -817,6 +847,7 @@ var gameSquareOne = {
 
         if(!clicked && !move){
             
+            //on level type A
             if(oneType=='A'){
     
                 arrow.alpha = 1;
@@ -848,6 +879,8 @@ var gameSquareOne = {
                 }
                     
                 blockIndex = numBlocks - 1;
+
+            //on level type B
             }else if(oneType=='B'){ //Delete unselected blocks
 
                 var minusBlocks = 0;
@@ -861,7 +894,7 @@ var gameSquareOne = {
                 }
                 numBlocks -= minusBlocks; //Final reduced blocks
                 
-                arrow.alpha = 1;
+                arrow.alpha = 0;
                 clicked = true;
                 animate = true;
                 if(audioStatus){
@@ -881,7 +914,7 @@ var gameSquareOne = {
     postScore: function (){
 
         var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
-	var aux;
+        var aux;
         // Get correct information about username and default language
 	// Variables 'username' and 'lang' is define on: js/menu.js
 	// Variable 'lang' has all the JSON content of 'assets/languages/pt_BR.json', 'lang.lang' defined in 'js/preMenu.js' (setLang())
@@ -927,15 +960,15 @@ var gameSquareOne = {
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
-            console.log(hr);
+            if(debugmode) console.log(hr);
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
-                console.log(return_data);
+                if(debugmode) console.log(return_data);
             }
         }
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
-        console.log("processing...");
+        if(debugmode) console.log("processing...");
 
     },       
         
@@ -1028,7 +1061,6 @@ var endSquareOne = {
     },
     
     verMenu: function(){
-
         if(oneMenu){
             game.state.start('menu');
         }

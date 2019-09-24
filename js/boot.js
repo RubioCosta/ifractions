@@ -89,15 +89,15 @@
 	        game.load.image('road', imgsrc+'road.png');
 	        
 	        //game phases buttons list
-	        game.load.image('game1c', imgsrc+'game/one-c.png');
-	        game.load.image('game2c', imgsrc+'game/two-c.png');
-	        game.load.image('game3c', imgsrc+'game/three-c.png');
-	        game.load.image('game4c', imgsrc+'game/four-c.png');
-	        game.load.image('game1s', imgsrc+'game/one-s.png');
-	        game.load.image('game2s', imgsrc+'game/two-s.png');
-	        game.load.image('game3s', imgsrc+'game/three-s.png');
-	        game.load.image('game4s', imgsrc+'game/four-s.png');
-	        game.load.image('game5s', imgsrc+'game/five-s.png');
+	        game.load.image('game1s', imgsrc+'game/1-left-subs.png');
+	        game.load.image('game2s', imgsrc+'game/1-right-nosubs.png');
+	        game.load.image('game3s', imgsrc+'game/2-left-subs.png');
+	        game.load.image('game4s', imgsrc+'game/2-right-nosubs.png');
+	        game.load.image('game1c', imgsrc+'game/3-left-subs.png');
+	        game.load.image('game2c', imgsrc+'game/3-right-nosubs.png');
+	        game.load.image('game3c', imgsrc+'game/4-left-subs.png');
+	        game.load.image('game4c', imgsrc+'game/4-right-nosubs.png');
+	        game.load.image('game5s', imgsrc+'game/5.png');
 	        
 	        //header menu buttons
 	        game.load.image('back', imgsrc+'menu/back.png');
@@ -129,6 +129,10 @@
 	        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 26);
 	        game.load.spritesheet('kid_lost', imgsrc+'kid/lost.png', 72, 170, 6);
 	        game.load.spritesheet('tractor', imgsrc+'tractor/frame.png', 201, 144, 10);
+	        
+	        game.load.image('tractor_green', imgsrc+'tractor/frame-0.png');
+	        game.load.image('tractor_red', imgsrc+'tractor/frame-5.png');
+	        
 	        game.load.image('balloon', imgsrc+'airballoon_upper.png');
 	        game.load.image('balloon_basket', imgsrc+'airballoon_base.png');
 	        game.load.image('birch', imgsrc+'birch.png');

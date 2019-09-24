@@ -415,19 +415,19 @@ var gameSquareTwo = {
         animate = null; //Final animation sequence
         
         //generator
-        console.log("----------");
-        console.log("Diff " + twoDifficulty + ", ini " + ((twoDifficulty-1)*2+1) + ", end " + ((twoDifficulty-1)*2+3));
+        if(debugmode) console.log("----------");
+        if(debugmode) console.log("Diff " + twoDifficulty + ", ini " + ((twoDifficulty-1)*2+1) + ", end " + ((twoDifficulty-1)*2+3));
         
         var rPoint = game.rnd.integerInRange((twoDifficulty-1)*2+1,(twoDifficulty-1)*2+3);
         sizeA = points[rPoint];
         
-        console.log("Rpoint " + rPoint + ", val " + sizeA);
+        if(debugmode) console.log("Rpoint " + rPoint + ", val " + sizeA);
         
         sizeB =  this.getRndDivisor(sizeA);
         blockB = game.rnd.integerInRange(1, sizeB);
         blockA = (sizeA/sizeB) * blockB;
         
-        console.log("SA " + sizeA + ", SB " + sizeB + ", BA " + blockA + ", BB " + blockB );
+        if(debugmode) console.log("SA " + sizeA + ", SB " + sizeB + ", BA " + blockA + ", BB " + blockB );
         
         //Blocks and fractions group
         blocksA = game.add.group(); //Main blocks A
@@ -453,7 +453,7 @@ var gameSquareTwo = {
         var fillColorS = 0xe0ebeb;
         
         for(var i=0; i<sizeA; i++){
-            //console.log("Block A"+i+": x:"+(xA+i*widthA)+", y:"+yA);
+            //if(debugmode) console.log("Block A"+i+": x:"+(xA+i*widthA)+", y:"+yA);
                         
             var block = game.add.graphics(xA+i*widthA, yA);
                 block.anchor.setTo(0.5, 0.5);
@@ -812,16 +812,16 @@ var gameSquareTwo = {
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
-            console.log(hr);
+            if(debugmode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
-                console.log(return_data);
+                if(debugmode) console.log(return_data);
             }
         }
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
-        console.log("processing...");
+        if(debugmode) console.log("processing...");
 
     },
 
