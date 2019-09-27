@@ -13,7 +13,7 @@
 function remove_accents ($stripAccents) {
   /*
   $stripAccents = strtr($stripAccents,
-         'àáâãäçèéêëìíîïñòóôõöùúûüıÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜİ',
+         'Ã Ã¡Ã¢Ã£Ã¤Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã±Ã²Ã³Ã´ÃµÃ¶Ã¹ÃºÃ»Ã¼Ã½Ã¿Ã€ÃÃ‚ÃƒÃ„Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃÃÃ‘Ã’Ã“Ã”Ã•Ã–Ã™ÃšÃ›ÃœÃ',
          'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
   $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents);
   */
@@ -51,9 +51,9 @@ function ipMaquina () {
 
 
 $servername = "localhost";
-$username = "root"; // "jrustler_uscore";
-$password = "sawgeo"; //"12345";
-$dbname = "db_ifractions"; //"jrustler_fscore";
+$username = "root"; // put here the name of user root of MySQL
+$password = "put_paswd"; // put here the password of user root of MySQL
+$dbname = "put_name_of_base"; // put here the name of data base used to register iFraction use
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
