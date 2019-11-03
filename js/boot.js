@@ -1,14 +1,74 @@
+// OUTRAS VARIAVEIS GLOBAIS
 
-	var username; //user info
+				/*
+				--- DO PHASER
+				this.game.world.centerX...
+				
+				--- vem do phaser.js
+				this.points
+				this.count 
+
+				--- falta olhar ainda  
+				this.rocks
+				this.trees
+				this.r_types
+				this t_types
+				this.wait;
+				*/
+
+				var passedLevels = 0;
+
+				//map
+				var kid, tractor;
+
+				//square 1 + circle 1
+				var startX;
+				var clicked, hideLabels, animate, checkCollide, result, hasFigure;
+				var detail;
+				var endPosition;
+				var fractionClicked, fractionIndex;
+				var blocks, maxBlocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator; //blocks control
+
+				//square 1
+				var blockWidth, blockIndex;
+				var floorBlocks, floorIndex, floorCount, floorClicked, curFloor;
+				var move, moveCounter, moveEnd;
+				var arrow;
+				var arrowPlace;
+
+				//circle 1
+				var blockSize, blockAngle, blockTraceColor;
+				var fly, flyCounter, flyend; //flyvariables
+				var trace; //circle trace
+				var numPlus, endIndex;
+				var kid_walk, balloon, basket;
+				var balloonPlace;
+
+				//square 2
+				var sizeA, sizeB, valueA, valueB;
+				var clickA, clickB, animateA, animateB, result, animate, cDelay, eDelay;
+				var blocksA, blocksB, auxblqA, auxblqB;
+				var labelA, fractionA, separatorA, labelB, fractionB, separatorB;
+				var kidDirection, equals, counter, endCounter;
+				var xA, yA, xB, yB, blockW, blockH;
+
+
+
+
+	// INFO
+	var username; //player name
 	var lang; //language
 
+	// IMAGES
 	var beepSound, okSound, errorSound; //sounds
 	var okImg, errorImg;
-
     var timer, totalTime;
 
-    var audioStatus = true;
-    var nameStatus = false;
+    // variaveis globais
+    var audioStatus = true; // turns game audio on/off
+    var firstTime = true; //if player has just oppened the game
+    var debugMode = true; //turns console messages for developers on/off (changeable only by code)
+
 
     // Initialize the game
     var game = new Phaser.Game(
@@ -24,27 +84,28 @@
 
     // Game One : kid and truck
 
-    onePosition = 0; //Map position
-    oneMove = false; //Move to next position
-    oneDifficulty = 0; //From one to five 
-    oneOperator= ""; //Plus; Minus; Mixed
-    oneLabel= false; //Show block label
-    oneShape = ""; //Circle; square
-    oneType = ""; // A - Place distance; B - Select blocks
-    oneMenu = true;
+    levelPosition = 0; //Map position
+    levelMove = false; //Move to next position
+    levelDifficulty = 0; //From one to five 
+    levelOperator= ""; //Plus; Minus; Mixed
+    levelLabel= false; //Show block label
+    levelShape = ""; //Circle; square
+    levelType = ""; // A - Place distance; B - Select blocks
+    levelMenu = true;
 
     // Game Two : fractions association
 
-    twoPosition = 0; //Map position
-    twoMove = false; //Move to next position
-    twoDifficulty = 0; //From one to five 
-    twoOperator= ""; //Plus; Minus; Mixed
-    twoLabel= false; //Show block label
-    twoShape = ""; //Circle; square
-    twoType = ""; // A - Normal position; B - Random position
-    twoMenu= true;
+    //twoPosition = 0; //Map position
+    //twoMove = false; //Move to next position
+    //twoDifficulty = 0; //From one to five 
+    //levelOperator= ""; //Plus; Minus; Mixed
+    //twoLabel= false; //Show block label
+    //twoShape = ""; //Circle; square
+    //twoType = ""; // A - Normal position; B - Random position
+    //twoMenu= true;
 
     //adding game states (scenes)
+    
     game.state.add('language', langState); // boot.js
     game.state.add('load', loadState); // boot.js
     game.state.add('name', nameState); // boot.js
@@ -70,72 +131,73 @@
 
     	preload: function(){
     
+    		//directory auxiliar
 	        var imgsrc = 'assets/img/';
 
 	        //Progress bar image
 	        game.load.image('progressBar', imgsrc+'pgbar.png');
 
 	        //flags
-	        game.load.image('flag_BR', imgsrc+'flag/BRAZ.jpg');
-	        game.load.image('flag_PE', imgsrc+'flag/PERU.jpg');
-	        game.load.image('flag_US', imgsrc+'flag/UNST.jpg');
-	        game.load.image('flag_FR', imgsrc+'flag/FRAN.jpg');
+	        game.load.image('flag_BR', 	imgsrc+'flag/BRAZ.jpg');
+	        game.load.image('flag_PE', 	imgsrc+'flag/PERU.jpg');
+	        game.load.image('flag_US', 	imgsrc+'flag/UNST.jpg');
+	        game.load.image('flag_FR', 	imgsrc+'flag/FRAN.jpg');
 
 	        //scenario
-	        game.load.image('bgimage', imgsrc+'bg.jpg');
-	        game.load.image('bgmap', imgsrc+'bg_map.png');
-	        game.load.image('cloud', imgsrc+'cloud.png');
-	        game.load.image('floor', imgsrc+'floor.png');
-	        game.load.image('road', imgsrc+'road.png');
+	        game.load.image('bgimage', 	imgsrc+'bg.jpg');
+	        game.load.image('bgmap', 	imgsrc+'bg_map.png');
+	        game.load.image('cloud', 	imgsrc+'cloud.png');
+	        game.load.image('floor',	imgsrc+'floor.png');
+	        game.load.image('road', 	imgsrc+'road.png');
 	        
 	        //game phases buttons list
-	        game.load.image('game1s', imgsrc+'game/1-left-subs.png');
-	        game.load.image('game2s', imgsrc+'game/1-right-nosubs.png');
-	        game.load.image('game3s', imgsrc+'game/2-left-subs.png');
-	        game.load.image('game4s', imgsrc+'game/2-right-nosubs.png');
-	        game.load.image('game1c', imgsrc+'game/3-left-subs.png');
-	        game.load.image('game2c', imgsrc+'game/3-right-nosubs.png');
-	        game.load.image('game3c', imgsrc+'game/4-left-subs.png');
-	        game.load.image('game4c', imgsrc+'game/4-right-nosubs.png');
-	        game.load.image('game5s', imgsrc+'game/5.png');
+	        game.load.image('game1s', 	imgsrc+'game/1-left-subs.png');
+	        game.load.image('game2s', 	imgsrc+'game/1-right-nosubs.png');
+	        game.load.image('game3s', 	imgsrc+'game/2-left-subs.png');
+	        game.load.image('game4s', 	imgsrc+'game/2-right-nosubs.png');
+	        game.load.image('game1c', 	imgsrc+'game/3-left-subs.png');
+	        game.load.image('game2c', 	imgsrc+'game/3-right-nosubs.png');
+	        game.load.image('game3c', 	imgsrc+'game/4-left-subs.png');
+	        game.load.image('game4c', 	imgsrc+'game/4-right-nosubs.png');
+	        game.load.image('game5s', 	imgsrc+'game/5.png');
 	        
 	        //header menu buttons
-	        game.load.image('back', imgsrc+'menu/back.png');
-	        game.load.image('home', imgsrc+'menu/home.png');
-	        game.load.image('info', imgsrc+'menu/info.png');
-	        game.load.image('world', imgsrc+'menu/language.png');
-	        game.load.image('list', imgsrc+'menu/menu.png');
-	        game.load.image('help', imgsrc+'menu/help.png');
-	        game.load.image('pgbar', imgsrc+'menu/progressBar.png');
-	        game.load.image('block', imgsrc+'menu/block.png');
-			game.load.spritesheet('audio', imgsrc+'menu/audio_48x48.png',48,48,2);
+	        game.load.image('back', 	imgsrc+'menu/back.png');
+	        game.load.image('home', 	imgsrc+'menu/home.png');
+	        game.load.image('info', 	imgsrc+'menu/info.png');
+	        game.load.image('world', 	imgsrc+'menu/language.png');
+	        game.load.image('list', 	imgsrc+'menu/menu.png');
+	        game.load.image('help', 	imgsrc+'menu/help.png');
+	        game.load.image('pgbar', 	imgsrc+'menu/progressBar.png');
+	        game.load.image('block', 	imgsrc+'menu/block.png');
+			game.load.spritesheet('audio',	imgsrc+'menu/audio_48x48.png',48,48,2);
 
 	        //operators
-	        game.load.image('add', imgsrc+'operator/add.png');
+	        game.load.image('add',		imgsrc+'operator/add.png');
 	        game.load.image('subtract', imgsrc+'operator/subtract.png');
-	        game.load.image('separator', imgsrc+'operator/separator.png');
-	        game.load.image('equal', imgsrc+'operator/equal.png');
+	        game.load.image('separator',	imgsrc+'operator/separator.png');
+	        game.load.image('equal', 	imgsrc+'operator/equal.png');
 	        
 	        //feedback
-	        game.load.image('h_arrow', imgsrc+'help/arrow.png');
+	        game.load.image('h_arrow', 	imgsrc+'help/arrow.png');
 	        game.load.image('h_double', imgsrc+'help/double.png');
-	        game.load.image('h_error', imgsrc+'help/error.png');
-	        game.load.image('h_ok', imgsrc+'help/ok.png');
-	        game.load.image('down', imgsrc+'help/down.png');        
-	        game.load.image('pointer', imgsrc+'help/pointer.png');
+	        game.load.image('h_error', 	imgsrc+'help/error.png');
+	        game.load.image('h_ok', 	imgsrc+'help/ok.png');
+	        game.load.image('down', 	imgsrc+'help/down.png');        
+	        game.load.image('pointer', 	imgsrc+'help/pointer.png');
 	        
 	        // Loading assets based on language        
-	        game.load.spritesheet('kid_run', imgsrc+'kid/run.png', 82, 178, 12);
-	        game.load.spritesheet('kid_walk', imgsrc+'kid/walk.png', 78, 175, 26);
-	        game.load.spritesheet('kid_lost', imgsrc+'kid/lost.png', 72, 170, 6);
-	        game.load.spritesheet('tractor', imgsrc+'tractor/frame.png', 201, 144, 10);
+	        game.load.spritesheet('kid_run',	imgsrc+'kid/run.png', 82, 178, 12);
+	        game.load.spritesheet('kid_walk', 	imgsrc+'kid/walk.png', 78, 175, 26);
+	        game.load.spritesheet('kid_lost', 	imgsrc+'kid/lost.png', 72, 170, 6);
+	        game.load.spritesheet('tractor', 	imgsrc+'tractor/frame.png', 201, 144, 10);
 	        
-	        game.load.image('tractor_green', imgsrc+'tractor/frame-0.png');
-	        game.load.image('tractor_red', imgsrc+'tractor/frame-5.png');
+	        game.load.image('tractor_green',	imgsrc+'tractor/frame-0.png');
+	        game.load.image('tractor_red', 		imgsrc+'tractor/frame-5.png');
 	        
-	        game.load.image('balloon', imgsrc+'airballoon_upper.png');
-	        game.load.image('balloon_basket', imgsrc+'airballoon_base.png');
-	        game.load.image('birch', imgsrc+'birch.png');
+	        game.load.image('balloon', 			imgsrc+'airballoon_upper.png');
+	        game.load.image('balloon_basket', 	imgsrc+'airballoon_base.png');
+	        game.load.image('birch', 			imgsrc+'birch.png');
 	        game.load.image('flag', imgsrc+'flag.png');
 	        game.load.image('house', imgsrc+'house.png');
 	        game.load.image('place_a', imgsrc+'place_a.png');

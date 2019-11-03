@@ -3,7 +3,7 @@
     var menuCircleOne = {
         create: function(){},
         ---------------------------- end of phaser functions
-        loadMap: function(){}
+        func_loadMap: function(){}
     };
 
     var mapCircleOne = {
@@ -17,50 +17,46 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        updateCounter: function(){},
-        overCircle: function(){},
-        outCircle: function(){},
-        clickCircle: function(){},
-        setPlace: function(){},
-        postScore: function(){},
-        viewHelp: function(){},
-        checkOverlap: function(_,_){}
-            //getRndDivisor: function(){}
+        func_updateCounter: function(){},
+        func_overCircle: function(){},
+        func_outCircle: function(){},
+        func_clickCircle: function(){},
+        func_setPlace: function(){},
+        func_postScore: function(){},
+        func_viewHelp: function(){},
+        func_checkOverlap: function(_,_){}
+            //func_getRndDivisor: function(){}
     };
 
     var endCircleOne = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        verPrincipal: function(){},
-        verMenu: function(){}
+        func_verPrincipal: function(){},
     };
 */
 
 // Kid and Circle states, games 1 and 2
 
 /****************************** MENU ****************************/
-var stairsPlus, stairsMinus, stairsMixed;
 
 var menuCircleOne = {
     
     create: function() {
-        
-        // Creating sound variable
-        var beepSound = game.add.audio('sound_beep');
                 
-        // Menu options
-        buttonSettings["addButtons"](1,1,
+        // Navigation buttons
+        buttonSettings["func_addButtons"](1,1,
                                     0,1,0,
                                     1,0,
                                     0,0);        
         
-        // Setting title
+        // Title
         var style = { font: '28px Arial', fill: '#00804d'};
         var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
         title.anchor.setTo(0.5, 0.5);
                 
-        //Showing Games and Levels
+        //SETTING DIFFICULTY LEVELS
+
         var maxHeight = 120; //Max height of a stair
         var stairHeight = 29; //height growth of a stair
         var stairWidth = 85; //Width of a stair
@@ -69,22 +65,26 @@ var menuCircleOne = {
         var startCircle = (startSymbol/2)+startStair+stairWidth*5;
         
          //First stairs, plus, 5 levels, blue circle
+
         var blueCircle = game.add.graphics(startCircle, 195);
             blueCircle.anchor.setTo(0.5,0.5);
             blueCircle.lineStyle(2, 0x31314e);
             blueCircle.beginFill(0xefeff5);
             blueCircle.drawCircle(0, 0, 60);
             blueCircle.endFill();
-        var r_arrow = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
-            r_arrow.scale.setTo(0.35);
-            r_arrow.anchor.setTo(0.5,0.5);
-            r_arrow.alpha = 0.8;
-        var r_arrow2 = game.add.sprite(startSymbol, 195, 'kid_walk'); 
-            r_arrow2.scale.setTo(0.6);
-            r_arrow2.anchor.setTo(0.5,0.5);
-            r_arrow2.alpha = 0.8;
+
+        var plusArrowIcon = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
+            plusArrowIcon.scale.setTo(0.35);
+            plusArrowIcon.alpha = 0.8;
+            plusArrowIcon.anchor.setTo(0.5,0.5);
+
+        var plusKidIcon = game.add.sprite(startSymbol, 195, 'kid_walk'); 
+            plusKidIcon.scale.setTo(0.6);
+            plusKidIcon.alpha = 0.8;
+            plusKidIcon.anchor.setTo(0.5,0.5);
         
-        stairsPlus = [];
+        var stairsPlus = [];
+
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -101,9 +101,10 @@ var menuCircleOne = {
             //event
             stairsPlus[i].inputEnabled = true;
             stairsPlus[i].input.useHandCursor = true;
-            stairsPlus[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, operator: 'Plus' });
+            stairsPlus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Plus' });
             stairsPlus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsPlus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
+            
             //label
             var xl = x1+stairWidth/2; //x label
             var yl = y1+(stairHeight*i)/2; //y label
@@ -112,6 +113,7 @@ var menuCircleOne = {
         }
         
         //Second stairs, minus, 5 levels, red circle
+
         var redCircle = game.add.graphics(startCircle, 350);
             redCircle.anchor.setTo(0.5,0.5);
             redCircle.lineStyle(2, 0xb30000);
@@ -119,17 +121,18 @@ var menuCircleOne = {
             redCircle.drawCircle(0, 0, 60);
             redCircle.endFill();
 
-        var l_arrow2 = game.add.sprite(startSymbol, 350, 'h_arrow');
-            l_arrow2.scale.setTo(-0.35, 0.35);
-            l_arrow2.anchor.setTo(0.5,0.5);
-            l_arrow2.alpha = 0.8;
-        var l_arrow = game.add.sprite(startSymbol+40, 350, 'kid_walk');
-            l_arrow.scale.setTo(-0.6, 0.6);
-            l_arrow.anchor.setTo(0.5,0.5);
-            l_arrow.alpha = 0.8;
+        var minusArrowIcon = game.add.sprite(startSymbol, 350, 'h_arrow');
+            minusArrowIcon.scale.setTo(-0.35, 0.35);
+            minusArrowIcon.alpha = 0.8;
+            minusArrowIcon.anchor.setTo(0.5,0.5);
 
+        var minusKidIcon = game.add.sprite(startSymbol+40, 350, 'kid_walk');
+            minusKidIcon.scale.setTo(-0.6, 0.6);
+            minusKidIcon.alpha = 0.8;
+            minusKidIcon.anchor.setTo(0.5,0.5);
 
         var stairsMinus = [];
+
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -146,7 +149,7 @@ var menuCircleOne = {
             //event
             stairsMinus[i].inputEnabled = true;
             stairsMinus[i].input.useHandCursor = true;
-            stairsMinus[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, operator: 'Minus' });
+            stairsMinus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Minus' });
             stairsMinus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsMinus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             //label
@@ -157,26 +160,28 @@ var menuCircleOne = {
         } 
         
         //Thrid stairs, mixed, 5 levels, two circles
-        var bCircle = game.add.graphics(startCircle-30, 500);
-            bCircle.anchor.setTo(0.5,0.5);
-            bCircle.lineStyle(2, 0x31314e);
-            bCircle.beginFill(0xefeff5);
-            bCircle.drawCircle(0, 0, 60);
-            bCircle.endFill();
+
+        var blueCircle2 = game.add.graphics(startCircle-30, 500);
+            blueCircle2.anchor.setTo(0.5,0.5);
+            blueCircle2.lineStyle(2, 0x31314e);
+            blueCircle2.beginFill(0xefeff5);
+            blueCircle2.drawCircle(0, 0, 60);
+            blueCircle2.endFill();
         
-        var rCircle = game.add.graphics(startCircle+40, 500);
-            rCircle.anchor.setTo(0.5,0.5);
-            rCircle.lineStyle(2, 0xb30000);
-            rCircle.beginFill(0xefeff5);
-            rCircle.drawCircle(0, 0, 60);
-            rCircle.endFill();
+        var redCircle2 = game.add.graphics(startCircle+40, 500);
+            redCircle2.anchor.setTo(0.5,0.5);
+            redCircle2.lineStyle(2, 0xb30000);
+            redCircle2.beginFill(0xefeff5);
+            redCircle2.drawCircle(0, 0, 60);
+            redCircle2.endFill();
         
-        var d_arrow = game.add.sprite(startSymbol, 500, 'h_double'); 
-            d_arrow.scale.setTo(0.5);
-            d_arrow.anchor.setTo(0.5,0.5);
-            d_arrow.alpha = 0.8;
+        var doubleArrowIcon = game.add.sprite(startSymbol, 500, 'h_double'); 
+            doubleArrowIcon.scale.setTo(0.5);
+            doubleArrowIcon.anchor.setTo(0.5,0.5);
+            doubleArrowIcon.alpha = 0.8;
         
         var stairsMixed = [];
+
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -193,9 +198,10 @@ var menuCircleOne = {
             //event
             stairsMixed[i].inputEnabled = true;
             stairsMixed[i].input.useHandCursor = true;
-            stairsMixed[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, operator: 'Mixed' });
+            stairsMixed[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Mixed' });
             stairsMixed[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsMixed[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
+            
             //label
             var xl = x1+stairWidth/2; //x label
             var yl = y1+(stairHeight*i)/2; //y label
@@ -206,20 +212,19 @@ var menuCircleOne = {
     },
         
     //MapLoading function
-    loadMap: function(){
+    func_loadMap: function(){
 
         if(audioStatus){
             this.beep.play();
         }
-        onePosition = 0; //Map position
-        oneMove = true; //Move no next point
-        oneDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        oneOperator = this.operator; //Operator of game
-        if(onePosition<5){
-            game.state.start('mapCOne');
-        }else{
-            game.state.start('unofinal');
-        }
+
+        levelPosition = 0; //Map position
+        levelMove = true; //Move no next point
+        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
+        levelOperator = this.operator; //Operator of game
+        passedLevels = 0;
+
+        game.state.start('mapCOne');
 
     }
     
@@ -230,15 +235,12 @@ var menuCircleOne = {
 var mapCircleOne = {
 
     create: function() {
-        
-        // Creating sound variable
-        beepSound = game.add.audio('sound_beep');
 
         // Background
         game.add.image(0, 40, 'bgmap');
         
-        // Menu options
-        buttonSettings["addButtons"](1,0,
+        // Navigation buttons
+        buttonSettings["func_addButtons"](1,0,
                                     1,1,0,
                                     0,0,
                                     "menuCOne",0);
@@ -248,14 +250,15 @@ var mapCircleOne = {
         var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         // Progress bar
-        var percentText = onePosition*25;
-        var percentBlocks = onePosition;
+        var percentText = passedLevels*25;
+        var percentBlocks = passedLevels;
+
         for(var p=0;p<percentBlocks;p++){
-            var block = game.add.image(660+p*37, 10, 'block');
-            block.scale.setTo(2.5, 1); //Scaling to double width
+            var block = game.add.image(660+p*30, 10, 'block');
+            block.scale.setTo(3.75, 1); //Scaling to double width
         }
         game.add.text(820, 10, percentText+'%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
          //Road
@@ -308,9 +311,9 @@ var mapCircleOne = {
         // places
         for (var p = 1; p < this.points.x.length -1; p++){
             var place;
-            if(p<onePosition)
+            if(p<levelPosition)
                 	place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
-            else if (oneMove && p==onePosition)
+            else if (levelMove && p==levelPosition)
                 	place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
             else
                     place = game.add.image(this.points.x[p], this.points.y[p], 'place_a');
@@ -326,7 +329,7 @@ var mapCircleOne = {
         }
 
         // Kid start position
-        this.kid = game.add.sprite(this.points.x[onePosition], this.points.y[onePosition], 'kid_run');
+        this.kid = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'kid_run');
         this.kid.anchor.setTo(0.5,1);
         this.kid.scale.setTo(0.5);
         game.physics.arcade.enable(this.kid);
@@ -346,26 +349,27 @@ var mapCircleOne = {
         if(this.count<=this.wait) return;
         
         // If movement is stopped or position is 6 (final), load game
-        if(onePosition==6){
-            oneMove = false;
+        if(levelPosition==6){
+            levelMove = false;
         }
-        if(!oneMove){
+
+        if(!levelMove){
             this.loadGame();
         }
         
         // If momevent is enabled, move to next point from actual
-        if(oneMove){
+        if(levelMove){
             game.physics.arcade.moveToXY(
                 this.kid, 
-                this.points.x[onePosition+1],
-                this.points.y[onePosition+1],
+                this.points.x[levelPosition+1],
+                this.points.y[levelPosition+1],
                 100
             );
             
             // I kid reached the end, stop movement
-            if(Math.ceil(this.kid.x)==this.points.x[onePosition+1] || Math.ceil(this.kid.y)==this.points.y[onePosition+1]){
-                oneMove=false;
-                onePosition += 1; //Update position
+            if(Math.ceil(this.kid.x)==this.points.x[levelPosition+1] || Math.ceil(this.kid.y)==this.points.y[levelPosition+1]){
+                levelMove=false;
+                levelPosition += 1; //Update position
             }
         }
     },
@@ -375,29 +379,16 @@ var mapCircleOne = {
         if(audioStatus){
             beepSound.play();
         }
-        if(onePosition<5){
+        if(levelPosition<5){
             game.state.start('gameCOne');
         }else{
             game.state.start('endCOne');
         }
     }
+    
 };
 
 /****************************** GAME ****************************/
-var startX; //start position
-var clicked, hideLabels, animate, checkCollide, result, hasFigure; //control variables
-var detail;
-var endPosition;
-var fractionClicked, fractionIndex;
-//Balloon and blocks control
-var blocks, maxBlocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator;
-
-var blockSize, blockAngle, blockTraceColor;
-var fly, flyCounter, flyend; //flyvariables
-var trace; //circle trace
-var numPlus, endIndex;
-var kid_walk, balloon, basket;
-var balloonPlace;
 
 var gameCircleOne = {
 
@@ -406,23 +397,18 @@ var gameCircleOne = {
         //timer
         totalTime = 0;
         timer = game.time.create(false);
-        timer.loop(1000, this.updateCounter, this);
+        timer.loop(1000, this.func_updateCounter, this);
         timer.start();
         detail="";
-        
-        // Creating sound variable
-        beepSound = game.add.audio('sound_beep');
-        okSound = game.add.audio('sound_ok');
-        errorSound = game.add.audio('sound_error');
 
         // Background
         game.add.image(0, 0, 'bgimage');
 
-        // Menu options
-        buttonSettings["addButtons"](1,1,
+        // Navigation buttons
+        buttonSettings["func_addButtons"](1,1,
                                     1,1,1,
                                     1,0,
-                                    "menuCOne", this.viewHelp);
+                                    "menuCOne", this.func_viewHelp);
         
         //Clouds
         game.add.image(300, 100, 'cloud');
@@ -436,7 +422,7 @@ var gameCircleOne = {
         
         //Floor and road
         startX = 66; //Initial kid and place position
-        if(oneOperator=='Minus') startX = 66+5*156;
+        if(levelOperator=='Minus') startX = 66+5*156;
         
         placeDistance = 156; //Distance between places
         blockSize = 60;
@@ -445,9 +431,9 @@ var gameCircleOne = {
         }
         var road = game.add.image(47, 515, 'road');
         road.scale.setTo(1.01,0.94);
-        if(oneType=='A'){
+        if(levelType=='A'){
             road.inputEnabled = true;
-            road.events.onInputDown.add(this.setPlace, {beep: beepSound}); //enabling input for tablets
+            road.events.onInputDown.add(this.func_setPlace, {beep: beepSound}); //enabling input for tablets
         }
         
         for(var p=0;p<=5;p++){// Places
@@ -474,10 +460,10 @@ var gameCircleOne = {
                 
         //generator
         //Circles and fractions
-        var maxBlocks = onePosition+1; //Maximum blocks according to difficulty
-        if(oneType=='B' || oneOperator=='Mixed') maxBlocks = 6;
+        var maxBlocks = levelPosition+1; //Maximum blocks according to difficulty
+        if(levelType=='B' || levelOperator=='Mixed') maxBlocks = 6;
         blocks = game.add.group(); //Fraction arrays
-        numBlocks = game.rnd.integerInRange(onePosition, maxBlocks); //Number of blocks
+        numBlocks = game.rnd.integerInRange(levelPosition, maxBlocks); //Number of blocks
         curBlock = 0; //Actual index block
         blockDirection = []; //Directions right(plus), left (minus)
         blockDistance = []; //Displacement distance of the blocks
@@ -495,16 +481,16 @@ var gameCircleOne = {
         
         for(var p=0;p<numBlocks;p++){
 
-            var portion = game.rnd.integerInRange(1, oneDifficulty); //Portion of the circle, according to difficulty
+            var portion = game.rnd.integerInRange(1, levelDifficulty); //Portion of the circle, according to difficulty
             detail += portion+",";
             
-            if(portion==oneDifficulty){
+            if(portion==levelDifficulty){
                 hasFigure = true;
             }
             
             var direction = '';
             var lineColor = '';
-            if(oneOperator=='Mixed'){
+            if(levelOperator=='Mixed'){
                 if(p<=numPlus){
                     direction = 'Right';
                     lineColor = 0x31314e;
@@ -517,10 +503,10 @@ var gameCircleOne = {
                 direction = directions[rndIndex];
                 if(rndIndex==0) lineColor = 0x31314e;
                 else lineColor = 0xb30000;*/
-            }else if(oneOperator=='Plus'){
+            }else if(levelOperator=='Plus'){
                 direction = 'Right';    
                 lineColor = 0x31314e;
-            }else if(oneOperator=='Minus'){
+            }else if(levelOperator=='Minus'){
                 direction = 'Left';
                 lineColor = 0xb30000;
             }
@@ -542,9 +528,9 @@ var gameCircleOne = {
                 blockDistance.push(placeDistance);
                 blockAngle.push(360);
 
-                if(oneLabel){
+                if(levelLabel){
                     var labelX = startX;
-                    if(oneOperator=='Minus') labelX -= 65;
+                    if(levelOperator=='Minus') labelX -= 65;
                     else labelX += 65;
                     var label = game.add.text(labelX, 490-p*blockSize, portion , styleLabel);
                     label.anchor.setTo(0.5, 0.5);
@@ -557,9 +543,9 @@ var gameCircleOne = {
                 blockDistance.push(Math.floor(placeDistance/portion));
                 blockAngle.push(distance);
 
-                if(oneLabel){
+                if(levelLabel){
                     var labelX = startX;
-                    if(oneOperator=='Minus') labelX -= 65;
+                    if(levelOperator=='Minus') labelX -= 65;
                     else labelX += 65;
                     var separator = game.add.sprite(labelX, 485-p*blockSize, 'separator');
                     separator.anchor.setTo(0.5, 0.5);
@@ -580,13 +566,13 @@ var gameCircleOne = {
             block.angle +=90;
             
             //If game is type B, (select fractions, adding event)
-            if(oneType=='B'){
+            if(levelType=='B'){
                 block.alpha = 0.5;
                 block.inputEnabled = true;
                 block.input.useHandCursor = true;
-                block.events.onInputDown.add(this.clickCircle, {indice: p});
-                block.events.onInputOver.add(this.overCircle, {indice: p});
-                block.events.onInputOut.add(this.outCircle, {indice: p});
+                block.events.onInputDown.add(this.func_clickCircle, {indice: p});
+                block.events.onInputOver.add(this.func_overCircle, {indice: p});
+                block.events.onInputOut.add(this.func_outCircle, {indice: p});
             }
             
             blocks.add(block);
@@ -601,7 +587,7 @@ var gameCircleOne = {
         
         //If game is type B, selectiong a random balloon place
         
-        if(oneType=='B'){
+        if(levelType=='B'){
             balloonPlace = startX;
             endIndex = game.rnd.integerInRange(numPlus, numBlocks);
             for(var i=0;i<endIndex;i++){
@@ -625,7 +611,7 @@ var gameCircleOne = {
         kid_walk.scale.setTo(0.8);
         kid_walk.animations.add('right',[0,1,2,3,4,5,6,7,8,9,10,11]);
         kid_walk.animations.add('left',[23,22,21,20,19,18,17,16,15,14,13,12]);
-        if(oneOperator=='Minus'){
+        if(levelOperator=='Minus'){
             kid_walk.animations.play('left', 6, true);
             kid_walk.animations.stop();
         }
@@ -650,7 +636,7 @@ var gameCircleOne = {
        
         if (game.input.activePointer.isDown && !fly && !clicked){
             //Positionate balloon - Game A
-            if(oneType=='A'){
+            if(levelType=='A'){
                 if(game.input.mousePointer.y>60){ //Dead zone for click
                     balloon.x = game.input.mousePointer.x;
                     balloon.alpha = 1;
@@ -665,7 +651,7 @@ var gameCircleOne = {
                         kid_walk.animations.play('left', 6, true);
                     }
 
-                    if(oneLabel){ //Hiding labels
+                    if(levelLabel){ //Hiding labels
                         blockLabel.visible = false;
                         blockSeparator.visible = false;
                     }
@@ -675,7 +661,7 @@ var gameCircleOne = {
         
         if(!clicked){
             if(!fly){
-                if(oneType=="A"){
+                if(levelType=="A"){
                     //Follow mouse
                     if (game.physics.arcade.distanceToPointer(balloon, game.input.activePointer) > 8){
                         balloon.x = game.input.mousePointer.x;
@@ -755,7 +741,7 @@ var gameCircleOne = {
         if(checkCollide){
             kid_walk.animations.stop();            
             timer.stop();
-            if(this.checkOverlap(basket,kid_walk)){
+            if(this.func_checkOverlap(basket,kid_walk)){
             	if(kid_walk.frame < 12)
             		kid_walk.frame = 24;	            
             	else
@@ -764,7 +750,7 @@ var gameCircleOne = {
             }else{
                 result = false;
             }
-            this.postScore();
+            this.func_postScore();
             fly = true;
             checkCollide = false;
         }
@@ -777,6 +763,8 @@ var gameCircleOne = {
                     if(audioStatus){
                         okSound.play();
                     }
+                    passedLevels++;        
+                    if(debugMode) console.log("passedLevels = "+passedLevels);
                     okImg.alpha = 1;
                 }else{
                     if(audioStatus){
@@ -796,9 +784,9 @@ var gameCircleOne = {
             
             if(flyCounter>=flyEnd){
                 if(result){
-                    oneMove = true;
+                    levelMove = true;
                 }else{
-                    oneMove = false;
+                    levelMove = false;
                 }
                 game.state.start('mapCOne');
             }
@@ -806,11 +794,11 @@ var gameCircleOne = {
 
     },
 
-    updateCounter: function() {
+    func_updateCounter: function() {
         totalTime++;
     },
         
-    overCircle: function(){
+    func_overCircle: function(){
         
         if(!clicked){
             for(var i=0;i<numBlocks;i++){
@@ -824,7 +812,7 @@ var gameCircleOne = {
 
     },
 
-    outCircle: function(){
+    func_outCircle: function(){
         if(!clicked){
             for(var i=0;i<=this.indice;i++){
                 blocks.children[i].alpha = 0.5;
@@ -833,7 +821,7 @@ var gameCircleOne = {
 
     },
     
-    clickCircle: function(){
+    func_clickCircle: function(){
 
         if(!clicked){
             var minusBlocks = 0;
@@ -863,7 +851,7 @@ var gameCircleOne = {
                 kid_walk.animations.play('left', 6, true);
             }
 
-            if(oneLabel){ //Hiding labels
+            if(levelLabel){ //Hiding labels
                 blockLabel.visible = false;
                 blockSeparator.visible = false;
             }
@@ -871,7 +859,7 @@ var gameCircleOne = {
 
     },
 
-    setPlace: function(){
+    func_setPlace: function(){
 
         if(!clicked){
             
@@ -890,7 +878,7 @@ var gameCircleOne = {
                 kid_walk.animations.play('left', 6, true);
             }
 
-            if(oneLabel){ //Hiding labels
+            if(levelLabel){ //Hiding labels
                 blockLabel.visible = false;
                 blockSeparator.visible = false;
             }
@@ -898,39 +886,40 @@ var gameCircleOne = {
 
     },
 
-    postScore: function (){
-        
-        var abst = "numCircles:"+numBlocks+", valCircles: " + detail+" balloonX: " + basket.x + ", selIndex: " + fractionIndex;
+    func_postScore: function (){
+    
+        var abst = "numCircles:" + numBlocks + ", valCircles: " + detail + " balloonX: " + basket.x + ", selIndex: " + fractionIndex;
 
         var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
 
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         var url = "assets/cn/save.php";
-        var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + oneShape + "&s_mode=" + oneType;
-        vars += "&s_oper=" + oneOperator + "&s_leve=" + oneDifficulty + "&s_posi=" + onePosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
+        var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
+
+        vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
-            if(debugmode) console.log(hr);
+            if(debugMode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
-                if(debugmode) console.log(return_data);
+                if(debugMode) console.log(return_data);
             }
         }
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
-        if(debugmode) console.log("processing...");
+        if(debugMode) console.log("processing...");
 
     },
             
-    viewHelp: function(){
+    func_viewHelp: function(){
 
         if(!clicked){
             var pointer;
-            if(oneType=='A'){
+            if(levelType=='A'){
                 var pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
                 var pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
@@ -941,7 +930,7 @@ var gameCircleOne = {
 
     },
     
-    checkOverlap: function (spriteA, spriteB) {
+    func_checkOverlap: function (spriteA, spriteB) {
 
         var xA = spriteA.x;
         var xB = spriteB.x;
@@ -962,11 +951,6 @@ var endCircleOne = {
     
     create: function() {  
         
-        // Creating sound variable
-        beepSound = game.add.audio('sound_beep');
-        okSound = game.add.audio('sound_ok');
-        errorSound = game.add.audio('sound_error');
-
         // Background
         game.add.image(0, 0, 'bgimage');
                 
@@ -991,7 +975,7 @@ var endCircleOne = {
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
         //School and trees
@@ -1020,7 +1004,8 @@ var endCircleOne = {
             if(this.kid.x<=700){
                 this.kid.x += 2;
             }else{
-                if(oneMenu){
+                if(levelMenu){
+	            	passedLevels = 0;
                     game.state.start('menu');
                 }else{
                     this.kid.animations.stop();
@@ -1037,15 +1022,8 @@ var endCircleOne = {
 
     },
     
-    verPrincipal: function(){
+    func_verPrincipal: function(){
         game.state.start('welcome');
     },
-    
-    verMenu: function(){
-
-        if(oneMenu){
-            game.state.start('menu');
-        }
-        
-    }        
+   
 };
