@@ -1,9 +1,8 @@
 /*
-
     var menuSquareTwo = {
         create: function(){},
         ---------------------------- end of phaser functions
-        func_loadMap: function(){}
+        loadMap: function(){}
     };
 
     var mapSquareTwo = {
@@ -17,15 +16,15 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        func_updateCounter: function(){},
-        func_overSquare: function(){},
-        func_outSquare: function(){},
-        func_clickSquare: function(){},
-            //func_setPlace: function(){},
-        func_postScore: function(){},
-            //func_viewHelp: function(){},
-            //func_checkOverlap: function(){}
-        func_getRndDivisor: function(){}
+        updateCounter: function(){},
+        overSquare: function(){},
+        outSquare: function(){},
+        clickSquare: function(){},
+            //setPlace: function(){},
+        postScore: function(){},
+            //viewHelp: function(){},
+            //checkOverlap: function(){}
+        getRndDivisor: function(){}
             
     };
 
@@ -33,9 +32,10 @@
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
-        func_verPrincipal: function(){},
+        verPrincipal: function(){},
+        verMenu: function(){}
     };
-        
+        }
 */
 
 // Fractions Comparison Square states
@@ -45,9 +45,12 @@
 var menuSquareTwo = {
 
     create: function() {
+        
+        // Creating sound variable
+        var beepSound = game.add.audio('sound_beep');
           
-        // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
+        // Menu options
+        buttonSettings["addButtons"](1,1,
                                     0,1,0,
                                     1,0,
                                     0,0);
@@ -57,8 +60,7 @@ var menuSquareTwo = {
         var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
         title.anchor.setTo(0.5, 0.5);
         
-        //SETTING DIFFICULTY LEVELS
-
+        //Showing Games and Levels
         var maxHeight = 120;  //Max height of a stair
         var stairHeight = 29; //height growth of a stair
         var stairWidth = 80;  //Width of a stair
@@ -66,15 +68,13 @@ var menuSquareTwo = {
         var startSymbol = 150;
         var startSquare = (startSymbol/2)+startStair+stairWidth*5;
         
-        var equalsIcon = game.add.sprite(startSymbol, 300, 'equal');
-            equalsIcon.frame = 0;
-            equalsIcon.scale.setTo(0.7);
-            equalsIcon.anchor.setTo(0.5,0.5);
+        var bplus = game.add.sprite(startSymbol, 300, 'equal');
+            bplus.frame = 0;
+            bplus.scale.setTo(0.7);
+            bplus.anchor.setTo(0.5,0.5);
             
-        //First stairs, More divisions to less divisions 1, 5 levels
-
-        var stairsMoreToLess1 = [];
-
+        //First stairs, 6 levels
+        var stairsA = [];
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -82,19 +82,18 @@ var menuSquareTwo = {
             var x2 = stairWidth;//x1 + 40;
             var y2 = stairHeight*i;//y1 + 24;
             
-            stairsMoreToLess1[i] = game.add.graphics(0, 0);
-            stairsMoreToLess1[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMoreToLess1[i].beginFill(0x99b3ff);
-            stairsMoreToLess1[i].drawRect(x1, y1, x2, y2);
-            stairsMoreToLess1[i].endFill();
+            stairsA[i] = game.add.graphics(0, 0);
+            stairsA[i].lineStyle(1, 0xFFFFFF, 1);
+            stairsA[i].beginFill(0x99b3ff);
+            stairsA[i].drawRect(x1, y1, x2, y2);
+            stairsA[i].endFill();
             
             //event
-            stairsMoreToLess1[i].inputEnabled = true;
-            stairsMoreToLess1[i].input.useHandCursor = true;
-            stairsMoreToLess1[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'A' });
-            stairsMoreToLess1[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMoreToLess1[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
+            stairsA[i].inputEnabled = true;
+            stairsA[i].input.useHandCursor = true;
+            stairsA[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, type: 'A' });
+            stairsA[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
+            stairsA[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             //label
             var xl = x1+stairWidth/2; //x label
             var yl = y1+(stairHeight*i)/2; //y label
@@ -102,10 +101,8 @@ var menuSquareTwo = {
                 label.anchor.setTo(0.5, 0.4);
         }
 
-        //Second stairs, More divisions to less divisions 2, 5 levels
-
-        var stairsMoreToLess2 = [];
-
+        //second stairs        
+        var stairsB = [];
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -113,19 +110,18 @@ var menuSquareTwo = {
             var x2 = stairWidth;//x1 + 40;
             var y2 = stairHeight*i;//y1 + 24;
             
-            stairsMoreToLess2[i] = game.add.graphics(0, 0);
-            stairsMoreToLess2[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMoreToLess2[i].beginFill(0xff6666);
-            stairsMoreToLess2[i].drawRect(x1, y1, x2, y2);
-            stairsMoreToLess2[i].endFill();
+            stairsB[i] = game.add.graphics(0, 0);
+            stairsB[i].lineStyle(1, 0xFFFFFF, 1);
+            stairsB[i].beginFill(0xff6666);
+            stairsB[i].drawRect(x1, y1, x2, y2);
+            stairsB[i].endFill();
             
             //event
-            stairsMoreToLess2[i].inputEnabled = true;
-            stairsMoreToLess2[i].input.useHandCursor = true;
-            stairsMoreToLess2[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'B' });
-            stairsMoreToLess2[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMoreToLess2[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
+            stairsB[i].inputEnabled = true;
+            stairsB[i].input.useHandCursor = true;
+            stairsB[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, type: 'B' });
+            stairsB[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
+            stairsB[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             //label
             var xl = x1+stairWidth/2; //x label
             var yl = y1+(stairHeight*i)/2; //y label
@@ -133,10 +129,8 @@ var menuSquareTwo = {
                 label.anchor.setTo(0.5, 0.4);
         } 
         
-        //Third stairs, Less divisions to more divisions, 5 levels
-
-        var stairsLessToMore = [];
-
+        //third stair        
+        var stairsC = [];
         for(var i=1;i<=5;i++){
             //stair
             var x1 = startStair+(stairWidth*(i-1));
@@ -144,19 +138,18 @@ var menuSquareTwo = {
             var x2 = stairWidth;//x1 + 40;
             var y2 = stairHeight*i;//y1 + 24;
             
-            stairsLessToMore[i] = game.add.graphics(0, 0);
-            stairsLessToMore[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsLessToMore[i].beginFill(0xb366ff);
-            stairsLessToMore[i].drawRect(x1, y1, x2, y2);
-            stairsLessToMore[i].endFill();
+            stairsC[i] = game.add.graphics(0, 0);
+            stairsC[i].lineStyle(1, 0xFFFFFF, 1);
+            stairsC[i].beginFill(0xb366ff);
+            stairsC[i].drawRect(x1, y1, x2, y2);
+            stairsC[i].endFill();
             
             //event
-            stairsLessToMore[i].inputEnabled = true;
-            stairsLessToMore[i].input.useHandCursor = true;
-            stairsLessToMore[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'C' });
-            stairsLessToMore[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsLessToMore[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
+            stairsC[i].inputEnabled = true;
+            stairsC[i].input.useHandCursor = true;
+            stairsC[i].events.onInputDown.add(this.loadMap, {beep: beepSound, difficulty: i, type: 'C' });
+            stairsC[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
+            stairsC[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             //label
             var xl = x1+stairWidth/2; //x label
             var yl = y1+(stairHeight*i)/2; //y label
@@ -167,19 +160,20 @@ var menuSquareTwo = {
     },
         
     //MapLoading function
-    func_loadMap: function(){
+    loadMap: function(){
 
         if(audioStatus){
             this.beep.play();
         }
-
-        levelPosition = 0; //Map position
-        levelMove = true; //Move no next point
-        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        levelType = this.type; //Type of game
-        passedLevels = 0;
-
-        game.state.start('mapSTwo');
+        twoPosition = 0; //Map position
+        twoMove = true; //Move no next point
+        twoDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
+        twoType = this.type; //Operator of game
+        if(twoPosition<5){
+            game.state.start('mapSTwo');
+        }else{
+            game.state.start('unofinal');
+        }
 
     },
     
@@ -190,12 +184,15 @@ var menuSquareTwo = {
 var mapSquareTwo={
 
     create: function() {
+                
+        // Creating sound variable
+        beepSound = game.add.audio('sound_beep');
 
         // Background
         game.add.image(0, 40, 'bgmap');
         
-        // Navigation buttons
-        buttonSettings["func_addButtons"](1,0,
+        // Menu options
+        buttonSettings["addButtons"](1,0,
                                     1,1,0,
                                     0,0,
                                     "menuSTwo",0);
@@ -205,15 +202,14 @@ var mapSquareTwo={
         var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         // Progress bar
-        var percentText = passedLevels*25;
-        var percentBlocks = passedLevels;
-
-        for(var p=0;p<percentBlocks;p++){
-            var block = game.add.image(660+p*30, 10, 'block');
-            block.scale.setTo(3.75, 1); //Scaling to double width
+        var percentText = onePosition*20;
+        var percentBlocks = onePosition;
+        for(var p=1;p<=percentBlocks;p++){
+            var block = game.add.image(660+(p-1)*30, 10, 'block');
+            block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, percentText+'%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
          //Road
@@ -264,9 +260,9 @@ var mapSquareTwo={
         // places
         for (var p = 1; p < this.points.x.length -1; p++){
             var place;
-            if(p<levelPosition)
+            if(p<twoPosition)
                 place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
-            else if (levelMove && p==levelPosition)
+            else if (twoMove && p==twoPosition)
                 place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
             else
                 place = game.add.image(this.points.x[p], this.points.y[p], 'place_a');
@@ -282,7 +278,7 @@ var mapSquareTwo={
         }
 
         // Kid start position
-        this.kid = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'kid_run');
+        this.kid = game.add.sprite(this.points.x[twoPosition], this.points.y[twoPosition], 'kid_run');
         this.kid.anchor.setTo(0.5,1);
         this.kid.scale.setTo(0.5);
         game.physics.arcade.enable(this.kid);
@@ -302,27 +298,27 @@ var mapSquareTwo={
         if(this.count<=this.wait) return;
         
         // If movement is stopped or position is 5 (final), load game
-        if(levelPosition==5){
-            levelMove = false;
+        if(twoPosition==5){
+            twoMove = false;
         }
         
-        if(!levelMove){
+        if(!twoMove){
             this.loadGame();
         }
         
         // If momevent is enabled, move to next point from actual
-        if(levelMove){
+        if(twoMove){
             game.physics.arcade.moveToXY(
                 this.kid, 
-                this.points.x[levelPosition+1],
-                this.points.y[levelPosition+1],
+                this.points.x[twoPosition+1],
+                this.points.y[twoPosition+1],
                 100
             );
             
             // I tractor reached the end, stop movement
-            if(Math.ceil(this.kid.x)==this.points.x[levelPosition+1] || Math.ceil(this.kid.y)==this.points.y[levelPosition+1]){
-                levelMove=false;
-                levelPosition += 1; //Update position
+            if(Math.ceil(this.kid.x)==this.points.x[twoPosition+1] || Math.ceil(this.kid.y)==this.points.y[twoPosition+1]){
+                twoMove=false;
+                twoPosition += 1; //Update position
             }
         }
 
@@ -334,17 +330,22 @@ var mapSquareTwo={
         if(audioStatus){
            beepSound.play();
         }
-        if(levelPosition<5){
+        if(twoPosition<5){
             game.state.start('gameSTwo');
         }else{
             game.state.start('endSTwo');
         }
 
     }
-
 };
 
 /****************************** GAME ****************************/
+var sizeA, sizeB, valueA, valueB;
+var clickA, clickB, animateA, animateB, result, animate, cDelay, eDelay;
+var blocksA, blocksB, auxblqA, auxblqB;
+var labelA, fractionA, separatorA, labelB, fractionB, separatorB;
+var kid, kidDirection, equals, counter, endCounter;
+var xA, yA, xB, yB, blockW, blockH;
 
 var gameSquareTwo = {
 
@@ -353,16 +354,21 @@ var gameSquareTwo = {
         //timer
         totalTime = 0;
         timer = game.time.create(false);
-        timer.loop(1000, this.func_updateCounter, this);
+        timer.loop(1000, this.updateCounter, this);
         timer.start();        
         
         points = [2,4,6,8,9,10,12,14,15,16,18,20];
+        
+        // Creating sound variable
+        beepSound = game.add.audio('sound_beep');
+        okSound = game.add.audio('sound_ok');
+        errorSound = game.add.audio('sound_error');
 
         // Background
         game.add.image(0, 0, 'bgimage');
         
-        // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
+        // Menu options
+        buttonSettings["addButtons"](1,1,
                                     1,1,0,
                                     1,0,
                                     "menuSTwo", 0);
@@ -409,19 +415,19 @@ var gameSquareTwo = {
         animate = null; //Final animation sequence
         
         //generator
-        if(debugMode) console.log("----------");
-        if(debugMode) console.log("Diff " + levelDifficulty + ", ini " + ((levelDifficulty-1)*2+1) + ", end " + ((levelDifficulty-1)*2+3));
+        if(debugmode) console.log("----------");
+        if(debugmode) console.log("Diff " + twoDifficulty + ", ini " + ((twoDifficulty-1)*2+1) + ", end " + ((twoDifficulty-1)*2+3));
         
-        var rPoint = game.rnd.integerInRange((levelDifficulty-1)*2+1,(levelDifficulty-1)*2+3);
+        var rPoint = game.rnd.integerInRange((twoDifficulty-1)*2+1,(twoDifficulty-1)*2+3);
         sizeA = points[rPoint];
         
-        if(debugMode) console.log("Rpoint " + rPoint + ", val " + sizeA);
+        if(debugmode) console.log("Rpoint " + rPoint + ", val " + sizeA);
         
-        sizeB =  this.func_getRndDivisor(sizeA);
+        sizeB =  this.getRndDivisor(sizeA);
         blockB = game.rnd.integerInRange(1, sizeB);
         blockA = (sizeA/sizeB) * blockB;
         
-        if(debugMode) console.log("SA " + sizeA + ", SB " + sizeB + ", BA " + blockA + ", BB " + blockB );
+        if(debugmode) console.log("SA " + sizeA + ", SB " + sizeB + ", BA " + blockA + ", BB " + blockB );
         
         //Blocks and fractions group
         blocksA = game.add.group(); //Main blocks A
@@ -432,7 +438,7 @@ var gameSquareTwo = {
          //Creating blocks
         blockW = 400;
         blockH = 50;
-        if(levelType!="C"){
+        if(twoType!="C"){
             xA=230, yA=90;
             xB=xA, yB=yA+3*blockH+30;
         }else{
@@ -447,7 +453,7 @@ var gameSquareTwo = {
         var fillColorS = 0xe0ebeb;
         
         for(var i=0; i<sizeA; i++){
-            //if(debugMode) console.log("Block A"+i+": x:"+(xA+i*widthA)+", y:"+yA);
+            //if(debugmode) console.log("Block A"+i+": x:"+(xA+i*widthA)+", y:"+yA);
                         
             var block = game.add.graphics(xA+i*widthA, yA);
                 block.anchor.setTo(0.5, 0.5);
@@ -459,22 +465,22 @@ var gameSquareTwo = {
 
                 block.inputEnabled = true;
                 block.input.useHandCursor = true;
-                block.events.onInputDown.add(this.func_clickSquare, {who: 'A',indice: i});
-                block.events.onInputOver.add(this.func_overSquare, {who: 'A',indice: i});
-                block.events.onInputOut.add(this.func_outSquare, {who: 'A',indice: i});
+                block.events.onInputDown.add(this.clickSquare, {who: 'A',indice: i});
+                block.events.onInputOver.add(this.overSquare, {who: 'A',indice: i});
+                block.events.onInputOut.add(this.outSquare, {who: 'A',indice: i});
             
             blocksA.add(block);
             
             //aux blocks
             var xAux = xA+i*widthA, yAux = yA+blockH+10;
-            if(levelType == 'C') yAux = yA;
+            if(twoType == 'C') yAux = yA;
             var block = game.add.graphics(xAux, yAux );
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthA, blockH);
                 
-                if(levelType!='A') block.alpha = 0;
+                if(twoType!='A') block.alpha = 0;
                 else block.alpha = 0.2;
                     
             auxblqA.add(block);
@@ -515,21 +521,21 @@ var gameSquareTwo = {
             
                 block.inputEnabled = true;
                 block.input.useHandCursor = true;
-                block.events.onInputDown.add(this.func_clickSquare, {who: 'B',indice: i});
-                block.events.onInputOver.add(this.func_overSquare, {who: 'B',indice: i});
-                block.events.onInputOut.add(this.func_outSquare, {who: 'B',indice: i});
+                block.events.onInputDown.add(this.clickSquare, {who: 'B',indice: i});
+                block.events.onInputOver.add(this.overSquare, {who: 'B',indice: i});
+                block.events.onInputOut.add(this.outSquare, {who: 'B',indice: i});
 
             blocksB.add(block);
             //aux blocks
             var xAux = xB+i*widthB, yAux = yB+blockH+10;
-            if(levelType == 'C') yAux = yB;
+            if(twoType == 'C') yAux = yB;
             var block = game.add.graphics(xAux, yAux);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthB, blockH);
                 
-                if(levelType!='A') block.alpha = 0;
+                if(twoType!='A') block.alpha = 0;
                 else block.alpha = 0.2;
             auxblqB.add(block);
             
@@ -573,8 +579,10 @@ var gameSquareTwo = {
 
     },
     
-    update: function() {
-    	if (game.physics.arcade.distanceToPointer(kid, game.input.activePointer) > 20 ){	
+    update: function() 
+    {
+    	if (game.physics.arcade.distanceToPointer(kid, game.input.activePointer) > 20 )
+	    {	
     		    		
         	var xPos = game.input.mousePointer.x;
         	
@@ -632,26 +640,23 @@ var gameSquareTwo = {
                 //fractions are equivalent : correct
                 if((valueA/sizeA) == (valueB/sizeB)){
                     result = true;
-                    levelMove = true;
+                    twoMove = true;
                     if(audioStatus){
                         okSound.play();
                     }
                     kid.animations.stop();
-
-                    passedLevels++;        
-                    if(debugMode) console.log("passedLevels = " + passedLevels); 
                     okImg.alpha = 1;
                 //fractions are not equivalent
                 }else{
                     result = false;
-                    levelMove = false;
+                    twoMove = false;
                     if(audioStatus){
                         errorSound.play();
                     }
                     kid.animations.stop();
                     errorImg.alpha = 1;
                 }
-                this.func_postScore();
+                this.postScore();
                 clickA = false;
                 clickB = false;
                 animate = true;
@@ -661,9 +666,9 @@ var gameSquareTwo = {
         if(animate){
             counter++;
             if(result){
-				// kid.x += 2;
-				// kidDirection='right';
-				// kid.animations.play('right', 8, true);
+//              kid.x += 2;
+//            	kidDirection='right';
+//				kid.animations.play('right', 8, true);
             }
             if(counter>endCounter){
                 game.state.start('mapSTwo');
@@ -672,11 +677,11 @@ var gameSquareTwo = {
 
     },
 
-    func_updateCounter: function() {
+    updateCounter: function() {
         totalTime++;
     },
     
-    func_overSquare: function(){
+    overSquare: function(){
 
         if(!clickA && this.who=="A"){
             if(this.indice == sizeA-1){
@@ -730,7 +735,7 @@ var gameSquareTwo = {
 
     },
 
-    func_outSquare: function(){
+    outSquare: function(){
 
         if(!clickA && this.who=="A"){
             for(var i=0;i<=this.indice;i++){
@@ -747,7 +752,7 @@ var gameSquareTwo = {
 
     },
     
-    func_clickSquare: function(){
+    clickSquare: function(){
 
         if(!clickA && this.who=="A" && this.indice!=sizeA-1){
             for(var i=0;i<sizeA;i++){
@@ -793,35 +798,35 @@ var gameSquareTwo = {
 
     },
     
-    func_postScore: function (){
-    
-        var abst = "numBlocksA:" + sizeA + ", valueA: " + valueA +", numBlocksB: " + sizeB + ", valueB: " + valueB;
+    postScore: function (){
         
+        var abst = "numBlocksA:"+sizeA+", valueA: " + valueA +", numBlocksB: " + sizeB + ", valueB: " + valueB;
+
+        var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         var url = "assets/cn/save.php";
-        var vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
-
-        vars += "&s_oper=Equal&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
+        var vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang_str + "&s_game=" + twoShape + "&s_mode=" + twoType;
+        vars += "&s_oper=Equal&s_leve=" + twoDifficulty + "&s_posi=" + twoPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         hr.onreadystatechange = function() {
-            if(debugMode) console.log(hr);
+            if(debugmode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
                 var return_data = hr.responseText;
-                if(debugMode) console.log(return_data);
+                if(debugmode) console.log(return_data);
             }
         }
         // Send the data to PHP now... and wait for response to update the status div
         hr.send(vars); // Actually execute the request
-        if(debugMode) console.log("processing...");
-    
+        if(debugmode) console.log("processing...");
+
     },
 
     //Calculation help functions
-    func_getRndDivisor: function(number){ //Get random divisor for a number
+    getRndDivisor: function(number){ //Get random divisor for a number
 
         var div = []; //Divisors found
         var p = 0; //current dividor index
@@ -843,6 +848,11 @@ var gameSquareTwo = {
 var endSquareTwo = {
 
     create: function() {  
+        
+        // Creating sound variable
+        beepSound = game.add.audio('sound_beep');
+        okSound = game.add.audio('sound_ok');
+        errorSound = game.add.audio('sound_error');
 
         // Background
         game.add.image(0, 0, 'bgimage');
@@ -868,7 +878,7 @@ var endSquareTwo = {
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(650, 10, lang.difficulty + ' ' + oneDifficulty, styleMenu).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
         //School and trees
@@ -890,8 +900,7 @@ var endSquareTwo = {
         if(this.kid.x<=700){
             this.kid.x += 2;
         }else{
-            if(levelMenu){            	
-            	passedLevels = 0;
+            if(twoMenu){
                 game.state.start('menu');
             }else{
                 this.kid.animations.stop();
@@ -900,8 +909,15 @@ var endSquareTwo = {
 
     },
     
-    func_verPrincipal: function(){
+    verPrincipal: function(){
         game.state.start('welcome');
     },
-          
+    
+    verMenu: function(){
+
+        if(twoMenu){
+            game.state.start('menu');
+        }
+
+    }               
 };
