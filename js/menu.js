@@ -1,13 +1,12 @@
-/*
 
+/*
     var menuState = {
         create: function(){},
-        func_loadGame: function(){},
         ---------------------------- end of phaser functions
+        func_loadGame: function(){},
         func_showTitle: function(){},
         func_clearTitle: function(){},
     }
-
 */
 
 var menuState = {

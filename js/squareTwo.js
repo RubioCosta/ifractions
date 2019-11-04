@@ -633,7 +633,7 @@ var gameSquareTwo = {
         
         var hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
-        var url = "assets/cn/save.php";
+        var url = "php/save.php";
         var vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
 
         vars += "&s_oper=Equal&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;

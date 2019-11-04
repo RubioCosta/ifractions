@@ -1,5 +1,5 @@
-/*
 
+/*
     var langState = {
         create: function(){},
         --------------------------------------- end of phaser functions
@@ -23,7 +23,6 @@
         func_addButtons: function(_,_,_,_,_,_,_,_,_){},
         loadState: function(){}
     };
-
 */
 
 // "choose language" screen

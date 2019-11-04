@@ -1,5 +1,5 @@
-/*
 
+/*
     var menuSquareOne = {
         create: function(){},
         ---------------------------- end of phaser functions
@@ -27,7 +27,6 @@
         ---------------------------- end of phaser functions
         func_verPrincipal: function(){},
     };
-
 */
 
 // Tractor and Square states
@@ -766,19 +765,19 @@ var gameSquareOne = {
         var hr = new XMLHttpRequest();
 
         // Create some variables we need to send to our PHP file
-        var url = "assets/cn/save.php";
+        var url = "php/save.php";
         var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
 
         vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
 
         //D alert('/js/squareOne.js: url=' + url + '; aux=' + aux + ', lang_str=' + lang_str + ', lang=' + lang); //  + ', this.lang=" + this.lang
-        //D /js/squareOne.js: url=assets/cn/save.php; aux=1, lang_str=CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
+        //D /js/squareOne.js: url=php/save.php; aux=1, lang_str=CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
         //D SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO, lang=[object Object]
 
         // Sobre nome do usuario:
     	// * js/squareOne.js: name
     	// * js/pt_BR.json:   welcome="Ola'", insert_name="DIGITE SEU NOME"
-    	// * assets/cn/save.php : $play = $_REQUEST["s_name"];
+    	// * php/save.php : $play = $_REQUEST["s_name"];
     	// * js/preMenu.js : insert_name, game.add.text(...), username = document.getElementById("name_id").value;
 
     	// Pegar valor de PHP para JS: echo("<script language='javascript'>location.href='download.php?arquivo=$nome_arquivo&dir=$dir&id_exer=$id_exer'</script>");

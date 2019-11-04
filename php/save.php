@@ -4,7 +4,7 @@
 // * nome da base de dados: db_ifractions
 // * nome da tabela dados : ifractions
 
-// assets/cn/save.php on line 23, referer: http://milanesa.ime.usp.br/ifractions1/
+// php/save.php on line 23, referer: http://milanesa.ime.usp.br/ifractions1/
 
 /// @see js/circleOne.js
 /// @see js/squareOne.js
@@ -90,7 +90,7 @@ $time = $_REQUEST["s_time"];
 $deta = $_REQUEST["s_deta"];
 
 $play0 = $play; // /var/www/html/ifractions1/js/preMenu.js: insert_name
-$play = remove_accents($play); // /js/squareOne.js:vars=s_ip=143.107.45.11&s_name=&s_lang=pt&s_game=Square&s_mode=A&s_oper=Plus&s_leve=1&s_posi=1&s_resu=true&s_time=3&s_deta=numBlocks:3, valBlocks: 1,1,1, blockIndex: 2, floorIndex: 2; url=assets/cn/save.php
+$play = remove_accents($play); // /js/squareOne.js:vars=s_ip=143.107.45.11&s_name=&s_lang=pt&s_game=Square&s_mode=A&s_oper=Plus&s_leve=1&s_posi=1&s_resu=true&s_time=3&s_deta=numBlocks:3, valBlocks: 1,1,1, blockIndex: 2, floorIndex: 2; url=php/save.php
 
 if (is_object($lang))
   $lang = json_decode($lang);

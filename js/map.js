@@ -1,3 +1,13 @@
+
+/*
+    var mapState = {
+        create: function(){},
+        update: function(){},
+        ---------------------------- end of phaser functions
+        func_loadGame: function(){},
+    }
+*/
+
 var mapState = {
 
     create: function() {
