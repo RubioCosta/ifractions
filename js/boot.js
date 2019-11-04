@@ -1,22 +1,6 @@
 // OUTRAS VARIAVEIS GLOBAIS
 
-				/*
-				--- DO PHASER
-				this.game.world.centerX...
-				
-				--- vem do phaser.js
-				this.points
-				this.count 
-
-				--- falta olhar ainda  
-				this.rocks
-				this.trees
-				this.r_types
-				this t_types
-				this.wait;
-				*/
-
-				var passedLevels = 0;
+				var passedLevels;
 
 				//map
 				var kid, tractor;
@@ -52,9 +36,6 @@
 				var kidDirection, equals, counter, endCounter;
 				var xA, yA, xB, yB, blockW, blockH;
 
-
-
-
 	// INFO
 	var username; //player name
 	var lang; //language
@@ -87,22 +68,13 @@
     levelPosition = 0; //Map position
     levelMove = false; //Move to next position
     levelDifficulty = 0; //From one to five 
-    levelOperator= ""; //Plus; Minus; Mixed
+
+    levelOperator= ""; //Plus; Minus; Mixed 
+
     levelLabel= false; //Show block label
     levelShape = ""; //Circle; square
     levelType = ""; // A - Place distance; B - Select blocks
     levelMenu = true;
-
-    // Game Two : fractions association
-
-    //twoPosition = 0; //Map position
-    //twoMove = false; //Move to next position
-    //twoDifficulty = 0; //From one to five 
-    //levelOperator= ""; //Plus; Minus; Mixed
-    //twoLabel= false; //Show block label
-    //twoShape = ""; //Circle; square
-    //twoType = ""; // A - Normal position; B - Random position
-    //twoMenu= true;
 
     //adding game states (scenes)
     
@@ -112,20 +84,19 @@
 
     game.state.add('menu', menuState); // menu.js
 
-    game.state.add('menuCOne', menuCircleOne); // circleOne.js
-    game.state.add('mapCOne', mapCircleOne); // circleOne.js
-    game.state.add('gameCOne', gameCircleOne); // circleOne.js
-    game.state.add('endCOne', endCircleOne); // circleOne.js
+    game.state.add('map', mapState); // map.js
 
-    game.state.add('menuSOne', menuSquareOne); // squareOne.js
-    game.state.add('mapSOne', mapSquareOne); // squareOne.js
-    game.state.add('gameSOne', gameSquareOne); // squareOne.js
-    game.state.add('endSOne', endSquareOne); // squareOne.js
+    game.state.add('menuCircleOne', menuCircleOne); // circleOne.js
+    game.state.add('gameCircleOne', gameCircleOne); // circleOne.js
+    game.state.add('endCircleOne', endCircleOne); // circleOne.js
 
-    game.state.add('menuSTwo', menuSquareTwo); // squareTwo.js
-    game.state.add('mapSTwo', mapSquareTwo); // squareTwo.js
-    game.state.add('gameSTwo', gameSquareTwo); // squareTwo.js
-    game.state.add('endSTwo', endSquareTwo); // squareTwo.js
+    game.state.add('menuSquareOne', menuSquareOne); // squareOne.js
+    game.state.add('gameSquareOne', gameSquareOne); // squareOne.js
+    game.state.add('endSquareOne', endSquareOne); // squareOne.js
+
+    game.state.add('menuSquareTwo', menuSquareTwo); // squareTwo.js
+    game.state.add('gameSquareTwo', gameSquareTwo); // squareTwo.js
+    game.state.add('endSquareTwo', endSquareTwo); // squareTwo.js
 
     var loadAssets = {
 
@@ -175,7 +146,7 @@
 	        //operators
 	        game.load.image('add',		imgsrc+'operator/add.png');
 	        game.load.image('subtract', imgsrc+'operator/subtract.png');
-	        game.load.image('separator',	imgsrc+'operator/separator.png');
+	        game.load.image('separator',imgsrc+'operator/separator.png');
 	        game.load.image('equal', 	imgsrc+'operator/equal.png');
 	        
 	        //feedback
@@ -198,19 +169,19 @@
 	        game.load.image('balloon', 			imgsrc+'airballoon_upper.png');
 	        game.load.image('balloon_basket', 	imgsrc+'airballoon_base.png');
 	        game.load.image('birch', 			imgsrc+'birch.png');
-	        game.load.image('flag', imgsrc+'flag.png');
-	        game.load.image('house', imgsrc+'house.png');
-	        game.load.image('place_a', imgsrc+'place_a.png');
-	        game.load.image('place_b', imgsrc+'place_b.png');
-	        game.load.image('garage', imgsrc+'garage.png');
-	        game.load.image('farm', imgsrc+'farm.png');
-	        game.load.image('rock', imgsrc+'rock.png');
-	        game.load.image('school', imgsrc+'school.png');
-	        game.load.image('sign', imgsrc+'sign.png');
-	        game.load.image('tree1', imgsrc+'tree.png');
-	        game.load.image('tree2', imgsrc+'tree2.png');
-	        game.load.image('tree3', imgsrc+'tree3.png');
-	        game.load.image('tree4', imgsrc+'tree4.png');
+	        game.load.image('flag', 	imgsrc+'flag.png');
+	        game.load.image('house', 	imgsrc+'house.png');
+	        game.load.image('place_a', 	imgsrc+'place_a.png');
+	        game.load.image('place_b', 	imgsrc+'place_b.png');
+	        game.load.image('garage', 	imgsrc+'garage.png');
+	        game.load.image('farm', 	imgsrc+'farm.png');
+	        game.load.image('rock', 	imgsrc+'rock.png');
+	        game.load.image('school', 	imgsrc+'school.png');
+	        game.load.image('sign',		imgsrc+'sign.png');
+	        game.load.image('tree1', 	imgsrc+'tree.png');
+	        game.load.image('tree2', 	imgsrc+'tree2.png');
+	        game.load.image('tree3', 	imgsrc+'tree3.png');
+	        game.load.image('tree4', 	imgsrc+'tree4.png');
 	        
 	        // Loadind Sound Effects
 	        game.load.audio('sound_ok', ['assets/fx/ok.ogg', 'assets/fx/ok.mp3']);

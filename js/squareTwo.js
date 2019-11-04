@@ -6,13 +6,6 @@
         func_loadMap: function(){}
     };
 
-    var mapSquareTwo = {
-        create: function(){},
-        update: function(){},
-        ---------------------------- end of phaser functions
-        loadGame: function()
-    };
-
     var gameSquareTwo = {
         create: function(){},
         update: function(){},
@@ -91,7 +84,7 @@ var menuSquareTwo = {
             //event
             stairsMoreToLess1[i].inputEnabled = true;
             stairsMoreToLess1[i].input.useHandCursor = true;
-            stairsMoreToLess1[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'A' });
+            stairsMoreToLess1[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'A' });
             stairsMoreToLess1[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsMoreToLess1[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
@@ -122,7 +115,7 @@ var menuSquareTwo = {
             //event
             stairsMoreToLess2[i].inputEnabled = true;
             stairsMoreToLess2[i].input.useHandCursor = true;
-            stairsMoreToLess2[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'B' });
+            stairsMoreToLess2[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'B' });
             stairsMoreToLess2[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsMoreToLess2[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
@@ -153,7 +146,7 @@ var menuSquareTwo = {
             //event
             stairsLessToMore[i].inputEnabled = true;
             stairsLessToMore[i].input.useHandCursor = true;
-            stairsLessToMore[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, type: 'C' });
+            stairsLessToMore[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'C' });
             stairsLessToMore[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsLessToMore[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
@@ -176,172 +169,13 @@ var menuSquareTwo = {
         levelPosition = 0; //Map position
         levelMove = true; //Move no next point
         levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        levelType = this.type; //Type of game
-        passedLevels = 0;
+        leveloperator = this.operator; //Type of game
+        passedLevels = 0; //reset the game progress when entering a new level
 
-        game.state.start('mapSTwo');
+        game.state.start('map');
 
     },
     
-};
-
-/****************************** MAP ****************************/
-
-var mapSquareTwo={
-
-    create: function() {
-
-        // Background
-        game.add.image(0, 40, 'bgmap');
-        
-        // Navigation buttons
-        buttonSettings["func_addButtons"](1,0,
-                                    1,1,0,
-                                    0,0,
-                                    "menuSTwo",0);
-        
-        // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
-        // Progress bar
-        var percentText = passedLevels*25;
-        var percentBlocks = passedLevels;
-
-        for(var p=0;p<percentBlocks;p++){
-            var block = game.add.image(660+p*30, 10, 'block');
-            block.scale.setTo(3.75, 1); //Scaling to double width
-        }
-        game.add.text(820, 10, percentText+'%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(660, 10, 'pgbar');
-        
-         //Road
-        this.points = {
-        'x': [ 90, 204, 318, 432, 546, 660 ],
-        'y': [ 486, 422, 358, 294, 230, 166 ]
-        };
-
-        //House
-        var house = game.add.image(this.points.x[0], this.points.y[0], 'house');
-        house.scale.setTo(0.7);
-        house.anchor.setTo(0.7, 0.8);
-        //School
-        var school = game.add.image(this.points.x[5], this.points.y[5], 'school');
-        school.scale.setTo(0.35);
-        school.anchor.setTo(0.2, 0.7);
-        
-        //Trees and Rocks
-        this.rocks = {
-             'x': [156, 275, 276, 441, 452, 590, 712],
-             'y': [309, 543, 259, 156, 419, 136, 316]
-        }
-        this.r_types = [1, 1, 2, 1, 2, 2, 2];
-        
-        for(var i=0; i<this.r_types.length; i++){
-            if(this.r_types[i]==1){
-                var sprite = game.add.image(this.rocks.x[i], this.rocks.y[i], 'rock');
-                sprite.scale.setTo(0.32);
-                sprite.anchor.setTo(0.5, 0.95);
-            }else if(this.r_types[i]==2){
-                var sprite = game.add.image(this.rocks.x[i], this.rocks.y[i], 'birch');
-                sprite.scale.setTo(0.4);
-                sprite.anchor.setTo(0.5, 0.95);
-            }
-        }
-        this.trees = {
-             'x': [105, 214, 354, 364, 570, 600, 740, 779],
-             'y': [341, 219, 180, 520, 550, 392, 488, 286]
-        }
-        this.t_types = [2, 4, 3, 4, 1, 2, 4, 4];
-        
-        for(var i=0; i<this.t_types.length; i++){
-            var sprite = game.add.image(this.trees.x[i], this.trees.y[i], 'tree'+this.t_types[i]);
-            sprite.scale.setTo(0.6);
-            sprite.anchor.setTo(0.5, 0.95);
-        }
-        
-        // places
-        for (var p = 1; p < this.points.x.length -1; p++){
-            var place;
-            if(p<levelPosition)
-                place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
-            else if (levelMove && p==levelPosition)
-                place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
-            else
-                place = game.add.image(this.points.x[p], this.points.y[p], 'place_a');
-            place.anchor.setTo(0.5, 0.5);
-            place.scale.setTo(0.3);
-            var sign = game.add.image(this.points.x[p]-20, this.points.y[p]-60, 'sign');
-            sign.anchor.setTo(0.5, 1);
-            sign.scale.setTo(0.4);
-            if(p>0 && p<this.points.x.length-1){
-                var text = game.add.text(this.points.x[p]-23, this.points.y[p]-84, p, stylePlace);
-                text.anchor.setTo(0.35, 0.5);
-            }
-        }
-
-        // Kid start position
-        this.kid = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'kid_run');
-        this.kid.anchor.setTo(0.5,1);
-        this.kid.scale.setTo(0.5);
-        game.physics.arcade.enable(this.kid);
-        this.kid.animations.add('run');
-        this.kid.animations.play('run', 6, true);
-        
-        // Delay to next level
-        this.count = 0;
-        this.wait = 60;
-
-    },
-
-    update: function() {
-        
-        // Wait before moving or staring a game
-        this.count ++;
-        if(this.count<=this.wait) return;
-        
-        // If movement is stopped or position is 5 (final), load game
-        if(levelPosition==5){
-            levelMove = false;
-        }
-        
-        if(!levelMove){
-            this.loadGame();
-        }
-        
-        // If momevent is enabled, move to next point from actual
-        if(levelMove){
-            game.physics.arcade.moveToXY(
-                this.kid, 
-                this.points.x[levelPosition+1],
-                this.points.y[levelPosition+1],
-                100
-            );
-            
-            // I tractor reached the end, stop movement
-            if(Math.ceil(this.kid.x)==this.points.x[levelPosition+1] || Math.ceil(this.kid.y)==this.points.y[levelPosition+1]){
-                levelMove=false;
-                levelPosition += 1; //Update position
-            }
-        }
-
-    }, 
-        
-    //MapLoading function
-    loadGame: function(){
-
-        if(audioStatus){
-           beepSound.play();
-        }
-        if(levelPosition<5){
-            game.state.start('gameSTwo');
-        }else{
-            game.state.start('endSTwo');
-        }
-
-    }
-
 };
 
 /****************************** GAME ****************************/
@@ -365,7 +199,7 @@ var gameSquareTwo = {
         buttonSettings["func_addButtons"](1,1,
                                     1,1,0,
                                     1,0,
-                                    "menuSTwo", 0);
+                                    "menuSquareTwo", 0);
 
         //Clouds
         game.add.image(300, 100, 'cloud');
@@ -432,7 +266,7 @@ var gameSquareTwo = {
          //Creating blocks
         blockW = 400;
         blockH = 50;
-        if(levelType!="C"){
+        if(levelOperator!="C"){
             xA=230, yA=90;
             xB=xA, yB=yA+3*blockH+30;
         }else{
@@ -467,14 +301,14 @@ var gameSquareTwo = {
             
             //aux blocks
             var xAux = xA+i*widthA, yAux = yA+blockH+10;
-            if(levelType == 'C') yAux = yA;
+            if(levelOperator == 'C') yAux = yA;
             var block = game.add.graphics(xAux, yAux );
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthA, blockH);
                 
-                if(levelType!='A') block.alpha = 0;
+                if(levelOperator!='A') block.alpha = 0;
                 else block.alpha = 0.2;
                     
             auxblqA.add(block);
@@ -522,14 +356,14 @@ var gameSquareTwo = {
             blocksB.add(block);
             //aux blocks
             var xAux = xB+i*widthB, yAux = yB+blockH+10;
-            if(levelType == 'C') yAux = yB;
+            if(levelOperator == 'C') yAux = yB;
             var block = game.add.graphics(xAux, yAux);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthB, blockH);
                 
-                if(levelType!='A') block.alpha = 0;
+                if(levelOperator!='A') block.alpha = 0;
                 else block.alpha = 0.2;
             auxblqB.add(block);
             
@@ -666,7 +500,7 @@ var gameSquareTwo = {
 				// kid.animations.play('right', 8, true);
             }
             if(counter>endCounter){
-                game.state.start('mapSTwo');
+                game.state.start('map');
             }
         }
 
