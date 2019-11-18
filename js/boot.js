@@ -113,6 +113,7 @@
 	        game.load.image('flag_PE', 	imgsrc+'flag/PERU.jpg');
 	        game.load.image('flag_US', 	imgsrc+'flag/UNST.jpg');
 	        game.load.image('flag_FR', 	imgsrc+'flag/FRAN.jpg');
+	        game.load.image('flag_IT', 	imgsrc+'flag/ITAL.png');
 
 	        //scenario
 	        game.load.image('bgimage', 	imgsrc+'bg.jpg');
