@@ -2,6 +2,9 @@
 
 				var passedLevels;
 
+				//premenu
+				var errorEmptyName;
+
 				//map
 				var kid, tractor;
 
@@ -46,15 +49,18 @@
     var timer, totalTime;
 
     // variaveis globais
-    var audioStatus = true; // turns game audio on/off
+    var audioStatus = false; // turns game audio on/off
     var firstTime = true; //if player has just oppened the game
-    var debugMode = true; //turns console messages for developers on/off (changeable only by code)
+    var debugMode = false; //turns console messages for developers on/off (changeable only by code)
 
+    // game dimentions
+    var defaultWidth = 900;
+    var defaultHeight = 600;
 
     // Initialize the game
     var game = new Phaser.Game(
-        900, 
-        600, 
+        defaultWidth, 
+        defaultHeight, 
         Phaser.CANVAS,
         'fractions-game'
     );
@@ -99,10 +105,14 @@
     game.state.add('endSquareTwo', endSquareTwo); // squareTwo.js
 
     var loadAssets = {
+    		
+    	levelSpriteList: null,
+    	levelShapeList: null,
+    	levelTypeList: null,
 
     	preload: function(){
-    
-    		//directory auxiliar
+
+    		//auxiliar directory
 	        var imgsrc = 'assets/img/';
 
 	        //Progress bar image
@@ -121,18 +131,106 @@
 	        game.load.image('cloud', 	imgsrc+'cloud.png');
 	        game.load.image('floor',	imgsrc+'floor.png');
 	        game.load.image('road', 	imgsrc+'road.png');
-	        
+
 	        //game phases buttons list
-	        game.load.image('game1s', 	imgsrc+'game/1-left-subs.png');
-	        game.load.image('game2s', 	imgsrc+'game/1-right-nosubs.png');
-	        game.load.image('game3s', 	imgsrc+'game/2-left-subs.png');
-	        game.load.image('game4s', 	imgsrc+'game/2-right-nosubs.png');
-	        game.load.image('game1c', 	imgsrc+'game/3-left-subs.png');
-	        game.load.image('game2c', 	imgsrc+'game/3-right-nosubs.png');
-	        game.load.image('game3c', 	imgsrc+'game/4-left-subs.png');
-	        game.load.image('game4c', 	imgsrc+'game/4-right-nosubs.png');
-	        game.load.image('game5s', 	imgsrc+'game/5.png');
+	        this.levelSpriteList = [];
+
 	        
+	        var levelSpriteSource = [
+	        	'1-left-subs.png', 	//square I
+	        	'2-left-subs.png', 	//square II
+	        	'3-left-subs.png',	//circle I
+	        	'4-left-subs.png',	//circle II
+	        	'5.png'				//square III
+	        ];
+			
+			
+	        if(debugMode){
+	        	levelSpriteSource = [
+		        	'1-left-subs.png', 	//square I
+		        	'2-left-subs.png', 	//square II
+		        	'3-left-subs.png',	//circle I
+		        	'4-left-subs.png',	//circle II
+		        	'5.png',			//square III
+
+		        	'5.png',
+		        	'5.png',
+		        	'5.png',
+		        	'5.png',
+
+		        	'5.png',
+		        	'5.png',
+		        	'5.png',
+		        	'5.png'
+	        	];
+	    	}
+			
+
+	        for(var i=0; i<levelSpriteSource.length; i++){
+	        	this.levelSpriteList[i] = 'game'+i;
+	        	game.load.image(this.levelSpriteList[i], 	imgsrc+'game/'+levelSpriteSource[i]);
+	        }
+			
+			
+			this.levelShapeList = [
+				'Square', 
+				'Square', 
+				'Circle', 
+				'Circle', 
+				'Square',
+			];
+			
+			
+			if(debugMode){
+				this.levelShapeList = [
+					'Square', 
+					'Square', 
+					'Circle', 
+					'Circle', 
+					'Square',
+
+					'Square', 
+					'Square', 
+					'Square', 
+					'Square',
+
+					'Square', 
+					'Square', 
+					'Square', 
+					'Square'
+				];
+			}
+			
+        	this.levelTypeList  = [
+        		1, 
+        		2, 
+        		1, 
+        		2, 
+        		3
+        	];
+        	
+	       	
+	       	if(debugMode){
+	       		this.levelTypeList  = [
+	        		1, 
+	        		2, 
+	        		1, 
+	        		2, 
+	        		3,
+
+	        		3, 
+	        		3, 
+	        		3, 
+	        		3,
+
+	        		3, 
+	        		3, 
+	        		3, 
+	        		3
+	        	];
+	        }
+	       	
+
 	        //header menu buttons
 	        game.load.image('back', 	imgsrc+'menu/back.png');
 	        game.load.image('home', 	imgsrc+'menu/home.png');

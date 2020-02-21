@@ -38,10 +38,10 @@ var menuSquareOne = {
     create: function() {
           
         // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
-                                    0,1,0,
-                                    1,0,
-                                    0,0);
+        buttonSettings["func_addButtons"](true,true,
+                                    false,true,false,
+                                    true,false,
+                                    false,false);
         
         // Title
         var style = { font: '28px Arial', fill: '#00804d'};
@@ -194,9 +194,9 @@ var gameSquareOne = {
         game.add.image(0, 0, 'bgimage');
         
         // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
-                                    1,1,1,
-                                    1,0,
+        buttonSettings["func_addButtons"](true,true,
+                                    true,true,true,
+                                    true,false,
                                     "menuSquareOne", this.func_viewHelp);
 
         //Clouds

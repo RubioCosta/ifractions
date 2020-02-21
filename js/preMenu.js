@@ -31,91 +31,52 @@ var langState = {
 
     create: function() {
 
-    	// AUX
+        if(this.game.world.width != defaultWidth) this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
+
+        // AUX
 
         var style = { font: '28px Arial', fill: '#00804d', align: 'center' };
 
-		//AUDIO
+        // AUDIO
 
-        beepSound = game.add.audio('sound_beep');	// game sound
-        okSound = game.add.audio('sound_ok'); 		// correct answer sound
+        beepSound = game.add.audio('sound_beep');   // game sound
+        okSound = game.add.audio('sound_ok');       // correct answer sound
         errorSound = game.add.audio('sound_error'); // wrong answer sound
 
-    	//BACKGROUND
+        // BACKGROUND
 
         game.stage.backgroundColor = '#cce5ff';
         
         // LANGUAGES
 
-        //pt_BR
-        var titlePT = game.add.text(this.game.world.centerX - 220, this.game.world.centerY - 180, 'FRAÇÕES  ', style);
-        titlePT.anchor.setTo(1, 0.5);
-
-        var flagPT = game.add.sprite(this.game.world.centerX - 120, this.game.world.centerY - 180, 'flag_BR');       
-        flagPT.anchor.setTo(0.5, 0.5);
-        flagPT.inputEnabled = true;
-        flagPT.input.useHandCursor = true;
-        flagPT.events.onInputDown.add(this.func_setLang,{lang:'pt_BR'});
-        flagPT.events.onInputOver.add(function(){ flagPT.scale.setTo(1.05) });
-        flagPT.events.onInputOut.add(function(){ flagPT.scale.setTo(1) });
-
-        //it IT
-		var titleIT = game.add.text(this.game.world.centerX - 220, this.game.world.centerY, 'FRAZIONI  ', style);
-        titleIT.anchor.setTo(1, 0.5);
+        var flagObjList = [];
+        var langNameList= ['FRAÇÕES  ', 'FRAZIONI  ',   'FRACTIONS  ',  'FRACCIONES  ', 'FRACTIONS  '   ];
+        var flagList    = ['flag_BR',   'flag_IT',      'flag_US',      'flag_PE',      'flag_FR'       ];
+        var langList    = ['pt_BR',     'it_IT',        'en_US',        'es_PE',        'fr_FR'         ];
+        var x1List = [-220, -220, -220,  200, 200];
+        var x2List = [-120, -120, -120,  300, 300];
+        var yList  = [-180,    0,  180, -100, 100];
         
-        var flagIT = game.add.sprite(this.game.world.centerX - 120, this.game.world.centerY, 'flag_IT');       
-        flagIT.anchor.setTo(0.5, 0.5);
-        flagIT.inputEnabled = true;
-        flagIT.input.useHandCursor = true;
-        flagIT.events.onInputDown.add(this.func_setLang,{lang:'it_IT'});
-        flagIT.events.onInputOver.add(function(){ flagIT.scale.setTo(1.05) });
-        flagIT.events.onInputOut.add(function(){ flagIT.scale.setTo(1) });
+        for(var i=0; i<langList.length; i++){
+            var titleList = game.add.text(this.game.world.centerX + x1List[i], this.game.world.centerY + yList[i], langNameList[i], style);
+            titleList.anchor.setTo(1, 0.5);
 
-        //en_US
-        var titleEN = game.add.text(this.game.world.centerX - 220, this.game.world.centerY + 180, 'FRACTIONS  ', style);
-        titleEN.anchor.setTo(1, 0.5);
-        
-        var flagEN = game.add.sprite(this.game.world.centerX - 120, this.game.world.centerY + 180, 'flag_US');       
-        flagEN.anchor.setTo(0.5, 0.5);
-        flagEN.inputEnabled = true;
-        flagEN.input.useHandCursor = true;
-        flagEN.events.onInputDown.add(this.func_setLang,{lang:'en_US'});
-        flagEN.events.onInputOver.add(function(){ flagEN.scale.setTo(1.05) });
-        flagEN.events.onInputOut.add(function(){ flagEN.scale.setTo(1) });
+            flagObjList[i] = game.add.sprite(this.game.world.centerX + x2List[i], this.game.world.centerY + yList[i], flagList[i]);       
+            flagObjList[i].anchor.setTo(0.5, 0.5);
+            flagObjList[i].inputEnabled = true;
+            flagObjList[i].input.useHandCursor = true;
+            flagObjList[i].events.onInputDown.add(this.func_setLang,{ lang: langList[i] });
+            flagObjList[i].events.onInputOver.add(function(){ this.flagObj.scale.setTo(1.05) },{ flagObj: flagObjList[i] });
+            flagObjList[i].events.onInputOut.add( function(){ this.flagObj.scale.setTo(1)    },{ flagObj: flagObjList[i] });
+        }
 
-		//es_PE
-        var titleES = game.add.text(this.game.world.centerX + 200, this.game.world.centerY - 100, 'FRACCIONES  ', style);
-        titleES.anchor.setTo(1, 0.5);
-        
-        var flagES = game.add.sprite(this.game.world.centerX + 300, this.game.world.centerY - 100, 'flag_PE');       
-        flagES.anchor.setTo(0.5, 0.5);
-        flagES.inputEnabled = true;
-        flagES.input.useHandCursor = true;
-        flagES.events.onInputDown.add(this.func_setLang,{lang:'es_PE'});
-        flagES.events.onInputOver.add(function(){ flagES.scale.setTo(1.05) });
-        flagES.events.onInputOut.add(function(){ flagES.scale.setTo(1) });
-
-        //fr_FR
-        var titleFR = game.add.text(this.game.world.centerX + 200, this.game.world.centerY + 100, 'FRACTIONS  ', style);
-        titleFR.anchor.setTo(1, 0.5);
-        
-        var flagFR = game.add.sprite(this.game.world.centerX + 300, this.game.world.centerY + 100, 'flag_FR');       
-        flagFR.anchor.setTo(0.5, 0.5);
-        flagFR.inputEnabled = true;
-        flagFR.input.useHandCursor = true;
-        flagFR.events.onInputDown.add(this.func_setLang,{lang:'fr_FR'});
-        flagFR.events.onInputOver.add(function(){ flagFR.scale.setTo(1.05) });
-        flagFR.events.onInputOut.add(function(){ flagFR.scale.setTo(1) });
-
-        
         
     },
     
     func_setLang: function(){
-
-        //set language
+        // set language
         lang = this.lang;
-        //start resource loading
+        // start resource loading
         game.state.start('load');
     
     }
@@ -145,7 +106,7 @@ var loadState = {
         if(firstTime==true){ // select language screen - first time opening ifractions
           firstTime = false;
           game.state.start('name'); // go to select name screen, then menu
-        }else{			     // changing language during the game
+        }else{               // changing language during the game
           game.state.start('menu'); // go to menu
         }
     
@@ -164,13 +125,15 @@ var nameState = {
         var styleName = { font: '44px Arial', fill: '#000000', align: 'center' };
         
         // title
+
         var title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, style);
         title.anchor.setTo(0.5);
         
-		var errorEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", {font: '18px Arial', fill: '#330000', align: 'center'});
+        errorEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", {font: '18px Arial', fill: '#330000', align: 'center'});
         errorEmptyName.anchor.setTo(0.5);
 
         // "READY" button
+        
         var btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
         btn.lineStyle(1, 0x293d3d);
         btn.beginFill(0x3d5c5c);
@@ -180,7 +143,7 @@ var nameState = {
 
         btn.inputEnabled = true;
         btn.input.useHandCursor = true;
-		btn.events.onInputDown.add(this.func_checkEmptyName,{errorEmptyName: errorEmptyName});
+        btn.events.onInputDown.add(this.func_checkEmptyName);
         btn.events.onInputOver.add(function(){ btn.alpha=0.4 });
         btn.events.onInputOut.add(function(){ btn.alpha=0.5 });
         
@@ -201,10 +164,10 @@ var nameState = {
     func_checkEmptyName: function() {
 
         if(document.getElementById("name_id").value!=""){
-          	nameState["func_savename"]();
-			this.errorEmptyName.setText("");
+            nameState["func_savename"]();
+            errorEmptyName.setText("");
         }else{
-			this.errorEmptyName.setText(lang.empty_name);
+            errorEmptyName.setText(lang.empty_name);
         }
 
     },
@@ -213,16 +176,16 @@ var nameState = {
         
         // saves the typed name on username variable
         username = document.getElementById("name_id").value;
-        if(debugMode) console.log("user is" + username);        
+        if(debugMode) console.log("user is " + username);        
 
         document.getElementById("text-field-div").style.visibility = "hidden";
 
         //clears the text field again
         document.getElementById("name_id").value = "";
 
-		if(audioStatus){
-	        beepSound.play();
-    	}
+        if(audioStatus){
+            beepSound.play();
+        }
 
         game.state.start('menu');
         
@@ -232,85 +195,105 @@ var nameState = {
 
 var buttonSettings = {
 
+    m_info_left: null,
+
+    m_back: null, 
+    m_list: null,
+    m_help: null,
+
+    m_info_right: null, 
+
+    m_audio: null,
+    m_world: null, 
+
+    xEsq: null,
+    xDir: null,
+
     func_addButtons: function(left, right, b0Esq, b1Esq, b2Esq, b0Dir, b1Dir, phase, helpBtn){
         
-        var m_info_right, m_info_left;
-        var m_world, m_menu, m_back, m_help, m_audio;
-        var xEsq = 10;
-        var xDir = (game.world.width - 50 - 10);
-        
-        if(left == 1){
-            m_info_left = game.add.text(xEsq, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        this.xDir = defaultWidth - 50 - 10;
+        this.xEsq = 10;
+
+        if(left == true){
+            this.m_info_left = game.add.text(this.xEsq, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
         }
 
-        if(right == 1){
-            m_info_right = game.add.text(xDir+50, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-            m_info_right.anchor.setTo(1,0.02);
+        if(right == true){
+            this.m_info_right = game.add.text(this.xDir+50, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
+            this.m_info_right.anchor.setTo(1,0.02);
         }
 
-        //left buttons
-        if(b0Esq == 1){
+        // left buttons
+        if(b0Esq == true){
             // Return to diffculty
-            m_back = game.add.sprite(xEsq, 10, 'back'); 
-            m_back.inputEnabled = true;
-            m_back.input.useHandCursor = true;
-            m_back.events.onInputDown.add(this.loadState, {state: phase, beep: beepSound});
-            m_back.events.onInputOver.add(function(){ m_info_left.text = lang.menu_back});
-            m_back.events.onInputOut.add(function(){ m_info_left.text = ""});
+            this.m_back = game.add.sprite(this.xEsq, 10, 'back'); 
+            this.m_back.inputEnabled = true;
+            this.m_back.input.useHandCursor = true;
+            this.m_back.events.onInputDown.add(this.loadState, {state: phase, beep: beepSound});
+            this.m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back},{m_info_left: this.m_info_left});
+            this.m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
             
-            xEsq+=50;
+            this.xEsq+=50;
         }
 
-        if(b1Esq == 1){
+        if(b1Esq == true){
             // Return to menu button
-            m_list = game.add.sprite(xEsq, 10, 'list'); 
-            m_list.inputEnabled = true;
-            m_list.input.useHandCursor = true;
-            m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            m_list.events.onInputOver.add(function(){ m_info_left.text = lang.menu_list});
-            m_list.events.onInputOut.add(function(){ m_info_left.text = ""});
+            this.m_list = game.add.sprite(this.xEsq, 10, 'list'); 
+            this.m_list.inputEnabled = true;
+            this.m_list.input.useHandCursor = true;
+            this.m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
+            this.m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list},{m_info_left: this.m_info_left});
+            this.m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
             
-            xEsq+=50;
+            this.xEsq+=50;
         }
 
-        if(b2Esq == 1){
+        if(b2Esq == true){
             // Help button
-            m_help = game.add.sprite(xEsq, 10, 'help');
-            m_help.inputEnabled = true;
-            m_help.input.useHandCursor = true;
-            m_help.events.onInputDown.add(helpBtn, {beep: beepSound});
-            m_help.events.onInputOver.add(function(){ m_info_left.text = lang.menu_help});
-            m_help.events.onInputOut.add(function(){ m_info_left.text = ""});
+            this.m_help = game.add.sprite(this.xEsq, 10, 'help');
+            this.m_help.inputEnabled = true;
+            this.m_help.input.useHandCursor = true;
+            this.m_help.events.onInputDown.add(helpBtn, {beep: beepSound});
+            this.m_help.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_help},{m_info_left: this.m_info_left});
+            this.m_help.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
             
-            xEsq+=50;
+            this.xEsq+=50;
         }
 
-        //rightButtons
-        if(b0Dir == 1){
-            m_audio = game.add.sprite(xDir, 10, 'audio');
-            audioStatus ? m_audio.frame = 0 : m_audio.frame = 1;
-            m_audio.inputEnabled = true;
-            m_audio.input.useHandCursor = true;
-            m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; m_audio.frame = 1; }else{ audioStatus=true; m_audio.frame = 0; }});
-            m_audio.events.onInputOver.add(function(){ m_info_right.text = lang.audio });
-            m_audio.events.onInputOut.add(function(){ m_info_right.text = "" });
+        // rightButtons
+        if(b0Dir == true){
+            this.m_audio = game.add.sprite(this.xDir, 10, 'audio');
+            audioStatus ? this.m_audio.frame = 0 : this.m_audio.frame = 1;
+            this.m_audio.inputEnabled = true;
+            this.m_audio.input.useHandCursor = true;
+            this.m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; this.m_audio.frame = 1; }else{ audioStatus=true; this.m_audio.frame = 0; }},{m_audio: this.m_audio});
+            this.m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio },{m_info_right: this.m_info_right});
+            this.m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" },{m_info_right: this.m_info_right});
 
-            xDir-=50;
+            this.xDir-=50;
         }
 
-        if(b1Dir == 1){
+        if(b1Dir == true){
             // Return to language button
-            m_world = game.add.sprite(xDir, 10, 'world'); 
-            m_world.inputEnabled = true;
-            m_world.input.useHandCursor = true;
-            m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-            m_world.events.onInputOver.add(function(){ m_info_right.text = lang.menu_world });
-            m_world.events.onInputOut.add(function(){ m_info_right.text = "" });
+            this.m_world = game.add.sprite(this.xDir, 10, 'world'); 
+            this.m_world.inputEnabled = true;
+            this.m_world.input.useHandCursor = true;
+            this.m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+            this.m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world },{m_info_right : this.m_info_right});
+            this.m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" },{m_info_right: this.m_info_right});
                   
-            xDir-=50;
+            this.xDir-=50;
         }
 
     },
+
+    changeRightButtonX: function(newWidth){
+        this.m_info_right.x = newWidth - 10;
+        this.m_audio.x = newWidth - 50 - 10;
+        console.log(this.m_audio.x+" "+newWidth);
+        this.m_world.x = newWidth - 50 - 50 - 10;
+    },
+
 
     loadState: function(){
 

@@ -26,10 +26,10 @@ var mapState = {
         game.add.image(0, 40, 'bgmap');
         
         // Navigation buttons
-        buttonSettings["func_addButtons"](1,0,
-                                    1,1,0,
-                                    0,0,
-                                    this.menuStateString,0);
+        buttonSettings["func_addButtons"](true,false,
+                                    true,true,false,
+                                    false,false,
+                                    this.menuStateString,false);
         
         // Styles for labels
         var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};

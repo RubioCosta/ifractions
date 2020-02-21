@@ -40,10 +40,10 @@ var menuSquareTwo = {
     create: function() {
           
         // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
-                                    0,1,0,
-                                    1,0,
-                                    0,0);
+        buttonSettings["func_addButtons"](true,true,
+                                    false,true,false,
+                                    true,false,
+                                    false,false);
         
         // Setting title
         var style = { font: '28px Arial', fill: '#00804d'};
@@ -196,10 +196,10 @@ var gameSquareTwo = {
         game.add.image(0, 0, 'bgimage');
         
         // Navigation buttons
-        buttonSettings["func_addButtons"](1,1,
-                                    1,1,0,
-                                    1,0,
-                                    "menuSquareTwo", 0);
+        buttonSettings["func_addButtons"](true,true,
+                                    true,true,false,
+                                    true,false,
+                                    "menuSquareTwo", false);
 
         //Clouds
         game.add.image(300, 100, 'cloud');

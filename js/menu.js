@@ -11,125 +11,124 @@
 
 var menuState = {
 
+    inputStartPosition: null,
+    inputEndPosition: null,
+    
+    isCameraMoving: false,
+
+    extraWidth: null,
+
+    title: null,
+    lbl_game: null,
+    player_info: null,
+
     // creating game menu screen assets
     create: function() {
         
-     	// BACKGROUND
-     	  
-        // Floor
-        for(var i=0;i<9;i++){
-            game.add.image(i*100, 501, 'floor');
+        if(loadAssets.levelSpriteList.length > 8){
+            var aux = loadAssets.levelSpriteList.length-8;
+            this.extraWidth = (aux%2==0) ? (aux/2)*235 : ((aux+1)/2)*235;
+        }else{
+            this.extraWidth = 0;
         }
 
+        // CAMERA
+        this.game.world.setBounds(0, 0, this.game.world.width + this.extraWidth, this.game.world.height);
+     	  
+        // Floor
+        for(var i=0;i<this.game.world.width/100;i++){
+            game.add.image(i*100, 501, 'floor');
+        }
         // LABELS
 
         // Player name
-        var player_info = game.add.text(this.game.world.centerX, 40, lang.welcome + ", " + username + "!", { font: "20px Arial", fill: "#330000", align: "center" });        
-        player_info.anchor.setTo(0.5,0.5);
+        this.player_info = game.add.text(this.game.world.centerX - this.extraWidth/2, 40, lang.welcome + ", " + username + "!", { font: "20px Arial", fill: "#330000", align: "center" });        
+        this.player_info.anchor.setTo(0.5,0.5);
 
         // Title : Select a game
         var style = { font: "32px Arial", fill: "#00804d", align: "center" };
-        var title = game.add.text(this.game.world.centerX, 80, lang.menu_title, style);
-        title.anchor.setTo(0.5,0.5);
+        this.title = game.add.text(this.game.world.centerX - this.extraWidth/2, 80, lang.menu_title, style);
+        this.title.anchor.setTo(0.5,0.5);
 
         // Subtitle : Game mode 
         var style_game = { font: "27px Arial", fill: "#003cb3", align: "center" };
-        var lbl_game = game.add.text(this.game.world.centerX, 110, "", style_game);
-        lbl_game.anchor.setTo(0.5,0.5);
+        this.lbl_game = game.add.text(this.game.world.centerX - this.extraWidth/2, 110, "", style_game);
+        this.lbl_game.anchor.setTo(0.5,0.5);
 
         // BUTTONS
 
         // Navigation buttons
-		buttonSettings["func_addButtons"](0,1,
-    	                             0,0,0,
-                                     1,1,
-                                     0,0);
+		buttonSettings["func_addButtons"](false,true,
+    	                             false,false,false,
+                                     true,true,
+                                     false,false);
         
         // Game buttons
-        
-        menu1 = game.add.sprite(this.game.world.centerX - 350, this.game.world.centerY - 70, 'game1s');
-        menu2 = game.add.sprite(this.game.world.centerX - 200, this.game.world.centerY - 70, 'game2s');
-        menu3 = game.add.sprite(this.game.world.centerX - 350, this.game.world.centerY + 90, 'game3s');
-        menu4 = game.add.sprite(this.game.world.centerX - 200, this.game.world.centerY + 90, 'game4s');
-        
-        menu5 = game.add.sprite(this.game.world.centerX + 10,  this.game.world.centerY - 70, 'game1c');
-        menu6 = game.add.sprite(this.game.world.centerX + 160, this.game.world.centerY - 70, 'game2c');
-        menu7 = game.add.sprite(this.game.world.centerX + 10,  this.game.world.centerY + 90, 'game3c');
-        menu8 = game.add.sprite(this.game.world.centerX + 160, this.game.world.centerY + 90, 'game4c');
+		var x = -350;
+		var y = -70;
+        var menuObjList = [];
+		for(var i=0; i<loadAssets.levelSpriteList.length; i++){
+			menuObjList[i] = game.add.sprite(defaultWidth/2 + x, this.game.world.centerY + y, 'game'+i);
+			menuObjList[i].anchor.setTo(0.5, 0.5);
+	        menuObjList[i].inputEnabled = true;
+	        menuObjList[i].input.useHandCursor = true;
+	        menuObjList[i].events.onInputDown.add(this.func_loadGame,{levelType: loadAssets.levelTypeList[i], beep: beepSound, shape: loadAssets.levelShapeList[i], label : true, game: this.game, extraWidth: this.extraWidth});
+	        menuObjList[i].events.onInputOver.add(this.func_showTitle,{levelType: loadAssets.levelTypeList[i], beep: beepSound, shape : loadAssets.levelShapeList[i], label : true, menu: menuObjList[i], lbl_game: this.lbl_game});
+	        menuObjList[i].events.onInputOut.add(this.func_clearTitle, {menu: menuObjList[i], lbl_game: this.lbl_game});
+			if((i+1)%2==1){
+				y=90;
+			}else{
+				y=-70; 
+				x+=235;
+			}
+		}
 
-        menu9 = game.add.sprite(this.game.world.centerX + 350, this.game.world.centerY - 70, 'game5s');
+        // TURNING MOUSE INPUT CAPTURE ON TO MANAGE PAGE SCROLL
+        this.input.mouse.capture = true;
 
-        // ACTIONS
+    },
 
-        // Game Button actions
+    update: function(){
         
-        menu1.anchor.setTo(0.5, 0.5);
-        menu1.inputEnabled = true;
-        menu1.input.useHandCursor = true;
-        menu1.events.onInputDown.add(this.func_loadGame,{levelType:1, beep: beepSound, shape : "Square", label : true});
-        menu1.events.onInputOver.add(this.func_showTitle,{levelType:1, beep: beepSound, shape : "Square", label : true, menu: menu1, lbl_game: lbl_game});
-        menu1.events.onInputOut.add(this.func_clearTitle, {menu: menu1, lbl_game: lbl_game});
-        
-        menu2.anchor.setTo(0.5, 0.5);
-        menu2.inputEnabled = true;
-        menu2.input.useHandCursor = true;
-        menu2.events.onInputDown.add(this.func_loadGame,{levelType:1, beep: beepSound, shape : "Square", label : false});
-        menu2.events.onInputOver.add(this.func_showTitle,{levelType:1, beep: beepSound, shape : "Square", label : false, menu: menu2, lbl_game: lbl_game});
-        menu2.events.onInputOut.add(this.func_clearTitle, {menu: menu2, lbl_game: lbl_game});
-        
-        menu3.anchor.setTo(0.5, 0.5);
-        menu3.inputEnabled = true;
-        menu3.input.useHandCursor = true;
-        menu3.events.onInputDown.add(this.func_loadGame,{levelType:2, beep: beepSound, shape : "Square", label : true});
-        menu3.events.onInputOver.add(this.func_showTitle,{levelType:2, beep: beepSound, shape : "Square", label : true, menu: menu3, lbl_game: lbl_game});
-        menu3.events.onInputOut.add(this.func_clearTitle, {menu: menu3, lbl_game: lbl_game});
-        
-        menu4.anchor.setTo(0.5, 0.5);
-        menu4.inputEnabled = true;
-        menu4.input.useHandCursor = true;
-        menu4.events.onInputDown.add(this.func_loadGame,{levelType:2, beep: beepSound, shape : "Square", label : false});
-        menu4.events.onInputOver.add(this.func_showTitle,{levelType:2, beep: beepSound, shape : "Square", label : false, menu: menu4, lbl_game: lbl_game});
-        menu4.events.onInputOut.add(this.func_clearTitle, {menu: menu4, lbl_game: lbl_game});
-        
-        menu5.anchor.setTo(0.5, 0.5);
-        menu5.inputEnabled = true;
-        menu5.input.useHandCursor = true;
-        menu5.events.onInputDown.add(this.func_loadGame,{levelType:1, beep: beepSound, shape : "Circle", label : true});
-        menu5.events.onInputOver.add(this.func_showTitle,{levelType:1, beep: beepSound, shape : "Circle", label : true, menu: menu5, lbl_game: lbl_game});
-        menu5.events.onInputOut.add(this.func_clearTitle, {menu: menu5, lbl_game: lbl_game});
-        
-        menu6.anchor.setTo(0.5, 0.5);
-        menu6.inputEnabled = true;
-        menu6.input.useHandCursor = true;
-        menu6.events.onInputDown.add(this.func_loadGame,{levelType:1, beep: beepSound, shape : "Circle", label : false});
-        menu6.events.onInputOver.add(this.func_showTitle,{levelType:1, beep: beepSound, shape : "Circle", label : false, menu: menu6, lbl_game: lbl_game});
-        menu6.events.onInputOut.add(this.func_clearTitle, {menu: menu6, lbl_game: lbl_game});
-        
-        menu7.anchor.setTo(0.5, 0.5);
-        menu7.inputEnabled = true;
-        menu7.input.useHandCursor = true;
-        menu7.events.onInputDown.add(this.func_loadGame,{levelType:2, beep: beepSound, shape : "Circle", label : true});
-        menu7.events.onInputOver.add(this.func_showTitle,{levelType:2, beep: beepSound, shape : "Circle", label : true, menu: menu7, lbl_game: lbl_game});
-        menu7.events.onInputOut.add(this.func_clearTitle, {menu: menu7, lbl_game: lbl_game});
-        
-        menu8.anchor.setTo(0.5, 0.5);
-        menu8.inputEnabled = true;
-        menu8.input.useHandCursor = true;
-        menu8.events.onInputDown.add(this.func_loadGame,{levelType:2, beep: beepSound, shape : "Circle", label : false});
-        menu8.events.onInputOver.add(this.func_showTitle,{levelType:2, beep: beepSound, shape : "Circle", label : false, menu: menu8, lbl_game: lbl_game});
-        menu8.events.onInputOut.add(this.func_clearTitle, {menu: menu8, lbl_game: lbl_game});
 
-        menu9.anchor.setTo(0.5, 0.5);
-        menu9.inputEnabled = true;
-        menu9.input.useHandCursor = true;
-        menu9.events.onInputDown.add(this.func_loadGame,{levelType:3, beep: beepSound, shape : "Square", label : true});
-        menu9.events.onInputOver.add(this.func_showTitle,{levelType:3, beep: beepSound, shape : "Square", label : true, menu: menu9, lbl_game: lbl_game});
-        menu9.events.onInputOut.add(this.func_clearTitle, {menu: menu9, lbl_game: lbl_game});
+        if(this.input.activePointer.leftButton.isUp){
+            this.inputUp();
+        }
+
+        if(this.input.activePointer.leftButton.isDown){
+            this.inputDown();
+        }
+
+        if(this.isCameraMoving){
+            this.camera.x += (this.inputStartPosition.x - this.input.activePointer.x)/50;
+            this.title.x = (this.game.world.centerX - this.extraWidth/2) + this.camera.x;
+            this.lbl_game.x = (this.game.world.centerX - this.extraWidth/2) + this.camera.x;
+            this.player_info.x = (this.game.world.centerX - this.extraWidth/2) + this.camera.x;
+
+            buttonSettings["changeRightButtonX"]((defaultWidth) + this.camera.x);
+        }
 
     },
     
+    inputDown: function(){
+        if(!this.isCameraMoving){
+            this.inputStartPosition = new Phaser.Point(this.input.activePointer.x, this.input.activePointer.y);
+        } 
+
+        this.isCameraMoving = true;
+
+    },
+
+    inputUp: function(){
+        this.isCameraMoving = false;
+    },
+
     //calls the selected game menu screen
     func_loadGame: function(){
+
+        if(debugMode) console.log("antes: "+this.game.world.width);
+        this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
+        if(debugMode) console.log("depois: "+this.game.world.width);
 
         if(audioStatus){
             this.beep.play();
@@ -197,17 +196,10 @@ var menuState = {
         }
         
         if(type!=""){
-          //circ/quad       A/B/C
+          //circ/quad       I/II/III
             title  += " " + type;
         }
-        
-        if(this.label){
-          //-    sem/com                  legendas
-            title += " - " + lang.with_name + " " + lang.label_name;
-        }else{
-            title += " - " + lang.without_name + " " + lang.label_name;
-        }
-        
+
         this.lbl_game.text = title;
 
         this.menu.scale.setTo(1.05);
