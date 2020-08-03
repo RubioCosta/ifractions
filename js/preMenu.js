@@ -1,25 +1,25 @@
 
 /*
-    var langState = {
+    let langState = {
         create: function(){},
         --------------------------------------- end of phaser functions
         func_setLang: function(){} //calls loadState
     };
     
-    var loadState = {
+    let loadState = {
         preload: function(){},
         create: function(){} //calls nameState
         -------------------------------------- end of phaser functions
     };
         
-    var nameState = {
+    let nameState = {
         create: function(){},
         ------------------------------------------------ end of phaser functions
         func_checkEmptyName: function(){}
         func_savename: function(){} //calls menu.js -> menuState
     };
 
-    var buttonSettings = {
+    let buttonSettings = {
         func_addButtons: function(_,_,_,_,_,_,_,_,_){},
         loadState: function(){}
     };
@@ -27,7 +27,7 @@
 
 // "choose language" screen
 
-var langState = {
+let langState = {
 
     create: function() {
 
@@ -35,7 +35,7 @@ var langState = {
 
         // AUX
 
-        var style = { font: '28px Arial', fill: '#00804d', align: 'center' };
+        const style = { font: '28px Arial', fill: '#00804d', align: 'center' };
 
         // AUDIO
 
@@ -49,16 +49,16 @@ var langState = {
         
         // LANGUAGES
 
-        var flagObjList = [];
-        var langNameList= ['FRAÇÕES  ', 'FRAZIONI  ',   'FRACTIONS  ',  'FRACCIONES  ', 'FRACTIONS  '   ];
-        var flagList    = ['flag_BR',   'flag_IT',      'flag_US',      'flag_PE',      'flag_FR'       ];
-        var langList    = ['pt_BR',     'it_IT',        'en_US',        'es_PE',        'fr_FR'         ];
-        var x1List = [-220, -220, -220,  200, 200];
-        var x2List = [-120, -120, -120,  300, 300];
-        var yList  = [-180,    0,  180, -100, 100];
+        let flagObjList = [];
+        const langNameList= ['FRAÇÕES  ', 'FRAZIONI  ',   'FRACTIONS  ',  'FRACCIONES  ', 'FRACTIONS  '   ];
+        const flagList    = ['flag_BR',   'flag_IT',      'flag_US',      'flag_PE',      'flag_FR'       ];
+        const langList    = ['pt_BR',     'it_IT',        'en_US',        'es_PE',        'fr_FR'         ];
+        const x1List = [-220, -220, -220,  200, 200];
+        const x2List = [-120, -120, -120,  300, 300];
+        const yList  = [-180,    0,  180, -100, 100];
         
-        for(var i=0; i<langList.length; i++){
-            var titleList = game.add.text(this.game.world.centerX + x1List[i], this.game.world.centerY + yList[i], langNameList[i], style);
+        for(let i=0; i<langList.length; i++){
+            let titleList = game.add.text(this.game.world.centerX + x1List[i], this.game.world.centerY + yList[i], langNameList[i], style);
             titleList.anchor.setTo(1, 0.5);
 
             flagObjList[i] = game.add.sprite(this.game.world.centerX + x2List[i], this.game.world.centerY + yList[i], flagList[i]);       
@@ -84,12 +84,12 @@ var langState = {
 };
 
 // "loading" screen and load json dictionary
-var loadState = {
+let loadState = {
     
     preload: function() {
         
         // Displaying the progress bar
-        var progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
+        let progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
         progressBar.anchor.setTo(0.5, 0.5);
         game.load.setPreloadSprite(progressBar);
         
@@ -115,18 +115,17 @@ var loadState = {
 };
 
 // "username" screen
-var nameState = {
+let nameState = {
 
     create: function() {
                     
         // AUX
 
-        var style = { font: '30px Arial', fill: '#00804d', align: 'center' };
-        var styleName = { font: '44px Arial', fill: '#000000', align: 'center' };
+        const style = { font: '30px Arial', fill: '#00804d', align: 'center' };
         
         // title
 
-        var title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, style);
+        let title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, style);
         title.anchor.setTo(0.5);
         
         errorEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", {font: '18px Arial', fill: '#330000', align: 'center'});
@@ -134,7 +133,7 @@ var nameState = {
 
         // "READY" button
         
-        var btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
+        let btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
         btn.lineStyle(1, 0x293d3d);
         btn.beginFill(0x3d5c5c);
         btn.drawRect(0, 0, 168, 60);
@@ -147,12 +146,12 @@ var nameState = {
         btn.events.onInputOver.add(function(){ btn.alpha=0.4 });
         btn.events.onInputOut.add(function(){ btn.alpha=0.5 });
         
-        var ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
+        let ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
         ready.anchor.setTo(0.5);      
 
         document.getElementById("text-field-div").style.visibility = "visible";
         document.getElementById("name_id").addEventListener('keypress', function(e){
-            var keycode = e.keycode ? e.keycode : e.which; 
+            let keycode = e.keycode ? e.keycode : e.which; 
             //se apertar enter vai para ready, assim como o botão
             if(keycode == 13){
                 nameState["func_checkEmptyName"]();
@@ -193,7 +192,7 @@ var nameState = {
 
 };
 
-var buttonSettings = {
+let buttonSettings = {
 
     m_info_left: null,
 
@@ -290,7 +289,7 @@ var buttonSettings = {
     changeRightButtonX: function(newWidth){
         this.m_info_right.x = newWidth - 10;
         this.m_audio.x = newWidth - 50 - 10;
-        console.log(this.m_audio.x+" "+newWidth);
+        if(debugMode) console.log(this.m_audio.x+" "+newWidth);
         this.m_world.x = newWidth - 50 - 50 - 10;
     },
 

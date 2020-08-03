@@ -1,92 +1,99 @@
+
+/*
+    let loadAssets = {
+		preload: function(){},
+		create: function()
+        ---------------------------- end of phaser functions
+	};
+*/
+
 // OUTRAS VARIAVEIS GLOBAIS
 
-				var passedLevels;
+				let passedLevels;
 
 				//premenu
-				var errorEmptyName;
+				let errorEmptyName;
 
 				//map
-				var kid, tractor;
+				let kid, tractor;
 
 				//square 1 + circle 1
-				var startX;
-				var clicked, hideLabels, animate, checkCollide, result, hasFigure;
-				var detail;
-				var endPosition;
-				var fractionClicked, fractionIndex;
-				var blocks, maxBlocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator; //blocks control
+				let startX;
+				let clicked, hideLabels, checkCollide, result, hasFigure;
+				let detail;
+				let endPosition;
+				let fractionClicked, fractionIndex;
+				let blocks, maxBlocks, numBlocks, curBlock, blockDirection, blockDistance, blockLabel, blockSeparator; //blocks control
 
 				//square 1
-				var blockWidth, blockIndex;
-				var floorBlocks, floorIndex, floorCount, floorClicked, curFloor;
-				var move, moveCounter, moveEnd;
-				var arrow;
-				var arrowPlace;
+				let blockWidth, blockIndex;
+				let floorBlocks, floorIndex, floorCount, floorClicked, curFloor;
+				let move, moveCounter, moveEnd;
+				let arrow;
+				let arrowPlace;
 
 				//circle 1
-				var blockSize, blockAngle, blockTraceColor;
-				var fly, flyCounter, flyend; //flyvariables
-				var trace; //circle trace
-				var numPlus, endIndex;
-				var kid_walk, balloon, basket;
-				var balloonPlace;
+				let blockSize, blockAngle, blockTraceColor;
+				let fly, flyCounter, flyend; //flyvariables
+				let trace; //circle trace
+				let numPlus, endIndex;
+				let kid_walk, balloon, basket;
+				let balloonPlace;
 
 				//square 2
-				var sizeA, sizeB, valueA, valueB;
-				var clickA, clickB, animateA, animateB, result, animate, cDelay, eDelay;
-				var blocksA, blocksB, auxblqA, auxblqB;
-				var labelA, fractionA, separatorA, labelB, fractionB, separatorB;
-				var kidDirection, equals, counter, endCounter;
-				var xA, yA, xB, yB, blockW, blockH;
+				let sizeA, sizeB, valueA, valueB;
+				let clickA, clickB, animateA, animateB, animate, cDelay, eDelay;
+				let blocksA, blocksB, auxblqA, auxblqB;
+				let labelA, fractionA, separatorA, labelB, fractionB, separatorB;
+				let kidDirection, equals, counter, endCounter;
+				let xA, yA, xB, yB, blockW, blockH;
 
 	// INFO
-	var username; //player name
-	var lang; //language
+	let username; //player name
+	let lang; //language
 
 	// IMAGES
-	var beepSound, okSound, errorSound; //sounds
-	var okImg, errorImg;
-    var timer, totalTime;
+	let beepSound, okSound, errorSound; //sounds
+	let okImg, errorImg;
+    let timer, totalTime;
 
     // variaveis globais
-    var audioStatus = false; // turns game audio on/off
-    var firstTime = true; //if player has just oppened the game
-    var debugMode = false; //turns console messages for developers on/off (changeable only by code)
+    let audioStatus = false; // turns game audio on/off
+    let firstTime = true; //if player has just oppened the game
+    let debugMode = true; //turns console messages for developers on/off (changeable only by code)
 
-    // game dimentions
-    var defaultWidth = 900;
-    var defaultHeight = 600;
+	// game dimentions
+	const defaultWidth = 900;
+	const defaultHeight = 600;
 
-    // Initialize the game
-    var game = new Phaser.Game(
-        defaultWidth, 
-        defaultHeight, 
-        Phaser.CANVAS,
-        'fractions-game'
-    );
-
-    hip = "143.107.45.11"; //Host ip
-    name = ""; //player name
-    lang = ""; //language
-
+	// Initialize the game
+	let game = new Phaser.Game(
+		defaultWidth, 
+		defaultHeight, 
+		Phaser.CANVAS,
+		'fractions-game'
+	);
+	
+    const hip = "143.107.45.11"; //Host ip
+	
     // Game One : kid and truck
 
-    levelPosition = 0; //Map position
-    levelMove = false; //Move to next position
-    levelDifficulty = 0; //From one to five 
+    let levelPosition = 0; //Map position
+    let levelMove = false; //Move to next position
+    let levelDifficulty = 0; //From one to five 
 
-    levelOperator= ""; //Plus; Minus; Mixed 
+    let levelOperator = ""; //Plus; Minus; Mixed 
 
-    levelLabel= false; //Show block label
-    levelShape = ""; //Circle; square
-    levelType = ""; // A - Place distance; B - Select blocks
-    levelMenu = true;
+    let levelLabel= false; //Show block label
+    let levelShape = ""; //Circle; square
+    let levelType = ""; // A - Place distance; B - Select blocks
+    let levelMenu = true;
 
     //adding game states (scenes)
     
-    game.state.add('language', langState); // boot.js
-    game.state.add('load', loadState); // boot.js
-    game.state.add('name', nameState); // boot.js
+    game.state.add('language', langState); // preMenu.js
+    game.state.add('load', loadState); // preMenu.js
+    game.state.add('name', nameState); // preMenu.js
 
     game.state.add('menu', menuState); // menu.js
 
@@ -104,16 +111,12 @@
     game.state.add('gameSquareTwo', gameSquareTwo); // squareTwo.js
     game.state.add('endSquareTwo', endSquareTwo); // squareTwo.js
 
-    var loadAssets = {
-    		
-    	levelSpriteList: null,
-    	levelShapeList: null,
-    	levelTypeList: null,
+    let loadAssets = {
 
     	preload: function(){
 
     		//auxiliar directory
-	        var imgsrc = 'assets/img/';
+	        const imgsrc = 'assets/img/';
 
 	        //Progress bar image
 	        game.load.image('progressBar', imgsrc+'pgbar.png');
@@ -136,7 +139,7 @@
 	        this.levelSpriteList = [];
 
 	        
-	        var levelSpriteSource = [
+	        let levelSpriteSource = [
 	        	'1-left-subs.png', 	//square I
 	        	'2-left-subs.png', 	//square II
 	        	'3-left-subs.png',	//circle I
@@ -146,13 +149,7 @@
 			
 			
 	        if(debugMode){
-	        	levelSpriteSource = [
-		        	'1-left-subs.png', 	//square I
-		        	'2-left-subs.png', 	//square II
-		        	'3-left-subs.png',	//circle I
-		        	'4-left-subs.png',	//circle II
-		        	'5.png',			//square III
-
+	        	levelSpriteSource.push(
 		        	'5.png',
 		        	'5.png',
 		        	'5.png',
@@ -162,11 +159,11 @@
 		        	'5.png',
 		        	'5.png',
 		        	'5.png'
-	        	];
+				);
 	    	}
 			
 
-	        for(var i=0; i<levelSpriteSource.length; i++){
+	        for(let i=0; i<levelSpriteSource.length; i++){
 	        	this.levelSpriteList[i] = 'game'+i;
 	        	game.load.image(this.levelSpriteList[i], 	imgsrc+'game/'+levelSpriteSource[i]);
 	        }
@@ -182,13 +179,7 @@
 			
 			
 			if(debugMode){
-				this.levelShapeList = [
-					'Square', 
-					'Square', 
-					'Circle', 
-					'Circle', 
-					'Square',
-
+				this.levelShapeList.push(
 					'Square', 
 					'Square', 
 					'Square', 
@@ -198,7 +189,7 @@
 					'Square', 
 					'Square', 
 					'Square'
-				];
+				);
 			}
 			
         	this.levelTypeList  = [
@@ -211,13 +202,7 @@
         	
 	       	
 	       	if(debugMode){
-	       		this.levelTypeList  = [
-	        		1, 
-	        		2, 
-	        		1, 
-	        		2, 
-	        		3,
-
+	       		this.levelTypeList.push(
 	        		3, 
 	        		3, 
 	        		3, 
@@ -227,7 +212,7 @@
 	        		3, 
 	        		3, 
 	        		3
-	        	];
+				);
 	        }
 	       	
 
@@ -298,6 +283,7 @@
     	
     };
 
-    //starting to boot game
-    game.state.add('loadAssets', loadAssets); // squareTwo.js
-   	game.state.start('loadAssets');
+    game.state.add('loadAssets', loadAssets); // boot.js
+
+	// We finished loading everything and the first state is called
+	game.state.start('loadAssets');

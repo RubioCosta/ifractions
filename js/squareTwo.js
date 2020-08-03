@@ -1,12 +1,12 @@
 /*
 
-    var menuSquareTwo = {
+    let menuSquareTwo = {
         create: function(){},
         ---------------------------- end of phaser functions
         func_loadMap: function(){}
     };
 
-    var gameSquareTwo = {
+    let gameSquareTwo = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -22,7 +22,7 @@
             
     };
 
-    var endSquareTwo = {
+    let endSquareTwo = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -35,7 +35,7 @@
 
 /****************************** MENU ****************************/
 
-var menuSquareTwo = {
+let menuSquareTwo = {
 
     create: function() {
           
@@ -46,34 +46,34 @@ var menuSquareTwo = {
                                     false,false);
         
         // Setting title
-        var style = { font: '28px Arial', fill: '#00804d'};
-        var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        let style = { font: '28px Arial', fill: '#00804d'};
+        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
         title.anchor.setTo(0.5, 0.5);
         
         //SETTING DIFFICULTY LEVELS
 
-        var maxHeight = 120;  //Max height of a stair
-        var stairHeight = 29; //height growth of a stair
-        var stairWidth = 80;  //Width of a stair
-        var startStair = 240;
-        var startSymbol = 150;
-        var startSquare = (startSymbol/2)+startStair+stairWidth*5;
+        let maxHeight = 120;  //Max height of a stair
+        let stairHeight = 29; //height growth of a stair
+        let stairWidth = 80;  //Width of a stair
+        let startStair = 240;
+        let startSymbol = 150;
+        let startSquare = (startSymbol/2)+startStair+stairWidth*5;
         
-        var equalsIcon = game.add.sprite(startSymbol, 300, 'equal');
+        let equalsIcon = game.add.sprite(startSymbol, 300, 'equal');
             equalsIcon.frame = 0;
             equalsIcon.scale.setTo(0.7);
             equalsIcon.anchor.setTo(0.5,0.5);
             
         //First stairs, More divisions to less divisions 1, 5 levels
 
-        var stairsMoreToLess1 = [];
+        let stairsMoreToLess1 = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 100+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 100+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsMoreToLess1[i] = game.add.graphics(0, 0);
             stairsMoreToLess1[i].lineStyle(1, 0xFFFFFF, 1);
@@ -89,22 +89,22 @@ var menuSquareTwo = {
             stairsMoreToLess1[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         }
 
         //Second stairs, More divisions to less divisions 2, 5 levels
 
-        var stairsMoreToLess2 = [];
+        let stairsMoreToLess2 = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 270+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 270+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsMoreToLess2[i] = game.add.graphics(0, 0);
             stairsMoreToLess2[i].lineStyle(1, 0xFFFFFF, 1);
@@ -120,22 +120,22 @@ var menuSquareTwo = {
             stairsMoreToLess2[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
         
         //Third stairs, Less divisions to more divisions, 5 levels
 
-        var stairsLessToMore = [];
+        let stairsLessToMore = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 440+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 440+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsLessToMore[i] = game.add.graphics(0, 0);
             stairsLessToMore[i].lineStyle(1, 0xFFFFFF, 1);
@@ -151,9 +151,9 @@ var menuSquareTwo = {
             stairsLessToMore[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
 
@@ -180,7 +180,7 @@ var menuSquareTwo = {
 
 /****************************** GAME ****************************/
 
-var gameSquareTwo = {
+let gameSquareTwo = {
 
     create: function() {  
         
@@ -207,13 +207,13 @@ var gameSquareTwo = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleFraction = { font: '20px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleFraction = { font: '20px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor
-        for(var i=0;i<9;i++){
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
              
@@ -246,7 +246,7 @@ var gameSquareTwo = {
         if(debugMode) console.log("----------");
         if(debugMode) console.log("Diff " + levelDifficulty + ", ini " + ((levelDifficulty-1)*2+1) + ", end " + ((levelDifficulty-1)*2+3));
         
-        var rPoint = game.rnd.integerInRange((levelDifficulty-1)*2+1,(levelDifficulty-1)*2+3);
+        let rPoint = game.rnd.integerInRange((levelDifficulty-1)*2+1,(levelDifficulty-1)*2+3);
         sizeA = points[rPoint];
         
         if(debugMode) console.log("Rpoint " + rPoint + ", val " + sizeA);
@@ -275,15 +275,15 @@ var gameSquareTwo = {
         }
              
         //Blocks A
-        var widthA = blockW/sizeA;
-        var lineColor = 0x1e2f2f;
-        var fillColor = 0x83afaf;
-        var fillColorS = 0xe0ebeb;
+        let widthA = blockW/sizeA;
+        let lineColor = 0x1e2f2f;
+        let fillColor = 0x83afaf;
+        let fillColorS = 0xe0ebeb;
         
-        for(var i=0; i<sizeA; i++){
+        for(let i=0; i<sizeA; i++){
             //if(debugMode) console.log("Block A"+i+": x:"+(xA+i*widthA)+", y:"+yA);
                         
-            var block = game.add.graphics(xA+i*widthA, yA);
+            let block = game.add.graphics(xA+i*widthA, yA);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(2, lineColor);
                 block.beginFill(fillColor);
@@ -300,9 +300,9 @@ var gameSquareTwo = {
             blocksA.add(block);
             
             //aux blocks
-            var xAux = xA+i*widthA, yAux = yA+blockH+10;
+            let xAux = xA+i*widthA, yAux = yA+blockH+10;
             if(levelOperator == 'C') yAux = yA;
-            var block = game.add.graphics(xAux, yAux );
+                block = game.add.graphics(xAux, yAux );
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
@@ -316,8 +316,8 @@ var gameSquareTwo = {
         }
         
         //label block A
-        var labelX = xA+blockW+30;
-        var labelY = yA+blockH/2;
+        let labelX = xA+blockW+30;
+        let labelY = yA+blockH/2;
         labelA = game.add.text(labelX, labelY, sizeA , styleFraction);
         labelA.anchor.setTo(0.5, 0.41);
         
@@ -333,14 +333,14 @@ var gameSquareTwo = {
         separatorA.alpha = 0;
         
         //Blocks B
-        var widthB = blockW/sizeB;
+        let widthB = blockW/sizeB;
         lineColor = 0x260d0d;
         fillColor = 0xd27979;
         fillColorS = 0xf2d9d9;
                
-        for(var i=0; i<sizeB; i++){
+        for(let i=0; i<sizeB; i++){
                         
-            var block = game.add.graphics(xB+i*widthB, yB);
+            let block = game.add.graphics(xB+i*widthB, yB);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(2, lineColor);
                 block.beginFill(fillColor);
@@ -355,9 +355,9 @@ var gameSquareTwo = {
 
             blocksB.add(block);
             //aux blocks
-            var xAux = xB+i*widthB, yAux = yB+blockH+10;
+            let xAux = xB+i*widthB, yAux = yB+blockH+10;
             if(levelOperator == 'C') yAux = yB;
-            var block = game.add.graphics(xAux, yAux);
+                block = game.add.graphics(xAux, yAux);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
@@ -410,7 +410,7 @@ var gameSquareTwo = {
     update: function() {
     	if (game.physics.arcade.distanceToPointer(kid, game.input.activePointer) > 20 ){	
     		    		
-        	var xPos = game.input.mousePointer.x;
+        	let xPos = game.input.mousePointer.x;
         	
         	/*if (xPos < kid.x + 10){
         		kidDirection='right';
@@ -433,7 +433,7 @@ var gameSquareTwo = {
     	
         //If clicked A only, animate
         if(animateA){
-            for(var i=0;i<valueA;i++){
+            for(let i=0;i<valueA;i++){
                 blocksA.children[i].y +=2;
             }
             if(blocksA.children[0].y>=auxblqA.children[0].y){
@@ -446,7 +446,7 @@ var gameSquareTwo = {
 
         //If clicked B only, animate
         if(animateB){ 
-            for(var i=0;i<valueB;i++){
+            for(let i=0;i<valueB;i++){
                 blocksB.children[i].y +=2;
             }
             if(blocksB.children[0].y>=auxblqB.children[0].y){
@@ -524,7 +524,7 @@ var gameSquareTwo = {
             }else{    
                 errorTextA.setText("");
                 errorTextB.setText("");
-                for(var i=0;i<sizeA;i++){
+                for(let i=0;i<sizeA;i++){
                     if(i<=this.indice){
                         blocksA.children[i].alpha = 1;
                     }else{
@@ -549,7 +549,7 @@ var gameSquareTwo = {
             }else{
                 errorTextA.setText("");
                 errorTextB.setText("");
-                for(var i=0;i<sizeB;i++){
+                for(let i=0;i<sizeB;i++){
                     if(i<=this.indice){
                         blocksB.children[i].alpha = 1;
                     }else{
@@ -567,13 +567,13 @@ var gameSquareTwo = {
     func_outSquare: function(){
 
         if(!clickA && this.who=="A"){
-            for(var i=0;i<=this.indice;i++){
+            for(let i=0;i<=this.indice;i++){
                 blocksA.children[i].alpha = 0.5;
             }
             fractionA.alpha = 0;
         }
         if(!clickB && this.who=="B"){
-            for(var i=0;i<=this.indice;i++){
+            for(let i=0;i<=this.indice;i++){
                 blocksB.children[i].alpha = 0.5;
             }
             fractionB.alpha = 0;
@@ -584,7 +584,7 @@ var gameSquareTwo = {
     func_clickSquare: function(){
 
         if(!clickA && this.who=="A" && this.indice!=sizeA-1){
-            for(var i=0;i<sizeA;i++){
+            for(let i=0;i<sizeA;i++){
                 blocksA.children[i].inputEnabled = false;
                 if(i<=this.indice){
                     blocksA.children[i].alpha = 1;
@@ -605,7 +605,7 @@ var gameSquareTwo = {
         }
 
         if(!clickB && this.who=="B" && this.indice!=sizeB-1){
-            for(var i=0;i<sizeB;i++){
+            for(let i=0;i<sizeB;i++){
                 blocksB.children[i].inputEnabled = false;
                 if(i<=this.indice){
                     blocksB.children[i].alpha = 1;
@@ -629,12 +629,12 @@ var gameSquareTwo = {
     
     func_postScore: function (){
     
-        var abst = "numBlocksA:" + sizeA + ", valueA: " + valueA +", numBlocksB: " + sizeB + ", valueB: " + valueB;
+        let abst = "numBlocksA:" + sizeA + ", valueA: " + valueA +", numBlocksB: " + sizeB + ", valueB: " + valueB;
         
-        var hr = new XMLHttpRequest();
+        let hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
-        var url = "php/save.php";
-        var vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
+        let url = "php/save.php";
+        let vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
 
         vars += "&s_oper=Equal&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
@@ -644,7 +644,7 @@ var gameSquareTwo = {
             if(debugMode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
-                var return_data = hr.responseText;
+                let return_data = hr.responseText;
                 if(debugMode) console.log(return_data);
             }
         }
@@ -657,15 +657,15 @@ var gameSquareTwo = {
     //Calculation help functions
     func_getRndDivisor: function(number){ //Get random divisor for a number
 
-        var div = []; //Divisors found
-        var p = 0; //current dividor index
-        for(var i=2; i<number;i++){
+        let div = []; //Divisors found
+        let p = 0; //current dividor index
+        for(let i=2; i<number;i++){
             if(number%i==0){
                 div[p] = i;
                 p++;
             }
         }
-        var x = game.rnd.integerInRange(0,p-1);
+        let x = game.rnd.integerInRange(0,p-1);
         return div[x];
 
     },
@@ -674,7 +674,7 @@ var gameSquareTwo = {
 
 /****************************** END ****************************/
 
-var endSquareTwo = {
+let endSquareTwo = {
 
     create: function() {  
 
@@ -687,18 +687,18 @@ var endSquareTwo = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor
-        for(var i=0;i<9;i++){
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
         
         // Progress bar
-        for(var p=1;p<=5;p++){
-            var block = game.add.image(660+(p-1)*30, 10, 'block');
+        for(let p=1;p<=5;p++){
+            let block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);

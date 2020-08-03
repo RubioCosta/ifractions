@@ -1,6 +1,6 @@
 
 /*
-    var menuState = {
+    let menuState = {
         create: function(){},
         ---------------------------- end of phaser functions
         func_loadGame: function(){},
@@ -9,7 +9,7 @@
     }
 */
 
-var menuState = {
+let menuState = {
 
     inputStartPosition: null,
     inputEndPosition: null,
@@ -26,7 +26,7 @@ var menuState = {
     create: function() {
         
         if(loadAssets.levelSpriteList.length > 8){
-            var aux = loadAssets.levelSpriteList.length-8;
+            let aux = loadAssets.levelSpriteList.length-8;
             this.extraWidth = (aux%2==0) ? (aux/2)*235 : ((aux+1)/2)*235;
         }else{
             this.extraWidth = 0;
@@ -36,7 +36,7 @@ var menuState = {
         this.game.world.setBounds(0, 0, this.game.world.width + this.extraWidth, this.game.world.height);
      	  
         // Floor
-        for(var i=0;i<this.game.world.width/100;i++){
+        for(let i=0;i<this.game.world.width/100;i++){
             game.add.image(i*100, 501, 'floor');
         }
         // LABELS
@@ -46,12 +46,12 @@ var menuState = {
         this.player_info.anchor.setTo(0.5,0.5);
 
         // Title : Select a game
-        var style = { font: "32px Arial", fill: "#00804d", align: "center" };
+        const style = { font: "32px Arial", fill: "#00804d", align: "center" };
         this.title = game.add.text(this.game.world.centerX - this.extraWidth/2, 80, lang.menu_title, style);
         this.title.anchor.setTo(0.5,0.5);
 
         // Subtitle : Game mode 
-        var style_game = { font: "27px Arial", fill: "#003cb3", align: "center" };
+        const style_game = { font: "27px Arial", fill: "#003cb3", align: "center" };
         this.lbl_game = game.add.text(this.game.world.centerX - this.extraWidth/2, 110, "", style_game);
         this.lbl_game.anchor.setTo(0.5,0.5);
 
@@ -64,10 +64,10 @@ var menuState = {
                                      false,false);
         
         // Game buttons
-		var x = -350;
-		var y = -70;
-        var menuObjList = [];
-		for(var i=0; i<loadAssets.levelSpriteList.length; i++){
+		let x = -350;
+		let y = -70;
+        let menuObjList = [];
+		for(let i=0; i<loadAssets.levelSpriteList.length; i++){
 			menuObjList[i] = game.add.sprite(defaultWidth/2 + x, this.game.world.centerY + y, 'game'+i);
 			menuObjList[i].anchor.setTo(0.5, 0.5);
 	        menuObjList[i].inputEnabled = true;
@@ -176,8 +176,8 @@ var menuState = {
 
     func_showTitle: function(){
         
-        var title = "";
-        var type = "";
+        let title = "";
+        let type = "";
         
         if(this.levelType==1){
             type = "I";

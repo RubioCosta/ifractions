@@ -1,12 +1,12 @@
 
 /*
-    var menuCircleOne = {
+    let menuCircleOne = {
         create: function(){},
         ---------------------------- end of phaser functions
         func_loadMap: function(){}
     };
 
-    var gameCircleOne = {
+    let gameCircleOne = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -21,7 +21,7 @@
             //func_getRndDivisor: function(){}
     };
 
-    var endCircleOne = {
+    let endCircleOne = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -33,7 +33,7 @@
 
 /****************************** MENU ****************************/
 
-var menuCircleOne = {
+let menuCircleOne = {
     
     create: function() {
                 
@@ -44,46 +44,46 @@ var menuCircleOne = {
                                     false,false);        
         
         // Title
-        var style = { font: '28px Arial', fill: '#00804d'};
-        var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        const style = { font: '28px Arial', fill: '#00804d'};
+        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
         title.anchor.setTo(0.5, 0.5);
                 
         //SETTING DIFFICULTY LEVELS
 
-        var maxHeight = 120; //Max height of a stair
-        var stairHeight = 29; //height growth of a stair
-        var stairWidth = 85; //Width of a stair
-        var startStair = 240;
-        var startSymbol = 150;
-        var startCircle = (startSymbol/2)+startStair+stairWidth*5;
+        let maxHeight = 120; //Max height of a stair
+        let stairHeight = 29; //height growth of a stair
+        let stairWidth = 85; //Width of a stair
+        let startStair = 240;
+        let startSymbol = 150;
+        let startCircle = (startSymbol/2)+startStair+stairWidth*5;
         
          //First stairs, plus, 5 levels, blue circle
 
-        var blueCircle = game.add.graphics(startCircle, 195);
+        let blueCircle = game.add.graphics(startCircle, 195);
             blueCircle.anchor.setTo(0.5,0.5);
             blueCircle.lineStyle(2, 0x31314e);
             blueCircle.beginFill(0xefeff5);
             blueCircle.drawCircle(0, 0, 60);
             blueCircle.endFill();
 
-        var plusArrowIcon = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
+        let plusArrowIcon = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
             plusArrowIcon.scale.setTo(0.35);
             plusArrowIcon.alpha = 0.8;
             plusArrowIcon.anchor.setTo(0.5,0.5);
 
-        var plusKidIcon = game.add.sprite(startSymbol, 195, 'kid_walk'); 
+        let plusKidIcon = game.add.sprite(startSymbol, 195, 'kid_walk'); 
             plusKidIcon.scale.setTo(0.6);
             plusKidIcon.alpha = 0.8;
             plusKidIcon.anchor.setTo(0.5,0.5);
         
-        var stairsPlus = [];
+        let stairsPlus = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 135+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 135+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsPlus[i] = game.add.graphics(0, 0);
             stairsPlus[i].lineStyle(1, 0xFFFFFF, 1);
@@ -99,39 +99,39 @@ var menuCircleOne = {
             stairsPlus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         }
         
         //Second stairs, minus, 5 levels, red circle
 
-        var redCircle = game.add.graphics(startCircle, 350);
+        let redCircle = game.add.graphics(startCircle, 350);
             redCircle.anchor.setTo(0.5,0.5);
             redCircle.lineStyle(2, 0xb30000);
             redCircle.beginFill(0xefeff5);
             redCircle.drawCircle(0, 0, 60);
             redCircle.endFill();
 
-        var minusArrowIcon = game.add.sprite(startSymbol, 350, 'h_arrow');
+        let minusArrowIcon = game.add.sprite(startSymbol, 350, 'h_arrow');
             minusArrowIcon.scale.setTo(-0.35, 0.35);
             minusArrowIcon.alpha = 0.8;
             minusArrowIcon.anchor.setTo(0.5,0.5);
 
-        var minusKidIcon = game.add.sprite(startSymbol+40, 350, 'kid_walk');
+        let minusKidIcon = game.add.sprite(startSymbol+40, 350, 'kid_walk');
             minusKidIcon.scale.setTo(-0.6, 0.6);
             minusKidIcon.alpha = 0.8;
             minusKidIcon.anchor.setTo(0.5,0.5);
 
-        var stairsMinus = [];
+        let stairsMinus = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 285+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 285+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsMinus[i] = game.add.graphics(0, 0);
             stairsMinus[i].lineStyle(1, 0xFFFFFF, 1);
@@ -146,41 +146,41 @@ var menuCircleOne = {
             stairsMinus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
             stairsMinus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
         
         //Thrid stairs, mixed, 5 levels, two circles
 
-        var blueCircle2 = game.add.graphics(startCircle-30, 500);
+        let blueCircle2 = game.add.graphics(startCircle-30, 500);
             blueCircle2.anchor.setTo(0.5,0.5);
             blueCircle2.lineStyle(2, 0x31314e);
             blueCircle2.beginFill(0xefeff5);
             blueCircle2.drawCircle(0, 0, 60);
             blueCircle2.endFill();
         
-        var redCircle2 = game.add.graphics(startCircle+40, 500);
+        let redCircle2 = game.add.graphics(startCircle+40, 500);
             redCircle2.anchor.setTo(0.5,0.5);
             redCircle2.lineStyle(2, 0xb30000);
             redCircle2.beginFill(0xefeff5);
             redCircle2.drawCircle(0, 0, 60);
             redCircle2.endFill();
         
-        var doubleArrowIcon = game.add.sprite(startSymbol, 500, 'h_double'); 
+        let doubleArrowIcon = game.add.sprite(startSymbol, 500, 'h_double'); 
             doubleArrowIcon.scale.setTo(0.5);
             doubleArrowIcon.anchor.setTo(0.5,0.5);
             doubleArrowIcon.alpha = 0.8;
         
-        var stairsMixed = [];
+        let stairsMixed = [];
 
-        for(var i=1;i<=5;i++){
+        for(let i=1;i<=5;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 435+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 435+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsMixed[i] = game.add.graphics(0, 0);
             stairsMixed[i].lineStyle(1, 0xFFFFFF, 1);
@@ -196,9 +196,9 @@ var menuCircleOne = {
             stairsMixed[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
 
@@ -225,7 +225,7 @@ var menuCircleOne = {
 
 /****************************** GAME ****************************/
 
-var gameCircleOne = {
+let gameCircleOne = {
 
     create: function() {
         
@@ -251,9 +251,9 @@ var gameCircleOne = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor and road
         startX = 66; //Initial kid and place position
@@ -261,18 +261,18 @@ var gameCircleOne = {
         
         placeDistance = 156; //Distance between places
         blockSize = 60;
-        for(var i=0;i<9;i++){
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
-        var road = game.add.image(47, 515, 'road');
+        let road = game.add.image(47, 515, 'road');
         road.scale.setTo(1.01,0.94);
         if(levelType=='A'){
             road.inputEnabled = true;
             road.events.onInputDown.add(this.func_setPlace, {beep: beepSound}); //enabling input for tablets
         }
         
-        for(var p=0;p<=5;p++){// Places
-            var place = game.add.image(66+p*placeDistance, 526, 'place_a');
+        for(let p=0;p<=5;p++){// Places
+            let place = game.add.image(66+p*placeDistance, 526, 'place_a');
             place.anchor.setTo(0.5);
             place.scale.setTo(0.3);
             game.add.text(66+p*placeDistance, 560, p , stylePlace).anchor.setTo(0.5); 
@@ -295,7 +295,7 @@ var gameCircleOne = {
                 
         //generator
         //Circles and fractions
-        var maxBlocks = levelPosition+1; //Maximum blocks according to difficulty
+        let maxBlocks = levelPosition+1; //Maximum blocks according to difficulty
         if(levelType=='B' || levelOperator=='Mixed') maxBlocks = 6;
         blocks = game.add.group(); //Fraction arrays
         numBlocks = game.rnd.integerInRange(levelPosition, maxBlocks); //Number of blocks
@@ -314,17 +314,17 @@ var gameCircleOne = {
         fractionIndex = -1; //Index of clicked fraction (game B)
         numPlus = game.rnd.integerInRange(1, numBlocks-1);
         
-        for(var p=0;p<numBlocks;p++){
+        for(let p=0;p<numBlocks;p++){
 
-            var portion = game.rnd.integerInRange(1, levelDifficulty); //Portion of the circle, according to difficulty
+            let portion = game.rnd.integerInRange(1, levelDifficulty); //Portion of the circle, according to difficulty
             detail += portion+",";
             
             if(portion==levelDifficulty){
                 hasFigure = true;
             }
             
-            var direction = '';
-            var lineColor = '';
+            let direction = '';
+            let lineColor = '';
             if(levelOperator=='Mixed'){
                 if(p<=numPlus){
                     direction = 'Right';
@@ -333,8 +333,8 @@ var gameCircleOne = {
                     direction = 'Left';
                     lineColor = 0xb30000;
                 }
-                /*var directions = ['Right','Left'];
-                var rndIndex = game.rnd.integerInRange(0, 1);
+                /*let directions = ['Right','Left'];
+                let rndIndex = game.rnd.integerInRange(0, 1);
                 direction = directions[rndIndex];
                 if(rndIndex==0) lineColor = 0x31314e;
                 else lineColor = 0xb30000;*/
@@ -347,7 +347,7 @@ var gameCircleOne = {
             }
             
             blockTraceColor[p] = lineColor;
-            var block = game.add.graphics(startX, 490-p*blockSize);
+            let block = game.add.graphics(startX, 490-p*blockSize);
                 block.anchor.setTo(0.5,0.5);
 
                 block.lineStyle(2, lineColor);
@@ -364,28 +364,28 @@ var gameCircleOne = {
                 blockAngle.push(360);
 
                 if(levelLabel){
-                    var labelX = startX;
+                    let labelX = startX;
                     if(levelOperator=='Minus') labelX -= 65;
                     else labelX += 65;
-                    var label = game.add.text(labelX, 490-p*blockSize, portion , styleLabel);
+                    let label = game.add.text(labelX, 490-p*blockSize, portion , styleLabel);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
             }else{
-                var distance = 360/portion+5;
+                let distance = 360/portion+5;
                 block.arc(0, 0, blockSize/2, game.math.degToRad(distance), 0, true);
 
                 blockDistance.push(Math.floor(placeDistance/portion));
                 blockAngle.push(distance);
 
                 if(levelLabel){
-                    var labelX = startX;
+                    let labelX = startX;
                     if(levelOperator=='Minus') labelX -= 65;
                     else labelX += 65;
-                    var separator = game.add.sprite(labelX, 485-p*blockSize, 'separator');
+                    let separator = game.add.sprite(labelX, 485-p*blockSize, 'separator');
                     separator.anchor.setTo(0.5, 0.5);
                     blockSeparator.add(separator);
-                    var label = game.add.text(labelX, 488-p*blockSize, '1\n'+portion , styleLabel);
+                    let label = game.add.text(labelX, 488-p*blockSize, '1\n'+portion , styleLabel);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -425,7 +425,7 @@ var gameCircleOne = {
         if(levelType=='B'){
             balloonPlace = startX;
             endIndex = game.rnd.integerInRange(numPlus, numBlocks);
-            for(var i=0;i<endIndex;i++){
+            for(let i=0;i<endIndex;i++){
                 if(blockDirection[i]=='Right')
                     balloonPlace += blockDistance[i];
                 else if(blockDirection[i]=='Left')
@@ -510,7 +510,7 @@ var gameCircleOne = {
         //Start animation
         if(animate){
             
-            var color = '';
+            let color = '';
             if(blockDirection[curBlock]=='Right'){
                 kid_walk.x+=2;
                 color = 'rgba(0, 51, 153, 1)';
@@ -521,7 +521,7 @@ var gameCircleOne = {
             
             trace.rect(kid_walk.x, 526, 2, 2, color);
             
-            for(var i=0;i<numBlocks;i++){ //Moving every block
+            for(let i=0;i<numBlocks;i++){ //Moving every block
                 if(blockDirection[curBlock]=='Right'){
                     blocks.children[i].x +=2;
                 }else{
@@ -636,7 +636,7 @@ var gameCircleOne = {
     func_overCircle: function(){
         
         if(!clicked){
-            for(var i=0;i<numBlocks;i++){
+            for(let i=0;i<numBlocks;i++){
                 if(i<=this.indice){
                     blocks.children[i].alpha = 1;
                 }else{
@@ -649,7 +649,7 @@ var gameCircleOne = {
 
     func_outCircle: function(){
         if(!clicked){
-            for(var i=0;i<=this.indice;i++){
+            for(let i=0;i<=this.indice;i++){
                 blocks.children[i].alpha = 0.5;
             }
         }
@@ -659,9 +659,9 @@ var gameCircleOne = {
     func_clickCircle: function(){
 
         if(!clicked){
-            var minusBlocks = 0;
+            let minusBlocks = 0;
             
-            for(var i=0;i<numBlocks;i++){
+            for(let i=0;i<numBlocks;i++){
                 if(i<=this.indice){
                     fractionIndex = this.indice;
                     blocks.children[i].alpha = 1;
@@ -723,14 +723,14 @@ var gameCircleOne = {
 
     func_postScore: function (){
     
-        var abst = "numCircles:" + numBlocks + ", valCircles: " + detail + " balloonX: " + basket.x + ", selIndex: " + fractionIndex;
+        let abst = "numCircles:" + numBlocks + ", valCircles: " + detail + " balloonX: " + basket.x + ", selIndex: " + fractionIndex;
 
-        var lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
+        let lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
 
-        var hr = new XMLHttpRequest();
+        let hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
-        var url = "php/save.php";
-        var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
+        let url = "php/save.php";
+        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
 
         vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
@@ -740,7 +740,7 @@ var gameCircleOne = {
             if(debugMode) console.log(hr);
 
             if(hr.readyState == 4 && hr.status == 200) {
-                var return_data = hr.responseText;
+                let return_data = hr.responseText;
                 if(debugMode) console.log(return_data);
             }
         }
@@ -753,11 +753,11 @@ var gameCircleOne = {
     func_viewHelp: function(){
 
         if(!clicked){
-            var pointer;
+            let pointer;
             if(levelType=='A'){
-                var pointer = game.add.image(endPosition, 490, 'pointer');
+                let pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
-                var pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
+                let pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
             }
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
@@ -767,8 +767,8 @@ var gameCircleOne = {
     
     func_checkOverlap: function (spriteA, spriteB) {
 
-        var xA = spriteA.x;
-        var xB = spriteB.x;
+        let xA = spriteA.x;
+        let xB = spriteB.x;
                 
         if(Math.abs(xA-xB)>14){
             return false;
@@ -782,7 +782,7 @@ var gameCircleOne = {
 
 /****************************** END ****************************/
 
-var endCircleOne = {
+let endCircleOne = {
     
     create: function() {  
         
@@ -795,18 +795,18 @@ var endCircleOne = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor
-        for(var i=0;i<9;i++){
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
         
         // Progress bar
-        for(var p=1;p<=5;p++){
-            var block = game.add.image(660+(p-1)*30, 10, 'block');
+        for(let p=1;p<=5;p++){
+            let block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);
@@ -822,7 +822,7 @@ var endCircleOne = {
         this.kid = game.add.sprite(0, -152 , 'kid_run');
         this.kid.anchor.setTo(0.5,0.5);
         this.kid.scale.setTo(0.7);
-        var walk = this.kid.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11]);
+        let walk = this.kid.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11]);
         
         //globo
         this.balloon = game.add.sprite(0, -260, 'balloon');

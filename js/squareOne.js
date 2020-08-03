@@ -1,12 +1,12 @@
 
 /*
-    var menuSquareOne = {
+    let menuSquareOne = {
         create: function(){},
         ---------------------------- end of phaser functions
         func_loadMap: function(){}
     };
 
-    var gameSquareOne = {
+    let gameSquareOne = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -21,7 +21,7 @@
             //func_getRndDivisor: function(){}
     };
 
-    var endSquareOne = {
+    let endSquareOne = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -33,7 +33,7 @@
 
 /****************************** MENU ****************************/
 
-var menuSquareOne = {
+let menuSquareOne = {
 	
     create: function() {
           
@@ -44,47 +44,47 @@ var menuSquareOne = {
                                     false,false);
         
         // Title
-        var style = { font: '28px Arial', fill: '#00804d'};
-        var title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        let style = { font: '28px Arial', fill: '#00804d'};
+        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
         title.anchor.setTo(0.5, 0.5);
         
         //SETTING DIFFICULTY LEVELS
 
-        var maxHeight = 120; //Max height of a stair
-        var stairHeight = 40; //height growth of a stair
-        var stairWidth = 100; //Width of a stair
-        var startStair = 320;
-        var startSymbol = 180; 
-        var startSquare = (startSymbol/2)+startStair+stairWidth*3;
+        let maxHeight = 120; //Max height of a stair
+        let stairHeight = 40; //height growth of a stair
+        let stairWidth = 100; //Width of a stair
+        let startStair = 320;
+        let startSymbol = 180; 
+        let startSquare = (startSymbol/2)+startStair+stairWidth*3;
         
         //First stairs, plus, 3 levels, blue square
 
-        var blueSquare = game.add.graphics(startSquare, 175);
+        let blueSquare = game.add.graphics(startSquare, 175);
             blueSquare.anchor.setTo(0.5,0.5);
             blueSquare.lineStyle(2, 0x31314e);
             blueSquare.beginFill(0xefeff5);
             blueSquare.drawRect(0, 0, 80, 40);
             blueSquare.endFill();
         
-        var plusTractorIcon = game.add.sprite(startSymbol+30, 215, 'tractor_green');
+        let plusTractorIcon = game.add.sprite(startSymbol+30, 215, 'tractor_green');
             //plus_tractor.frame = 0;
             plusTractorIcon.scale.setTo(0.5);
             plusTractorIcon.alpha = 0.9;
             plusTractorIcon.anchor.setTo(0.5,0.5);
         
-        var plusArrowIcon = game.add.sprite(startSymbol+100, 215, 'h_arrow');
+        let plusArrowIcon = game.add.sprite(startSymbol+100, 215, 'h_arrow');
             plusArrowIcon.scale.setTo(0.3);
             plusArrowIcon.alpha = 0.9;
             plusArrowIcon.anchor.setTo(0.5,0.5);
         
-        var stairsPlus = [];
+        let stairsPlus = [];
 
-        for(var i=1;i<=3;i++){
+        for(let i=1;i<=3;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 135+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 135+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsPlus[i] = game.add.graphics(0, 0);
             stairsPlus[i].lineStyle(1, 0xFFFFFF, 1);
@@ -100,41 +100,41 @@ var menuSquareOne = {
             stairsPlus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         }
         
         //Second stairs, minus, 3 levels, red Square
 
-        var redSquare = game.add.graphics(startSquare, 330);
+        let redSquare = game.add.graphics(startSquare, 330);
             redSquare.anchor.setTo(0.5,0.5);
             redSquare.lineStyle(2, 0xb30000);
             redSquare.beginFill(0xefeff5);
             redSquare.drawRect(0, 0, 80, 40);
             redSquare.endFill();
 
-        var minusTractorIcon = game.add.sprite(startSymbol+70, 370, 'tractor_red');
+        let minusTractorIcon = game.add.sprite(startSymbol+70, 370, 'tractor_red');
             //minusTractorIcon.frame = 5;
             minusTractorIcon.scale.setTo(0.5);
             minusTractorIcon.alpha = 0.9;
             minusTractorIcon.anchor.setTo(0.5,0.5);
         
-        var minusArrowIcon = game.add.sprite(startSymbol, 370, 'h_arrow');
+        let minusArrowIcon = game.add.sprite(startSymbol, 370, 'h_arrow');
             minusArrowIcon.scale.setTo(0.3);
             minusArrowIcon.alpha = 0.9;
             minusArrowIcon.scale.x *= -1;
             minusArrowIcon.anchor.setTo(0.5,0.5);
         
-        var stairsMinus = [];
+        let stairsMinus = [];
 
-        for(var i=1;i<=3;i++){
+        for(let i=1;i<=3;i++){
             //stair
-            var x1 = startStair+(stairWidth*(i-1));
-            var y1 = 285+maxHeight-i*stairHeight;
-            var x2 = stairWidth;//x1 + 40;
-            var y2 = stairHeight*i;//y1 + 24;
+            let x1 = startStair+(stairWidth*(i-1));
+            let y1 = 285+maxHeight-i*stairHeight;
+            let x2 = stairWidth;//x1 + 40;
+            let y2 = stairHeight*i;//y1 + 24;
             
             stairsMinus[i] = game.add.graphics(0, 0);
             stairsMinus[i].lineStyle(1, 0xFFFFFF, 1);
@@ -150,9 +150,9 @@ var menuSquareOne = {
             stairsMinus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
             
             //label
-            var xl = x1+stairWidth/2; //x label
-            var yl = y1+(stairHeight*i)/2; //y label
-            var label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+            let xl = x1+stairWidth/2; //x label
+            let yl = y1+(stairHeight*i)/2; //y label
+            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
                 label.anchor.setTo(0.5, 0.4);
         } 
 
@@ -179,7 +179,7 @@ var menuSquareOne = {
 
 /****************************** GAME ****************************/
 
-var gameSquareOne = {
+let gameSquareOne = {
 
     create: function() {  
         
@@ -205,18 +205,18 @@ var gameSquareOne = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
                 
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleFraction = { font: '15px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleFraction = { font: '15px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor and road
-        var startX = 170; //Initial tractor and place position
+        let startX = 170; //Initial tractor and place position
         if(levelOperator=='Minus') startX = 730;
         startX = startX; //Workaround for initial position inside update
-        var blockWidth = 80; //Width of blocks and floor spaces
-        var blockHeight = 40; //Height of blocks and floor spaces
-        for(var i=0;i<9;i++){
+        let blockWidth = 80; //Width of blocks and floor spaces
+        let blockHeight = 40; //Height of blocks and floor spaces
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
                 
@@ -231,7 +231,7 @@ var gameSquareOne = {
         moveEnd = 140; //Move end counter
                 
         //tractor
-        var tractorAlign = -80;
+        let tractorAlign = -80;
         if(levelOperator=='Minus'){
             tractorAlign *= -1;
         } 
@@ -281,15 +281,15 @@ var gameSquareOne = {
         
         hasFigure = false;
 
-        for(var p=0;p<numBlocks;p++){
+        for(let p=0;p<numBlocks;p++){
 
-            var portion = game.rnd.integerInRange(1, levelDifficulty); //Portion of the square, according to difficulty
+            let portion = game.rnd.integerInRange(1, levelDifficulty); //Portion of the square, according to difficulty
             if(portion==3) detail+= "4,";
             else detail += portion+",";
             
             if(portion==levelDifficulty) hasFigure = true;
-            var direction = '';
-            var lineColor = '';
+            let direction = '';
+            let lineColor = '';
             
             if(levelOperator=='Plus'){
                 direction = 'Right';    
@@ -300,7 +300,7 @@ var gameSquareOne = {
             }
             
             //blocks close to tractor
-            var block = game.add.graphics(startX, 460-p*blockHeight);
+            let block = game.add.graphics(startX, 460-p*blockHeight);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(2, lineColor);
                 block.beginFill(0xefeff5);
@@ -314,31 +314,31 @@ var gameSquareOne = {
                 //blockAngle.push(360);
 
                 if(levelLabel){
-                    var labelX = startX;
+                    let labelX = startX;
                     if(levelOperator=='Minus') labelX -= (15+blockWidth);
                     else labelX += blockWidth+15;
-                    var label = game.add.text(labelX, 480-p*blockHeight, portion , styleLabel);
+                    let label = game.add.text(labelX, 480-p*blockHeight, portion , styleLabel);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
             }else{
                 if(portion==3) portion = 4;
                 
-                var distance = blockWidth/portion;
+                let distance = blockWidth/portion;
                 
                 block.drawRect(0, 0, distance, blockHeight);
                 
                 blockDistance.push(distance);
 
                 if(levelLabel){
-                    var labelX = startX;
+                    let labelX = startX;
                     if(levelOperator=='Minus') labelX -= (15+distance);
                     else labelX += 15+distance;
-                    var separator = game.add.sprite(labelX, 480-p*blockHeight, 'separator');
+                    let separator = game.add.sprite(labelX, 480-p*blockHeight, 'separator');
                     separator.scale.setTo(0.6);
                     separator.anchor.setTo(0.5, 0.5);
                     blockSeparator.add(separator);
-                    var label = game.add.text(labelX, 483-p*blockHeight, '1\n'+portion , styleFraction);
+                    let label = game.add.text(labelX, 483-p*blockHeight, '1\n'+portion , styleFraction);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -384,8 +384,8 @@ var gameSquareOne = {
         
         //If game is type B, selectiong a random block floor place
         if(levelType=='B'){
-            var end = game.rnd.integerInRange(1, numBlocks);
-            for(var i=0;i<end;i++){
+            let end = game.rnd.integerInRange(1, numBlocks);
+            for(let i=0;i<end;i++){
                 if(blockDirection[i]=='Right')
                     arrowPlace += blockDistance[i];
                 else if(blockDirection[i]=='Left')
@@ -396,15 +396,15 @@ var gameSquareOne = {
         //Selectable floor
         floorCount = 8*levelDifficulty;
         
-        var widFloor = blockWidth/levelDifficulty;
+        let widFloor = blockWidth/levelDifficulty;
 
         if(levelDifficulty==3){
             floorCount = 8*4;
             widFloor = blockWidth/4;
         }
         
-        for(var i = 0; i < floorCount; i++){
-            var posX = startX;
+        for(let i = 0; i < floorCount; i++){
+            let posX = startX;
             
             if(levelOperator=='Minus') posX -= (blockWidth + i*widFloor);
             else posX += (blockWidth + i*widFloor);
@@ -426,7 +426,7 @@ var gameSquareOne = {
             }
 
             // blocks on the floor
-            var block = game.add.graphics(posX, 500);
+            let block = game.add.graphics(posX, 500);
                 block.anchor.setTo(0.5, 0);
                 block.lineStyle(0.9, 0xffffff);
                 block.beginFill(0xa8c0e6);
@@ -446,8 +446,8 @@ var gameSquareOne = {
             floorBlocks.add(block);     
         }
         
-        for(var i=0;i<=8;i++){
-            var posX = startX;
+        for(let i=0;i<=8;i++){
+            let posX = startX;
             if(levelOperator=='Minus')posX -= ((9-i)*blockWidth);
             else posX+=((i+1)*blockWidth);
             
@@ -480,7 +480,7 @@ var gameSquareOne = {
                     //Follow mouse
                     if (game.physics.arcade.distanceToPointer(arrow, game.input.activePointer) > 8 )
 				    {	
-                    	var xPos = game.input.mousePointer.x;
+                    	let xPos = game.input.mousePointer.x;
 			            //set left limit to the arrow  
                     	if  (xPos < 250){
                     		xPos = 250;
@@ -500,7 +500,7 @@ var gameSquareOne = {
                 tractor.x-=2;
             }
                         
-            for(var i=0;i<numBlocks;i++){ //Moving every block
+            for(let i=0;i<numBlocks;i++){ //Moving every block
                 if(blockDirection[curBlock]=='Right'){
                     blocks.children[i].x +=2;
                 }else{
@@ -508,7 +508,7 @@ var gameSquareOne = {
                 }
             }
             
-            var extra = 80-blockDistance[curBlock];
+            let extra = 80-blockDistance[curBlock];
             
             if(blockDirection[curBlock]=='Right'){
                 if(blocks.children[curBlock].x>=nextEnd+extra){
@@ -516,7 +516,7 @@ var gameSquareOne = {
                     blocks.y += 40;
                     curBlock +=1;
                     nextEnd += blockDistance[curBlock];
-                    for(var i=0; i<=floorIndex; i++ ){
+                    for(let i=0; i<=floorIndex; i++ ){
                         if(floorBlocks.children[i].x<(blocks.children[curBlock-1].x+blockDistance[curBlock-1])){
                             floorBlocks.children[i].alpha = 0.2;
                             curFloor = i;
@@ -529,7 +529,7 @@ var gameSquareOne = {
                     blocks.y += 40;
                     curBlock+=1;
                     nextEnd -= blockDistance[curBlock];
-                    for(var i=0; i<=floorIndex; i++ ){
+                    for(let i=0; i<=floorIndex; i++ ){
                         if(floorBlocks.children[i].x>(blocks.children[curBlock-1].x-blockDistance[curBlock-1])){
                             floorBlocks.children[i].alpha = 0.2;
                             curFloor = i;
@@ -549,14 +549,14 @@ var gameSquareOne = {
             tractor.animations.stop();
             timer.stop();
             //Check left blocks
-            var resultBlock = true;
-            for(var i=0; i<=blockIndex; i++){
+            let resultBlock = true;
+            for(let i=0; i<=blockIndex; i++){
                 if(blocks.children[i].alpha==1) resultBlock = false;
             }
             
             //check floor Holes
-            var resultFloor = true;
-            for(var i=0; i<=floorIndex; i++){
+            let resultFloor = true;
+            for(let i=0; i<=floorIndex; i++){
                 if(floorBlocks.children[i].alpha==1) resultFloor = false;
             }
                         
@@ -621,7 +621,7 @@ var gameSquareOne = {
         if(!clicked){
             //on level type A
             if(levelType=="A"){
-                for(var i=0;i<floorCount;i++){
+                for(let i=0;i<floorCount;i++){
                     if(i<=this.indice){
                         floorBlocks.children[i].alpha = 1;
                     }else{
@@ -631,7 +631,7 @@ var gameSquareOne = {
                 floorIndex = this.indice;
             //on level type B
             }else if(levelType=="B"){
-                for(var i=0;i<numBlocks;i++){
+                for(let i=0;i<numBlocks;i++){
                     if(i<=this.indice){
                         blocks.children[i].alpha = 0.5;
                     }else{
@@ -649,13 +649,13 @@ var gameSquareOne = {
         if(!clicked){
             //on level type A
             if(levelType=="A"){
-                for(var i=0;i<floorCount;i++){
+                for(let i=0;i<floorCount;i++){
                     floorBlocks.children[i].alpha = 0.5;
                 }
                 floorIndex = -1;
             //on level type B
             }else if(levelType=="B"){
-                for(var i=0;i<numBlocks;i++){
+                for(let i=0;i<numBlocks;i++){
                     blocks.children[i].alpha = 0.5;
                 }
                 blockIndex = -1;
@@ -686,13 +686,13 @@ var gameSquareOne = {
                 
                 //cleaning path
                 if(levelOperator=='Minus'){
-                    for(var i=0; i< floorCount; i++){
+                    for(let i=0; i< floorCount; i++){
                         if(i>floorIndex){
                             floorBlocks.children[i].alpha = 0;
                         }
                     }
                 }else{
-                    for(var i=0; i< floorCount; i++){
+                    for(let i=0; i< floorCount; i++){
                         if(i>floorIndex){
                             floorBlocks.children[i].alpha = 0;
                         }
@@ -704,8 +704,8 @@ var gameSquareOne = {
             //on level type B
             }else if(levelType=='B'){ //Delete unselected blocks
 
-                var minusBlocks = 0;
-                for(var i=0;i<numBlocks;i++){
+                let minusBlocks = 0;
+                for(let i=0;i<numBlocks;i++){
                     if(i<=blockIndex){
                         blocks.children[i].alpha = 1;
                     }else{
@@ -746,10 +746,10 @@ var gameSquareOne = {
         //DEBUG Testar 'lang'
         /*
         
-        var contact = "";
+        let contact = "";
         if (typeof lang === 'object') {
           //contact = JSON.parse(lang);
-          for (var i in lang) // will enumerate values of 'assets/languages/pt_BR.json'
+          for (let i in lang) // will enumerate values of 'assets/languages/pt_BR.json'
              contact += lang[i];
           // Finaliza com os valores de 'assets/languages/pt_BR.json': 'CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
           // SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO'
@@ -760,13 +760,13 @@ var gameSquareOne = {
     
         */
 
-        var abst = "numBlocks:" + numBlocks + ", valBlocks: " + detail + " blockIndex: " + blockIndex + ", floorIndex: " + floorIndex;
+        let abst = "numBlocks:" + numBlocks + ", valBlocks: " + detail + " blockIndex: " + blockIndex + ", floorIndex: " + floorIndex;
 
-        var hr = new XMLHttpRequest();
+        let hr = new XMLHttpRequest();
 
         // Create some variables we need to send to our PHP file
-        var url = "php/save.php";
-        var vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
+        let url = "php/save.php";
+        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
 
         vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
 
@@ -788,7 +788,7 @@ var gameSquareOne = {
             if(debugMode) console.log(hr);
             
             if(hr.readyState == 4 && hr.status == 200) {
-                var return_data = hr.responseText;
+                let return_data = hr.responseText;
                 if(debugMode) console.log(return_data);
             }
         }
@@ -801,11 +801,11 @@ var gameSquareOne = {
     func_viewHelp: function(){
 
         if(!clicked){
-            var pointer;
+            let pointer;
             if(levelType=='A'){
-                var pointer = game.add.image(endPosition, 490, 'pointer');
+                let pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
-                var pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
+                let pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
             }
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
@@ -817,7 +817,7 @@ var gameSquareOne = {
 
 /****************************** END ****************************/
 
-var endSquareOne = {
+let endSquareOne = {
 
     create: function() {  
 
@@ -830,18 +830,18 @@ var endSquareOne = {
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        var styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         //Floor
-        for(var i=0;i<9;i++){
+        for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
         
         // Progress bar
-        for(var p=0;p<5;p++){
-            var block = game.add.image(660+p*30, 10, 'block');
+        for(let p=0;p<5;p++){
+            let block = game.add.image(660+p*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
         game.add.text(820, 10, '100%', styleMenu);

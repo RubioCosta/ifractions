@@ -1,6 +1,6 @@
 
 /*
-    var mapState = {
+    let mapState = {
         create: function(){},
         update: function(){},
         ---------------------------- end of phaser functions
@@ -8,7 +8,7 @@
     }
 */
 
-var mapState = {
+let mapState = {
 
     create: function() {
 
@@ -32,15 +32,15 @@ var mapState = {
                                     this.menuStateString,false);
         
         // Styles for labels
-        var stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
-        var styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        const stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
+        const styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
         
         // Progress bar
-        var percentText = passedLevels*25;
-        var percentBlocks = passedLevels;
+        let percentText = passedLevels*25;
+        let percentBlocks = passedLevels;
 
-        for(var p=0;p<percentBlocks;p++){
-            var block = game.add.image(660+p*37.5, 10, 'block');
+        for(let p=0;p<percentBlocks;p++){
+            let block = game.add.image(660+p*37.5, 10, 'block');
                 block.scale.setTo(2.6, 1);
         }
 
@@ -56,61 +56,61 @@ var mapState = {
         
         if(this.gameStateString=="gameSquareOne"){
         	//Garage
-	        var garage = game.add.image(this.points.x[0], this.points.y[0], 'garage');
+	        let garage = game.add.image(this.points.x[0], this.points.y[0], 'garage');
 	        garage.scale.setTo(0.4);
 	        garage.anchor.setTo(0.5, 1);
 	         //Farm
-	        var farm = game.add.image(this.points.x[5], this.points.y[5], 'farm');
+	        let farm = game.add.image(this.points.x[5], this.points.y[5], 'farm');
 	        farm.scale.setTo(0.6);
 	        farm.anchor.setTo(0.1, 0.7);
         }else{
 	      	//House
-	        var house = game.add.image(this.points.x[0], this.points.y[0], 'house');
+	        let house = game.add.image(this.points.x[0], this.points.y[0], 'house');
 	        house.scale.setTo(0.7);
 	        house.anchor.setTo(0.7, 0.8);
 	         //School
-	        var school = game.add.image(this.points.x[5], this.points.y[5], 'school');
+	        let school = game.add.image(this.points.x[5], this.points.y[5], 'school');
 	        school.scale.setTo(0.35);
 	        school.anchor.setTo(0.2, 0.7);
 	    }
 
          //Trees and Rocks
         
-        this.rocks = {
+        const rocks = {
              'x': [156, 275, 276, 441, 452, 590, 712],
              'y': [309, 543, 259, 156, 419, 136, 316]
         }
 
-        this.r_types = [1, 1, 2, 1, 2, 2, 2];
+        const r_types = [1, 1, 2, 1, 2, 2, 2];
         
-        for(var i=0; i<this.r_types.length; i++){
-            if(this.r_types[i]==1){
-                var sprite = game.add.image(this.rocks.x[i], this.rocks.y[i], 'rock');
+        for(let i=0; i<r_types.length; i++){
+            if(r_types[i]==1){
+                let sprite = game.add.image(rocks.x[i], rocks.y[i], 'rock');
                 sprite.scale.setTo(0.32);
                 sprite.anchor.setTo(0.5, 0.95);
-            }else if(this.r_types[i]==2){
-                var sprite = game.add.image(this.rocks.x[i], this.rocks.y[i], 'birch');
+            }else if(r_types[i]==2){
+                let sprite = game.add.image(rocks.x[i], rocks.y[i], 'birch');
                 sprite.scale.setTo(0.4);
                 sprite.anchor.setTo(0.5, 0.95);
             }
         }
 
-        this.trees = {
+        const trees = {
              'x': [105, 214, 354, 364, 570, 600, 740, 779],
              'y': [341, 219, 180, 520, 550, 392, 488, 286]
         }
 
-        this.t_types = [2, 4, 3, 4, 1, 2, 4, 4];
+        const t_types = [2, 4, 3, 4, 1, 2, 4, 4];
         
-        for(var i=0; i<this.t_types.length; i++){
-            var sprite = game.add.image(this.trees.x[i], this.trees.y[i], 'tree'+this.t_types[i]);
+        for(let i=0; i<t_types.length; i++){
+            let sprite = game.add.image(trees.x[i], trees.y[i], 'tree'+t_types[i]);
             sprite.scale.setTo(0.6);
             sprite.anchor.setTo(0.5, 0.95);
         }
         
         // places
-        for (var p = 1; p < this.points.x.length -1; p++){
-            var place;
+        for (let p = 1; p < this.points.x.length -1; p++){
+            let place;
             if(p<levelPosition){
                 place = game.add.image(this.points.x[p], this.points.y[p], 'place_b');
             }else if (levelMove && p==levelPosition){
@@ -120,11 +120,11 @@ var mapState = {
             }
             place.anchor.setTo(0.5, 0.5);
             place.scale.setTo(0.3);
-            var sign = game.add.image(this.points.x[p]-20, this.points.y[p]-60, 'sign');
+            let sign = game.add.image(this.points.x[p]-20, this.points.y[p]-60, 'sign');
             sign.anchor.setTo(0.5, 1);
             sign.scale.setTo(0.4);
             if(p>0 && p<this.points.x.length-1){
-                var text = game.add.text(this.points.x[p]-23, this.points.y[p]-84, p, stylePlace);
+                let text = game.add.text(this.points.x[p]-23, this.points.y[p]-84, p, stylePlace);
                 text.anchor.setTo(0.35, 0.5);
             }
         }
@@ -132,7 +132,7 @@ var mapState = {
         if(this.gameStateString=="gameSquareOne"){
 	    	this.character = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'tractor');
 
-	        var walk = this.character.animations.add('walk',[0,1,2,3,4]);
+	        let walk = this.character.animations.add('walk',[0,1,2,3,4]);
 	        this.character.animations.play('walk', 5, true);
 	        this.character.angle -= 25;
         }else{
