@@ -1,108 +1,100 @@
-
 <!DOCTYPE html>
 
 <html>
-    
-    <head>  
 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title> iFractions </title>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-        
-        <script src="js/phaser/phaser.min.js"></script>
-        
-        <script type="text/javascript" src="js/preMenu.js"></script>
-        <script type="text/javascript" src="js/menu.js"></script>
-        <script type="text/javascript" src="js/map.js"></script>
-        <script type="text/javascript" src="js/circleOne.js"></script>
-        <script type="text/javascript" src="js/squareOne.js"></script>
-        <script type="text/javascript" src="js/squareTwo.js"></script>
-        <script type="text/javascript" src="js/boot.js"></script>
+<head>
 
-        <style>
-        	#text-field-div{
-			  position: absolute;
-			  top: 300px;
-			  margin-left: 340px;
-			  visibility: hidden;
-			}
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title> iFractions </title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
-			input[type=text] {
-			  background-color: rgb(239, 245, 245);
-			  padding: 15px 40px;
-			  box-sizing: border-box;
-			  border: 3px solid #ccc;
-			  font-size: 44px;
-			  font-family: Arial;
-			  color: rgb(0, 0, 0);
-			  text-align: center;
-			}
+	<script src="js/phaser/phaser.min.js"></script>
 
-        </style>
+	<script type="text/javascript" src="js/preMenu.js"></script>
+	<script type="text/javascript" src="js/menu.js"></script>
+	<script type="text/javascript" src="js/map.js"></script>
+	<script type="text/javascript" src="js/circleOne.js"></script>
+	<script type="text/javascript" src="js/squareOne.js"></script>
+	<script type="text/javascript" src="js/squareTwo.js"></script>
+	<script type="text/javascript" src="js/boot.js"></script>
 
-    </head>
+	<style>
+		#text-field-div {
+			position: absolute;
+			top: 300px;
+			margin-left: 340px;
+			visibility: hidden;
+		}
 
-    <body>
+		input[type=text] {
+			background-color: rgb(239, 245, 245);
+			padding: 15px 40px;
+			box-sizing: border-box;
+			border: 3px solid #ccc;
+			font-size: 44px;
+			font-family: Arial;
+			color: rgb(0, 0, 0);
+			text-align: center;
+		}
+	</style>
 
-	    <div class="container">
+</head>
 
-	    	<div class="clearfix"></div>
-	        
-	        <div class="panel panel-primary">
-	        <!--  <div class="panel-heading">iFractions :: Interactive Fractions Game</div> -->
-	          <div class="panel-heading">IFRACTIONS GAME</div>
-	          <div class="panel-body">
-	            <center>
-	            	<!-- fractions-game é o id que puxa o canvas do phaser -->
-	                <div id="fractions-game" style="padding: 0 auto 0 auto;"></div>
-	            </center>
-	          </div>
-	        </div>
-	        
-	        <div class="panel panel-info">
-	          <div class="panel-heading">TEAM</div>
-	          <div class="panel-body">
-				<center>
-	                <ul>
-	                  <li><strong>BRAZIL:</strong> Le&ocirc;nidas de Oliveira Brand&atilde;o (IME-USP)</li>
-	                  <li><strong>PERU:</strong> Manuel Ibarra and Cristhian Serrano (EAPIIS-UNAMBA)</li>
-	                  <li><strong>FRANCE:</strong> Jean-Marc (MOCAH-UPMC)</li>
-					</ul>
-				</center>
-	          </div>
-	        </div>
-	        
-	        <div class="panel panel-default">
-	          <div class="panel-heading">BASED ON</div>
-	          <div class="panel-body">
-				  <center>
-	                <ul>
-	                  <li><strong>iLM </strong>(interactive Learning Modules) </li>
-	                  <li><strong>Six facets of Serious Game Design</strong>: Pedagogical Objectives; Domain Simulation; Interactions with the Simulation;<br>Problems and Progression; Decorum and Conditions of Use.</li>
-					</ul>
-				  </center>
-				</div>
-	        </div>
-	        
-	        <div class="panel panel-danger">
-	          <div class="panel-heading">TECHNOLOGY</div>
-	          <div class="panel-body">
-				  <center>
-	                <ul>
-	                  <li> We used <strong>HTML5</strong>, <strong>CSS</strong> and the <strong>Javascript</strong> library <a href="http://phaser.io/" target="_blank"><strong>Phaser.io</strong></a> </li>
-					</ul>
-				  </center>
-	          </div>
-	        </div>
+<body>
 
-	        <div id="text-field-div">
-				<form onsubmit="return false">
-					<input type="text" id="name_id" value="" size="13" maxlength="40">
-				</form>
+	<div class="container">
+
+		<div class="clearfix"></div>
+
+		<div class="panel panel-primary">
+			<div class="panel-heading">IFRACTIONS GAME</div>
+			<div class="panel-body">
+				<!-- fractions-game é o id que puxa o canvas do phaser -->
+				<div id="fractions-game" style="padding: 0 auto 0 auto;"></div>
 			</div>
+		</div>
 
-	    </div>
+		<div class="panel panel-info">
+			<div class="panel-heading">TEAM</div>
+			<div class="panel-body text-center">
+				<ul>
+					<li><strong>BRAZIL:</strong> Le&ocirc;nidas de Oliveira Brand&atilde;o (IME-USP)</li>
+					<li><strong>PERU:</strong> Manuel Ibarra and Cristhian Serrano (EAPIIS-UNAMBA)</li>
+					<li><strong>FRANCE:</strong> Jean-Marc (MOCAH-UPMC)</li>
+				</ul>
+			</div>
+		</div>
 
-    </body>
+		<div class="panel panel-default">
+			<div class="panel-heading">BASED ON</div>
+			<div class="panel-body text-center">
+				<ul>
+					<li><strong>iLM </strong>(interactive Learning Modules) </li>
+					<li><strong>Six facets of Serious Game Design</strong>: Pedagogical Objectives; Domain Simulation;
+						Interactions with the Simulation;<br>Problems and Progression; Decorum and Conditions of Use.
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="panel panel-danger">
+			<div class="panel-heading">TECHNOLOGY</div>
+			<div class="panel-body text-center">
+				<ul>
+					<li> We used <strong>HTML5</strong>, <strong>CSS</strong> and the <strong>Javascript</strong>
+						library <a href="http://phaser.io/" target="_blank"><strong>Phaser.io</strong></a> </li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="text-field-div">
+			<form onsubmit="return false">
+				<input type="text" id="name_id" value="" size="13" maxlength="40">
+			</form>
+		</div>
+
+	</div>
+
+</body>
 
 </html>
