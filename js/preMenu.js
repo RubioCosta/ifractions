@@ -1,4 +1,3 @@
-
 /*
     let langState = {
         create: function(){},
@@ -16,122 +15,114 @@
         create: function(){},
         ------------------------------------------------ end of phaser functions
         func_checkEmptyName: function(){}
-        func_savename: function(){} //calls menu.js -> menuState
+        func_saveName: function(){} //calls menu.js -> menuState
     };
 
-    let buttonSettings = {
+    let iconSettings = {
         func_addButtons: function(_,_,_,_,_,_,_,_,_){},
         loadState: function(){}
     };
 */
 
-// "choose language" screen
-
+// Language screen: the player can choose a preferred language for the game text to be displayed
 let langState = {
 
     create: function() {
 
+        //
         if(this.game.world.width != defaultWidth) this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
-
-        // AUX
 
         const style = { font: '28px Arial', fill: '#00804d', align: 'center' };
 
-        // AUDIO
-
-        beepSound = game.add.audio('sound_beep');   // game sound
-        okSound = game.add.audio('sound_ok');       // correct answer sound
-        errorSound = game.add.audio('sound_error'); // wrong answer sound
-
-        // BACKGROUND
-
         game.stage.backgroundColor = '#cce5ff';
         
-        // LANGUAGES
+        // Preparing and setting language screen elements
 
-        let flagObjList = [];
-        const langNameList= ['FRAÇÕES  ', 'FRAZIONI  ',   'FRACTIONS  ',  'FRACCIONES  ', 'FRACTIONS  '   ];
-        const flagList    = ['flag_BR',   'flag_IT',      'flag_US',      'flag_PE',      'flag_FR'       ];
-        const langList    = ['pt_BR',     'it_IT',        'en_US',        'es_PE',        'fr_FR'         ];
-        const x1List = [-220, -220, -220,  200, 200];
-        const x2List = [-120, -120, -120,  300, 300];
-        const yList  = [-180,    0,  180, -100, 100];
-        
-        for(let i=0; i<langList.length; i++){
-            let titleList = game.add.text(this.game.world.centerX + x1List[i], this.game.world.centerY + yList[i], langNameList[i], style);
-            titleList.anchor.setTo(1, 0.5);
-
-            flagObjList[i] = game.add.sprite(this.game.world.centerX + x2List[i], this.game.world.centerY + yList[i], flagList[i]);       
-            flagObjList[i].anchor.setTo(0.5, 0.5);
-            flagObjList[i].inputEnabled = true;
-            flagObjList[i].input.useHandCursor = true;
-            flagObjList[i].events.onInputDown.add(this.func_setLang,{ lang: langList[i] });
-            flagObjList[i].events.onInputOver.add(function(){ this.flagObj.scale.setTo(1.05) },{ flagObj: flagObjList[i] });
-            flagObjList[i].events.onInputOut.add( function(){ this.flagObj.scale.setTo(1)    },{ flagObj: flagObjList[i] });
+        const langs = {
+            list: [],
+            text: ['FRAÇÕES  ', 'FRAZIONI  ',   'FRACTIONS  ',  'FRACCIONES  ', 'FRACTIONS  '],
+            flag: ['flag_BR',   'flag_IT',      'flag_US',      'flag_PE',      'flag_FR'    ],
+            lang: ['pt_BR',     'it_IT',        'en_US',        'es_PE',        'fr_FR'      ],
+            x_text: [-220, -220, -220,  200, 200],
+            x_flag: [-120, -120, -120,  300, 300],
+            y:      [-180,    0,  180, -100, 100]
         }
 
-        
+        for(let i=0; i<langs.lang.length; i++){
+            // Add text for language names
+            const titleList = game.add.text(this.game.world.centerX + langs.x_text[i], this.game.world.centerY + langs.y[i], langs.text[i], style);
+            titleList.anchor.setTo(1, 0.5);
+            // Add images for flags
+            langs.list[i] = game.add.sprite(this.game.world.centerX + langs.x_flag[i], this.game.world.centerY + langs.y[i], langs.flag[i]);       
+            langs.list[i].anchor.setTo(0.5, 0.5);
+            // Set event listener for the flags
+            langs.list[i].inputEnabled = true;
+            langs.list[i].input.useHandCursor = true;
+            langs.list[i].events.onInputDown.add(this.func_setLang,{ langs_lang: langs.lang[i] });
+            langs.list[i].events.onInputOver.add(function(){ this.langs_list.scale.setTo(1.05) },{ langs_list: langs.list[i] });
+            langs.list[i].events.onInputOut.add( function(){ this.langs_list.scale.setTo(1)    },{ langs_list: langs.list[i] });
+        }
+
     },
     
+    // Calls loading screen 
     func_setLang: function(){
-        // set language
-        lang = this.lang;
-        // start resource loading
+        // Temporarily sets value of global 'lang' to chosen language
+        lang = this.langs_lang;
+        // Calls loading screen
         game.state.start('load');
     
     }
 
 };
 
-// "loading" screen and load json dictionary
+// Loading screen: shows loading bar while loads json dictionary
 let loadState = {
     
     preload: function() {
-        
-        // Displaying the progress bar
+
         let progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
         progressBar.anchor.setTo(0.5, 0.5);
         game.load.setPreloadSprite(progressBar);
-        
-        // Loading dictionary
+
+        // Loads jason dictionary, setting the game language chosen by the player
         game.load.json('dictionary', 'assets/languages/'+lang+'.json');
         
     },
 
     create: function() {  
 
-        // gets selected language from json
+        // Set value of global 'lang' to json's dictionary 
         lang = game.cache.getJSON('dictionary');
         
-        if(firstTime==true){ // select language screen - first time opening ifractions
+        // Set screens flow
+        if(firstTime==true){ // first time opening ifractions goes from 'language' to 'name' screen then 'menu'
           firstTime = false;
-          game.state.start('name'); // go to select name screen, then menu
-        }else{               // changing language during the game
-          game.state.start('menu'); // go to menu
+          game.state.start('name'); 
+        }else{               // changing language during the game skips 'name' screen
+          game.state.start('menu');
         }
     
     }
 
 };
 
-// "username" screen
+// Name screen: Asks for player's name 
 let nameState = {
 
     create: function() {
                     
-        // AUX
-
         const style = { font: '30px Arial', fill: '#00804d', align: 'center' };
         
-        // title
+        // Set title and error text
 
-        let title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, style);
+        const title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, style);
         title.anchor.setTo(0.5);
         
         errorEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", {font: '18px Arial', fill: '#330000', align: 'center'});
         errorEmptyName.anchor.setTo(0.5);
 
-        // "READY" button
+        // Set button that gets player's information
         
         let btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
         btn.lineStyle(1, 0x293d3d);
@@ -145,14 +136,17 @@ let nameState = {
         btn.events.onInputDown.add(this.func_checkEmptyName);
         btn.events.onInputOver.add(function(){ btn.alpha=0.4 });
         btn.events.onInputOut.add(function(){ btn.alpha=0.5 });
-        
-        let ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
+
+        // Set button Text
+        const ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, { font: '34px Arial', fill: '#f0f5f5', align: 'center' });
         ready.anchor.setTo(0.5);      
 
+        // Makes text field visible
         document.getElementById("text-field-div").style.visibility = "visible";
+        
+        // Accepts "enter" as button click
         document.getElementById("name_id").addEventListener('keypress', function(e){
             let keycode = e.keycode ? e.keycode : e.which; 
-            //se apertar enter vai para ready, assim como o botão
             if(keycode == 13){
                 nameState["func_checkEmptyName"]();
             }     
@@ -162,135 +156,124 @@ let nameState = {
          
     func_checkEmptyName: function() {
 
+        // If text field is NOT empty will call function that saves the player's name
         if(document.getElementById("name_id").value!=""){
-            nameState["func_savename"]();
             errorEmptyName.setText("");
+            nameState["func_saveName"]();
         }else{
-            errorEmptyName.setText(lang.empty_name);
+            errorEmptyName.setText(lang.empty_name); // Displays error message
         }
 
     },
-              
-    func_savename: function() {
+
+    // Calls menu screen
+    func_saveName: function() {
         
-        // saves the typed name on username variable
+        // Saves player's input in global variable 'username'
         username = document.getElementById("name_id").value;
         if(debugMode) console.log("user is " + username);        
 
+        // Hides and clears text field
         document.getElementById("text-field-div").style.visibility = "hidden";
-
-        //clears the text field again
         document.getElementById("name_id").value = "";
 
-        if(audioStatus){
-            beepSound.play();
-        }
+        if(audioStatus) beepSound.play();
 
+        // Calls menu state
         game.state.start('menu');
         
     }
 
 };
 
-let buttonSettings = {
+let iconSettings = {
 
-    m_info_left: null,
-
-    m_back: null, 
-    m_list: null,
-    m_help: null,
-
-    m_info_right: null, 
-
-    m_audio: null,
-    m_world: null, 
-
-    xEsq: null,
-    xDir: null,
-
-    func_addButtons: function(left, right, b0Esq, b1Esq, b2Esq, b0Dir, b1Dir, phase, helpBtn){
+    // Add navigation icons on the top of the page based the entered parameters
+    func_addButtons: function(left_side, right_side, left_btn0, left_btn1, left_btn2, right_btn0, right_btn1, level, helpBtn){
         
-        this.xDir = defaultWidth - 50 - 10;
-        this.xEsq = 10;
+        this.left_x = 10;
+        this.right_x = defaultWidth - 50 - 10;
 
-        if(left == true){
-            this.m_info_left = game.add.text(this.xEsq, 53, "", { font: "20px Arial", fill: "#330000", align: "center" });
+        // Labels for the navigation icons
+
+        if(left_side){
+            this.left_text = game.add.text(this.left_x, 53, "", 
+                { font: "20px Arial", fill: "#330000", align: "center" });
         }
 
-        if(right == true){
-            this.m_info_right = game.add.text(this.xDir+50, 53, "", { font: "20px Arial", fill: "#330000", align: "right" });
-            this.m_info_right.anchor.setTo(1,0.02);
+        if(right_side){
+            this.right_text = game.add.text(this.right_x+50, 53, "", 
+                { font: "20px Arial", fill: "#330000", align: "right" });
+            this.right_text.anchor.setTo(1,0.02);
         }
 
-        // left buttons
-        if(b0Esq == true){
-            // Return to diffculty
-            this.m_back = game.add.sprite(this.xEsq, 10, 'back'); 
-            this.m_back.inputEnabled = true;
-            this.m_back.input.useHandCursor = true;
-            this.m_back.events.onInputDown.add(this.loadState, {state: phase, beep: beepSound});
-            this.m_back.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_back},{m_info_left: this.m_info_left});
-            this.m_back.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
+        // Buttons on the left side of the page
+
+        if(left_btn0){ // Return to select difficulty screen
+            this.icon_back = game.add.sprite(this.left_x, 10, 'back'); 
+            this.icon_back.inputEnabled = true;
+            this.icon_back.input.useHandCursor = true;
+            this.icon_back.events.onInputDown.add(this.loadState, {state: level, beep: beepSound});
+            this.icon_back.events.onInputOver.add(function(){ this.left_text.text = lang.menu_back},{left_text: this.left_text});
+            this.icon_back.events.onInputOut.add(function(){ this.left_text.text = ""},{left_text: this.left_text});
             
-            this.xEsq+=50;
+            this.left_x+=50;
         }
 
-        if(b1Esq == true){
-            // Return to menu button
-            this.m_list = game.add.sprite(this.xEsq, 10, 'list'); 
-            this.m_list.inputEnabled = true;
-            this.m_list.input.useHandCursor = true;
-            this.m_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
-            this.m_list.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_list},{m_info_left: this.m_info_left});
-            this.m_list.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
+        if(left_btn1){ // Return to main menu screen
+            this.icon_list = game.add.sprite(this.left_x, 10, 'list'); 
+            this.icon_list.inputEnabled = true;
+            this.icon_list.input.useHandCursor = true;
+            this.icon_list.events.onInputDown.add(this.loadState, {state: "menu", beep: beepSound});
+            this.icon_list.events.onInputOver.add(function(){ this.left_text.text = lang.menu_list},{left_text: this.left_text});
+            this.icon_list.events.onInputOut.add(function(){ this.left_text.text = ""},{left_text: this.left_text});
             
-            this.xEsq+=50;
+            this.left_x+=50;
         }
 
-        if(b2Esq == true){
-            // Help button
-            this.m_help = game.add.sprite(this.xEsq, 10, 'help');
-            this.m_help.inputEnabled = true;
-            this.m_help.input.useHandCursor = true;
-            this.m_help.events.onInputDown.add(helpBtn, {beep: beepSound});
-            this.m_help.events.onInputOver.add(function(){ this.m_info_left.text = lang.menu_help},{m_info_left: this.m_info_left});
-            this.m_help.events.onInputOut.add(function(){ this.m_info_left.text = ""},{m_info_left: this.m_info_left});
+        if(left_btn2){ // In some levels, shows solution to the game
+            this.icon_help = game.add.sprite(this.left_x, 10, 'help');
+            this.icon_help.inputEnabled = true;
+            this.icon_help.input.useHandCursor = true;
+            this.icon_help.events.onInputDown.add(helpBtn, {beep: beepSound});
+            this.icon_help.events.onInputOver.add(function(){ this.left_text.text = lang.menu_help},{left_text: this.left_text});
+            this.icon_help.events.onInputOut.add(function(){ this.left_text.text = ""},{left_text: this.left_text});
             
-            this.xEsq+=50;
+            this.left_x+=50;
         }
 
-        // rightButtons
-        if(b0Dir == true){
-            this.m_audio = game.add.sprite(this.xDir, 10, 'audio');
-            audioStatus ? this.m_audio.frame = 0 : this.m_audio.frame = 1;
-            this.m_audio.inputEnabled = true;
-            this.m_audio.input.useHandCursor = true;
-            this.m_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; this.m_audio.frame = 1; }else{ audioStatus=true; this.m_audio.frame = 0; }},{m_audio: this.m_audio});
-            this.m_audio.events.onInputOver.add(function(){ this.m_info_right.text = lang.audio },{m_info_right: this.m_info_right});
-            this.m_audio.events.onInputOut.add(function(){ this.m_info_right.text = "" },{m_info_right: this.m_info_right});
+        // Buttons on the right side of the page
 
-            this.xDir-=50;
+        if(right_btn0){ // Turns game audio on/off
+            this.icon_audio = game.add.sprite(this.right_x, 10, 'audio');
+            audioStatus ? this.icon_audio.frame = 0 : this.icon_audio.frame = 1;
+            this.icon_audio.inputEnabled = true;
+            this.icon_audio.input.useHandCursor = true;
+            this.icon_audio.events.onInputDown.add(function(){ if(audioStatus){ audioStatus=false; this.icon_audio.frame = 1; }else{ audioStatus=true; this.icon_audio.frame = 0; }},{icon_audio: this.icon_audio});
+            this.icon_audio.events.onInputOver.add(function(){ this.right_text.text = lang.audio },{right_text: this.right_text});
+            this.icon_audio.events.onInputOut.add(function(){ this.right_text.text = "" },{right_text: this.right_text});
+
+            this.right_x-=50;
         }
 
-        if(b1Dir == true){
-            // Return to language button
-            this.m_world = game.add.sprite(this.xDir, 10, 'world'); 
-            this.m_world.inputEnabled = true;
-            this.m_world.input.useHandCursor = true;
-            this.m_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
-            this.m_world.events.onInputOver.add(function(){ this.m_info_right.text = lang.menu_world },{m_info_right : this.m_info_right});
-            this.m_world.events.onInputOut.add(function(){ this.m_info_right.text = "" },{m_info_right: this.m_info_right});
+        if(right_btn1){ // Return to select language screen
+            this.icon_world = game.add.sprite(this.right_x, 10, 'world'); 
+            this.icon_world.inputEnabled = true;
+            this.icon_world.input.useHandCursor = true;
+            this.icon_world.events.onInputDown.add(this.loadState, {state: "language", beep: beepSound});
+            this.icon_world.events.onInputOver.add(function(){ this.right_text.text = lang.menu_world },{right_text : this.right_text});
+            this.icon_world.events.onInputOut.add(function(){ this.right_text.text = "" },{right_text: this.right_text});
                   
-            this.xDir-=50;
+            this.right_x-=50;
         }
 
     },
 
     changeRightButtonX: function(newWidth){
-        this.m_info_right.x = newWidth - 10;
-        this.m_audio.x = newWidth - 50 - 10;
-        if(debugMode) console.log(this.m_audio.x+" "+newWidth);
-        this.m_world.x = newWidth - 50 - 50 - 10;
+        this.right_text.x = newWidth - 10;
+        this.icon_audio.x = newWidth - 50 - 10;
+        if(debugMode) console.log(this.icon_audio.x+" "+newWidth);
+        this.icon_world.x = newWidth - 50 - 50 - 10;
     },
 
 

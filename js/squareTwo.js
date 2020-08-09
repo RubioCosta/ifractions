@@ -1,11 +1,5 @@
 /*
 
-    let menuSquareTwo = {
-        create: function(){},
-        ---------------------------- end of phaser functions
-        func_loadMap: function(){}
-    };
-
     let gameSquareTwo = {
         create: function(){},
         update: function(){},
@@ -21,164 +15,10 @@
         func_getRndDivisor: function(){}
             
     };
-
-    let endSquareTwo = {
-        create: function(){},
-        update: function(){},
-        ---------------------------- end of phaser functions
-        func_verPrincipal: function(){},
-    };
         
 */
 
 // Fractions Comparison Square states
-
-/****************************** MENU ****************************/
-
-let menuSquareTwo = {
-
-    create: function() {
-          
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
-                                    false,true,false,
-                                    true,false,
-                                    false,false);
-        
-        // Setting title
-        let style = { font: '28px Arial', fill: '#00804d'};
-        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
-        title.anchor.setTo(0.5, 0.5);
-        
-        //SETTING DIFFICULTY LEVELS
-
-        let maxHeight = 120;  //Max height of a stair
-        let stairHeight = 29; //height growth of a stair
-        let stairWidth = 80;  //Width of a stair
-        let startStair = 240;
-        let startSymbol = 150;
-        let startSquare = (startSymbol/2)+startStair+stairWidth*5;
-        
-        let equalsIcon = game.add.sprite(startSymbol, 300, 'equal');
-            equalsIcon.frame = 0;
-            equalsIcon.scale.setTo(0.7);
-            equalsIcon.anchor.setTo(0.5,0.5);
-            
-        //First stairs, More divisions to less divisions 1, 5 levels
-
-        let stairsMoreToLess1 = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 100+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsMoreToLess1[i] = game.add.graphics(0, 0);
-            stairsMoreToLess1[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMoreToLess1[i].beginFill(0x99b3ff);
-            stairsMoreToLess1[i].drawRect(x1, y1, x2, y2);
-            stairsMoreToLess1[i].endFill();
-            
-            //event
-            stairsMoreToLess1[i].inputEnabled = true;
-            stairsMoreToLess1[i].input.useHandCursor = true;
-            stairsMoreToLess1[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'A' });
-            stairsMoreToLess1[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMoreToLess1[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        }
-
-        //Second stairs, More divisions to less divisions 2, 5 levels
-
-        let stairsMoreToLess2 = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 270+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsMoreToLess2[i] = game.add.graphics(0, 0);
-            stairsMoreToLess2[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMoreToLess2[i].beginFill(0xff6666);
-            stairsMoreToLess2[i].drawRect(x1, y1, x2, y2);
-            stairsMoreToLess2[i].endFill();
-            
-            //event
-            stairsMoreToLess2[i].inputEnabled = true;
-            stairsMoreToLess2[i].input.useHandCursor = true;
-            stairsMoreToLess2[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'B' });
-            stairsMoreToLess2[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMoreToLess2[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        } 
-        
-        //Third stairs, Less divisions to more divisions, 5 levels
-
-        let stairsLessToMore = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 440+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsLessToMore[i] = game.add.graphics(0, 0);
-            stairsLessToMore[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsLessToMore[i].beginFill(0xb366ff);
-            stairsLessToMore[i].drawRect(x1, y1, x2, y2);
-            stairsLessToMore[i].endFill();
-            
-            //event
-            stairsLessToMore[i].inputEnabled = true;
-            stairsLessToMore[i].input.useHandCursor = true;
-            stairsLessToMore[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'C' });
-            stairsLessToMore[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsLessToMore[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        } 
-
-    },
-        
-    //MapLoading function
-    func_loadMap: function(){
-
-        if(audioStatus){
-            this.beep.play();
-        }
-
-        levelPosition = 0; //Map position
-        levelMove = true; //Move no next point
-        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        leveloperator = this.operator; //Type of game
-        passedLevels = 0; //reset the game progress when entering a new level
-
-        game.state.start('map');
-
-    },
-    
-};
-
-/****************************** GAME ****************************/
 
 let gameSquareTwo = {
 
@@ -195,11 +35,11 @@ let gameSquareTwo = {
         // Background
         game.add.image(0, 0, 'bgimage');
         
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
+        // Calls function that loads navigation icons
+        iconSettings["func_addButtons"](true,true,
                                     true,true,false,
                                     true,false,
-                                    "menuSquareTwo", false);
+                                    'difficulty', false);
 
         //Clouds
         game.add.image(300, 100, 'cloud');
@@ -670,72 +510,4 @@ let gameSquareTwo = {
 
     },
     
-};
-
-/****************************** END ****************************/
-
-let endSquareTwo = {
-
-    create: function() {  
-
-        // Background
-        game.add.image(0, 0, 'bgimage');
-                
-        //Clouds
-        game.add.image(300, 100, 'cloud');
-        game.add.image(660, 80, 'cloud');
-        game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
-        //Floor
-        for(let i=0;i<9;i++){
-            game.add.image(i*100, 501, 'floor');
-        }
-        
-        // Progress bar
-        for(let p=1;p<=5;p++){
-            let block = game.add.image(660+(p-1)*30, 10, 'block');
-            block.scale.setTo(2, 1); //Scaling to double width
-        }
-        game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(660, 10, 'pgbar');
-        
-        //School and trees
-        game.add.sprite(600, 222 , 'school').scale.setTo(0.7);
-        game.add.sprite(30, 280 , 'tree4');
-        game.add.sprite(360, 250 , 'tree2');
-        
-        //kid
-        this.kid = game.add.sprite(0, 460 , 'kid_run');
-        this.kid.anchor.setTo(0.5,0.5);
-        this.kid.scale.setTo(0.7);
-        this.kid.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11]);
-        this.kid.animations.play('walk', 6, true);
-
-    },
-
-    update: function() {
-
-        if(this.kid.x<=700){
-            this.kid.x += 2;
-        }else{
-            if(levelMenu){            	
-            	passedLevels = 0;
-                game.state.start('menu');
-            }else{
-                this.kid.animations.stop();
-            }
-        }
-
-    },
-    
-    func_verPrincipal: function(){
-        game.state.start('welcome');
-    },
-          
 };

@@ -1,4 +1,3 @@
-
 /*
     let mapState = {
         create: function(){},
@@ -11,25 +10,15 @@
 let mapState = {
 
     create: function() {
-
-        if(levelType=="C"){
-            this.gameStateString = "game"+levelShape+"Two";
-            this.endStateString = "end"+levelShape+"Two";
-            this.menuStateString = "menu"+levelShape+"Two";
-        }else{
-            this.gameStateString = "game"+levelShape+"One";
-            this.endStateString = "end"+levelShape+"One";
-            this.menuStateString = "menu"+levelShape+"One";
-        }
         
         // Background
         game.add.image(0, 40, 'bgmap');
         
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,false,
+        // Calls function that loads navigation icons
+        iconSettings["func_addButtons"](true,false,
                                     true,true,false,
                                     false,false,
-                                    this.menuStateString,false);
+                                    'difficulty',false);
         
         // Styles for labels
         const stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
@@ -54,7 +43,7 @@ let mapState = {
             'y': [ 486, 422, 358, 294, 230, 166 ]
         };
         
-        if(this.gameStateString=="gameSquareOne"){
+        if(gameStateString=="gameSquareOne"){
         	//Garage
 	        let garage = game.add.image(this.points.x[0], this.points.y[0], 'garage');
 	        garage.scale.setTo(0.4);
@@ -129,7 +118,7 @@ let mapState = {
             }
         }
 
-        if(this.gameStateString=="gameSquareOne"){
+        if(gameStateString=="gameSquareOne"){
 	    	this.character = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'tractor');
 
 	        let walk = this.character.animations.add('walk',[0,1,2,3,4]);
@@ -158,15 +147,15 @@ let mapState = {
         if(this.count<=this.wait) return;
         
         // If movement is stopped or position is 6 (final), load game
-    	if(this.gameStateString=="gameSquareOne"){
+    	if(gameStateString=="gameSquareOne"){
 		    if(levelPosition==8){
 	            levelMove = false;
 	        }
-		}else if(this.gameStateString=="gameCircleOne"){
+		}else if(gameStateString=="gameCircleOne"){
 			if(levelPosition==6){
 	            levelMove = false;
 	        }
-		}else if(this.gameStateString=="gameSquareTwo"){
+		}else if(gameStateString=="gameSquareTwo"){
 			if(levelPosition==5){
 	            levelMove = false;
 	        }
@@ -202,9 +191,9 @@ let mapState = {
         }
 
         if(levelPosition<5){
-        	game.state.start(this.gameStateString);
+        	game.state.start(gameStateString);
         }else{
-        	game.state.start(this.endStateString);
+        	game.state.start('end');
     	}
 
     }

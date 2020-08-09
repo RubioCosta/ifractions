@@ -1,10 +1,4 @@
-
 /*
-    let menuCircleOne = {
-        create: function(){},
-        ---------------------------- end of phaser functions
-        func_loadMap: function(){}
-    };
 
     let gameCircleOne = {
         create: function(){},
@@ -21,209 +15,9 @@
             //func_getRndDivisor: function(){}
     };
 
-    let endCircleOne = {
-        create: function(){},
-        update: function(){},
-        ---------------------------- end of phaser functions
-        func_verPrincipal: function(){},
-    };
 */
 
 // Kid and Circle states, games 1 and 2
-
-/****************************** MENU ****************************/
-
-let menuCircleOne = {
-    
-    create: function() {
-                
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
-                                    false,true,false,
-                                    true,false,
-                                    false,false);        
-        
-        // Title
-        const style = { font: '28px Arial', fill: '#00804d'};
-        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
-        title.anchor.setTo(0.5, 0.5);
-                
-        //SETTING DIFFICULTY LEVELS
-
-        let maxHeight = 120; //Max height of a stair
-        let stairHeight = 29; //height growth of a stair
-        let stairWidth = 85; //Width of a stair
-        let startStair = 240;
-        let startSymbol = 150;
-        let startCircle = (startSymbol/2)+startStair+stairWidth*5;
-        
-         //First stairs, plus, 5 levels, blue circle
-
-        let blueCircle = game.add.graphics(startCircle, 195);
-            blueCircle.anchor.setTo(0.5,0.5);
-            blueCircle.lineStyle(2, 0x31314e);
-            blueCircle.beginFill(0xefeff5);
-            blueCircle.drawCircle(0, 0, 60);
-            blueCircle.endFill();
-
-        let plusArrowIcon = game.add.sprite(startSymbol+40, 195, 'h_arrow'); 
-            plusArrowIcon.scale.setTo(0.35);
-            plusArrowIcon.alpha = 0.8;
-            plusArrowIcon.anchor.setTo(0.5,0.5);
-
-        let plusKidIcon = game.add.sprite(startSymbol, 195, 'kid_walk'); 
-            plusKidIcon.scale.setTo(0.6);
-            plusKidIcon.alpha = 0.8;
-            plusKidIcon.anchor.setTo(0.5,0.5);
-        
-        let stairsPlus = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 135+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsPlus[i] = game.add.graphics(0, 0);
-            stairsPlus[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsPlus[i].beginFill(0x99b3ff);
-            stairsPlus[i].drawRect(x1, y1, x2, y2);
-            stairsPlus[i].endFill();
-            
-            //event
-            stairsPlus[i].inputEnabled = true;
-            stairsPlus[i].input.useHandCursor = true;
-            stairsPlus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Plus' });
-            stairsPlus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsPlus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        }
-        
-        //Second stairs, minus, 5 levels, red circle
-
-        let redCircle = game.add.graphics(startCircle, 350);
-            redCircle.anchor.setTo(0.5,0.5);
-            redCircle.lineStyle(2, 0xb30000);
-            redCircle.beginFill(0xefeff5);
-            redCircle.drawCircle(0, 0, 60);
-            redCircle.endFill();
-
-        let minusArrowIcon = game.add.sprite(startSymbol, 350, 'h_arrow');
-            minusArrowIcon.scale.setTo(-0.35, 0.35);
-            minusArrowIcon.alpha = 0.8;
-            minusArrowIcon.anchor.setTo(0.5,0.5);
-
-        let minusKidIcon = game.add.sprite(startSymbol+40, 350, 'kid_walk');
-            minusKidIcon.scale.setTo(-0.6, 0.6);
-            minusKidIcon.alpha = 0.8;
-            minusKidIcon.anchor.setTo(0.5,0.5);
-
-        let stairsMinus = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 285+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsMinus[i] = game.add.graphics(0, 0);
-            stairsMinus[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMinus[i].beginFill(0xff6666);
-            stairsMinus[i].drawRect(x1, y1, x2, y2);
-            stairsMinus[i].endFill();
-            
-            //event
-            stairsMinus[i].inputEnabled = true;
-            stairsMinus[i].input.useHandCursor = true;
-            stairsMinus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Minus' });
-            stairsMinus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMinus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        } 
-        
-        //Thrid stairs, mixed, 5 levels, two circles
-
-        let blueCircle2 = game.add.graphics(startCircle-30, 500);
-            blueCircle2.anchor.setTo(0.5,0.5);
-            blueCircle2.lineStyle(2, 0x31314e);
-            blueCircle2.beginFill(0xefeff5);
-            blueCircle2.drawCircle(0, 0, 60);
-            blueCircle2.endFill();
-        
-        let redCircle2 = game.add.graphics(startCircle+40, 500);
-            redCircle2.anchor.setTo(0.5,0.5);
-            redCircle2.lineStyle(2, 0xb30000);
-            redCircle2.beginFill(0xefeff5);
-            redCircle2.drawCircle(0, 0, 60);
-            redCircle2.endFill();
-        
-        let doubleArrowIcon = game.add.sprite(startSymbol, 500, 'h_double'); 
-            doubleArrowIcon.scale.setTo(0.5);
-            doubleArrowIcon.anchor.setTo(0.5,0.5);
-            doubleArrowIcon.alpha = 0.8;
-        
-        let stairsMixed = [];
-
-        for(let i=1;i<=5;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 435+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsMixed[i] = game.add.graphics(0, 0);
-            stairsMixed[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMixed[i].beginFill(0xb366ff);
-            stairsMixed[i].drawRect(x1, y1, x2, y2);
-            stairsMixed[i].endFill();
-            
-            //event
-            stairsMixed[i].inputEnabled = true;
-            stairsMixed[i].input.useHandCursor = true;
-            stairsMixed[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Mixed' });
-            stairsMixed[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMixed[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        } 
-
-    },
-        
-    //MapLoading function
-    func_loadMap: function(){
-
-        if(audioStatus){
-            this.beep.play();
-        }
-
-        levelPosition = 0; //Map position
-        levelMove = true; //Move no next point
-        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        levelOperator = this.operator; //Operator of game
-        passedLevels = 0; //reset the game progress when entering a new level
-
-        game.state.start('map');
-
-    }
-    
-};
-
-/****************************** GAME ****************************/
 
 let gameCircleOne = {
 
@@ -236,14 +30,14 @@ let gameCircleOne = {
         timer.start();
         detail="";
 
-        // Background
+        // Sets background image
         game.add.image(0, 0, 'bgimage');
 
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
+        // Calls function that loads navigation icons
+        iconSettings["func_addButtons"](true,true,
                                     true,true,true,
                                     true,false,
-                                    "menuCircleOne", this.func_viewHelp);
+                                    'difficulty', this.func_viewHelp);
         
         //Clouds
         game.add.image(300, 100, 'cloud');
@@ -755,9 +549,9 @@ let gameCircleOne = {
         if(!clicked){
             let pointer;
             if(levelType=='A'){
-                let pointer = game.add.image(endPosition, 490, 'pointer');
+                pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
-                let pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
+                pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
             }
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
@@ -778,87 +572,4 @@ let gameCircleOne = {
 
     }
     
-};
-
-/****************************** END ****************************/
-
-let endCircleOne = {
-    
-    create: function() {  
-        
-        // Background
-        game.add.image(0, 0, 'bgimage');
-                
-        //Clouds
-        game.add.image(300, 100, 'cloud');
-        game.add.image(660, 80, 'cloud');
-        game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
-        //Floor
-        for(let i=0;i<9;i++){
-            game.add.image(i*100, 501, 'floor');
-        }
-        
-        // Progress bar
-        for(let p=1;p<=5;p++){
-            let block = game.add.image(660+(p-1)*30, 10, 'block');
-            block.scale.setTo(2, 1); //Scaling to double width
-        }
-        game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(660, 10, 'pgbar');
-        
-        //School and trees
-        game.add.sprite(600, 222 , 'school').scale.setTo(0.7);
-        game.add.sprite(30, 280 , 'tree4');
-        game.add.sprite(360, 250 , 'tree2');
-        
-        //kid
-        this.kid = game.add.sprite(0, -152 , 'kid_run');
-        this.kid.anchor.setTo(0.5,0.5);
-        this.kid.scale.setTo(0.7);
-        let walk = this.kid.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11]);
-        
-        //globo
-        this.balloon = game.add.sprite(0, -260, 'balloon');
-        this.balloon.anchor.setTo(0.5,0.5);
-        this.basket = game.add.sprite(0, -150, 'balloon_basket');
-        this.basket.anchor.setTo(0.5,0.5);
-    
-    },
-
-    update: function() {   
-
-        if(this.kid.y>=460){
-            this.kid.animations.play('walk', 6, true);
-            if(this.kid.x<=700){
-                this.kid.x += 2;
-            }else{
-                if(levelMenu){
-	            	passedLevels = 0;
-                    game.state.start('menu');
-                }else{
-                    this.kid.animations.stop();
-                }
-            }
-        }else{
-            this.balloon.y += 2;
-            this.basket.y += 2;
-            this.kid.y +=2;
-            this.balloon.x += 1;
-            this.basket.x += 1;
-            this.kid.x +=1;
-        }
-
-    },
-    
-    func_verPrincipal: function(){
-        game.state.start('welcome');
-    },
-   
 };

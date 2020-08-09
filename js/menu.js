@@ -1,4 +1,3 @@
-
 /*
     let menuState = {
         create: function(){},
@@ -34,7 +33,7 @@ let menuState = {
 
         // CAMERA
         this.game.world.setBounds(0, 0, this.game.world.width + this.extraWidth, this.game.world.height);
-     	  
+
         // Floor
         for(let i=0;i<this.game.world.width/100;i++){
             game.add.image(i*100, 501, 'floor');
@@ -57,8 +56,8 @@ let menuState = {
 
         // BUTTONS
 
-        // Navigation buttons
-		buttonSettings["func_addButtons"](false,true,
+        // Calls function that loads navigation icons
+		iconSettings["func_addButtons"](false,true,
     	                             false,false,false,
                                      true,true,
                                      false,false);
@@ -72,7 +71,7 @@ let menuState = {
 			menuObjList[i].anchor.setTo(0.5, 0.5);
 	        menuObjList[i].inputEnabled = true;
 	        menuObjList[i].input.useHandCursor = true;
-	        menuObjList[i].events.onInputDown.add(this.func_loadGame,{levelType: loadAssets.levelTypeList[i], beep: beepSound, shape: loadAssets.levelShapeList[i], label : true, game: this.game, extraWidth: this.extraWidth});
+            menuObjList[i].events.onInputDown.add(this.func_loadGame,{levelType: loadAssets.levelTypeList[i], beep: beepSound, shape: loadAssets.levelShapeList[i], label : true, game: this.game, extraWidth: this.extraWidth});
 	        menuObjList[i].events.onInputOver.add(this.func_showTitle,{levelType: loadAssets.levelTypeList[i], beep: beepSound, shape : loadAssets.levelShapeList[i], label : true, menu: menuObjList[i], lbl_game: this.lbl_game});
 	        menuObjList[i].events.onInputOut.add(this.func_clearTitle, {menu: menuObjList[i], lbl_game: this.lbl_game});
 			if((i+1)%2==1){
@@ -81,7 +80,7 @@ let menuState = {
 				y=-70; 
 				x+=235;
 			}
-		}
+        }
 
         // TURNING MOUSE INPUT CAPTURE ON TO MANAGE PAGE SCROLL
         this.input.mouse.capture = true;
@@ -105,7 +104,7 @@ let menuState = {
             this.lbl_game.x = (this.game.world.centerX - this.extraWidth/2) + this.camera.x;
             this.player_info.x = (this.game.world.centerX - this.extraWidth/2) + this.camera.x;
 
-            buttonSettings["changeRightButtonX"]((defaultWidth) + this.camera.x);
+            iconSettings["changeRightButtonX"]((defaultWidth) + this.camera.x);
         }
 
     },
@@ -137,41 +136,20 @@ let menuState = {
         levelShape = this.shape;
         levelLabel = this.label;
 
-        if(this.shape=="Square"){
-            
-            if(this.levelType==1 || this.levelType==2){
-                
-                if(this.levelType==1){
-                    levelType = "A";
-                }else if(this.levelType==2){
-                    levelType = "B";
-                }
+        if     (this.levelType==1) levelType = "A";
+        else if(this.levelType==2) levelType = "B";
+        else if(this.levelType==3) levelType = "C";
 
-                if(debugMode) console.log("Square One");
-                game.state.start('menuSquareOne');                
-            
-            }else if(this.levelType==3){
-                
-                levelType = "C";
-                
-                if(debugMode) console.log("Square Two, "+levelType);
-                game.state.start('menuSquareTwo')
-            
-            }
-
-        }else if(this.shape=="Circle"){
-        
-            if (this.levelType==1){
-                levelType = "A";
-            }else if (this.levelType==2){
-                levelType = "B";
-            }
-            
-            if(debugMode) console.log("Circle One");
-            game.state.start('menuCircleOne');
-        
+        if(levelType=="C"){
+            gameStateString = "game"+levelShape+"Two";
+            if(debugMode) console.log(levelShape+" Two, "+levelType);
+        }else{
+            gameStateString = "game"+levelShape+"One";
+            if(debugMode) console.log(levelShape+" One, "+levelType);
         }
 
+        // Calls level difficulty screen
+        game.state.start('difficulty');
     },
 
     func_showTitle: function(){

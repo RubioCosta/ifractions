@@ -1,10 +1,4 @@
-
 /*
-    let menuSquareOne = {
-        create: function(){},
-        ---------------------------- end of phaser functions
-        func_loadMap: function(){}
-    };
 
     let gameSquareOne = {
         create: function(){},
@@ -21,163 +15,9 @@
             //func_getRndDivisor: function(){}
     };
 
-    let endSquareOne = {
-        create: function(){},
-        update: function(){},
-        ---------------------------- end of phaser functions
-        func_verPrincipal: function(){},
-    };
 */
 
 // Tractor and Square states
-
-/****************************** MENU ****************************/
-
-let menuSquareOne = {
-	
-    create: function() {
-          
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
-                                    false,true,false,
-                                    true,false,
-                                    false,false);
-        
-        // Title
-        let style = { font: '28px Arial', fill: '#00804d'};
-        let title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
-        title.anchor.setTo(0.5, 0.5);
-        
-        //SETTING DIFFICULTY LEVELS
-
-        let maxHeight = 120; //Max height of a stair
-        let stairHeight = 40; //height growth of a stair
-        let stairWidth = 100; //Width of a stair
-        let startStair = 320;
-        let startSymbol = 180; 
-        let startSquare = (startSymbol/2)+startStair+stairWidth*3;
-        
-        //First stairs, plus, 3 levels, blue square
-
-        let blueSquare = game.add.graphics(startSquare, 175);
-            blueSquare.anchor.setTo(0.5,0.5);
-            blueSquare.lineStyle(2, 0x31314e);
-            blueSquare.beginFill(0xefeff5);
-            blueSquare.drawRect(0, 0, 80, 40);
-            blueSquare.endFill();
-        
-        let plusTractorIcon = game.add.sprite(startSymbol+30, 215, 'tractor_green');
-            //plus_tractor.frame = 0;
-            plusTractorIcon.scale.setTo(0.5);
-            plusTractorIcon.alpha = 0.9;
-            plusTractorIcon.anchor.setTo(0.5,0.5);
-        
-        let plusArrowIcon = game.add.sprite(startSymbol+100, 215, 'h_arrow');
-            plusArrowIcon.scale.setTo(0.3);
-            plusArrowIcon.alpha = 0.9;
-            plusArrowIcon.anchor.setTo(0.5,0.5);
-        
-        let stairsPlus = [];
-
-        for(let i=1;i<=3;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 135+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsPlus[i] = game.add.graphics(0, 0);
-            stairsPlus[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsPlus[i].beginFill(0x99b3ff);
-            stairsPlus[i].drawRect(x1, y1, x2, y2);
-            stairsPlus[i].endFill();
-            
-            //event
-            stairsPlus[i].inputEnabled = true;
-            stairsPlus[i].input.useHandCursor = true;
-            stairsPlus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Plus' });
-            stairsPlus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsPlus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        }
-        
-        //Second stairs, minus, 3 levels, red Square
-
-        let redSquare = game.add.graphics(startSquare, 330);
-            redSquare.anchor.setTo(0.5,0.5);
-            redSquare.lineStyle(2, 0xb30000);
-            redSquare.beginFill(0xefeff5);
-            redSquare.drawRect(0, 0, 80, 40);
-            redSquare.endFill();
-
-        let minusTractorIcon = game.add.sprite(startSymbol+70, 370, 'tractor_red');
-            //minusTractorIcon.frame = 5;
-            minusTractorIcon.scale.setTo(0.5);
-            minusTractorIcon.alpha = 0.9;
-            minusTractorIcon.anchor.setTo(0.5,0.5);
-        
-        let minusArrowIcon = game.add.sprite(startSymbol, 370, 'h_arrow');
-            minusArrowIcon.scale.setTo(0.3);
-            minusArrowIcon.alpha = 0.9;
-            minusArrowIcon.scale.x *= -1;
-            minusArrowIcon.anchor.setTo(0.5,0.5);
-        
-        let stairsMinus = [];
-
-        for(let i=1;i<=3;i++){
-            //stair
-            let x1 = startStair+(stairWidth*(i-1));
-            let y1 = 285+maxHeight-i*stairHeight;
-            let x2 = stairWidth;//x1 + 40;
-            let y2 = stairHeight*i;//y1 + 24;
-            
-            stairsMinus[i] = game.add.graphics(0, 0);
-            stairsMinus[i].lineStyle(1, 0xFFFFFF, 1);
-            stairsMinus[i].beginFill(0xff6666);
-            stairsMinus[i].drawRect(x1, y1, x2, y2);
-            stairsMinus[i].endFill();
-            
-            //event
-            stairsMinus[i].inputEnabled = true;
-            stairsMinus[i].input.useHandCursor = true;
-            stairsMinus[i].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: i, operator: 'Minus' });
-            stairsMinus[i].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
-            stairsMinus[i].events.onInputOut.add(function (item) { item.alpha=1; }, this);
-            
-            //label
-            let xl = x1+stairWidth/2; //x label
-            let yl = y1+(stairHeight*i)/2; //y label
-            let label = game.add.text(xl, yl, i, { font: '25px Arial', fill: '#ffffff', align: 'center' });
-                label.anchor.setTo(0.5, 0.4);
-        } 
-
-    },
-        
-    //MapLoading function
-    func_loadMap: function(){
-        
-        if(audioStatus){
-            this.beep.play();
-        }
-        
-        levelPosition = 0; //Map position
-        levelMove = true; //Move no next point
-        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 3)
-        levelOperator = this.operator; //Operator of game
-        passedLevels = 0; //reset the game progress when entering a new level
-        
-        game.state.start('map');
-
-    }
-    
-};
-
-/****************************** GAME ****************************/
 
 let gameSquareOne = {
 
@@ -193,42 +33,44 @@ let gameSquareOne = {
         // Background
         game.add.image(0, 0, 'bgimage');
         
-        // Navigation buttons
-        buttonSettings["func_addButtons"](true,true,
+        // Calls function that loads navigation icons
+        iconSettings["func_addButtons"](true,true,
                                     true,true,true,
                                     true,false,
-                                    "menuSquareOne", this.func_viewHelp);
+                                    'difficulty', this.func_viewHelp);
 
-        //Clouds
+        // Clouds
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
                 
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleFraction = { font: '15px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
+        // Font styles for labels
+        const stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
+        const styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
+        const styleFraction = { font: '15px Arial', fill: '#000080', align: 'center'};
         
-        //Floor and road
-        let startX = 170; //Initial tractor and place position
+        //Initial tractor and place position
+        let startX = 170;
         if(levelOperator=='Minus') startX = 730;
-        startX = startX; //Workaround for initial position inside update
-        let blockWidth = 80; //Width of blocks and floor spaces
-        let blockHeight = 40; //Height of blocks and floor spaces
+        startX = startX;    //Workaround for initial position inside update
+        
+        // Width and height of blocks and 'floor gaps'
+        const blockWidth = 80; 
+        const blockHeight = 40;
+        // Floor gaps
         for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
         }
                 
         //Control variables
-        clicked = false; //Floor blocks or apilled blocks clicked
+        clicked = false;    //Floor blocks or apilled blocks clicked
         hideLabels = false; //Labels of blocks
-        animate = false; //Start move animation
-        checkCollide = false; //Check if tractor fon't any block left or floor hole
-        result = false; //Game is correct
-        move = false; //Continue tractor animation
-        moveCounter = 0; //Move counter
-        moveEnd = 140; //Move end counter
+        animate = false;    //Start move animation
+        checkCollide = false;   //Check if tractor fon't any block left or floor hole
+        result = false;     //Game is correct
+        move = false;       //Continue tractor animation
+        moveCounter = 0;    //Move counter
+        moveEnd = 140;      //Move end counter
                 
         //tractor
         let tractorAlign = -80;
@@ -242,10 +84,11 @@ let gameSquareOne = {
         if(levelOperator=='Minus'){
             tractor.scale.x *= -1;
         }
-        
+
         //generator
+
         //Blocks and fractions
-        if(debugMode) console.log("pos " +levelPosition);
+        if(debugMode) console.log("pos " +levelPosition); // position in the game map
         
         maxBlocks = levelPosition+4; //Maximum blocks
         if(levelType=='B' || levelOperator=='Mixed') maxBlocks = 10;
@@ -803,9 +646,10 @@ let gameSquareOne = {
         if(!clicked){
             let pointer;
             if(levelType=='A'){
-                let pointer = game.add.image(endPosition, 490, 'pointer');
+                pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
-                let pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
+                console.log("hey! ---> " + blocks.children[endIndex-1]);
+                pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
             }
             pointer.anchor.setTo(0.5, 0);
             pointer.alpha = 0.7;
@@ -813,73 +657,4 @@ let gameSquareOne = {
 
     }
     
-};
-
-/****************************** END ****************************/
-
-let endSquareOne = {
-
-    create: function() {  
-
-        // Background
-        game.add.image(0, 0, 'bgimage');
-        
-        //Clouds
-        game.add.image(300, 100, 'cloud');
-        game.add.image(660, 80, 'cloud');
-        game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
-        //Floor
-        for(let i=0;i<9;i++){
-            game.add.image(i*100, 501, 'floor');
-        }
-        
-        // Progress bar
-        for(let p=0;p<5;p++){
-            let block = game.add.image(660+p*30, 10, 'block');
-            block.scale.setTo(2, 1); //Scaling to double width
-        }
-        game.add.text(820, 10, '100%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
-        game.add.image(660, 10, 'pgbar');
-        
-        //Farm and trees
-        game.add.sprite(650, 260 , 'farm').scale.setTo(1.1);
-        game.add.sprite(30, 280 , 'tree4');
-        game.add.sprite(360, 250 , 'tree2');
-        
-        //tractor
-        this.tractor = game.add.sprite(0, 490 , 'tractor');
-        this.tractor.anchor.setTo(0.5,0.5);
-        this.tractor.scale.setTo(0.8);
-            
-        this.tractor.animations.add('right',[0,1,2,3,4]);
-        this.tractor.animations.play('right', 5, true);
-        
-    },
-
-    update: function() {
-
-        if(this.tractor.x<=700){
-            this.tractor.x += 2;
-        }else{
-            if(levelMenu){
-            	passedLevels = 0;
-                game.state.start('menu');
-            }else{
-                this.tractor.animations.stop();
-            }
-        }
-
-    },
-    
-    func_verPrincipal: function(){
-        game.state.start('welcome');
-    },
-
 };
