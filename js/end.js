@@ -19,10 +19,7 @@ endState = {
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
-        // Styles for labels
-        let style = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
+                
         //Floor
         for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
@@ -33,8 +30,8 @@ endState = {
             let block = game.add.image(660+(p-1)*30, 10, 'block');
             block.scale.setTo(2, 1); //Scaling to double width
         }
-        game.add.text(820, 10, '100%', style);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, style).anchor.setTo(1,0);
+        game.add.text(820, 10, '100%', textStyles.subtitle3);
+        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, textStyles.subtitle3).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
         //School and trees
@@ -42,7 +39,7 @@ endState = {
         game.add.sprite(30, 280 , 'tree4');
         game.add.sprite(360, 250 , 'tree2');
         
-        if(gameStateString == 'gameCircleOne'){
+        if(currentGameState == 'gameCircleOne'){
             //kid
             this.kid = game.add.sprite(0, -152 , 'kid_run');
 
@@ -69,19 +66,15 @@ endState = {
 
     update: function(){
 
-        if(gameStateString == 'gameCircleOne'){
+        if(currentGameState == 'gameCircleOne'){
             
             if(this.kid.y>=460){
                 this.kid.animations.play('walk', 6, true);
                 if(this.kid.x<=700){
                     this.kid.x += 2;
                 }else{
-                    if(levelMenu){
-                        passedLevels = 0;
-                        game.state.start('menu');
-                    }else{
-                        this.kid.animations.stop();
-                    }
+                    passedLevels = 0;
+                    game.state.start('menu');
                 }
             }else{
                 this.balloon.y += 2;
@@ -97,12 +90,8 @@ endState = {
             if(this.kid.x <= 700){
                 this.kid.x += 2;
             }else{
-                if(levelMenu){
-                    passedLevels = 0;
-                    game.state.start('menu');
-                }else{
-                    this.kid.animations.stop();
-                }
+                passedLevels = 0;
+                game.state.start('menu');
             }
         }
 

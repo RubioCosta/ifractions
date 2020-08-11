@@ -11,54 +11,68 @@ let difficultyState = {
     create: function() {
 
         // Calls function that loads navigation icons
-        iconSettings["func_addButtons"](true,true,
+        iconSettings.func_addIcons(true,true,
                                     false,true,false,
                                     true,false,
                                     false,false);
     
-        // Title
-        const style = { font: '28px Arial', fill: '#00804d'};
-        const title = game.add.text(game.world.centerX, 40, lang.game_menu_title, style);
+        // TITLE
+
+        const title = game.add.text(game.world.centerX, 40, lang.game_menu_title, textStyles.title2);
         title.anchor.setTo(0.5, 0.5);
 
-        //SETTING DIFFICULTY LEVELS
+        // LABEL SETTINGS
 
-        const maxHeight = 120; //Max height of a stair        
+        // Text : 'with/without' labeling the fractions
+        let labelText = game.add.text(game.world.centerX - 110, 80, "", textStyles.subtitle2);
+        levelLabel ? labelText.text = lang.with_name + " " + lang.label_name : labelText.text = lang.without_name + " " + lang.label_name;
+        labelText.anchor.setTo(0,0.5);
+        // Selection box
+        let selectionBox = game.add.sprite(game.world.centerX - 110 - 30, 75, 'select');
+        levelLabel ? selectionBox.frame=1 : selectionBox.frame=0;
+        selectionBox.anchor.setTo(0.5, 0.5);
+        selectionBox.scale.setTo(0.12);
+        selectionBox.inputEnabled = true;
+        selectionBox.input.useHandCursor = true;
+        selectionBox.events.onInputDown.add(function(){ 
+            if(levelLabel){
+                levelLabel = false; 
+                this.selectionBox.frame = 0; 
+                this.labelText.text = lang.without_name + " " + lang.label_name;
+                if(audioStatus) beepSound.play();
+            }else{ 
+                levelLabel = true; 
+                this.selectionBox.frame = 1; 
+                this.labelText.text = lang.with_name + " " + lang.label_name;
+                if(audioStatus) beepSound.play();
+            }
+        },{selectionBox: selectionBox, labelText: labelText});
+
+        // SETTING DIFFICULTY LEVELS
+
         let stairHeight; //height growth of a stair
         let stairWidth; //Width of a stair
         let startStair;
         let startSymbol;
-        let startGeometricFigure; // @@ transformar em so uma variavel
+        let startGeometricFigure;
+        const maxHeight = 120;      // Maximum height of a stair        
         
-        switch(gameStateString){
-            case "gameSquareOne":
-                stairHeight = 40;
-                stairWidth = 100;
-                startStair = 320;
-                startSymbol = 180;
-                startGeometricFigure = (startSymbol/2)+startStair+stairWidth*3;
-            break;
-            case "gameSquareTwo":
-                stairHeight = 29;
-                startStair = 240; 
-                startSymbol = 150;
-
-                stairWidth = 80;
-                startGeometricFigure = (startSymbol/2)+startStair+stairWidth*5;
-            break;
-            case "gameCircleOne":
-                stairHeight = 29;
-                startStair = 240; 
-                startSymbol = 150;
-
-                stairWidth = 85;
-                startGeometricFigure = (startSymbol/2)+startStair+stairWidth*5;
-            break;
-            default:
-                console.log("Error! game state name not found!");
+        if(currentGameState == "gameSquareOne"){
+            stairHeight = 40;
+            stairWidth  = 100;
+            startStair  = 320;
+            startSymbol = 180;
+            startGeometricFigure = (startSymbol/2)+startStair+stairWidth*3;
+        }else if(currentGameState == "gameSquareTwo" || currentGameState == "gameCircleOne"){                
+            stairHeight = 29;
+            startStair  = 240; 
+            startSymbol = 150;
+            stairWidth  = 85;
+            startGeometricFigure = (startSymbol/2)+startStair+stairWidth*5;
+        }else{
+            console.log("Error! Name of the game state is not valid!");
         }
 
-        //@@ usar phaser groups ou objetos??
         let geometricFigure = [];
         let levelThemeIcons = [];
         let arrowIcons = [];
@@ -69,22 +83,16 @@ let difficultyState = {
             maxSublevel: null,
             maxDifficulty: null,
             color: ['0x99b3ff', '0xff6666', '0xb366ff'], // blue, red, purple
-
-            operator_1: ['Plus', 'Minus', 'Mixed'],
-            operator_2: ['A', 'B', 'C'],
-            base_y1_1: [135, 285, 435],
-            base_y1_2: [100, 270, 440],
-            get operator() {
-                if (gameStateString == 'gameSquareTwo') return this.operator_2;
-                else return this.operator_1;
+            base_y1: [135, 285, 435],
+            sublevel_1: ['Plus', 'Minus', 'Mixed'],
+            sublevel_2: ['A', 'B', 'C'],
+            get sublevel() {
+                if (currentGameState == 'gameSquareTwo') return this.sublevel_2;
+                else return this.sublevel_1;
             },
-            get base_y1() {
-                if (gameStateString == 'gameSquareTwo') return this.base_y1_2;
-                else return this.base_y1_1;
-            }  
         }
 
-        switch(gameStateString){
+        switch(currentGameState){
             
             case "gameSquareOne":
 
@@ -126,8 +134,8 @@ let difficultyState = {
                 arrowIcons[1] = game.add.sprite(startSymbol, 370, 'h_arrow');
                 arrowIcons[1].scale.setTo(0.3);
                 arrowIcons[1].alpha = 0.9;
-                arrowIcons[1].scale.x *= -1;
                 arrowIcons[1].anchor.setTo(0.5,0.5);
+                arrowIcons[1].scale.x *= -1;
 
             break;
 
@@ -137,27 +145,27 @@ let difficultyState = {
                 aux.maxDifficulty = 5;
 
                 // Blue Circle
-                geometricFigure[0] = game.add.graphics(startGeometricFigure, 195);
+                geometricFigure[0] = game.add.graphics(startGeometricFigure, 175);
                 geometricFigure[0].anchor.setTo(0.5,0.5);
                 geometricFigure[0].lineStyle(2, 0x31314e);
                 geometricFigure[0].beginFill(0xefeff5);
                 geometricFigure[0].drawCircle(0, 0, 60);
                 geometricFigure[0].endFill();
                 // Red Circle
-                geometricFigure[1] = game.add.graphics(startGeometricFigure, 350);
+                geometricFigure[1] = game.add.graphics(startGeometricFigure, 330);
                 geometricFigure[1].anchor.setTo(0.5,0.5);
                 geometricFigure[1].lineStyle(2, 0xb30000);
                 geometricFigure[1].beginFill(0xefeff5);
                 geometricFigure[1].drawCircle(0, 0, 60);
                 geometricFigure[1].endFill();
                 // Both blue and red circles
-                geometricFigure[2] = game.add.graphics(startGeometricFigure-30, 500);
+                geometricFigure[2] = game.add.graphics(startGeometricFigure-30, 485);
                 geometricFigure[2].anchor.setTo(0.5,0.5);
                 geometricFigure[2].lineStyle(2, 0x31314e);
                 geometricFigure[2].beginFill(0xefeff5);
                 geometricFigure[2].drawCircle(0, 0, 60);
                 geometricFigure[2].endFill();
-                geometricFigure[3] = game.add.graphics(startGeometricFigure+40, 500);
+                geometricFigure[3] = game.add.graphics(startGeometricFigure+40, 485);
                 geometricFigure[3].anchor.setTo(0.5,0.5);
                 geometricFigure[3].lineStyle(2, 0xb30000);
                 geometricFigure[3].beginFill(0xefeff5);
@@ -186,10 +194,10 @@ let difficultyState = {
                 arrowIcons[1].alpha = 0.8;
                 arrowIcons[1].anchor.setTo(0.5,0.5);
                 // Both plus and minus arrows
-                arrowIcons[2] = game.add.sprite(startSymbol, 500, 'h_double'); 
+                arrowIcons[2] = game.add.sprite(startSymbol+20, 500, 'h_double'); 
                 arrowIcons[2].scale.setTo(0.5);
-                arrowIcons[2].anchor.setTo(0.5,0.5);
                 arrowIcons[2].alpha = 0.8;
+                arrowIcons[2].anchor.setTo(0.5,0.5);
 
             break;
 
@@ -198,15 +206,14 @@ let difficultyState = {
                 aux.maxSublevel = 3;
                 aux.maxDifficulty = 5;
 
-                levelThemeIcons[0] = game.add.sprite(startSymbol, 300, 'equal');
-                //levelThemeIcons[0].frame = 0;
+                levelThemeIcons[0] = game.add.sprite(startSymbol, 370, 'equal');
                 levelThemeIcons[0].scale.setTo(0.7);
                 levelThemeIcons[0].anchor.setTo(0.5,0.5);
 
             break;
 
             default:
-                console.log("Error: couldn't finish loading difficulty screen");
+                console.log("Error: couldn't finish loading difficulty screen assets");
         }
 
         // Pacing difficulty 'stairs'
@@ -226,13 +233,13 @@ let difficultyState = {
                 // Events
                 stairs[difficulty].inputEnabled = true;
                 stairs[difficulty].input.useHandCursor = true;
-                stairs[difficulty].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: difficulty, operator: aux.operator[sublevel]});
+                stairs[difficulty].events.onInputDown.add(this.func_loadMap, {beep: beepSound, difficulty: difficulty, sublevelType: aux.sublevel[sublevel]});
                 stairs[difficulty].events.onInputOver.add(function (item) { item.alpha=0.5; }, this);
                 stairs[difficulty].events.onInputOut.add(function (item) { item.alpha=1; }, this);
                 // Labels
                 let xl = x1+stairWidth/2; //x label
                 let yl = y1+(stairHeight*difficulty)/2; //y label
-                let label = game.add.text(xl, yl, difficulty, { font: '25px Arial', fill: '#ffffff', align: 'center' });
+                let label = game.add.text(xl, yl, difficulty, textStyles.difficultyLabel);
                     label.anchor.setTo(0.5, 0.4);
             }
         }
@@ -242,15 +249,13 @@ let difficultyState = {
     // Calls map state
     func_loadMap: function(){
 
-        if(audioStatus){
-            this.beep.play();
-        }
+        if(audioStatus) this.beep.play();
 
-        levelPosition = 0; //Map position
-        levelMove = true; //Move no next point
-        levelDifficulty  = this.difficulty; //Number of difficulty (1 to 5)
-        levelOperator = this.operator; //Type of game
-        passedLevels = 0; //reset the game progress when entering a new level
+        levelPosition   = 0;    //Map position
+        levelMove       = true; //Move no next point
+        levelDifficulty = this.difficulty;  //Number of difficulty (1 to 5)
+        sublevelType    = this.sublevelType;    //Type of game
+        passedLevels    = 0;    //reset the game progress when entering a new level
 
         game.state.start('map');
 

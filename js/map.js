@@ -15,15 +15,11 @@ let mapState = {
         game.add.image(0, 40, 'bgmap');
         
         // Calls function that loads navigation icons
-        iconSettings["func_addButtons"](true,false,
+        iconSettings.func_addIcons(true,false,
                                     true,true,false,
                                     false,false,
                                     'difficulty',false);
-        
-        // Styles for labels
-        const stylePlace = { font: '26px Arial', fill: '#ffffff', align: 'center'};
-        const styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
+                
         // Progress bar
         let percentText = passedLevels*25;
         let percentBlocks = passedLevels;
@@ -33,8 +29,8 @@ let mapState = {
                 block.scale.setTo(2.6, 1);
         }
 
-        game.add.text(820, 10, percentText+'%', styleMenu);
-        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, styleMenu).anchor.setTo(1,0);
+        game.add.text(820, 10, percentText+'%', textStyles.subtitle3);
+        game.add.text(650, 10, lang.difficulty + ' ' + levelDifficulty, textStyles.subtitle3).anchor.setTo(1,0);
         game.add.image(660, 10, 'pgbar');
         
          //Road
@@ -43,7 +39,7 @@ let mapState = {
             'y': [ 486, 422, 358, 294, 230, 166 ]
         };
         
-        if(gameStateString=="gameSquareOne"){
+        if(currentGameState=="gameSquareOne"){
         	//Garage
 	        let garage = game.add.image(this.points.x[0], this.points.y[0], 'garage');
 	        garage.scale.setTo(0.4);
@@ -113,15 +109,14 @@ let mapState = {
             sign.anchor.setTo(0.5, 1);
             sign.scale.setTo(0.4);
             if(p>0 && p<this.points.x.length-1){
-                let text = game.add.text(this.points.x[p]-23, this.points.y[p]-84, p, stylePlace);
+                let text = game.add.text(this.points.x[p]-23, this.points.y[p]-84, p, textStyles.difficultyLabel);
                 text.anchor.setTo(0.35, 0.5);
             }
         }
 
-        if(gameStateString=="gameSquareOne"){
+        if(currentGameState=="gameSquareOne"){
 	    	this.character = game.add.sprite(this.points.x[levelPosition], this.points.y[levelPosition], 'tractor');
 
-	        let walk = this.character.animations.add('walk',[0,1,2,3,4]);
 	        this.character.animations.play('walk', 5, true);
 	        this.character.angle -= 25;
         }else{
@@ -145,22 +140,6 @@ let mapState = {
         // Wait 2 seconds before moving or staring a game
         this.count ++;
         if(this.count<=this.wait) return;
-        
-        // If movement is stopped or position is 6 (final), load game
-    	if(gameStateString=="gameSquareOne"){
-		    if(levelPosition==8){
-	            levelMove = false;
-	        }
-		}else if(gameStateString=="gameCircleOne"){
-			if(levelPosition==6){
-	            levelMove = false;
-	        }
-		}else if(gameStateString=="gameSquareTwo"){
-			if(levelPosition==5){
-	            levelMove = false;
-	        }
-		}
-
 
         if(!levelMove){
             this.func_loadGame();
@@ -186,12 +165,10 @@ let mapState = {
     //MapLoading function
     func_loadGame: function(){
     	
-        if(audioStatus){
-            beepSound.play();
-        }
+        if(audioStatus) beepSound.play();
 
-        if(levelPosition<5){
-        	game.state.start(gameStateString);
+        if(levelPosition<=4){
+        	game.state.start(currentGameState);
         }else{
         	game.state.start('end');
     	}

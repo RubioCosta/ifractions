@@ -36,7 +36,7 @@ let gameSquareTwo = {
         game.add.image(0, 0, 'bgimage');
         
         // Calls function that loads navigation icons
-        iconSettings["func_addButtons"](true,true,
+        iconSettings.func_addIcons(true,true,
                                     true,true,false,
                                     true,false,
                                     'difficulty', false);
@@ -45,13 +45,7 @@ let gameSquareTwo = {
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleFraction = { font: '20px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
+
         //Floor
         for(let i=0;i<9;i++){
             game.add.image(i*100, 501, 'floor');
@@ -106,7 +100,7 @@ let gameSquareTwo = {
          //Creating blocks
         blockW = 400;
         blockH = 50;
-        if(levelOperator!="C"){
+        if(sublevelType!="C"){
             xA=230, yA=90;
             xB=xA, yB=yA+3*blockH+30;
         }else{
@@ -141,14 +135,14 @@ let gameSquareTwo = {
             
             //aux blocks
             let xAux = xA+i*widthA, yAux = yA+blockH+10;
-            if(levelOperator == 'C') yAux = yA;
+            if(sublevelType == 'C') yAux = yA;
                 block = game.add.graphics(xAux, yAux );
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthA, blockH);
                 
-                if(levelOperator!='A') block.alpha = 0;
+                if(sublevelType!='A') block.alpha = 0;
                 else block.alpha = 0.2;
                     
             auxblqA.add(block);
@@ -158,13 +152,13 @@ let gameSquareTwo = {
         //label block A
         let labelX = xA+blockW+30;
         let labelY = yA+blockH/2;
-        labelA = game.add.text(labelX, labelY, sizeA , styleFraction);
+        labelA = game.add.text(labelX, labelY, sizeA , textStyles.valueLabelBlue3);
         labelA.anchor.setTo(0.5, 0.41);
         
         //label fraction
         labelX = xA+(blockA*widthA)+40;
         labelY = yA+blockH+34;
-        fractionA = game.add.text(labelX, labelY, "0\n"+sizeA , styleFraction);
+        fractionA = game.add.text(labelX, labelY, "0\n"+sizeA , textStyles.valueLabelBlue3);
         fractionA.anchor.setTo(0.5, 0.41);
         separatorA = game.add.sprite(labelX, labelY, 'separator');
         separatorA.anchor.setTo(0.5, 0.5);
@@ -196,14 +190,14 @@ let gameSquareTwo = {
             blocksB.add(block);
             //aux blocks
             let xAux = xB+i*widthB, yAux = yB+blockH+10;
-            if(levelOperator == 'C') yAux = yB;
+            if(sublevelType == 'C') yAux = yB;
                 block = game.add.graphics(xAux, yAux);
                 block.anchor.setTo(0.5, 0.5);
                 block.lineStyle(1, lineColor);
                 block.beginFill(fillColorS);
                 block.drawRect(0, 0, widthB, blockH);
                 
-                if(levelOperator!='A') block.alpha = 0;
+                if(sublevelType!='A') block.alpha = 0;
                 else block.alpha = 0.2;
             auxblqB.add(block);
             
@@ -212,13 +206,13 @@ let gameSquareTwo = {
         //label block B
         labelX = xA+blockW+30;
         labelY = yB+blockH/2;
-        labelB = game.add.text(labelX, labelY, sizeB , styleFraction);
+        labelB = game.add.text(labelX, labelY, sizeB , textStyles.valueLabelBlue3);
         labelB.anchor.setTo(0.5, 0.41);    
                 
         //label fraction
         labelX = xA+(blockB*widthB)+40;
         labelY = yB+blockH+34;
-        fractionB = game.add.text(labelX, labelY, "0\n"+sizeB , styleFraction);
+        fractionB = game.add.text(labelX, labelY, "0\n"+sizeB , textStyles.valueLabelBlue3);
         fractionB.anchor.setTo(0.5, 0.41);
         separatorB = game.add.sprite(labelX, labelY, 'separator');
         separatorB.anchor.setTo(0.5, 0.5);
@@ -307,9 +301,7 @@ let gameSquareTwo = {
                 if((valueA/sizeA) == (valueB/sizeB)){
                     result = true;
                     levelMove = true;
-                    if(audioStatus){
-                        okSound.play();
-                    }
+                    if(audioStatus) okSound.play();
                     kid.animations.stop();
 
                     passedLevels++;        
@@ -319,9 +311,7 @@ let gameSquareTwo = {
                 }else{
                     result = false;
                     levelMove = false;
-                    if(audioStatus){
-                        errorSound.play();
-                    }
+                    if(audioStatus) errorSound.play();
                     kid.animations.stop();
                     errorImg.alpha = 1;
                 }
@@ -434,9 +424,7 @@ let gameSquareTwo = {
                 }
             }
             labelA.alpha = 0;
-            if(audioStatus){
-                beepSound.play();
-            }
+            if(audioStatus) beepSound.play();
             clickA = true;
             valueA = this.indice+1;
             fractionA.x = xA+(valueA*(blockW/sizeA))+40;
@@ -455,9 +443,7 @@ let gameSquareTwo = {
                 }
             }
             labelB.alpha = 0;
-            if(audioStatus){
-                beepSound.play();
-            }
+            if(audioStatus) beepSound.play();
             clickB = true;
             valueB = this.indice+1;
             fractionB.x = xB+(valueB*(blockW/sizeB))+40;
@@ -474,8 +460,7 @@ let gameSquareTwo = {
         let hr = new XMLHttpRequest();
         // Create some variables we need to send to our PHP file
         let url = "php/save.php";
-        let vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
-
+        let vars = "s_ip="+hip+"&s_name=" + username + "&s_lang=" + langString + "&s_game=" + levelShape + "&s_mode=" + levelType;
         vars += "&s_oper=Equal&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);

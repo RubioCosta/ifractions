@@ -34,7 +34,7 @@ let gameCircleOne = {
         game.add.image(0, 0, 'bgimage');
 
         // Calls function that loads navigation icons
-        iconSettings["func_addButtons"](true,true,
+        iconSettings.func_addIcons(true,true,
                                     true,true,true,
                                     true,false,
                                     'difficulty', this.func_viewHelp);
@@ -44,14 +44,9 @@ let gameCircleOne = {
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
         
-        // Styles for labels
-        let stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        let styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        let styleMenu = { font: '30px Arial', fill: '#000000', align: 'center'};
-        
         //Floor and road
         startX = 66; //Initial kid and place position
-        if(levelOperator=='Minus') startX = 66+5*156;
+        if(sublevelType=='Minus') startX = 66+5*156;
         
         placeDistance = 156; //Distance between places
         blockSize = 60;
@@ -69,7 +64,7 @@ let gameCircleOne = {
             let place = game.add.image(66+p*placeDistance, 526, 'place_a');
             place.anchor.setTo(0.5);
             place.scale.setTo(0.3);
-            game.add.text(66+p*placeDistance, 560, p , stylePlace).anchor.setTo(0.5); 
+            game.add.text(66+p*placeDistance, 560, p , textStyles.valueLabelBlue).anchor.setTo(0.5); 
         }
         
         //Control variables
@@ -90,7 +85,7 @@ let gameCircleOne = {
         //generator
         //Circles and fractions
         let maxBlocks = levelPosition+1; //Maximum blocks according to difficulty
-        if(levelType=='B' || levelOperator=='Mixed') maxBlocks = 6;
+        if(levelType=='B' || sublevelType=='Mixed') maxBlocks = 6;
         blocks = game.add.group(); //Fraction arrays
         numBlocks = game.rnd.integerInRange(levelPosition, maxBlocks); //Number of blocks
         curBlock = 0; //Actual index block
@@ -119,7 +114,7 @@ let gameCircleOne = {
             
             let direction = '';
             let lineColor = '';
-            if(levelOperator=='Mixed'){
+            if(sublevelType=='Mixed'){
                 if(p<=numPlus){
                     direction = 'Right';
                     lineColor = 0x31314e;
@@ -132,10 +127,10 @@ let gameCircleOne = {
                 direction = directions[rndIndex];
                 if(rndIndex==0) lineColor = 0x31314e;
                 else lineColor = 0xb30000;*/
-            }else if(levelOperator=='Plus'){
+            }else if(sublevelType=='Plus'){
                 direction = 'Right';    
                 lineColor = 0x31314e;
-            }else if(levelOperator=='Minus'){
+            }else if(sublevelType=='Minus'){
                 direction = 'Left';
                 lineColor = 0xb30000;
             }
@@ -159,9 +154,9 @@ let gameCircleOne = {
 
                 if(levelLabel){
                     let labelX = startX;
-                    if(levelOperator=='Minus') labelX -= 65;
+                    if(sublevelType=='Minus') labelX -= 65;
                     else labelX += 65;
-                    let label = game.add.text(labelX, 490-p*blockSize, portion , styleLabel);
+                    let label = game.add.text(labelX, 490-p*blockSize, portion , textStyles.valueLabelBlue);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -174,12 +169,12 @@ let gameCircleOne = {
 
                 if(levelLabel){
                     let labelX = startX;
-                    if(levelOperator=='Minus') labelX -= 65;
+                    if(sublevelType=='Minus') labelX -= 65;
                     else labelX += 65;
                     let separator = game.add.sprite(labelX, 485-p*blockSize, 'separator');
                     separator.anchor.setTo(0.5, 0.5);
                     blockSeparator.add(separator);
-                    let label = game.add.text(labelX, 488-p*blockSize, '1\n'+portion , styleLabel);
+                    let label = game.add.text(labelX, 488-p*blockSize, '1\n'+portion , textStyles.valueLabelBlue);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -240,7 +235,7 @@ let gameCircleOne = {
         kid_walk.scale.setTo(0.8);
         kid_walk.animations.add('right',[0,1,2,3,4,5,6,7,8,9,10,11]);
         kid_walk.animations.add('left',[23,22,21,20,19,18,17,16,15,14,13,12]);
-        if(levelOperator=='Minus'){
+        if(sublevelType=='Minus'){
             kid_walk.animations.play('left', 6, true);
             kid_walk.animations.stop();
         }
@@ -271,9 +266,7 @@ let gameCircleOne = {
                     balloon.alpha = 1;
                     clicked = true;
                     animate = true;
-                    if(audioStatus){
-                        beepSound.play();
-                    }
+                    if(audioStatus) beepSound.play();
                     if(blockDirection[curBlock]=='Right'){
                         kid_walk.animations.play('right', 6, true);
                     }else{
@@ -389,16 +382,12 @@ let gameCircleOne = {
             
             if(flyCounter==0){
                 if(result){
-                    if(audioStatus){
-                        okSound.play();
-                    }
+                    if(audioStatus) okSound.play();
                     passedLevels++;        
                     if(debugMode) console.log("passedLevels = "+passedLevels);
                     okImg.alpha = 1;
                 }else{
-                    if(audioStatus){
-                        errorSound.play();
-                    }
+                    if(audioStatus) errorSound.play();
                     errorImg.alpha = 1;
                 }
             }
@@ -471,9 +460,7 @@ let gameCircleOne = {
             balloon.alpha = 1;
             clicked = true;
             animate = true;
-            if(audioStatus){
-                beepSound.play();
-            }
+            if(audioStatus) beepSound.play();
             if(blockDirection[curBlock]=='Right'){
                 kid_walk.animations.play('right', 6, true);
             }else{
@@ -498,9 +485,7 @@ let gameCircleOne = {
             balloon.alpha = 1;
             clicked = true;
             animate = true;
-            if(audioStatus){
-                beepSound.play();
-            }
+            if(audioStatus) beepSound.play();
             if(blockDirection[curBlock]=='Right'){
                 kid_walk.animations.play('right', 6, true);
             }else{
@@ -522,11 +507,11 @@ let gameCircleOne = {
         let lang_str = "pt_BR"; //TODO NAO esta pegando a lingua definida pelo usuario!
 
         let hr = new XMLHttpRequest();
+        
         // Create some variables we need to send to our PHP file
         let url = "php/save.php";
-        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
-
-        vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
+        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + langString + "&s_game=" + levelShape + "&s_mode=" + levelType;
+        vars += "&s_oper=" + sublevelType + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
         
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

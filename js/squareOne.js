@@ -34,24 +34,19 @@ let gameSquareOne = {
         game.add.image(0, 0, 'bgimage');
         
         // Calls function that loads navigation icons
-        iconSettings["func_addButtons"](true,true,
+        iconSettings.func_addIcons(true,true,
                                     true,true,true,
                                     true,false,
                                     'difficulty', this.func_viewHelp);
 
         // Clouds
         game.add.image(300, 100, 'cloud');
-        game.add.image(660, 80, 'cloud');
-        game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-                
-        // Font styles for labels
-        const stylePlace = { font: '26px Arial', fill: '#400080', align: 'center'};
-        const styleLabel = { font: '26px Arial', fill: '#000080', align: 'center'};
-        const styleFraction = { font: '15px Arial', fill: '#000080', align: 'center'};
-        
+        game.add.image(660, 80,  'cloud');
+        game.add.image(110, 85,  'cloud').scale.setTo(0.8);
+                        
         //Initial tractor and place position
         let startX = 170;
-        if(levelOperator=='Minus') startX = 730;
+        if(sublevelType=='Minus') startX = 730;
         startX = startX;    //Workaround for initial position inside update
         
         // Width and height of blocks and 'floor gaps'
@@ -74,15 +69,15 @@ let gameSquareOne = {
                 
         //tractor
         let tractorAlign = -80;
-        if(levelOperator=='Minus'){
+        if(sublevelType=='Minus'){
             tractorAlign *= -1;
         } 
-        tractor = game.add.sprite(startX+tractorAlign, 445, 'tractor');
-        tractor.anchor.setTo(0.5, 0.5);
-        tractor.scale.setTo(0.8);
-        tractor.animations.add('right',[0,1,2,3,4]);
-        if(levelOperator=='Minus'){
-            tractor.scale.x *= -1;
+        this.tractor = game.add.sprite(startX+tractorAlign, 445, 'tractor');
+        this.tractor.anchor.setTo(0.5, 0.5);
+        this.tractor.scale.setTo(0.8);
+        this.tractor.animations.add('right',[0,1,2,3,4]);
+        if(sublevelType=='Minus'){
+            this.tractor.scale.x *= -1;
         }
 
         //generator
@@ -91,7 +86,7 @@ let gameSquareOne = {
         if(debugMode) console.log("pos " +levelPosition); // position in the game map
         
         maxBlocks = levelPosition+4; //Maximum blocks
-        if(levelType=='B' || levelOperator=='Mixed') maxBlocks = 10;
+        if(levelType=='B' || sublevelType=='Mixed') maxBlocks = 10;
         blocks = game.add.group(); //Fraction arrays (apilled)
         numBlocks = game.rnd.integerInRange(levelPosition+2, maxBlocks); //Number of blocks
         
@@ -105,7 +100,7 @@ let gameSquareOne = {
         //blockAngle = []; //Angles of blocks
         //blockTraceColor = []; //Trace colors
         endPosition = startX; //Ending position, accumulative
-        if(levelOperator=='Minus') endPosition -= blockWidth;
+        if(sublevelType=='Minus') endPosition -= blockWidth;
         else endPosition += blockWidth;
         
         //Game A exclusive variables 
@@ -117,7 +112,7 @@ let gameSquareOne = {
         
         //Game B exclusive variables
         arrowPlace = startX; //Fixed place for help arrow
-        if(levelOperator=='Minus') arrowPlace  -= blockWidth;
+        if(sublevelType=='Minus') arrowPlace  -= blockWidth;
         else arrowPlace += blockWidth;
         fractionClicked = false; //If clicked a fraction (game B)
         fractionIndex = -1; //Index of clicked fraction (game B)
@@ -134,10 +129,10 @@ let gameSquareOne = {
             let direction = '';
             let lineColor = '';
             
-            if(levelOperator=='Plus'){
+            if(sublevelType=='Plus'){
                 direction = 'Right';    
                 lineColor = 0x31314e; //plus block: "black'
-            }else if(levelOperator=='Minus'){
+            }else if(sublevelType=='Minus'){
                 direction = 'Left';
                 lineColor = 0xb30000;//minus block : "red"
             }
@@ -158,9 +153,9 @@ let gameSquareOne = {
 
                 if(levelLabel){
                     let labelX = startX;
-                    if(levelOperator=='Minus') labelX -= (15+blockWidth);
+                    if(sublevelType=='Minus') labelX -= (15+blockWidth);
                     else labelX += blockWidth+15;
-                    let label = game.add.text(labelX, 480-p*blockHeight, portion , styleLabel);
+                    let label = game.add.text(labelX, 480-p*blockHeight, portion , textStyles.valueLabelBlue);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -175,13 +170,13 @@ let gameSquareOne = {
 
                 if(levelLabel){
                     let labelX = startX;
-                    if(levelOperator=='Minus') labelX -= (15+distance);
+                    if(sublevelType=='Minus') labelX -= (15+distance);
                     else labelX += 15+distance;
                     let separator = game.add.sprite(labelX, 480-p*blockHeight, 'separator');
                     separator.scale.setTo(0.6);
                     separator.anchor.setTo(0.5, 0.5);
                     blockSeparator.add(separator);
-                    let label = game.add.text(labelX, 483-p*blockHeight, '1\n'+portion , styleFraction);
+                    let label = game.add.text(labelX, 483-p*blockHeight, '1\n'+portion , textStyles.valueLabelBlue2);
                     label.anchor.setTo(0.5, 0.5);
                     blockLabel.add(label);
                 }
@@ -201,7 +196,7 @@ let gameSquareOne = {
                 block.alpha = 0.5;
                 block.inputEnabled = true;
                 block.input.useHandCursor = true;
-                block.events.onInputDown.add(this.func_clickSquare, {indice: p});
+                block.events.onInputDown.add(this.func_clickSquare, {indice: p, tractor: this.tractor});
                 block.events.onInputOver.add(this.func_overSquare, {indice: p});
                 block.events.onInputOut.add(this.func_outSquare, {indice: p});
             }
@@ -219,9 +214,9 @@ let gameSquareOne = {
         //If end position is out of bounds, restart
         if(!hasFigure) game.state.start('gameSquareOne');
         
-        if (levelOperator=='Plus' && (endPosition<(startX+blockWidth) || endPosition>(startX+8*blockWidth))){
+        if (sublevelType=='Plus' && (endPosition<(startX+blockWidth) || endPosition>(startX+8*blockWidth))){
             game.state.start('gameSquareOne');
-        }else if (levelOperator=='Minus' && (endPosition>(startX) || endPosition<(startX-(8*blockWidth)))){
+        }else if (sublevelType=='Minus' && (endPosition>(startX) || endPosition<(startX-(8*blockWidth)))){
             game.state.start('gameSquareOne');
         }
         
@@ -249,11 +244,11 @@ let gameSquareOne = {
         for(let i = 0; i < floorCount; i++){
             let posX = startX;
             
-            if(levelOperator=='Minus') posX -= (blockWidth + i*widFloor);
+            if(sublevelType=='Minus') posX -= (blockWidth + i*widFloor);
             else posX += (blockWidth + i*widFloor);
             
             if(levelType=='B'){
-                if(levelOperator=='Minus'){
+                if(sublevelType=='Minus'){
                     if(posX<=arrowPlace){
                         floorCount = i+1;
                         floorIndex = i-1;
@@ -275,13 +270,13 @@ let gameSquareOne = {
                 block.beginFill(0xa8c0e6);
                 block.drawRect(0, 0, widFloor, blockHeight);
                 block.endFill();
-            if(levelOperator=='Minus') block.scale.x *= -1;
+            if(sublevelType=='Minus') block.scale.x *= -1;
             
             if(levelType=="A"){
                 block.alpha = 0.5;
                 block.inputEnabled = true;
                 block.input.useHandCursor = true;
-                block.events.onInputDown.add(this.func_clickSquare, {indice: i});
+                block.events.onInputDown.add(this.func_clickSquare, {indice: i, tractor: this.tractor});
                 block.events.onInputOver.add(this.func_overSquare, {indice: i});
                 block.events.onInputOut.add(this.func_outSquare, {indice: i});
             }
@@ -291,10 +286,10 @@ let gameSquareOne = {
         
         for(let i=0;i<=8;i++){
             let posX = startX;
-            if(levelOperator=='Minus')posX -= ((9-i)*blockWidth);
+            if(sublevelType=='Minus')posX -= ((9-i)*blockWidth);
             else posX+=((i+1)*blockWidth);
             
-            game.add.text(posX, 560, i , stylePlace).anchor.setTo(0.5, 0.5); 
+            game.add.text(posX, 560, i, textStyles.valueLabelBlue).anchor.setTo(0.5, 0.5); 
         }
         
         //ok and error images
@@ -338,9 +333,9 @@ let gameSquareOne = {
         if(animate){
 
             if(blockDirection[curBlock]=='Right'){
-                tractor.x+=2;
+                this.tractor.x+=2;
             }else if(blockDirection[curBlock]=='Left'){
-                tractor.x-=2;
+                this.tractor.x-=2;
             }
                         
             for(let i=0;i<numBlocks;i++){ //Moving every block
@@ -389,7 +384,7 @@ let gameSquareOne = {
         
         //Check if tractor has blocks left or floor holes
         if(checkCollide){
-            tractor.animations.stop();
+            this.tractor.animations.stop();
             timer.stop();
             //Check left blocks
             let resultBlock = true;
@@ -418,17 +413,13 @@ let gameSquareOne = {
             
             if(moveCounter==0){
                 if(result){
-                    tractor.animations.play('right', 6, true);
-                    if(audioStatus){
-                        okSound.play();
-                    }
+                    this.tractor.animations.play('right', 6, true);
+                    if(audioStatus) okSound.play();
                     passedLevels++;        
                     if(debugMode) console.log("passedLevels = "+passedLevels); 
                     okImg.alpha = 1;
                 }else{
-                    if(audioStatus){
-                        errorSound.play();
-                    }
+                    if(audioStatus) errorSound.play();
                     errorImg.alpha = 1;
                 }
             }
@@ -436,10 +427,10 @@ let gameSquareOne = {
             moveCounter += 1;
             
             if(result){
-                if(levelOperator=='Minus'){
-                    tractor.x -=2;
+                if(sublevelType=='Minus'){
+                    this.tractor.x -=2;
                 }else{
-                    tractor.x +=2;
+                    this.tractor.x +=2;
                 }
             }
             
@@ -517,10 +508,8 @@ let gameSquareOne = {
                 arrow.alpha = 1;
                 clicked = true;
                 animate = true;
-                if(audioStatus){
-                    beepSound.play();
-                }            
-                tractor.animations.play('right', 5, true);
+                if(audioStatus) beepSound.play();            
+                this.tractor.animations.play('right', 5, true);
                 
                 if(levelLabel){ //Hiding labels
                     blockLabel.visible = false;
@@ -528,7 +517,7 @@ let gameSquareOne = {
                 }
                 
                 //cleaning path
-                if(levelOperator=='Minus'){
+                if(sublevelType=='Minus'){
                     for(let i=0; i< floorCount; i++){
                         if(i>floorIndex){
                             floorBlocks.children[i].alpha = 0;
@@ -561,10 +550,8 @@ let gameSquareOne = {
                 arrow.alpha = 0;
                 clicked = true;
                 animate = true;
-                if(audioStatus){
-                    beepSound.play();
-                }
-                tractor.animations.play('right', 5, true);
+                if(audioStatus) beepSound.play();
+                this.tractor.animations.play('right', 5, true);
 
                 if(levelLabel){ //Hiding labels
                     blockLabel.visible = false;
@@ -580,28 +567,6 @@ let gameSquareOne = {
         // Get correct information about username and default language
     	// Variables 'username' and 'lang' is define on: js/menu.js
     	// Variable 'lang' has all the JSON content of 'assets/languages/pt_BR.json', 'lang.lang' defined in 'js/preMenu.js' (func_setLang())
-    	// TODO: nao descobri esquema para pegar 'lang' (como 'pt_BR' ou 'en_US'), 'lang' esta' com o dicinario de lingua (definido em 'assets/languages/pt_BR.json').
-        
-        //if (name=='') name = username; //leo the correct is 'username'
-        
-        // assets/languages/pt_BR.json
-
-        //DEBUG Testar 'lang'
-        /*
-        
-        let contact = "";
-        if (typeof lang === 'object') {
-          //contact = JSON.parse(lang);
-          for (let i in lang) // will enumerate values of 'assets/languages/pt_BR.json'
-             contact += lang[i];
-          // Finaliza com os valores de 'assets/languages/pt_BR.json': 'CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
-          // SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO'
-          lang_str = contact; aux = 1;
-            }
-            else
-            // if (lang === 'undefined') lang_str = "pt_BR";
-    
-        */
 
         let abst = "numBlocks:" + numBlocks + ", valBlocks: " + detail + " blockIndex: " + blockIndex + ", floorIndex: " + floorIndex;
 
@@ -609,13 +574,8 @@ let gameSquareOne = {
 
         // Create some variables we need to send to our PHP file
         let url = "php/save.php";
-        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + lang + "&s_game=" + levelShape + "&s_mode=" + levelType;
-
-        vars += "&s_oper=" + levelOperator + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
-
-        //D alert('/js/squareOne.js: url=' + url + '; aux=' + aux + ', lang_str=' + lang_str + ', lang=' + lang); //  + ', this.lang=" + this.lang
-        //D /js/squareOne.js: url=php/save.php; aux=1, lang_str=CARREGANDOFraçõesSELECIONE UM JOGODificuldadeNívelSELECINAR OPERAÇÃO E DIFICULDADEBom trabalho!Tente novamente!SELECIONAR IDIOMAMENU PRINCIPALVOLTARVER
-        //D SOLUÇÃOCírculosQuadriláteroslegendaMODOCOMSEMDIGITE SEU NOMEPRONTOOláVocê deve selecionar uma porção menor que o seu tamanho totalVocê esqueceu de digitar seu nomeÁUDIO, lang=[object Object]
+        let vars = "s_ip=" + hip + "&s_name=" + username + "&s_lang=" + langString + "&s_game=" + levelShape + "&s_mode=" + levelType;
+        vars += "&s_oper=" + sublevelType + "&s_leve=" + levelDifficulty + "&s_posi=" + levelPosition + "&s_resu=" + result + "&s_time=" + totalTime + "&s_deta=" + abst;
 
         // Sobre nome do usuario:
     	// * js/squareOne.js: name
@@ -648,7 +608,6 @@ let gameSquareOne = {
             if(levelType=='A'){
                 pointer = game.add.image(endPosition, 490, 'pointer');
             }else{
-                console.log("hey! ---> " + blocks.children[endIndex-1]);
                 pointer = game.add.image(blocks.children[endIndex-1].x, blocks.children[endIndex-1].y-blockSize/2, 'pointer');
             }
             pointer.anchor.setTo(0.5, 0);
