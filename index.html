@@ -4,7 +4,10 @@
 
 <head>
 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="description" content="Educational game for teaching fractions"/>
+	<meta name="keywords" content="ifractions, fraction, game"/>
+	<link rel="shortcut icon" href="assets/img/scenario/flag.png">
 	<title> iFractions </title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
@@ -17,12 +20,12 @@
 	<script type="text/javascript" src="js/circleOne.js"></script>
 	<script type="text/javascript" src="js/squareOne.js"></script>
 	<script type="text/javascript" src="js/squareTwo.js"></script>
-	<script type="text/javascript" src="js/end.js"></script>
-
+	<script type="text/javascript" src="js/globals.js"></script>
+	
 	<script type="text/javascript" src="js/boot.js"></script>
 
 	<style>
-		#text-field-div {
+		#text-field {
 			position: absolute;
 			top: 300px;
 			margin-left: 340px;
@@ -39,6 +42,11 @@
 			color: rgb(0, 0, 0);
 			text-align: center;
 		}
+	
+		input:focus{
+			outline: 3px solid #85accc;
+		}
+	
 	</style>
 
 </head>
@@ -90,9 +98,9 @@
 			</div>
 		</div>
 
-		<div id="text-field-div">
+		<div id="text-field">
 			<form onsubmit="return false">
-				<input type="text" id="name_id" value="" size="13" maxlength="40">
+				<input type="text" id="name_id" value="" size="13" maxlength="36">
 			</form>
 		</div>
 
