@@ -59,7 +59,7 @@ let gameSquareOne = {
         this.result = false;        // Checks player 'answer' 
         let hasBaseDifficulty = false;  // Checks if level is too easy for its difficulty
         this.divisorsList = "";     // Hold the divisors for each fraction on stacked blocks (created for func_postScore)
-        
+
         this.DIREC_LEVEL = (sublevelType == 'Minus') ? -1 : 1;    // Will be multiplied to values to easily change tractor direction when needed
         this.animationSṕeed = 2 * this.DIREC_LEVEL;   // Distance in which the tractor moves in each iteration of the animation
 
@@ -68,7 +68,7 @@ let gameSquareOne = {
         const defaultBlockWidth = 80;   // Base block width
         const defaultBlockHeight = 40;  // Base block height
         const startX = (sublevelType == 'Minus') ? 730 : 170; // Initial 'x' coordinate for the tractor and the blocks
-        
+
 
 
 
@@ -80,29 +80,29 @@ let gameSquareOne = {
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud').scale.setTo(0.8);
-        
+
         // Add floor of grass
         for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
-        
+
         // Calls function that loads navigation icons
         iconSettings.func_addIcons(true, true,
             true, true, true,
             true, false,
             'difficulty', this.func_viewHelp);
-        
+
         // Add tractor    
-        
+
         this.tractor = game.add.sprite(startX, 445, 'tractor');
         this.tractor.scale.setTo(0.8);
-        if (sublevelType == 'Plus'){
+        if (sublevelType == 'Plus') {
             this.tractor.anchor.setTo(1, 0.5);
             this.tractor.animations.add('run', [0, 1, 2, 3, 4]);
-        } else { 
+        } else {
             this.tractor.anchor.setTo(0, 0.5);
             this.tractor.animations.add('run', [5, 6, 7, 8, 9]);
             this.tractor.frame = 5;
         }
-        
+
 
 
 
@@ -127,9 +127,9 @@ let gameSquareOne = {
 
         this.stck_fractionLines = game.add.group(); // Group of sprites that serves as line in the middle of a fraction
         this.stck_blockLabels = game.add.group();   // Group of labels that display fraction on side of stacked blocks
-        
-        
-        
+
+
+
         this.nextStartX;
 
 
@@ -183,14 +183,14 @@ let gameSquareOne = {
             }
 
             // Add current block to the group of stacked blocks
-            this.stck_blocks.add(block); 
+            this.stck_blocks.add(block);
 
             // If 'show labels' is turned on, create labels that display the fractions on the side of each block
             if (levelLabel) {
 
                 const x = startX + (blockWidth + 15) * this.DIREC_LEVEL;
                 let label;
-                
+
                 if (divisor == 1) {
                     label = game.add.text(x, 483 - i * (defaultBlockHeight - lineSize), divisor, textStyles.valueLabelBlue1);
                 } else {
@@ -201,22 +201,22 @@ let gameSquareOne = {
                     fractionLine.anchor.setTo(0.5, 0.5);
                     this.stck_fractionLines.add(fractionLine);
                 }
-                
+
                 label.anchor.setTo(0.5, 0.5);
-                
+
                 // Add current label to group of labels
-                this.stck_blockLabels.add(label); 
+                this.stck_blockLabels.add(label);
             }
 
         }
 
         // check for errors (level too easy for its difficulty or end position out of bounds)
         if ((!hasBaseDifficulty) ||
-        (sublevelType == 'Plus' && (stck_finalPosition < (startX + defaultBlockWidth) || stck_finalPosition > (startX + 8 * defaultBlockWidth))) ||
-        (sublevelType == 'Minus' && (stck_finalPosition < (startX - (8 * defaultBlockWidth)) || stck_finalPosition > (startX - defaultBlockWidth)))
+            (sublevelType == 'Plus' && (stck_finalPosition < (startX + defaultBlockWidth) || stck_finalPosition > (startX + 8 * defaultBlockWidth))) ||
+            (sublevelType == 'Minus' && (stck_finalPosition < (startX - (8 * defaultBlockWidth)) || stck_finalPosition > (startX - defaultBlockWidth)))
         ) {
             // If any error is found restart the level
-            game.state.start('gameSquareOne'); 
+            game.state.start('gameSquareOne');
         }
 
         // will be used as a counter in update, adding in the width of each stacked block to check if the end matches the floor selected position
@@ -232,18 +232,18 @@ let gameSquareOne = {
         // Define the total number of floor blocks
         this.floor_numBlocks = 8 * divisor;
         // Define the with of each floor block
-        const floor_blockWidth = defaultBlockWidth / divisor; 
+        const floor_blockWidth = defaultBlockWidth / divisor;
 
-        
+
         // If game is type B, selectiong a random 'x' coordinate for the floor
         if (levelType == 'B') {
-            
+
             this.stck_correctIndex = game.rnd.integerInRange(0, (this.stck_numBlocks - 1));
-            
-            for (let i = 0; i <= this.stck_correctIndex; i++) { 
-                this.floor_correctPositionX += this.stck_blocks.children[i].width; 
+
+            for (let i = 0; i <= this.stck_correctIndex; i++) {
+                this.floor_correctPositionX += this.stck_blocks.children[i].width;
             }
-        
+
         }
 
         let flag = true;
@@ -254,17 +254,17 @@ let gameSquareOne = {
             const x = startX + (defaultBlockWidth + i * floor_blockWidth) * this.DIREC_LEVEL;
 
             if ((flag) &&
-            (levelType == 'A') &&
-            ((sublevelType == 'Plus' && x >= stck_finalPosition) || (sublevelType == 'Minus' && x <= stck_finalPosition))
+                (levelType == 'A') &&
+                ((sublevelType == 'Plus' && x >= stck_finalPosition) || (sublevelType == 'Minus' && x <= stck_finalPosition))
             ) {
                 this.floor_correctIndex = i - 1; // Set index of correct floor block
                 flag = false;
             }
-            
+
             if ((levelType == 'B') &&
-            ((sublevelType == 'Plus' && x >= this.floor_correctPositionX) || (sublevelType == 'Minus' && x <= this.floor_correctPositionX)) 
+                ((sublevelType == 'Plus' && x >= this.floor_correctPositionX) || (sublevelType == 'Minus' && x <= this.floor_correctPositionX))
             ) {
-                this.floor_numBlocks = i; 
+                this.floor_numBlocks = i;
                 break; // Leaves for loop    
             }
 
@@ -293,7 +293,7 @@ let gameSquareOne = {
 
         }
 
-        if (levelType == "A") this.floor_correctPositionX = stck_finalPosition; 
+        if (levelType == "A") this.floor_correctPositionX = stck_finalPosition;
 
         // Creates labels on the floor to display the numbers
         for (let i = 0; i <= 8; i++) {
@@ -399,11 +399,11 @@ let gameSquareOne = {
                 if (this.stck_blocks.children[0].x >= (this.nextStartX + extra)) {
 
                     let stck_curEnd = this.stck_blocks.children[0].x + this.stck_blocks.children[this.stck_curIndex].width;
-                    
+
                     if (this.stck_curIndex == this.stck_index) {
                         const floor_curEnd = this.floor_blocks.children[this.floor_index].x + this.floor_blocks.children[this.floor_index].width;
                         if (stck_curEnd > floor_curEnd) updateBlocks = false;
-                    } 
+                    }
 
                     if (updateBlocks) {
                         // Blocks on the floor
@@ -422,19 +422,19 @@ let gameSquareOne = {
                         this.nextStartX += this.stck_blocks.children[this.stck_curIndex + 1].width;
                     }
                     this.stck_curIndex++;
-                    
+
                 }
-            } 
-            
+            }
+
             if (sublevelType == 'Minus') {
                 if (this.stck_blocks.children[0].x <= (this.nextStartX + extra)) {
 
                     let stck_curEnd = this.stck_blocks.children[0].x + this.stck_blocks.children[this.stck_curIndex].width;
-                    
+
                     if (this.stck_curIndex == this.stck_index) {
                         const floor_curEnd = this.floor_blocks.children[this.floor_index].x + this.floor_blocks.children[this.floor_index].width;
                         if (stck_curEnd < floor_curEnd) updateBlocks = false;
-                    } 
+                    }
 
                     if (updateBlocks) {
                         // Blocks on the floor
@@ -453,12 +453,12 @@ let gameSquareOne = {
                         this.nextStartX += this.stck_blocks.children[this.stck_curIndex + 1].width;
                     }
                     this.stck_curIndex++;
-                
+
                 }
             }
 
             // Checks if it reached the clicked position 
-            if (this.stck_curIndex > this.stck_index || this.floor_curIndex >= this.floor_index) {           
+            if (this.stck_curIndex > this.stck_index || this.floor_curIndex >= this.floor_index) {
                 this.animate = false;
                 this.checkAnswer = true;
             }
@@ -472,7 +472,7 @@ let gameSquareOne = {
 
             this.tractor.animations.stop();
 
-            if (levelType=='A') {
+            if (levelType == 'A') {
                 this.result = (this.floor_index == this.floor_correctIndex);
             } else {
                 this.result = (this.stck_index == this.stck_correctIndex);
@@ -486,7 +486,7 @@ let gameSquareOne = {
                 // Displays feedback image and sound 
                 this.okImg.visible = true;
 
-                if (audioStatus) okSound.play();
+                if (audioStatus) sound.okSound.play();
 
                 completedLevels++; // increases number os passed levels
                 if (debugMode) console.log("completedLevels = " + completedLevels);
@@ -496,7 +496,7 @@ let gameSquareOne = {
                 // Displays feedback image and sound
                 this.errorImg.visible = true;
 
-                if (audioStatus) errorSound.play();
+                if (audioStatus) sound.errorSound.play();
 
             }
 
@@ -544,7 +544,7 @@ let gameSquareOne = {
                 // Saves the index of the selected 'floor' block
                 self.floor_index = this.index;
 
-            // On leveltype B
+                // On leveltype B
             } else {
 
                 for (let i = 0; i < self.stck_numBlocks; i++) {
@@ -573,7 +573,7 @@ let gameSquareOne = {
 
                 self.floor_index = -1;
 
-            //on level type B
+                //on level type B
             } else {
 
                 for (let i = 0; i < self.stck_numBlocks; i++) {
@@ -608,7 +608,7 @@ let gameSquareOne = {
                 // save the 'stacked' blocks index to compare to the floor index in update
                 self.stck_index = self.stck_numBlocks - 1;
 
-            // On leveltype B
+                // On leveltype B
             } else {
 
                 for (let i = 0; i < self.stck_numBlocks; i++) {
@@ -625,7 +625,7 @@ let gameSquareOne = {
             }
 
             // Play beep sound
-            if (audioStatus) beepSound.play();
+            if (audioStatus) sound.beepSound.play();
 
             // Hide labels
             if (levelLabel) {
@@ -655,7 +655,7 @@ let gameSquareOne = {
             if (levelType == 'A') {
                 aux = self.floor_blocks.children[0];
                 self.pointer = game.add.image(self.floor_correctPositionX - aux.width / 2, 501, 'pointer');
-            // On leveltype B
+                // On leveltype B
             } else {
                 aux = self.stck_blocks.children[self.stck_correctIndex];
                 self.pointer = game.add.image(aux.x + aux.width / 2, aux.y, 'pointer');

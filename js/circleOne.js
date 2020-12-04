@@ -61,7 +61,7 @@ let gameCircleOne = {
         this.result = false; //Game is correct
         let hasBaseDifficulty = false; //If has level figure
         this.divisorsList = "";
-        
+
         this.DIREC_LEVEL = (sublevelType == 'Minus') ? -1 : 1;    // Will be multiplied to values to easily change kid direction when needed
 
         // GAME VARIABLES
@@ -156,7 +156,7 @@ let gameCircleOne = {
 
             let direction = '';
             let lineColor = '';
-            
+
             if (sublevelType == 'Mixed') {
                 if (i <= this.numPlus) {
                     direction = 'Right';
@@ -197,32 +197,32 @@ let gameCircleOne = {
                     const label = game.add.text(x, 490 - i * this.circleSize, divisor, textStyles.valueLabelBlue1);
                     label.anchor.setTo(0.5, 0.5);
                     this.circleLabel.add(label);
-                
+
                 }
 
             } else {
 
                 const distance = 360 / divisor + 5;
-                
+
                 circle.arc(0, 0, this.circleSize / 2, game.math.degToRad(distance), 0, true);
 
                 this.circleDistance.push(Math.floor(placeDistance / divisor));
                 this.circleAngle.push(distance);
 
                 if (levelLabel) {
-                
+
                     const x = startX + 65 * this.DIREC_LEVEL;
-                
+
                     const label = game.add.text(x, 488 - i * this.circleSize, '1\n' + divisor, textStyles.valueLabelBlue1);
                     label.anchor.setTo(0.5, 0.5);
                     this.circleLabel.add(label);
                     // Sprite that serves as line in the middle of a fraction
                     const fractionLine = game.add.sprite(x, 485 - i * this.circleSize, 'fractionLine');
                     fractionLine.anchor.setTo(0.5, 0.5);
-                    this.fractionLines.add(fractionLine);  
-                    
+                    this.fractionLines.add(fractionLine);
+
                 }
-                
+
             }
 
             if (direction == 'Right') this.endPosition += Math.floor(placeDistance / divisor);
@@ -247,19 +247,19 @@ let gameCircleOne = {
         //Calculate next circle
         if (this.circleDirection[this.curCircle] == 'Right') this.nextEnd = startX + this.circleDistance[this.curCircle];
         else this.nextEnd = startX - this.circleDistance[this.curCircle];
-        
+
 
         //If game is type B, selectiong a random balloon place
         if (levelType == 'B') {
 
             this.balloonPlace = startX;
             this.endIndex = game.rnd.integerInRange(this.numPlus, this.numCircles);
-            
+
             for (let j = 0; j < this.endIndex; j++) {
                 if (this.circleDirection[j] == 'Right') this.balloonPlace += this.circleDistance[j];
                 else if (this.circleDirection[j] == 'Left') this.balloonPlace -= this.circleDistance[j];
             }
-        
+
             if (this.balloonPlace < 66 || this.balloonPlace > 66 + 5 * placeDistance || !hasBaseDifficulty) {
                 game.state.start('gameCircleOne');
             }
@@ -279,7 +279,7 @@ let gameCircleOne = {
 
         this.kid_walk.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
         this.kid_walk.animations.add('left', [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12]);
-        
+
         if (sublevelType == 'Minus') {
             this.kid_walk.animations.play('left', 6, true);
             this.kid_walk.animations.stop();
@@ -331,16 +331,16 @@ let gameCircleOne = {
         if (game.input.activePointer.isDown && !this.animateEnding && !this.hasClicked) {
 
             // Game wont consider click if clicking on navigation icons
-            if (levelType == 'A' && game.input.mousePointer.y > 60) { 
-                    
+            if (levelType == 'A' && game.input.mousePointer.y > 60) {
+
                 this.balloon.x = game.input.mousePointer.x;
                 this.basket.x = game.input.mousePointer.x;
 
                 // Balloon is completely visible
                 this.balloon.alpha = 1;
-                
-                if (audioStatus) beepSound.play();
-                
+
+                if (audioStatus) sound.beepSound.play();
+
                 // Turn on kid animation
                 if (this.circleDirection[this.curCircle] == 'Right') {
                     this.kid_walk.animations.play('right', 6, true);
@@ -349,7 +349,7 @@ let gameCircleOne = {
                 }
 
                 //Hiding labels
-                if (levelLabel) { 
+                if (levelLabel) {
                     this.circleLabel.visible = false;
                     this.fractionLines.visible = false;
                 }
@@ -358,7 +358,7 @@ let gameCircleOne = {
                 this.animate = true;
 
             }
-            
+
         }
 
         // while player not clicked : track mouse to move baloon according to its position
@@ -386,7 +386,7 @@ let gameCircleOne = {
             this.trace.rect(this.kid_walk.x, 526, 2, 2, color);
 
             //Moving every circle
-            for (let i = 0; i < this.numCircles; i++) { 
+            for (let i = 0; i < this.numCircles; i++) {
                 if (this.circleDirection[this.curCircle] == 'Right') this.circles.children[i].x += 2;
                 else this.circles.children[i].x -= 2;
             }
@@ -398,8 +398,8 @@ let gameCircleOne = {
             this.circles.children[this.curCircle].arc(0, 0, this.circleSize / 2, game.math.degToRad(this.circleAngle[this.curCircle]), 0, true);
             this.circles.children[this.curCircle].endFill();
 
-            if ( (this.circleDirection[this.curCircle] == 'Right' && this.circles.children[this.curCircle].x >= this.nextEnd) ||
-            (this.circleDirection[this.curCircle] == 'Left' && this.circles.children[this.curCircle].x <= this.nextEnd)
+            if ((this.circleDirection[this.curCircle] == 'Right' && this.circles.children[this.curCircle].x >= this.nextEnd) ||
+                (this.circleDirection[this.curCircle] == 'Left' && this.circles.children[this.curCircle].x <= this.nextEnd)
             ) {
 
                 this.circles.children[this.curCircle].visible = false;
@@ -427,16 +427,16 @@ let gameCircleOne = {
         if (this.checkAnswer) {
 
             this.kid_walk.animations.stop();
-            
+
             this.timer.stop();
-            
+
             if (this.func_checkOverlap(this.basket, this.kid_walk)) {
 
                 this.kid_walk.frame = (this.kid_walk.frame < 12) ? 24 : 25;
 
                 this.result = true;
 
-                if (audioStatus) okSound.play();
+                if (audioStatus) sound.okSound.play();
 
                 this.okImg.visible = true;
 
@@ -447,17 +447,17 @@ let gameCircleOne = {
 
                 this.result = false;
 
-                if (audioStatus) errorSound.play();
-            
+                if (audioStatus) sound.errorSound.play();
+
                 this.errorImg.visible = true;
-            
+
             }
 
             this.func_postScore();
 
             this.animateEnding = true;
             this.checkAnswer = false;
-        
+
         }
 
         // balloon flying animation
@@ -473,9 +473,9 @@ let gameCircleOne = {
 
                 if (this.result) mapCanMove = true;
                 else mapCanMove = false;
-                
+
                 game.state.start('map');
-            
+
             }
         }
 
@@ -494,7 +494,7 @@ let gameCircleOne = {
 
     // in levelType 'B'
     func_outCircle: function () {
-        
+
         if (!self.hasClicked) {
             for (let i = 0; i <= this.index; i++) {
                 self.circles.children[i].alpha = 0.5;
@@ -527,8 +527,8 @@ let gameCircleOne = {
 
             self.balloon.alpha = 1;
 
-            if (audioStatus) beepSound.play();
-            
+            if (audioStatus) sound.beepSound.play();
+
             if (self.circleDirection[self.curCircle] == 'Right') {
                 self.kid_walk.animations.play('right', 6, true);
             } else {
@@ -542,7 +542,7 @@ let gameCircleOne = {
 
             self.hasClicked = true;
             self.animate = true;
-            
+
         }
 
     },
@@ -555,8 +555,8 @@ let gameCircleOne = {
             self.basket.x = game.input.x;
 
             self.balloon.alpha = 1;
-            
-            if (audioStatus) beepSound.play();
+
+            if (audioStatus) sound.beepSound.play();
 
             if (self.circleDirection[self.curCircle] == 'Right') {
                 self.kid_walk.animations.play('right', 6, true);
@@ -571,7 +571,7 @@ let gameCircleOne = {
 
             self.hasClicked = true;
             self.animate = true;
-            
+
         }
 
     },

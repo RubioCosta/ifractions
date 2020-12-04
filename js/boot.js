@@ -1,7 +1,7 @@
 // Start phaser
 const game = new Phaser.Game(
-	defaultWidth, 
-	defaultHeight, 
+	defaultWidth,
+	defaultHeight,
 	Phaser.CANVAS,
 	'fractions-game'
 );
@@ -9,10 +9,10 @@ const game = new Phaser.Game(
 // Game state : preload progress bar icon to use while preloading game assets
 
 let loadProgressBar = {
-	preload: function(){ 
-		game.load.image('progressBar', imgsrc+'scenario/pgbar.png');
+	preload: function () {
+		game.load.image('progressBar', imgsrc + 'scenario/pgbar.png');
 	},
-	create: function(){
+	create: function () {
 		game.state.start('loadAssets');
 	}
 };
@@ -21,7 +21,7 @@ let loadProgressBar = {
 
 let loadAssets = {
 
-	preload: function() {
+	preload: function () {
 
 		// Create progress bar
 		const progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
@@ -34,40 +34,34 @@ let loadAssets = {
 
 		// Loading assets
 
-		for (let i = 0, image = media.boot('image'); i < image.length; i++){
+		loadAudios(media.boot('audio'));
+
+		for (let i = 0, image = media.boot('image'); i < image.length; i++) {
 			game.load.image(image[i][0], image[i][1]);
 		}
 
-		for (let i = 0, sprite = media.boot('spritesheet'); i < sprite.length; i++){
+		for (let i = 0, sprite = media.boot('spritesheet'); i < sprite.length; i++) {
 			game.load.spritesheet(sprite[i][0], sprite[i][1], sprite[i][2], sprite[i][3], sprite[i][4]);
-		}	
-
-		for (let i = 0, audio = media.boot('audio'); i < audio.length; i++){
-			game.load.audio(audio[i][0], audio[i][1][0], audio[i][1][1]);
 		}
-		
+
+
 	},
 
-	create: function(){
+	create: function () {
 
 		// Centers phaser canvas in its containing div
 		game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		game.scale.pageAlignHorizontally = true;
 		game.scale.pageAlignVertically = true;
-		
+
 		// Enable phaser Arcade Physics system
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
-		//loading game sounds
-		beepSound = game.add.audio('sound_beep');   // default feedback sound
-		okSound = game.add.audio('sound_ok');       // correct answer sound
-		errorSound = game.add.audio('sound_error'); // wrong answer sound
-
 		// Calls first screen seen by the player
 		game.state.start('language');
-	
+
 	}
-	
+
 };
 
 // Adding game states

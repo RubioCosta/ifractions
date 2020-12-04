@@ -26,14 +26,14 @@ let langState = {
 
         // Sets stage width back to default (if we are back from 'menu' state where it can be changed) 
         if (this.game.world.width != defaultWidth) this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
-        
+
         // Parameters for the elements on the screen
         const langs = {
             text: ['FRAÇÕES  ', 'FRAZIONI  ', 'FRACTIONS  ', 'FRACCIONES  ', 'FRACTIONS  '], // Language names
-            flag: ['flag_BR'  , 'flag_IT'   , 'flag_US'    , 'flag_PE'     , 'flag_FR'    ], // Icon names
-            lang: ['pt_BR'    , 'it_IT'     , 'en_US'      , 'es_PE'       , 'fr_FR'      ], // Parameters sent for language object
-            x: [-220, -220, -220,  200, 200],
-            y: [-180,    0,  180, -100, 100]
+            flag: ['flag_BR', 'flag_IT', 'flag_US', 'flag_PE', 'flag_FR'], // Icon names
+            lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
+            x: [-220, -220, -220, 200, 200],
+            y: [-180, 0, 180, -100, 100]
         }
 
         // Create elements on screen  
@@ -51,7 +51,7 @@ let langState = {
             flag.events.onInputDown.add(this.func_setLang, { langs_lang: langs.lang[i] });
             flag.events.onInputOver.add(function () { this.flag.scale.setTo(1.05) }, { flag: flag });
             flag.events.onInputOut.add(function () { this.flag.scale.setTo(1) }, { flag: flag });
-        
+
         }
 
     },
@@ -75,24 +75,21 @@ let loadState = {
     preload: function () {
 
         // Progress bar
-		const progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
-		progressBar.anchor.setTo(0.5, 0.5);
-		game.load.setPreloadSprite(progressBar);
+        const progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
+        progressBar.anchor.setTo(0.5, 0.5);
+        game.load.setPreloadSprite(progressBar);
 
-        // Loads json with language chosen by the player
-        game.load.json('dictionary', 'assets/lang/' + langString + '.json');
+        // Loads selected language
+        loadLangs('/Ifractions-web/assets/lang/' + langString);
 
     },
 
     create: function () {
- 
-        // object used to translate text
-        lang = game.cache.getJSON('dictionary'); 
-        
+
         if (debugMode) console.log("Language: " + langString);
 
         // Make sure to only ask for player name on the first time oppening the game
-        if (this.firstTime == undefined) { 
+        if (this.firstTime == undefined) {
             this.firstTime = false;
             game.state.start('name'); // first time opening ifractions ('language' >> 'name' >> 'menu')
         } else {
@@ -120,7 +117,7 @@ let nameState = {
         this.warningEmptyName.anchor.setTo(0.5);
 
         // Set 'ok' button that gets player's information
-        
+
         const btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
         btn.beginFill(colors.teal);
         btn.drawRect(0, 0, 168, 60);
@@ -167,7 +164,7 @@ let nameState = {
         document.getElementById("text-field").style.visibility = "hidden";
         document.getElementById("name_id").value = "";
 
-        if (audioStatus) beepSound.play();
+        if (audioStatus) sound.beepSound.play();
 
         if (debugMode) console.log("Username: " + playerName);
 

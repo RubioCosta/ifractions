@@ -1,36 +1,36 @@
 /*
     let difficultyState = {
         preload: function(){},
-		create: function(){},
+        create: function(){},
         ---------------------------- end of phaser functions
         func_loadMap: function()
         func_setLabel: function()
-	};
+    };
 */
 
 // DIFFICULTY SCREEN: player can select (I) sublevel type, (II) game difficulty and (III) turn on/off fractions labels
 let difficultyState = {
 
-    preload: function() {
-        
+    preload: function () {
+
         let curMedia;
 
-        switch(currentGameState){
+        switch (currentGameState) {
             case 'gameSquareOne': curMedia = media.gameSquareOne; break;
             case 'gameSquareTwo': curMedia = media.gameSquareTwo; break;
             case 'gameCircleOne': curMedia = media.gameCircleOne; break;
         }
 
-        for (let i = 0, image = curMedia('image'); i < image.length; i++){
+        for (let i = 0, image = curMedia('image'); i < image.length; i++) {
             game.load.image(image[i][0], image[i][1]);
-		}
-		for (let i = 0, sprite = curMedia('spritesheet'); i < sprite.length; i++){
+        }
+        for (let i = 0, sprite = curMedia('spritesheet'); i < sprite.length; i++) {
             game.load.spritesheet(sprite[i][0], sprite[i][1], sprite[i][2], sprite[i][3], sprite[i][4]);
-		}	
-		for (let i = 0, audio = curMedia('audio'); i < audio.length; i++){
+        }
+        for (let i = 0, audio = curMedia('audio'); i < audio.length; i++) {
             game.load.audio(audio[i][0], audio[i][1][0], audio[i][1][1]);
         }
-        
+
     },
 
     create: function () {
@@ -48,7 +48,7 @@ let difficultyState = {
 
         // TURN LABEL ON/OFF ICON
 
-        if ( currentGameState != 'gameSquareTwo') {
+        if (currentGameState != 'gameSquareTwo') {
             // Text : 'with/without' labeling the fractions
             let labelText = game.add.text(game.world.centerX - 110, 80, "", textStyles.subtitle2);
             labelText.text = levelLabel ? lang.with_name + " " + lang.label_name : lang.without_name + " " + lang.label_name;
@@ -74,7 +74,7 @@ let difficultyState = {
         let maxSublevel;
         let maxDifficulty;
 
-        switch(currentGameState) {
+        switch (currentGameState) {
             case "gameSquareOne":
                 stairHeight = 40;
                 stairWidth = 100;
@@ -83,7 +83,7 @@ let difficultyState = {
                 startShape = (startTheme / 2) + startStair + stairWidth * 3;
                 maxSublevel = 2;
                 maxDifficulty = 3;
-            break;
+                break;
             case "gameSquareTwo":
             case "gameCircleOne":
                 stairHeight = 29;
@@ -93,7 +93,7 @@ let difficultyState = {
                 startShape = (startTheme / 2) + startStair + stairWidth * 5;
                 maxSublevel = 3;
                 maxDifficulty = 5;
-            break;
+                break;
             default: if (debugMode) console.log("Error! Name of the game state is not valid!");
         }
 
@@ -104,10 +104,10 @@ let difficultyState = {
         let stairs = [];
 
         const aux = {
-            maxSublevel:    null,
-            maxDifficulty:  null,
-            color:      [colors.diffBlue, colors.diffRed, colors.diffPurple],
-            base_y1:    [135, 285, 435],
+            maxSublevel: null,
+            maxDifficulty: null,
+            color: [colors.diffBlue, colors.diffRed, colors.diffPurple],
+            base_y1: [135, 285, 435],
             sublevel_1: ['Plus', 'Minus', 'Mixed'],
             sublevel_2: ['A', 'B', 'C'],
             get sublevel() {
@@ -160,7 +160,7 @@ let difficultyState = {
                 arrowIcons[1].anchor.setTo(0.5, 0.5);
                 arrowIcons[1].scale.x *= -1;
 
-            break;
+                break;
             case "gameCircleOne":
 
                 // Blue Circle
@@ -218,14 +218,14 @@ let difficultyState = {
                 arrowIcons[2].alpha = 0.8;
                 arrowIcons[2].anchor.setTo(0.5, 0.5);
 
-            break;
+                break;
             case "gameSquareTwo":
 
                 themeIcons[0] = game.add.sprite(startTheme, 370, 'equal');
                 themeIcons[0].scale.setTo(0.7);
                 themeIcons[0].anchor.setTo(0.5, 0.5);
 
-            break;
+                break;
             default: if (debugMode) console.log("Error: couldn't finish loading difficulty screen assets");
 
         }
@@ -263,7 +263,7 @@ let difficultyState = {
     // Calls map state
     func_loadMap: function () {
 
-        if (audioStatus) beepSound.play();
+        if (audioStatus) sound.beepSound.play();
 
         mapPosition = 0;   //Map position
         mapCanMove = true;       //Move no next point
@@ -278,20 +278,20 @@ let difficultyState = {
     func_setLabel: function () {
 
         if (levelLabel) {
-        
+
             levelLabel = false;
             this.selectionBox.frame = 0;
             this.labelText.text = lang.without_name + " " + lang.label_name;
-        
+
         } else {
-        
+
             levelLabel = true;
             this.selectionBox.frame = 1;
             this.labelText.text = lang.with_name + " " + lang.label_name;
-        
+
         }
-        
-        if (audioStatus) beepSound.play();
-    
+
+        if (audioStatus) sound.beepSound.play();
+
     }
 };

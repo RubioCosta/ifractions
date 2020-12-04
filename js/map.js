@@ -179,7 +179,7 @@ let mapState = {
     //MapLoading function
     func_loadGame: function () {
 
-        if (audioStatus) beepSound.play();
+        if (audioStatus) sound.beepSound.play();
 
         if (mapPosition <= 4) game.state.start(currentGameState);
         else game.state.start('end');

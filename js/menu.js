@@ -12,10 +12,10 @@
 // MENU SCREEN: main menu of the game where the user can select the level he wants to play
 let menuState = {
 
-    preload: function() {
-        for(let i=0, menuIcons = media.menu('image'); i < menuIcons.length; i++){
-			game.load.image('game' + i, menuIcons[i][1]);
-		}
+    preload: function () {
+        for (let i = 0, menuIcons = media.menu('image'); i < menuIcons.length; i++) {
+            game.load.image('game' + i, menuIcons[i][1]);
+        }
     },
 
     create: function () {
@@ -142,7 +142,7 @@ let menuState = {
         // Sets stage width back to default
         this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
 
-        if (audioStatus) beepSound.play();
+        if (audioStatus) sound.beepSound.play();
 
         levelShape = this.shape;
         levelType = this.levelType;

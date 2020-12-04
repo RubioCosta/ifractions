@@ -64,7 +64,7 @@ let gameSquareTwo = {
         this.endDelay = 60; // Maximum value for the counter
 
 
-        
+
 
         // BACKGROUND AND KID
 
@@ -72,8 +72,8 @@ let gameSquareTwo = {
         game.add.image(0, 0, 'bgimage');
         // Add clouds
         game.add.image(300, 100, 'cloud');
-        game.add.image(660, 80,  'cloud');
-        game.add.image(110, 85,  'cloud').scale.setTo(0.8);
+        game.add.image(660, 80, 'cloud');
+        game.add.image(110, 85, 'cloud').scale.setTo(0.8);
 
         // Add floor of grass
         for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
@@ -125,11 +125,11 @@ let gameSquareTwo = {
 
         // Random index for 'points'
         const randomIndex = game.rnd.integerInRange((levelDifficulty - 1) * 2 + 1, (levelDifficulty - 1) * 2 + 3);
-        
+
         // number of subdivisions of A and B (blocks)
         this.numBlocksA = points[randomIndex];
         this.numBlocksB = this.func_getRndDivisor(this.numBlocksA);
-        
+
         if (debugMode) {
             console.log("----------");
             console.log("Difficulty " + levelDifficulty + ", ini " + ((levelDifficulty - 1) * 2 + 1) + ", end " + ((levelDifficulty - 1) * 2 + 3));
@@ -141,15 +141,15 @@ let gameSquareTwo = {
 
 
         // CREATING TOP FIGURE (A)
-        
+
         let blockWidth = this.figureWidth / this.numBlocksA; // width of each block in A
-        let lineColor = colors.darkGreen; 
-        let fillColor = colors.lightGreen; 
+        let lineColor = colors.darkGreen;
+        let fillColor = colors.lightGreen;
         let fillColorAux = colors.lighterGreen;
-        
+
         // Create blocks
         for (let i = 0; i < this.numBlocksA; i++) {
-                        
+
             const x = xA + i * blockWidth;
 
             // Blocks
@@ -223,12 +223,12 @@ let gameSquareTwo = {
 
             block.inputEnabled = true;
             block.input.useHandCursor = true;
-            block.events.onInputDown.add(this.func_clickSquare, { figure: 'B', index: i, xA: xA, xB: xB  });
-            block.events.onInputOver.add(this.func_overSquare, { figure: 'B', index: i, xA: xA, xB: xB  });
+            block.events.onInputDown.add(this.func_clickSquare, { figure: 'B', index: i, xA: xA, xB: xB });
+            block.events.onInputOver.add(this.func_overSquare, { figure: 'B', index: i, xA: xA, xB: xB });
             block.events.onInputOut.add(this.func_outSquare, { figure: 'B', index: i });
 
             this.blocksB.add(block);
-            
+
             // Auxiliar blocks
             let yAux = yB + figureHeight + 10; // on the bottom of B
 
@@ -262,7 +262,7 @@ let gameSquareTwo = {
 
 
         // OUTPUT ICONS AND TEXT
-        
+
         // Ok image
         this.okImg = game.add.image(game.world.centerX, game.world.centerY, 'h_ok');
         this.okImg.anchor.setTo(0.5);
@@ -302,7 +302,7 @@ let gameSquareTwo = {
             for (let i = 0; i < this.selectedA; i++) {
                 this.blocksA.children[i].y += 2;
             }
-            
+
             // After fully lowering blocks, set fraction value
             if (this.blocksA.children[0].y >= this.auxBlocksA.children[0].y) {
 
@@ -312,17 +312,17 @@ let gameSquareTwo = {
 
                 this.animateA = false;
             }
-        
+
         }
 
         // If clicked B, animate B blocks
         if (this.animateB) {
-            
+
             // Lower selected blocks
             for (let i = 0; i < this.selectedB; i++) {
                 this.blocksB.children[i].y += 2;
             }
-            
+
             // Sets fraction value
             if (this.blocksB.children[0].y >= this.auxBlocksB.children[0].y) {
                 this.fractionB.alpha = 1;
@@ -331,7 +331,7 @@ let gameSquareTwo = {
 
                 this.animateB = false;
             }
-        
+
         }
 
         // if A and B are already clicked
@@ -348,7 +348,7 @@ let gameSquareTwo = {
                 // fractions are equivalent : correct
                 if ((this.selectedA / this.numBlocksA) == (this.selectedB / this.numBlocksB)) {
 
-                    if (audioStatus) okSound.play();
+                    if (audioStatus) sound.okSound.play();
 
                     this.okImg.visible = true;
 
@@ -359,11 +359,11 @@ let gameSquareTwo = {
                     if (debugMode) console.log("completedLevels = " + completedLevels);
 
 
-                // fractions are not equivalent : incorrect
+                    // fractions are not equivalent : incorrect
                 } else {
-                    
-                    if (audioStatus) errorSound.play();
-                    
+
+                    if (audioStatus) sound.errorSound.play();
+
                     this.errorImg.visible = true;
 
                     this.result = false; // player answer is incorrect
@@ -389,9 +389,9 @@ let gameSquareTwo = {
         if (this.ending) {
 
             this.delay++;
-            
-            if (this.delay >= this.endDelay) { 
-                game.state.start('map'); 
+
+            if (this.delay >= this.endDelay) {
+                game.state.start('map');
             }
 
         }
@@ -407,17 +407,17 @@ let gameSquareTwo = {
 
                 self.warningTextA.setText(lang.error_msg);
                 self.warningTextB.setText("");
-            
+
             } else {
-                
+
                 self.warningTextA.setText("");
                 self.warningTextB.setText("");
-            
+
                 // selected blocks become fully visible
                 for (let i = 0; i < self.numBlocksA; i++) {
                     self.blocksA.children[i].alpha = (i <= this.index) ? 1 : 0.5;
                 }
-            
+
                 self.fractionA.x = this.xA + ((this.index + 1) * (self.figureWidth / self.numBlocksA)) + 25;
                 self.fractionA.alpha = 1;
                 self.fractionA.setText(this.index + 1);
@@ -433,12 +433,12 @@ let gameSquareTwo = {
 
                 self.warningTextA.setText("");
                 self.warningTextB.setText(lang.error_msg);
-            
+
             } else {
-            
+
                 self.warningTextA.setText("");
                 self.warningTextB.setText("");
-            
+
                 // selected blocks become fully visible
                 for (let i = 0; i < self.numBlocksB; i++) {
                     self.blocksB.children[i].alpha = (i <= this.index) ? 1 : 0.5;
@@ -447,7 +447,7 @@ let gameSquareTwo = {
                 self.fractionB.x = this.xB + ((this.index + 1) * (self.figureWidth / self.numBlocksB)) + 25;
                 self.fractionB.alpha = 1;
                 self.fractionB.setText(this.index + 1);
-            
+
             }
 
         }
@@ -459,21 +459,21 @@ let gameSquareTwo = {
         // On level type A
         if (!self.hasClickedA && this.figure == "A") {
 
-            for (let i = 0; i <= this.index; i++) { 
-                self.blocksA.children[i].alpha = 0.5; 
+            for (let i = 0; i <= this.index; i++) {
+                self.blocksA.children[i].alpha = 0.5;
             }
             self.fractionA.alpha = 0;
-        
+
         }
-        
+
         // On level type B
         if (!self.hasClickedB && this.figure == "B") {
-        
-            for (let i = 0; i <= this.index; i++) { 
-                self.blocksB.children[i].alpha = 0.5; 
+
+            for (let i = 0; i <= this.index; i++) {
+                self.blocksB.children[i].alpha = 0.5;
             }
             self.fractionB.alpha = 0;
-        
+
         }
 
     },
@@ -482,19 +482,19 @@ let gameSquareTwo = {
 
         // On level type A 
         if (!self.hasClickedA && this.figure == "A" && this.index != self.numBlocksA - 1) {
-            
+
             for (let i = 0; i < self.numBlocksA; i++) {
                 // desable block input
                 self.blocksA.children[i].inputEnabled = false;
                 // turn auxiliar blocks invisible
                 if (i > this.index) self.auxBlocksA.children[i].alpha = 0;
             }
-            
+
             // turn value label invisible
             self.labelA.alpha = 0;
-            
-            if (audioStatus) beepSound.play();
-            
+
+            if (audioStatus) sound.beepSound.play();
+
             // Save number of selected blocks
             self.selectedA = this.index + 1;
 
@@ -502,9 +502,9 @@ let gameSquareTwo = {
             self.fractionA.x = this.xA + (self.selectedA * (self.figureWidth / self.numBlocksA)) + 25;
             self.fractionLineA.x = self.fractionA.x
 
-            self.hasClickedA = true;            
+            self.hasClickedA = true;
             self.animateA = true;
-        
+
         }
 
         // On level type B
@@ -520,11 +520,11 @@ let gameSquareTwo = {
             // turn value label invisible
             self.labelB.alpha = 0;
 
-            if (audioStatus) beepSound.play();
-            
+            if (audioStatus) sound.beepSound.play();
+
             // Save number of selected blocks
             self.selectedB = this.index + 1;
-            
+
             // Set fraction x position
             self.fractionB.x = this.xB + (self.selectedB * (self.figureWidth / self.numBlocksB)) + 25;
             self.fractionLineB.x = self.fractionB.x
@@ -560,11 +560,11 @@ let gameSquareTwo = {
 
             // if 'number' can be divided by 'div', add to list of 'validDivs'
             if (number % div == 0) validDivs.push(div);
-        
+
         }
 
         const randIndex = game.rnd.integerInRange(0, validDivs.length - 1);
-        
+
         return validDivs[randIndex];
 
     },
@@ -577,26 +577,26 @@ let gameSquareTwo = {
 
     func_postScore: function () {
 
-        let abst = "numBlocksA: " + this.numBlocksA 
-                + ", valueA: " + this.selectedA 
-                + ", numBlocksB: " + this.numBlocksB 
-                + ", valueB: " + this.selectedB;
+        let abst = "numBlocksA: " + this.numBlocksA
+            + ", valueA: " + this.selectedA
+            + ", numBlocksB: " + this.numBlocksB
+            + ", valueB: " + this.selectedB;
 
         let hr = new XMLHttpRequest();
-        
+
         // Create some variables we need to send to our PHP file
         let url = "php/save.php";
-        let vars = "s_ip=" + hip 
-                + "&s_name=" + playerName 
-                + "&s_lang=" + langString 
-                + "&s_game=" + levelShape 
-                + "&s_mode=" + levelType;
-        vars +=   "&s_oper=Equal"
-                + "&s_leve=" + levelDifficulty 
-                + "&s_posi=" + mapPosition 
-                + "&s_resu=" + this.result 
-                + "&s_time=" + this.totalTime 
-                + "&s_deta=" + abst;
+        let vars = "s_ip=" + hip
+            + "&s_name=" + playerName
+            + "&s_lang=" + langString
+            + "&s_game=" + levelShape
+            + "&s_mode=" + levelType;
+        vars += "&s_oper=Equal"
+            + "&s_leve=" + levelDifficulty
+            + "&s_posi=" + mapPosition
+            + "&s_resu=" + this.result
+            + "&s_time=" + this.totalTime
+            + "&s_deta=" + abst;
 
         hr.open("POST", url, true);
         hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
