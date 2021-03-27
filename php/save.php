@@ -9,6 +9,7 @@
 /// @see js/circleOne.js
 /// @see js/squareOne.js
 /// @see js/squareTwo.js
+/// @see js/globals.js
 
 function remove_accents ($stripAccents) {
   /*
@@ -18,7 +19,7 @@ function remove_accents ($stripAccents) {
   $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents);
   */
   return $stripAccents;
-  }
+}
 
 // Monta vetor [0,1] de dados da m<E1>quina cliente
 function ipMaquina0 () {
@@ -31,7 +32,7 @@ function ipMaquina0 () {
   $resp[0] = $ip;
   $resp[1] = gethostbyaddr($ip);
   return $resp;
-  }
+}
 
 // Monta vetor [0,1] de dados da m<E1>quina cliente
 function ipMaquina () {
@@ -45,9 +46,9 @@ function ipMaquina () {
   $resp = gethostbyaddr($ip);
   if (isset($resp) && strlen($resp)>0) {
     $strIP .= "; " . $resp;
-    }
-  return $strIP;
   }
+  return $strIP;
+}
 
 
 $servername = "localhost";
@@ -60,7 +61,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
-  }
+}
 
 
 // $ip = $_REQUEST["s_ip"];
@@ -108,7 +109,7 @@ if ($conn->query($sql) === TRUE) {
 } else {
   print "Error: " . $sql . "<br>" . $conn->error;
   $result = "Erro: " . $conn->error;
-  }
+}
 
 
 //DEBUG

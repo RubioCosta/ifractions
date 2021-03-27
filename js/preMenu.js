@@ -1,86 +1,165 @@
-/*
-    let langState = {
-        create: function(){},
-        -------------------------------------- end of phaser functions
-        func_setLang: function(){} //calls loadState
-    };
-    
-    let loadState = {
-        preload: function(){},
-        create: function(){} //calls nameState
-        -------------------------------------- end of phaser functions
-    };
-        
-    let nameState = {
-        create: function(){},
-        -------------------------------------- end of phaser functions
-        func_checkEmptyName: function(){}
-        func_saveName: function(){}
-    };
-*/
+// Only called once
+const boot = {
 
-// LANGUAGE SCREEN: the player can choose a preferred language for the game text to be displayed
-let langState = {
+    preload: function () {
 
-    create: function () {
+        document.body.style.cursor = "auto";
+        game.loop.stop();
+        game.event.clear();
+        game.animation.clear();
 
-        // Sets stage width back to default (if we are back from 'menu' state where it can be changed) 
-        if (this.game.world.width != defaultWidth) this.game.world.setBounds(0, 0, defaultWidth, this.game.world.height);
+        self = this;
 
-        // Parameters for the elements on the screen
-        const langs = {
-            text: ['FRAÇÕES  ', 'FRAZIONI  ', 'FRACTIONS  ', 'FRACCIONES  ', 'FRACTIONS  '], // Language names
-            flag: ['flag_BR', 'flag_IT', 'flag_US', 'flag_PE', 'flag_FR'], // Icon names
-            lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
-            x: [-220, -220, -220, 200, 200],
-            y: [-180, 0, 180, -100, 100]
-        }
-
-        // Create elements on screen  
-        for (let i = 0, length = langs.lang.length; i < length; i++) {
-
-            // Add text for language names
-            const language = game.add.text(this.game.world.centerX + langs.x[i], this.game.world.centerY + langs.y[i], langs.text[i], textStyles.title2);
-            language.anchor.setTo(1, 0.5);
-
-            // Add icons for flags
-            const flag = game.add.sprite(this.game.world.centerX + langs.x[i] + 100, this.game.world.centerY + langs.y[i], langs.flag[i]);
-            flag.anchor.setTo(0.5, 0.5);
-            flag.inputEnabled = true;
-            flag.input.useHandCursor = true;
-            flag.events.onInputDown.add(this.func_setLang, { langs_lang: langs.lang[i] });
-            flag.events.onInputOver.add(function () { this.flag.scale.setTo(1.05) }, { flag: flag });
-            flag.events.onInputOut.add(function () { this.flag.scale.setTo(1) }, { flag: flag });
-
-        }
+        // LOADING MEDIA
+        game.load.audio(game.url.boot.audio);
+        game.load.image(game.url.boot.image);
+        game.load.sprite(game.url.boot.sprite);
 
     },
 
-    // Calls loading screen while loads language
-    func_setLang: function () {
-        // Saves language name e.g 'pt_BR'
-        langString = this.langs_lang;
-        // Calls loading screen
-        game.state.start('load');
+    create: function () {
+        // Calls first screen seen by the player
+        langScreen.preload();
     }
 
 };
 
 
 
-
-// Loads selected language to be able to translate the game text
-let loadState = {
+// LANGUAGE SCREEN: the player can choose a preferred language for the game text to be displayed
+const langScreen = {
 
     preload: function () {
 
-        // Progress bar
-        const progressBar = game.add.sprite(game.world.centerX, game.world.centerY, 'progressBar');
-        progressBar.anchor.setTo(0.5, 0.5);
-        game.load.setPreloadSprite(progressBar);
+        document.body.style.cursor = "auto";
+        game.loop.stop();
+        game.event.clear();
+        game.animation.clear();
 
-        // Loads selected language
-        loadLangs('/Ifractions-web/assets/lang/' + langString);
+        self = this;
+
+        // NOTHING TO LOAD HERE
+        langScreen.create();
+
+    },
+
+    create: function () {
+
+        game.render.clear();
+
+        // Background color
+        game.add.graphic.rect(0, 0, 900, 600, colors.white, 0, colors.blueBckg, 1);
+
+        // Parameters for the elements on the screen
+        langScreen.listOfFlags = [];
+
+        langScreen.langs = {
+            text: ['FRAÇÕES  ', 'FRAZIONI  ', 'FRACTIONS  ', 'FRACCIONES  ', 'FRACTIONS  '], // Language names
+            flag: ['flag_BR', 'flag_IT', 'flag_US', 'flag_PE', 'flag_FR'], // Icon names
+            lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
+            x: [-220, -220, -220, 200, 200],
+            y: [-180, 0, 180, -100, 100]
+        };
+
+        // Create elements on screen  
+        for (let i in this.langs.flag) {
+
+            // Add text for language names
+            game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.title2right);
+
+            // Add icons for flags
+            const flag = game.add.image(defaultWidth / 2 + this.langs.x[i] + 100, defaultHeight / 2 + this.langs.y[i], this.langs.flag[i]);
+            flag.anchor(0.5, 0.5);
+
+            this.listOfFlags.push(flag);
+        }
+
+        game.event.add("click", this.func_onInputDown);
+        game.event.add("mousemove", this.func_onInputOver);
+
+        game.render.all();
+
+    },
+
+
+
+    /* EVENT HANDLER*/
+
+    func_onInputDown: function (mouseEvent) {
+
+        const x = mouseEvent.offsetX;
+        const y = mouseEvent.offsetY;
+
+        langScreen.listOfFlags.forEach(cur => {
+
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+
+            if (valid) {
+                for (let i in langScreen.langs.flag) {
+                    if (langScreen.langs.flag[i] == cur.name) {
+                        langScreen.func_setLang(self.langs.lang[i]);
+                    }
+                }
+            }
+        });
+    },
+
+    func_onInputOver: function (mouseEvent) {
+
+        const x = mouseEvent.offsetX;
+        const y = mouseEvent.offsetY;
+        let flag = false;
+
+        langScreen.listOfFlags.forEach(cur => {
+
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+
+            if (valid) {
+                flag = true;
+                cur.scaleHeight = cur.scaleWidth = 1.05;
+            } else {
+                cur.scaleHeight = cur.scaleWidth = 1;
+            }
+        });
+
+        if (flag) document.body.style.cursor = "pointer";
+        else document.body.style.cursor = "auto";
+
+        game.render.all();
+
+    },
+
+
+
+    /* GAME FUNCTIONS */
+
+    // Calls loading screen while loads language
+    func_setLang: function (selectedLang) {
+        // Saves language name e.g 'pt_BR'
+        langString = selectedLang;
+        // Calls loading screen
+        loadLang.preload();
+    }
+
+};
+
+
+
+// Loads selected language to be able to translate the game text
+const loadLang = {
+
+    preload: function () {
+
+        game.loop.stop();
+        game.event.clear();
+        game.animation.clear();
+
+        self = this;
+
+        // LOADING MEDIA : selected language
+        game.load.lang('assets/lang/' + langString);
 
     },
 
@@ -91,9 +170,9 @@ let loadState = {
         // Make sure to only ask for player name on the first time oppening the game
         if (this.firstTime == undefined) {
             this.firstTime = false;
-            game.state.start('name'); // first time opening ifractions ('language' >> 'name' >> 'menu')
+            nameScreen.preload(); // first time opening ifractions ('language' >> 'name' >> 'menu')
         } else {
-            game.state.start('menu'); // if changing language during the game ('language' >>>> 'menu')         
+            menuScreen.preload(); // if changing language during the game ('language' >>>> 'menu')         
         }
 
     }
@@ -102,56 +181,126 @@ let loadState = {
 
 
 
-
 // NAME SCREEN: asks for player's name 
-let nameState = {
+const nameScreen = {
+
+    preload: function () {
+
+        document.body.style.cursor = "auto";
+        game.loop.stop();
+        game.event.clear();
+        game.animation.clear();
+
+        self = this;
+
+        // NOTHING TO LOAD HERE
+        nameScreen.create();
+
+    },
 
     create: function () {
 
+        game.render.clear();
+
+        // Background color
+        game.add.graphic.rect(0, 0, 900, 600, colors.white, 0, colors.blueBckg, 1);
+
         // Set title and warning text
 
-        const title = game.add.text(this.game.world.centerX, this.game.world.centerY - 100, lang.insert_name, textStyles.title1);
-        title.anchor.setTo(0.5);
+        game.add.text(defaultWidth / 2, defaultHeight / 2 - 100, game.lang.insert_name, textStyles.title1);
 
-        this.warningEmptyName = game.add.text(this.game.world.centerX, this.game.world.centerY - 70, "", textStyles.overtitle);
-        this.warningEmptyName.anchor.setTo(0.5);
+        this.warningEmptyName = game.add.text(defaultWidth / 2, defaultHeight / 2 - 70, "", textStyles.overtitle);
 
         // Set 'ok' button that gets player's information
-
-        const btn = game.add.graphics(this.game.world.centerX - 84, this.game.world.centerY + 70);
-        btn.beginFill(colors.teal);
-        btn.drawRect(0, 0, 168, 60);
-        btn.alpha = 0.5;
-        btn.endFill();
-        btn.inputEnabled = true;
-        btn.input.useHandCursor = true;
-        btn.events.onInputDown.add(this.func_checkEmptyName);
-        btn.events.onInputOver.add(function () { btn.alpha = 0.4 });
-        btn.events.onInputOut.add(function () { btn.alpha = 0.5 });
+        this.okBtn = game.add.graphic.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.teal, 0.5);
 
         // Set button Text
-        const ready = game.add.text(this.game.world.centerX + 1, this.game.world.centerY + 102, lang.ready, textStyles.buttonLabel);
-        ready.anchor.setTo(0.5);
+        game.add.text(defaultWidth / 2 + 1, defaultHeight / 2 + 112, game.lang.ready, textStyles.buttonLabel);
 
         // Makes text field visible
         document.getElementById("text-field").style.visibility = "visible";
+        document.getElementById("text-field").style.top = "300px";
+        document.getElementById("text-field").style.marginLeft = "240px";
 
         // Does the same as the button click when the player presses "enter"
         document.getElementById("name_id").addEventListener('keypress', function (e) {
-            let keycode = e.keycode ? e.keycode : e.which;
-            if (keycode == 13) nameState.func_checkEmptyName();
+            const keycode = e.key || e.code;
+            if (keycode == 'Enter') {
+
+                if (self.func_checkEmptyName()) self.func_saveName();
+
+                game.render.all(); // can show empty name
+            }
         });
 
+        game.event.add("click", this.func_onInputDown);
+        game.event.add("mousemove", this.func_onInputOver);
+
+        game.render.all();
+
     },
+
+
+
+    /* EVENT HANDLER*/
+
+    func_onInputDown: function (mouseEvent) {
+
+        const x = mouseEvent.offsetX;
+        const y = mouseEvent.offsetY;
+
+        const cur = self.okBtn;
+
+        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
+            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+
+        if (valid) {
+
+            if (self.func_checkEmptyName()) {
+
+                self.func_saveName();
+
+            }
+
+        }
+
+        game.render.all();
+    },
+
+    func_onInputOver: function (mouseEvent) {
+
+        const x = mouseEvent.offsetX;
+        const y = mouseEvent.offsetY;
+
+        const cur = self.okBtn;
+
+        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
+            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+
+        if (valid) {
+            document.body.style.cursor = "pointer";
+            cur.alpha = 0.4;
+        } else {
+            document.body.style.cursor = "auto";
+            cur.alpha = 0.5;
+        }
+
+        game.render.all();
+
+    },
+
+
+
+    /* GAME FUNCTIONS */
 
     func_checkEmptyName: function () {
 
         // If text field is empty displays error message
         if (document.getElementById("name_id").value == "") {
-            nameState.warningEmptyName.setText(lang.empty_name);
-        } else { // If text field is NOT empty calls function that saves the player's name
-            nameState.func_saveName();
+            self.warningEmptyName.name = game.lang.empty_name;
+            return false;
         }
+        return true;
 
     },
 
@@ -164,12 +313,12 @@ let nameState = {
         document.getElementById("text-field").style.visibility = "hidden";
         document.getElementById("name_id").value = "";
 
-        if (audioStatus) sound.beepSound.play();
+        if (audioStatus) game.audio.beepSound.play();
 
         if (debugMode) console.log("Username: " + playerName);
 
         // Calls 'menu' state
-        game.state.start('menu');
+        menuScreen.preload();
 
     }
 
