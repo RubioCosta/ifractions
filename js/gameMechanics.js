@@ -141,7 +141,7 @@ const game = {
 							let msg = cur.split("=");
 							game.lang[msg[0].trim()] = msg[1].trim();
 						} catch (Error) { if (debugMode) console.log("Sintax error fixed"); }
-						game.load._informMediaIsLoaded(msg.length, 'lang');
+						game.load._informMediaIsLoaded(msg.length - 1, 'lang');
 					});
 				});
 		},
@@ -158,7 +158,7 @@ const game = {
 						.then(response => response.blob())
 						.then(function (myBlob) {
 							game.audio[cur[0]] = new Audio(URL.createObjectURL(myBlob));
-							game.load._informMediaIsLoaded(urls.length, 'audio');
+							game.load._informMediaIsLoaded(urls.length - 1, 'audio');
 						});
 				});
 			}
@@ -174,7 +174,7 @@ const game = {
 					const img = new Image(); //HTMLImageElement
 					img.onload = () => {
 						game.image[cur[0]] = img;
-						game.load._informMediaIsLoaded(urls.length, 'image');
+						game.load._informMediaIsLoaded(urls.length - 1, 'image');
 					}
 					img.src = cur[1];
 				});
@@ -191,7 +191,7 @@ const game = {
 					const img = new Image(); //HTMLImageElement
 					img.onload = () => {
 						game.sprite[cur[0]] = img;
-						game.load._informMediaIsLoaded(urls.length, 'sprite');
+						game.load._informMediaIsLoaded(urls.length - 1, 'sprite');
 					}
 					img.src = cur[1];
 					img.frames = cur[2];
@@ -204,8 +204,8 @@ const game = {
 			urls.forEach(cur => { if (media[cur[0]] == undefined) newUrls.push(cur); });
 			return newUrls;
 		},
-		_informMediaIsLoaded: function (total, type) {
-			if (game.loadedMedia[type] == total - 1) { // if all media of that type was loaded	
+		_informMediaIsLoaded: function (last, type) {
+			if (game.loadedMedia[type] == last) { // if all media of that type was loaded	
 				game.isLoaded[type] = true;
 				game.load._isPreloadDone(type);
 			}
