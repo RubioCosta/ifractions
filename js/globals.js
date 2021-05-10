@@ -1,20 +1,3 @@
-const defaultWidth = 900;
-const defaultHeight = 600;
-const medSrc = "assets/img/";
-
-const debugMode = false; 	// Turns console messages ON/OFF
-let audioStatus = false; 	// Turns game audio ON/OFF
-let fractionLabel = true; 	// Turns showing fractions in levels ON/OFF
-
-let playerName;
-let langString; 		// String that contains the selected language
-
-let self;				// Current state
-
-let mapPosition;		// character position in the map (1..4 valid, 5 end)
-let mapMove;			// When true, the character can move to next position in the map
-let completedLevels;	// Number of finished levels in the map
-
 /*
 .................................................... 
 .............square.................circle.......... }					} (gameShape)		 			 
@@ -33,33 +16,22 @@ let completedLevels;	// Number of finished levels in the map
 .................................................... 
 */
 
-const TESTE = {
-	gameShape: [
-		'Square',
-		'Square',
-		'Circle'
-	],
-	gameType: [
-		'squareOne',
-		'squareTwo',
-		'circleOne'
-	],
-	levelType: [
-		['A', 'B'],
-		['C'],
-		['A', 'B']
-	],
-	sublevelType: [
-		['Plus', 'Minus'],
-		['A', 'B', 'C'],
-		['Plus', 'Minus', 'Mixed']
-	],
-	gameDifficulty: [
-		3,
-		5,
-		5
-	],
-};
+const defaultWidth = 900;
+const defaultHeight = 600;
+const medSrc = "assets/img/";
+
+const debugMode = false; 	// Turns console messages ON/OFF
+let audioStatus = false; 	// Turns game audio ON/OFF
+let fractionLabel = true; 	// Turns showing fractions in levels ON/OFF
+
+let playerName;
+let langString; 		// String that contains the selected language
+
+let self;				// Current state
+
+let mapPosition;		// character position in the map (1..4 valid, 5 end)
+let mapMove;			// When true, the character can move to next position in the map
+let completedLevels;	// Number of finished levels in the map
 
 /* GAME TYPE (in menu screen)
  * can be: squareOne, 'SquareTwo' or 'CircleOne' */
@@ -83,76 +55,257 @@ let sublevelType;
  * in circleOne/squareTwo	can be: 1..5 */
 let gameDifficulty;
 
+const info = {
 
+	squareOne : {
+		gameShape : 'Square',
+		gameType : 'squareOne',
+		gameTypeUrl : 'game0',
+		levelType : ['A', 'B'],
+		levelTypeUrl : ['level0', 'level1'],
+		sublevelType : ['Plus', 'Minus'],
+		gameDifficulty : 3
+	},
+
+	circleOne : {
+		gameShape : 'Circle',
+		gameType : 'circleOne',
+		gameTypeUrl : 'game1',
+		levelType : ['A', 'B'],
+		levelTypeUrl : ['level2','level3'],
+		sublevelType : ['Plus', 'Minus', 'Mixed'],
+		gameDifficulty : 5
+	},
+
+	squareTwo : {
+		gameShape : 'Square',
+		gameType : 'squareTwo',
+		gameTypeUrl : 'game2',
+		levelType : ['C'],
+		levelTypeUrl : [],
+		sublevelType : [/*'A',*/ 'B', 'C'],
+		gameDifficulty : 5
+	},
+
+	gameShape : [],
+	gameType : [],
+	gameTypeUrl : [],
+	levelType : [],
+	levelTypeUrl : [],
+	sublevelType : [],
+	gameDifficulty : [],
+
+	start : function () {
+
+		info.gameShape = [ 
+			info.squareOne.gameShape, 
+			info.circleOne.gameShape, 
+			info.squareTwo.gameShape
+		];
+	
+		info.gameType = [ 
+			info.squareOne.gameType, 
+			info.circleOne.gameType,
+			info.squareTwo.gameType
+		];
+	
+		info.gameTypeUrl = [ 
+			info.squareOne.gameTypeUrl, 
+			info.circleOne.gameTypeUrl,
+			info.squareTwo.gameTypeUrl
+		];
+	
+		info.levelType = info.squareOne.levelType.concat(info.circleOne.levelType, info.squareTwo.levelType);
+	
+		info.levelTypeUrl = info.squareOne.levelTypeUrl.concat(info.circleOne.levelTypeUrl, info.squareTwo.levelTypeUrl);
+	
+		info.sublevelType = info.squareOne.sublevelType.concat(info.circleOne.sublevelType, info.squareTwo.sublevelType);
+	
+		info.gameDifficulty = [ 
+			info.squareOne.gameDifficulty, 
+			info.circleOne.gameDifficulty, 
+			info.squareTwo.gameDifficulty 
+		];
+
+	},
+
+};
 
 // Colors
 const colors = {
-	white: "#fff",
-	black: "#000",
+
+	// blues
+
+	blueBckg: "#cce5ff", // background color 
+	blueBckgOff: "#adc8e6",
+	blueBckgInsideLevel: "#a8c0e6", // background color in squareOne (used for floor gap)
+	blue: "#003cb3", // subtitle
+	blueMenuLine: "#b7cdf4",
+	darkBlue: "#183780", // linecolor that indicates right and fraction numbers
+
+	// reds
+
+	red: "#b30000", // linecolor that indicates left
+	lightRed: "#d27979", // squareTwo figures
+	darkRed: "#330000", // squareTwo figures and some titles
+
+	// greens
+
+	green: "#00804d", // title
+	lightGreen: "#83afaf", // squareTwo figures
+	darkGreen: "#1e2f2f", // squareTwo figures
+	intenseGreen: "#00d600",
+
+	// neutrals
+	
+	white: "#efeff5",
 	gray: "#708090",
-
-	// used in text
-	green: "#00804d",
-	blue: "#003cb3",
-
-	darkRed: "#330000",
-	mediumBlue: "#000080",
-
-	// difficulty stairs
-	diffBlue: "#99b3ff",
-	diffRed: "#ff6666",
-	diffPurple: "#b366ff",
-
-	// Background color
-	blueBckg: "#cce5ff", // default 
-	blueBckgLevel: "#a8c0e6", // in squareOne (used for floor gap)
-
-	// ok button in name State
-	teal: "#3d5c5c",
-
-	// difficulty symbols and game color identifier 
-	red: "#b30000",
-
-	darkBlue: "#183780",
-	lightBlue: "#efeff5",
-
-	// squareTwo
-	darkRed: "#330000",
-	lightRed: "#d27979",
-	lighterRed: "#2d9d9",
-
-	darkGreen: "#1e2f2f",
-	lightGreen: "#83afaf",
-	lighterGreen: "#e0ebeb",
+	black: "#000",
+	yellow: "#fff570",
 };
 
 // Text styles
 const textStyles = {
 
-	dafault: { font: "12px Arial", fill: colors.black, align: "center" },
+	h1_green: { font: "32px Arial,sans-serif", fill: colors.green, align: "center" }, // menu title
+	h2_green: { font: "26px Arial,sans-serif", fill: colors.green, align: 'center' }, // flag labels (langScreen)
 
-	// titles
-	title1: { font: "32px Arial", fill: colors.green, align: "center" },
-	title2: { font: "27px Arial", fill: colors.green, align: "center" },
-	title2right: { font: "27px Arial", fill: colors.green, align: 'right' },
+	h1_white: { font: '32px Arial,sans-serif', fill: colors.white, align: 'center' }, // ok button (nameScreen)
+	h2_white: { font: '26px Arial,sans-serif', fill: colors.white, align: 'center' }, // difficulty buttons (menuScreen)
+	h4_white: { font: '20px Arial,sans-serif', fill: colors.white, align: 'center' }, // difficulty numbers (menuScreen)
+	p_white: { font: '14px Arial,sans-serif', fill: colors.white, align: 'center' }, // enter button (menuScreen)
 
-	overtitle: { font: "20px Arial", fill: colors.darkRed, align: "center" },
-	overtitlel: { font: "20px Arial", fill: colors.darkRed, align: "left" },
-	overtitler: { font: "20px Arial", fill: colors.darkRed, align: "right" },
+	h2_brown: { font: "26px Arial,sans-serif", fill: colors.darkRed, align: "center" }, // map difficulty label
+	h4_brown: { font: "20px Arial,sans-serif", fill: colors.darkRed, align: "center" }, // menu overtitle
 
-	subtitle1: { font: "27px Arial", fill: colors.blue, align: "center" },
-	subtitle2: { font: "27px Arial", fill: colors.black, align: "center" },
-	subtitle2l: { font: "27px Arial", fill: colors.black, align: "left" },
-	subtitle2r: { font: "27px Arial", fill: colors.black, align: "right" },
+	h2_blue_2: { font: "26px Arial,sans-serif", fill: colors.blue, align: "center" }, // menu subtitle
+	h4_blue_2: { font: "20px Arial,sans-serif", fill: colors.blue, align: "center" }, // menu subtitle
+	h2_blue: { font: '26px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
+	h4_blue: { font: '20px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
+	p_blue: { font: '14px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
 
-	// button labels
-	buttonLabel: { font: '34px Arial', fill: colors.white, align: 'center' },
-	difficultyLabel: { font: '25px Arial', fill: colors.white, align: 'center' },
-	// in game labels
-	valueLabelBlue1: { font: '26px Arial', fill: colors.mediumBlue, align: 'center' },
-	valueLabelBlue2: { font: '20px Arial', fill: colors.mediumBlue, align: 'center' }, // numbers in squareTwo
-	valueLabelBlue3: { font: '15px Arial', fill: colors.mediumBlue, align: 'center' }, // fractions numbers in squareOne
+};
 
+
+// List of media URL
+url = {
+	boot: {
+		image: [
+			// Scene
+			['bgimage', medSrc + 'scene/bg.jpg'],
+			['bgmap', 	medSrc + 'scene/bg_map.png'],
+			['bush', 	medSrc + 'scene/bush.png'],
+			['cloud', 	medSrc + 'scene/cloud.png'],
+			['floor', 	medSrc + 'scene/floor.png'],
+			['place_off', 	medSrc + 'scene/place_off.png'],
+			['place_on', 	medSrc + 'scene/place_on.png'],
+			['rock', 	medSrc + 'scene/rock.png'],
+			['road', 	medSrc + 'scene/road.png'],
+			['sign', 	medSrc + 'scene/sign.png'],
+			['tree1', 	medSrc + 'scene/tree.png'],
+			['tree2', 	medSrc + 'scene/tree2.png'],
+			['tree3', 	medSrc + 'scene/tree3.png'],
+			['tree4', 	medSrc + 'scene/tree4.png'],
+			// Flags
+			['flag_BR', medSrc + 'flag/BRAZ.jpg'],
+			['flag_FR', medSrc + 'flag/FRAN.jpg'],
+			['flag_IT', medSrc + 'flag/ITAL.png'],
+			['flag_PE', medSrc + 'flag/PERU.jpg'],
+			['flag_US', medSrc + 'flag/UNST.jpg'],
+			// Navigation icons on the top of the page
+			['back', 		medSrc + 'navig_icon/back.png'],
+			['help', 		medSrc + 'navig_icon/help.png'],
+			['home', 		medSrc + 'navig_icon/home.png'],
+			['language', 	medSrc + 'navig_icon/language.png'],
+			['menu', 		medSrc + 'navig_icon/menu.png'],
+			// Interactive icons
+			['arrow_down', 		medSrc + 'interac_icon/down.png'],
+			['error', 			medSrc + 'interac_icon/error.png'],
+			['help_pointer', 	medSrc + 'interac_icon/pointer.png'],
+			['ok',				medSrc + 'interac_icon/ok.png'],
+			// Non-interactive icons
+			['arrow_double', 	medSrc + 'non_interac_icon/double.png'],
+			['arrow_left', 		medSrc + 'non_interac_icon/left_arrow.png'],
+			['arrow_right', 	medSrc + 'non_interac_icon/right_arrow.png'],
+			['equal', 			medSrc + 'non_interac_icon/equal.png']
+		],
+		sprite: [
+			// Game Sprites
+			['kid_walk', 	medSrc + 'character/kid/walk.png', 26],
+			// Navigation icons on the top of the page
+			['audio', 		medSrc + 'navig_icon/audio.png', 2],
+			// Interactive icons
+			['select', 		medSrc + 'interac_icon/selectionBox.png', 2]
+		],
+		audio: [
+			// Sound effects
+			['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
+			['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
+			['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
+		]
+	},
+	menu: {
+		image: [
+			// Game
+			['game0', medSrc + 'levels/squareOne.png'], // Square I
+			['game1', medSrc + 'levels/circleOne.png'], // Circle I
+			['game2', medSrc + 'levels/squareTwo.png'], // Square II
+			// level
+			['level0', medSrc + 'levels/squareOne_1.png'], // Square I : A
+			['level1', medSrc + 'levels/squareOne_2.png'], // Square I : B
+			['level2', medSrc + 'levels/circleOne_1.png'], // Circle I : A
+			['level3', medSrc + 'levels/circleOne_2.png'], // Circle I : B
+			['level4', medSrc + 'levels/squareTwo.png'],  // Square II : C
+			// sublevel
+			['sublevel_right', medSrc + 'levels/sublevel_right.png'], // Square I/II : left
+			['sublevel_left', medSrc + 'levels/sublevel_left.png'], // Square I/II : right
+			['sublevel_mixed', medSrc + 'levels/sublevel_mixed.png'], // Circle I : mixed
+			['sublevel_top', medSrc + 'levels/sublevel_top.png'], // Square II : top
+			['sublevel_bottom', medSrc + 'levels/sublevel_bottom.png']  // Square II : bottom
+		],
+		sprite: [],
+		audio: []
+	},
+	squareOne: {
+		image: [
+			// Scene
+			['farm', 	medSrc + 'scene/farm.png'],
+			['garage', 	medSrc + 'scene/garage.png']
+		],
+		sprite: [
+			// Game sprites
+			['tractor', medSrc + 'character/tractor/tractor.png', 15]
+		],
+		audio: []
+	},
+	squareTwo: {
+		image: [
+			// Scene
+			['house', 	medSrc + 'scene/house.png'],
+			['school', 	medSrc + 'scene/school.png']
+		],
+		sprite: [
+			// Game sprites
+			['kid_standing', 	medSrc + 'character/kid/lost.png', 6],
+			['kid_run', 		medSrc + 'character/kid/run.png', 12]
+		],
+		audio: []
+	},
+	circleOne: {
+		image: [
+			// Scene
+			['house', medSrc + 'scene/house.png'],
+			['school', medSrc + 'scene/school.png'],
+			// Game images
+			['balloon', medSrc + 'character/balloon/airballoon_upper.png'],
+			['balloon_basket', medSrc + 'character/balloon/airballoon_base.png']
+		],
+		sprite: [
+			// Game sprites
+			['kid_run', medSrc + 'character/kid/run.png', 12]
+		],
+		audio: []
+	},
 };
 
 // Navigation icons on the top of the screen
@@ -174,9 +327,9 @@ const navigationIcons = {
 
 		// 'Descriptive labels' for the navigation icons
 
-		this.left_text = game.add.text(left_x, 73, "", textStyles.overtitlel);
+		this.left_text = game.add.text(left_x, 73, "", textStyles.h4_brown, 'left');
 
-		this.right_text = game.add.text(right_x + 50, 73, "", textStyles.overtitler);
+		this.right_text = game.add.text(right_x + 50, 73, "", textStyles.h4_brown, 'right');
 
 		// 'Icons' on the LEFT side of the page
 
@@ -229,23 +382,27 @@ const navigationIcons = {
 
 		navigationIcons.iconsList.forEach(cur => {
 
-			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
 			if (valid) {
-				if (cur.name == 'back') navigationIcons.func_CallScreen(navigationIcons.level);
-				else if (cur.name == 'menu') navigationIcons.func_CallScreen(menuScreen);
-				else if (cur.name == 'help') navigationIcons.helpBtn();
-				else if (cur.name == 'language') navigationIcons.func_CallScreen(langScreen);
-				else if (cur.name == 'audio') {
-					if (audioStatus) {
-						audioStatus = false;
-						navigationIcons.icon_audio.curFrame = 1;
-					} else {
-						audioStatus = true;
-						navigationIcons.icon_audio.curFrame = 0;
-					}
-					game.render.all();
+				const name = cur.name;
+				switch (name) {
+					case 'back' : navigationIcons.func_CallScreen(navigationIcons.level); break;
+					case 'menu' : navigationIcons.func_CallScreen(menuScreen); break;
+					case 'help' : navigationIcons.helpBtn(); break;
+					case 'language' : navigationIcons.func_CallScreen(langScreen); break;
+					case  'audio' :
+						if (audioStatus) {
+							audioStatus = false;
+							navigationIcons.icon_audio.curFrame = 1;
+						} else {
+							audioStatus = true;
+							navigationIcons.icon_audio.curFrame = 0;
+						}
+						game.render.all();
+						break;
+					default: console.log("Game error: error in navigation icon")
 				}
 			}
 		});
@@ -257,8 +414,8 @@ const navigationIcons = {
 
 		navigationIcons.iconsList.forEach(cur => {
 
-			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
 			if (valid) {
 

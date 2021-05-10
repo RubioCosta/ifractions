@@ -86,7 +86,7 @@ const circleOne = {
 
         for (let i = 0; i <= 5; i++) {
             game.add.image(66 + i * distanceBetweenPoints, 526, 'place_off', 0.3).anchor(0.5, 0.5);
-            game.add.text(66 + i * distanceBetweenPoints, 560, i, textStyles.valueLabelBlue1);
+            game.add.text(66 + i * distanceBetweenPoints, 560, i, textStyles.h2_blue);
         }
 
         this.trace = game.add.graphic.rect(startX - 1, 526, 1, 1, undefined, 1);
@@ -96,7 +96,7 @@ const circleOne = {
         navigationIcons.func_addIcons(
             true, true, true, // left buttons
             true, false,      // right buttons
-            difficultyScreen, this.func_viewHelp
+            menuScreenCustom, this.func_viewHelp
         );
 
 
@@ -177,14 +177,14 @@ const circleOne = {
             if (divisor == 1) {
 
                 circle = game.add.graphic.circle(startX, 490 - i * this.circles.diameter, this.circles.diameter,
-                    lineColor, 2, colors.lightBlue, 1);
+                    lineColor, 2, colors.white, 1);
 
                 circle.anticlockwise = anticlockwise;
 
                 this.circles.angle.push(360);
 
                 if (fractionLabel) {
-                    label[0] = game.add.text(x, 490 - i * this.circles.diameter, divisor, textStyles.valueLabelBlue1);
+                    label[0] = game.add.text(x, 490 - i * this.circles.diameter, divisor, textStyles.h2_blue);
                     this.circles.label.push(label);
                 }
 
@@ -196,14 +196,14 @@ const circleOne = {
 
                 circle = game.add.graphic.arc(startX, 490 - i * this.circles.diameter, this.circles.diameter,
                     0, game.math.degreeToRad(degree), anticlockwise,
-                    lineColor, 2, colors.lightBlue, 1);
+                    lineColor, 2, colors.white, 1);
 
                 this.circles.angle.push(degree);
 
                 if (fractionLabel) {
-                    label[0] = game.add.text(x, 480 - i * this.circles.diameter + 32, divisor, textStyles.valueLabelBlue2);
-                    label[1] = game.add.text(x, 488 - i * this.circles.diameter, '1', textStyles.valueLabelBlue2);
-                    label[2] = game.add.text(x, 488 - i * this.circles.diameter, '___', textStyles.valueLabelBlue2);
+                    label[0] = game.add.text(x, 480 - i * this.circles.diameter + 32, divisor, textStyles.h4_blue);
+                    label[1] = game.add.text(x, 488 - i * this.circles.diameter, '1', textStyles.h4_blue);
+                    label[2] = game.add.text(x, 488 - i * this.circles.diameter, '___', textStyles.h4_blue);
                     this.circles.label.push(label);
                 }
 
@@ -274,7 +274,7 @@ const circleOne = {
 
         // BALLOON
 
-        this.balloon = game.add.image(this.balloonPlace, 350, 'balloon', 1, 1, 0.5);
+        this.balloon = game.add.image(this.balloonPlace, 350, 'balloon', 1, 0.5);
         this.balloon.alpha = 0.5;
         this.balloon.anchor(0.5, 0.5);
 
@@ -452,7 +452,7 @@ const circleOne = {
 
             const cur = self.road;
 
-            const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
             if (valid) self.func_clicked(x);
         }
 
@@ -460,7 +460,7 @@ const circleOne = {
         if (levelType == 'B') {
             self.circles.all.forEach(cur => {
                 const distance = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor);
-                const valid = distance <= cur.diameter / 2;
+                const valid = distance <= (cur.diameter / 2) * cur.scale;
                 if (valid) self.func_clicked(cur);
             });
         }
@@ -492,7 +492,7 @@ const circleOne = {
 
             self.circles.all.forEach(cur => {
                 const distance = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor);
-                const valid = distance <= cur.diameter / 2;
+                const valid = distance <= (cur.diameter / 2) * cur.scale;
                 if (valid) {
                     self.func_overCircle(cur);
                     flag = true;

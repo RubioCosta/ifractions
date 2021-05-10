@@ -5,123 +5,6 @@ const game = {
 	mediaTypes: ['lang', 'audio', 'image', 'sprite'],
 	loadedMedia: [],
 	isLoaded: [],
-	
-	// List of media URL
-	url: {
-		boot: {
-			image: [
-				// Scene
-				['bgimage', medSrc + 'scene/bg.jpg'],
-				['bgmap', 	medSrc + 'scene/bg_map.png'],
-				['bush', 	medSrc + 'scene/bush.png'],
-				['cloud', 	medSrc + 'scene/cloud.png'],
-				['floor', 	medSrc + 'scene/floor.png'],
-				['place_off', 	medSrc + 'scene/place_off.png'],
-				['place_on', 	medSrc + 'scene/place_on.png'],
-				['rock', 	medSrc + 'scene/rock.png'],
-				['road', 	medSrc + 'scene/road.png'],
-				['sign', 	medSrc + 'scene/sign.png'],
-				['tree1', 	medSrc + 'scene/tree.png'],
-				['tree2', 	medSrc + 'scene/tree2.png'],
-				['tree3', 	medSrc + 'scene/tree3.png'],
-				['tree4', 	medSrc + 'scene/tree4.png'],
-				// Flags
-				['flag_BR', medSrc + 'flag/BRAZ.jpg'],
-				['flag_FR', medSrc + 'flag/FRAN.jpg'],
-				['flag_IT', medSrc + 'flag/ITAL.png'],
-				['flag_PE', medSrc + 'flag/PERU.jpg'],
-				['flag_US', medSrc + 'flag/UNST.jpg'],
-				// Navigation icons on the top of the page
-				['back', 		medSrc + 'navig_icon/back.png'],
-				['help', 		medSrc + 'navig_icon/help.png'],
-				['home', 		medSrc + 'navig_icon/home.png'],
-				['language', 	medSrc + 'navig_icon/language.png'],
-				['menu', 		medSrc + 'navig_icon/menu.png'],
-				// Interactive icons
-				['arrow_down', 		medSrc + 'interac_icon/down.png'],
-				['error', 			medSrc + 'interac_icon/error.png'],
-				['help_pointer', 	medSrc + 'interac_icon/pointer.png'],
-				['ok',				medSrc + 'interac_icon/ok.png'],
-				// Non-interactive icons
-				['arrow_double', 	medSrc + 'non_interac_icon/double.png'],
-				['arrow_left', 		medSrc + 'non_interac_icon/left_arrow.png'],
-				['arrow_right', 	medSrc + 'non_interac_icon/right_arrow.png'],
-				['equal', 			medSrc + 'non_interac_icon/equal.png']
-			],
-			sprite: [
-				// Game Sprites
-				['kid_walk', 	medSrc + 'character/kid/walk.png', 26],
-				// Navigation icons on the top of the page
-				['audio', 		medSrc + 'navig_icon/audio.png', 2],
-				// Interactive icons
-				['select', 		medSrc + 'interac_icon/selectionBox.png', 2]
-			],
-			audio: [
-				// Sound effects
-				['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
-				['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
-				['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
-			]
-		},
-		menu: {
-			// @@ TRY TO MAKE GAME+I NOVAMENTE PARA NAO PRECISAR DEFINIR O NOME DO JOGO SEMPRE
-			image: [
-				// Level Icons
-				['game0', medSrc + 'levels/squareOne_1.png', 'Square', 'A'], // Square I
-				['game1', medSrc + 'levels/squareOne_2.png', 'Square', 'B'], // Square II
-				['game2', medSrc + 'levels/circleOne_1.png', 'Circle', 'A'], // Circle I
-				['game3', medSrc + 'levels/circleOne_2.png', 'Circle', 'B'], // Circle II
-				['game4', medSrc + 'levels/squareTwo_3.png', 'Square', 'C']	// Square III
-			],
-			//if (debugMode) {
-			//	for (let i = 0; i < 8; i++) {
-			//		image.push(['', medSrc + 'levels/squareTwo_3.png', 'Square', 'C']);
-			//	}
-			//}
-			sprite: [],
-			audio: []
-		},
-		squareOne: {
-			image: [
-				// Scene
-				['farm', 	medSrc + 'scene/farm.png'],
-				['garage', 	medSrc + 'scene/garage.png']
-			],
-			sprite: [
-				// Game sprites
-				['tractor', medSrc + 'character/tractor/tractor.png', 15]
-			],
-			audio: []
-		},
-		squareTwo: {
-			image: [
-				// Scene
-				['house', 	medSrc + 'scene/house.png'],
-				['school', 	medSrc + 'scene/school.png']
-			],
-			sprite: [
-				// Game sprites
-				['kid_standing', 	medSrc + 'character/kid/lost.png', 6],
-				['kid_run', 		medSrc + 'character/kid/run.png', 12]
-			],
-			audio: []
-		},
-		circleOne: {
-			image: [
-				// Scene
-				['house', medSrc + 'scene/house.png'],
-				['school', medSrc + 'scene/school.png'],
-				// Game images
-				['balloon', medSrc + 'character/balloon/airballoon_upper.png'],
-				['balloon_basket', medSrc + 'character/balloon/airballoon_base.png']
-			],
-			sprite: [
-				// Game sprites
-				['kid_run', medSrc + 'character/kid/run.png', 12]
-			],
-			audio: []
-		},
-	},
 
 	// Loads a list of URL to Cache
 	load: {
@@ -232,11 +115,44 @@ const game = {
 
 	// Adds new media to "media queue" to be rendered by current screen
 	add: {
+		default : {
+			// all
+			x: 0,
+			y: 0,
+			_xWithAnchor: 0,
+			_yWithAnchor: 0,
+			xAnchor: 0,
+			yAnchor: 0,
+
+			shadow : false,
+			shadowColor : "#0075c5",
+			shadowBlur : 20,
+			alpha: 1,
+
+			// image, sprite, square, circle
+			scale: 1,
+
+			// text
+			font: '14px Arial,sans-serif',
+			fill: '#000',
+			align: 'center',
+
+			// square, circle (image and sprite have width and height, but do not have default values)
+			width: 50,
+			height: 50,
+
+			lineColor: "#000",
+			lineWidth: 1,
+			fillColor: 0, // default no fill
+
+			// circle 
+			diameter: 50,
+			anticlockwise: false,
+		},
 		// game.add.image(x, y, img)
 		// game.add.image(x, y, img, scale)
-		// game.add.image(x, y, img, scaleWidth, scaleHeigth)
-		// game.add.image(x, y, img, scaleWidth, scaleHeigth, alpha)
-		image: function (x, y, img, sW, sH, alpha) {
+		// game.add.image(x, y, img, scale, alpha)
+		image: function (x, y, img, scale, alpha) {
 			if (x == undefined || y == undefined || img == undefined) console.error("Game error: parameters missing");
 			else if (game.image[img] == undefined) console.error("Game error: image not found in cache: " + img);
 			else {
@@ -244,29 +160,29 @@ const game = {
 					typeOfMedia: 'image',
 					name: img,
 
-					x: x || 0,
-					y: y || 0,
-					_xWithAnchor: x || 0,
-					_yWithAnchor: y || 0,
-					xAnchor: 0,
-					yAnchor: 0,
+					x: x || game.add.default.x,
+					y: y || game.add.default.y,
+					_xWithAnchor: x || game.add.default._xWithAnchor,
+					_yWithAnchor: y || game.add.default._yWithAnchor,
+					xAnchor: game.add.default.xAnchor,
+					yAnchor: game.add.default.yAnchor,
 
-					scaleWidth: sW || 1,
-					scaleHeight: sW || 1,
+					shadow : game.add.default.shadow,
+					shadowColor : game.add.default.shadowColor,
+					shadowBlur : game.add.default.shadowBlur,
+					alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
+
+					scale: scale || game.add.default.scale,
 					width: game.image[img].width,
 					height: game.image[img].height,
-
-					alpha: alpha || 1,
 
 					anchor: function (xAnchor, yAnchor) {
 						this.xAnchor = xAnchor;
 						this.yAnchor = yAnchor;
 					},
-
-					get xWithAnchor() { return this.x - (this.width * this.scaleWidth * this.xAnchor); },
-					get yWithAnchor() { return this.y - (this.height * this.scaleHeight * this.yAnchor); }
+					get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
+					get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
 				};
-				if (sH != undefined) med.scaleHeight = sH;
 				game.render.queue.push(med);
 				return med;
 			}
@@ -274,7 +190,8 @@ const game = {
 		// game.add.sprite(x, y, img) 
 		// game.add.sprite(x, y, img, curFrame) 
 		// game.add.sprite(x, y, img, curFrame, scale) 
-		sprite: function (x, y, img, curFrame, scale) {
+		// game.add.sprite(x, y, img, curFrame, scale, alpha) 
+		sprite: function (x, y, img, curFrame, scale, alpha) {
 			if (x == undefined || y == undefined || img == undefined) console.error("Game error: parameters missing");
 			else if (game.sprite[img] == undefined) console.error("Game error: sprite not found in cache: " + img);
 			else {
@@ -282,56 +199,61 @@ const game = {
 					typeOfMedia: 'sprite',
 					name: img,
 
-					x: x || 0,
-					y: y || 0,
-					_xWithAnchor: x || 0,
-					_yWithAnchor: y || 0,
-					xAnchor: 0,
-					yAnchor: 0,
+					x: x || game.add.default.x,
+					y: y || game.add.default.y,
+					_xWithAnchor: x || game.add.default._xWithAnchor,
+					_yWithAnchor: y || game.add.default._yWithAnchor,
+					xAnchor: game.add.default.xAnchor,
+					yAnchor: game.add.default.yAnchor,
 
-					scaleWidth: scale || 1,
-					scaleHeight: scale || 1,
+					shadow : game.add.default.shadow,
+					shadowColor : game.add.default.shadowColor,
+					shadowBlur : game.add.default.shadowBlur,
+					alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
+
+					scale: scale || game.add.default.scale,
 					width: game.sprite[img].width / game.sprite[img].frames, // frame width
 					height: game.sprite[img].height, // frame height
-
+					
 					curFrame: curFrame || 0,
-
-					alpha: 1,
 
 					anchor: function (xAnchor, yAnchor) {
 						this.xAnchor = xAnchor;
 						this.yAnchor = yAnchor;
 					},
-
-					get xWithAnchor() { return this.x - (this.width * this.scaleWidth * this.xAnchor); },
-					get yWithAnchor() { return this.y - (this.height * this.scaleHeight * this.yAnchor); }
+					get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
+					get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
 				};
 				game.render.queue.push(med);
 				return med;
 			}
 		},
-		// game.add.text(x, y, text)
 		// game.add.text(x, y, text, style) 
-		text: function (x, y, text, style) {
-			if (x == undefined || y == undefined || text == undefined) console.error("Game error: parameters missing");
+		// game.add.text(x, y, text, style, align) 
+		text: function (x, y, text, style, align) {
+			if (x == undefined || y == undefined || text == undefined || style == undefined) console.error("Game error: parameters missing");
 			else {
 				const med = {
 					typeOfMedia: 'text',
 					name: text,
 
-					x: x || 0,
-					y: y || 0,
-					_xWithAnchor: x || 0,
-					_yWithAnchor: y || 0,
-					xAnchor: 0,
-					yAnchor: 0,
+					x: x || game.add.default.x,
+					y: y || game.add.default.y,
+					_xWithAnchor: x || game.add.default._xWithAnchor,
+					_yWithAnchor: y || game.add.default._yWithAnchor,
+					xAnchor: game.add.default.xAnchor,
+					yAnchor: game.add.default.yAnchor,
 
-					style: style || textStyles.default,
+					shadow : game.add.default.shadow,
+					shadowColor : game.add.default.shadowColor,
+					shadowBlur : game.add.default.shadowBlur,
+					alpha: game.add.default.alpha,
 
-					alpha: 1,
+					font: style.font || game.add.default.font,
+					fill: style.fill || game.add.default.fill,
+					align: align || style.align || game.add.default.align,
 
 					anchor: function () { console.error("Game error: there's no anchor for text"); },
-
 					get xWithAnchor() { return this.x; },
 					get yWithAnchor() { return this.y; }
 				};
@@ -340,146 +262,170 @@ const game = {
 			}
 		},
 		graphic: {
-			// game.add.graphics.rect(x, y, width, height)
-			// game.add.graphics.rect(x, y, width, height, lineColor)
-			// game.add.graphics.rect(x, y, width, height, lineColor, lineWidth)
-			// game.add.graphics.rect(x, y, width, height, lineColor, lineWidth, fillColor)
-			// game.add.graphics.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha)
+			// game.add.graphic.rect(x, y, width, height)
+			// game.add.graphic.rect(x, y, width, height, lineColor)
+			// game.add.graphic.rect(x, y, width, height, lineColor, lineWidth)
+			// game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor)
+			// game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha)
 			rect: function (x, y, width, height, lineColor, lineWidth, fillColor, alpha) {
-				if (x == undefined || y == undefined || width == undefined || height == undefined) console.error("Game error: parameters missing");
+				if (x == undefined || y == undefined || width == undefined) console.error("Game error: parameters missing");
 				else {
 					const med = {
 						typeOfMedia: 'rect',
 
-						x: x || 0,
-						y: y || 0,
-						_xWithAnchor: x || 0,
-						_yWithAnchor: y || 0,
-						xAnchor: 0,
-						yAnchor: 0,
+						x: x || game.add.default.x,
+						y: y || game.add.default.y,
+						_xWithAnchor: x || game.add.default._xWithAnchor,
+						_yWithAnchor: y || game.add.default._yWithAnchor,
+						xAnchor: game.add.default.xAnchor,
+						yAnchor: game.add.default.yAnchor,
 
-						scaleWidth: 1,
-						scaleHeight: 1,
-						width: width || 50,
-						height: height || 50,
+						shadow : game.add.default.shadow,
+						shadowColor : game.add.default.shadowColor,
+						shadowBlur : game.add.default.shadowBlur,
+						alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-						lineColor: lineColor || colors.black,
-						lineWidth: lineWidth || 0,	// by default there's no line width
-						fillColor: fillColor || 0,
+						scale: game.add.default.scale,
 
-						alpha: (alpha != undefined) ? alpha : 1,
+						width: 0,
+						height: 0,
+
+						lineColor: lineColor || game.add.default.lineColor,
+						lineWidth: 0,
+						fillColor: fillColor || game.add.default.fillColor,
 
 						anchor: function (xAnchor, yAnchor) {
 							this.xAnchor = xAnchor;
 							this.yAnchor = yAnchor;
 						},
-
-						get xWithAnchor() { return this.x - (this.width * this.scaleWidth * this.xAnchor); },
-						get yWithAnchor() { return this.y - (this.height * this.scaleHeight * this.yAnchor); }
+						get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
+						get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
 					};
+					if (width != 0) { med.width = width || game.add.default.width; }
+					if (height != 0) { med.height = height || width || game.add.default.height; }	
+					if (lineWidth != 0) { med.lineWidth = lineWidth || game.add.default.lineWidth; }							
 					game.render.queue.push(med);
 					return med;
 				}
 			},
-			// game.add.graphics.circle(x, y, diameter)
-			// game.add.graphics.circle(x, y, diameter, lineColor)
-			// game.add.graphics.circle(x, y, diameter, lineColor, lineWidth)
-			// game.add.graphics.circle(x, y, diameter, lineColor, lineWidth, fillColor)
-			// game.add.graphics.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
-			circle: function (x, y, diameter, lineColor, lineWidth, fillColor, alpha) {
+			// game.add.graphic.circle(x, y, diameter)
+			// game.add.graphic.circle(x, y, diameter, lineColor)
+			// game.add.graphic.circle(x, y, diameter, lineColor, lineWidth)
+			// game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor)
+			// game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
+			circle: function (x, y, diameter, lineColor, lineWidth, fillColor, alpha) { 
 				if (x == undefined || y == undefined || diameter == undefined) console.error("Game error: parameters missing");
 				else {
 					const med = {
 						typeOfMedia: 'arc',
+						
+						x: x || game.add.default.x,
+						y: y || game.add.default.y,
+						_xWithAnchor: x || game.add.default._xWithAnchor,
+						_yWithAnchor: y || game.add.default._yWithAnchor,
+						xAnchor: game.add.default.xAnchor,
+						yAnchor: game.add.default.yAnchor,
 
-						x: x || 0,
-						y: y || 0,
-						_xWithAnchor: x || 0,
-						_yWithAnchor: y || 0,
-						xAnchor: 0,
-						yAnchor: 0,
+						shadow : game.add.default.shadow,
+						shadowColor : game.add.default.shadowColor,
+						shadowBlur : game.add.default.shadowBlur,
+						alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-						diameter: diameter || 50,
+						scale: game.add.default.scale,
+
+						diameter: 0,
+
+						width: 0,
+						height: 0,
+
 						angleStart: 0,
 						angleEnd: 2 * Math.PI,
-						anticlockwise: false,
+						anticlockwise: game.add.default.anticlockwise,
 
-						scaleWidth: 1,
-						scaleHeight: 1,
-						width: diameter,
-						height: diameter,
-
-						lineColor: lineColor || colors.black,
-						lineWidth: lineWidth || 0, 		// by default there's no line width
-						fillColor: fillColor || colors.white,
-
-						alpha: (alpha != undefined) ? alpha : 1,
+						lineColor: lineColor || game.add.default.lineColor,
+						lineWidth: 0,
+						fillColor: fillColor || game.add.default.fillColor,
 
 						anchor: function (xAnchor, yAnchor) {
 							this.xAnchor = xAnchor;
 							this.yAnchor = yAnchor;
 						},
-
-						get xWithAnchor() { return this.x - (this.width * this.scaleWidth * this.xAnchor); },
-						get yWithAnchor() { return this.y - (this.height * this.scaleHeight * this.yAnchor); }
+						get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
+						get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
 					};
+					if (diameter != 0) {
+						med.diameter = diameter || game.add.default.diameter;
+						med.width = med.height = med.diameter;
+					}
+					if (lineWidth != 0) {
+						med.lineWidth = lineWidth || game.add.default.lineWidth;
+					}
 					game.render.queue.push(med);
 					return med;
 				}
 			},
-			// game.add.graphics.arc(x, y, diameter, angleStart, angleEnd, anticlockWise)
-			// game.add.graphics.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor)
-			// game.add.graphics.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth)
-			// game.add.graphics.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor)
-			// game.add.graphics.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor)
+			// game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
 			arc: function (x, y, diameter, angleStart, angleEnd, anticlockwise, lineColor, lineWidth, fillColor, alpha) {
 				if (x == undefined || y == undefined || diameter == undefined || angleStart == undefined || angleEnd == undefined) console.error("Game error: parameters missing");
 				else {
 					const med = {
 						typeOfMedia: 'arc',
 
-						x: x || 0,
-						y: y || 0,
-						_xWithAnchor: x || 0,
-						_yWithAnchor: y || 0,
-						xAnchor: 0,
-						yAnchor: 0,
+						x: x || game.add.default.x,
+						y: y || game.add.default.y,
+						_xWithAnchor: x || game.add.default._xWithAnchor,
+						_yWithAnchor: y || game.add.default._yWithAnchor,
+						xAnchor: game.add.default.xAnchor,
+						yAnchor: game.add.default.yAnchor,
 
-						diameter: diameter || 50,
-						angleStart: angleStart,
-						angleEnd: angleEnd,
-						anticlockwise: anticlockwise || false,
+						shadow : game.add.default.shadow,
+						shadowColor : game.add.default.shadowColor,
+						shadowBlur : game.add.default.shadowBlur,
+						alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-						scaleWidth: 1,
-						scaleHeight: 1,
-						width: diameter,
-						height: diameter,
+						scale: game.add.default.scale,
 
-						lineColor: lineColor || colors.black,
-						lineWidth: lineWidth || 0, 		// by default there's no line width
-						fillColor: fillColor || colors.white,
+						diameter: 0,
 
-						alpha: (alpha != undefined) ? alpha : 1,
+						width: 0,
+						height: 0,
+
+						angleStart: angleStart || 0,
+						angleEnd: angleEnd || 2 * Math.PI,
+						anticlockwise: anticlockwise || game.add.default.anticlockwise,
+
+						lineColor: lineColor || game.add.default.lineColor,
+						lineWidth: 0,
+						fillColor: fillColor || game.add.default.fillColor,
 
 						anchor: function (xAnchor, yAnchor) {
 							this.xAnchor = xAnchor;
 							this.yAnchor = yAnchor;
 						},
-
-						get xWithAnchor() { return this.x - (this.width * this.scaleWidth * this.xAnchor); },
-						get yWithAnchor() { return this.y - (this.height * this.scaleHeight * this.yAnchor); }
+						get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
+						get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
 					};
+					if (diameter != 0) {
+						med.diameter = diameter || game.add.default.diameter;
+						med.width = med.height = med.diameter;
+					}
+					if (lineWidth != 0) { med.lineWidth = lineWidth || game.add.default.lineWidth; }
 					game.render.queue.push(med);
 					return med;
 				}
 			}
 		}
 	},
-
+	
 	// Renders media on current screen
 	render: {
 		queue: [], // media queue to be rendered by the current state
-		_image: function (cur) {	// ( x, y, img, sW, sH, alpha)
+		_image: function (cur) {	// ( x, y, img, scale, alpha)
 			const x = cur.xWithAnchor, y = cur.yWithAnchor;
 			if (cur.rotate && cur.rotate != 0) {
 				context.save();
@@ -488,17 +434,20 @@ const game = {
 				context.translate(-cur.x, -cur.y);
 			}
 			context.globalAlpha = cur.alpha;
+			context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
+			context.shadowColor = cur.shadowColor;
 			context.drawImage(
 				game.image[cur.name],
 				x,
 				y,
-				cur.width * cur.scaleWidth,
-				cur.height * cur.scaleHeight
+				cur.width * cur.scale,
+				cur.height * cur.scale
 			);
+			context.shadowBlur = 0;
 			context.globalAlpha = 1;
 			if (cur.rotate && cur.rotate != 0) context.restore();
 		},
-		_sprite: function (cur) {	// ( x, y, img, curFrame, s )
+		_sprite: function (cur) {	// ( x, y, img, curFrame, scale, alpha )
 			const x = cur.xWithAnchor, y = cur.yWithAnchor;
 			if (cur.rotate && cur.rotate != 0) {
 				context.save();
@@ -507,6 +456,8 @@ const game = {
 				context.translate(-cur.x, -cur.y);
 			}
 			context.globalAlpha = cur.alpha;
+			context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
+			context.shadowColor = cur.shadowColor;
 			context.drawImage(
 				game.sprite[cur.name],
 				cur.width * cur.curFrame,
@@ -515,9 +466,10 @@ const game = {
 				cur.height,
 				x,
 				y,
-				cur.width * cur.scaleWidth,
-				cur.height * cur.scaleHeight
+				cur.width * cur.scale,
+				cur.height * cur.scale
 			);
+			context.shadowBlur = 0;
 			context.globalAlpha = 1;
 			if (cur.rotate && cur.rotate != 0) context.restore();
 		},
@@ -530,54 +482,78 @@ const game = {
 				context.translate(-cur.x, -cur.y);
 			}
 			context.globalAlpha = cur.alpha;
-			context.font = cur.style.font;
-			context.textAlign = cur.style.align;
-			context.fillStyle = cur.style.fill;
+			context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
+			context.shadowColor = cur.shadowColor;
+			context.font = cur.font;
+			context.textAlign = cur.align;
+			context.fillStyle = cur.fill;
 			context.fillText(cur.name, x, y);
+			context.shadowBlur = 0;
 			context.globalAlpha = 1;
 			if (cur.rotate && cur.rotate != 0) context.restore();
 		},
 		_graphic: {
 			_rect: function (cur) { // ( x, y, width, height, lineColor, lineWidth, fillColor, alpha)
 				const x = cur.xWithAnchor, y = cur.yWithAnchor;
+				// rotation
 				if (cur.rotate && cur.rotate != 0) {
 					context.save();
 					context.translate(cur.x, cur.y);
 					context.rotate(cur.rotate * Math.PI / 180);
 					context.translate(-cur.x, -cur.y);
 				}
+				// alpha
 				context.globalAlpha = cur.alpha;
+				// shadow
+				context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
+				context.shadowColor = cur.shadowColor;
+				// fill
 				if (cur.fillColor != 0) {
 					context.fillStyle = cur.fillColor;
-					context.fillRect(x, y, cur.width, cur.height);
+					context.fillRect(x, y, cur.width * cur.scale, cur.height * cur.scale);
 				}
+				// stroke
 				if (cur.lineWidth != 0) {
 					context.strokeStyle = cur.lineColor;
 					context.lineWidth = cur.lineWidth;
-					context.strokeRect(x, y, cur.width, cur.height);
+					context.strokeRect(x, y, cur.width * cur.scale, cur.height * cur.scale);
 				}
+				// end
+				context.shadowBlur = 0;
 				context.globalAlpha = 1;
 				if (cur.rotate && cur.rotate != 0) context.restore();
 			},
 
 			_arc: function (cur) {	// ( x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha);
 				const x = cur.xWithAnchor, y = cur.yWithAnchor;
+				// rotation
 				if (cur.rotate && cur.rotate != 0) {
 					context.save();
 					context.translate(cur.x, cur.y);
 					context.rotate(cur.rotate * Math.PI / 180);
 					context.translate(-cur.x, -cur.y);
 				}
+				// alpha
 				context.globalAlpha = cur.alpha;
-				context.fillStyle = cur.fillColor;
-				context.strokeStyle = cur.lineColor;
-				context.lineWidth = cur.lineWidth;
+				// shadow
+				context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
+				context.shadowColor = cur.shadowColor;
+				// fill info
+				if (cur.fillColor != 0) context.fillStyle = cur.fillColor;
+				// stroke info
+				if (cur.lineWidth != 0) {
+					context.strokeStyle = cur.lineColor;
+					context.lineWidth = cur.lineWidth;
+				}
+				// path
 				context.beginPath();
 				if (cur.angleEnd != 2 * Math.PI) context.lineTo(x, y);
-				context.arc(x, y, cur.diameter / 2, cur.angleStart, cur.angleEnd, cur.anticlockwise);
+				context.arc(x, y, (cur.diameter / 2) * cur.scale, cur.angleStart, cur.angleEnd, cur.anticlockwise);
 				if (cur.angleEnd != 2 * Math.PI) context.lineTo(x, y);
-				context.fill();
-				context.stroke();
+				// end
+				if (cur.fillColor != 0) context.fill();
+				if (cur.lineWidth != 0) context.stroke();
+				context.shadowBlur = 0;
 				context.globalAlpha = 1;
 				if (cur.rotate && cur.rotate != 0) context.restore();
 			},
@@ -629,6 +605,13 @@ const game = {
 			const b = Math.max(yMouse, yIcon) - Math.min(yMouse, yIcon);
 			return Math.sqrt(a * a + b * b);
 		},
+		isOverIcon : function (xMouse, yMouse, icon) {
+			const x = xMouse, y = yMouse, cur = icon;
+			const valid = 
+			y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) && 
+			(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
+			return valid;
+		}
 	},
 
 	// Timer 

@@ -28,15 +28,17 @@ const mapScreen = {
         // Calls function that loads navigation icons
         navigationIcons.func_addIcons(true, true, false, // left icons
             false, false, // right icons
-            difficultyScreen, false);
+            menuScreenCustom, false);
 
         // Progress bar
-        const percentText = completedLevels * 25;
+        const percentText = 4 * 25;
 
-        if (completedLevels != 0) game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.gray, 1);
-        game.add.graphic.rect(661, 11, 149, 34, colors.black, 3, undefined, 1);
-        game.add.text(820, 38, percentText + '%', textStyles.subtitle2l);
-        game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.subtitle2r);
+        if (completedLevels == 4) game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
+        else game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
+        
+        game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1);
+        game.add.text(820, 38, percentText + '%', textStyles.h2_blue, 'left');
+        game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
 
         // Map positions
         this.points = {
@@ -92,7 +94,7 @@ const mapScreen = {
 
             // Level signs
             game.add.image(this.points.x[i] - 20, this.points.y[i] - 60, 'sign', 0.4).anchor(0.5, 1);
-            game.add.text(this.points.x[i] - 20, this.points.y[i] - 79, i, textStyles.difficultyLabel);
+            game.add.text(this.points.x[i] - 20, this.points.y[i] - 79, i, textStyles.h2_white);
 
         }
 
@@ -241,10 +243,10 @@ const endScreen = {
         for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
 
         // Progress bar
-        game.add.graphic.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.gray, 1); // progress
-        game.add.graphic.rect(661, 11, 149, 34, colors.black, 3, undefined, 1); // box
-        game.add.text(820, 38, '100%', textStyles.subtitle2l);
-        game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.subtitle2r);
+        game.add.graphic.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // progress
+        game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // box
+        game.add.text(820, 38, '100%', textStyles.h2_blue, 'left');
+        game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
 
         game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
 

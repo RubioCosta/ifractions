@@ -12,13 +12,23 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 
 	<style>
-		#text-field {
-			position: absolute;
-			top: 300px;
-			margin-left: 340px;
-			visibility: hidden;
+		#iFractions-canvas {
+			padding: 0 auto 0 auto;
+			margin-left: auto;
+			margin-right: auto;
+			display: block;
 		}
 
+		#textbox {
+			position: absolute;
+			margin-left: auto;
+			margin-right: auto;
+			top: 300px;
+			left: 0;
+			right: 0;
+			text-align: center;
+			visibility: hidden;
+		}
 		input[type=text] {
 			background-color: #fff;
 			padding: 15px 40px;
@@ -29,16 +39,9 @@
 			color: #000;
 			text-align: center;
 		}
-
 		input:focus {
 			outline: 3px solid #85accc;
 		}
-
-		#iFractions-canvas {
-			padding: 0 auto 0 auto;
-			border: solid 3px #fff;
-		}
-
 	</style>
 
 </head>
@@ -54,10 +57,15 @@
 			<div class="panel-body">
 				<!-- iFractions game -->
 				<canvas id="iFractions-canvas"></canvas>
+				<!-- get player name -->
+				<div id="textbox" onsubmit="return false">
+					<input type="text" id="textbox-content" value="" size="13" maxlength="36">
+				</div>
+				
 			</div>
 		</div>
 
-		<div id="div-fps"><!-- display frames per second--></div>
+		<div id="div-fps"><!-- display frames per second in debugmode --></div>
 
 		<div class="panel panel-info">
 			<div class="panel-heading">TEAM</div>
@@ -92,23 +100,16 @@
 			</div>
 		</div>
 
-		<div id="text-field">
-			<form onsubmit="return false">
-				<input type="text" id="name_id" value="" size="13" maxlength="36">
-			</form>
-		</div>
-
 	</div>
 
 	<script src="js/preMenu.js"></script>
 	<script src="js/menu.js"></script>
-	<script src="js/difficulty.js"></script>
 	<script src="js/map.js"></script>
 	<script src="js/circleOne.js"></script>
 	<script src="js/squareOne.js"></script>
 	<script src="js/squareTwo.js"></script>
-	<script src="js/globals.js"></script>
 	<script src="js/gameMechanics.js"></script>
+	<script src="js/globals.js"></script>
 
 	<script>
 		

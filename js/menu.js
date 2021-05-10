@@ -1,4 +1,4 @@
-// MENU SCREEN: main menu of the game where the user can select the level he wants to play
+// MENU SCREEN: main menu - player can select the game he wants to play
 const menuScreen = {
 
     preload: function () {
@@ -11,144 +11,75 @@ const menuScreen = {
         self = this;
 
         // LOADING MEDIA
-        game.load.image(game.url.menu.image);
+        game.load.image(url.menu.image);
 
     },
 
     create: function () {
+
         game.render.clear();
 
-        // Background color
+        // BACKGROUND
+
         game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
 
-        // Adds floor
-        for (let i = 0; i < defaultWidth / 100; i++) {
-            game.add.image(i * 100, 501, 'floor');
+        for (let i = 0; i < defaultWidth / 100; i++) { 
+            game.add.image(i * 100, 501, 'floor'); 
         }
 
         // LABELS
 
-        // Adds Overtitle: Welcome, <player name>!
-        game.add.text(defaultWidth / 2, 40, game.lang.welcome + ", " + playerName + "!", textStyles.overtitle);
+        // h4_brown: Welcome, <player name>!
+        game.add.text(defaultWidth / 2, 40, game.lang.welcome + ", " + playerName + "!", textStyles.h4_brown);
 
-        // Adds Title : Select a game
-        game.add.text(defaultWidth / 2, 80, game.lang.menu_title, textStyles.title1);
+        // Title : Select a game
+        game.add.text(defaultWidth / 2, 80, game.lang.menu_title, textStyles.h1_green);
 
-        // Adds Subtitle : <game mode> 
-        this.lbl_game = game.add.text(defaultWidth / 2, 110, "", textStyles.subtitle1);
+        // Subtitle : <game mode> 
+        this.lbl_game = game.add.text(defaultWidth / 2, 110, "", textStyles.h2_blue_2);
 
-        // ICONS
+        // NAVIGATION ICONS
 
-        // Calls function that loads navigation icons
-        navigationIcons.func_addIcons(false, false, false,
+        // Loads navigation icons
+        navigationIcons.func_addIcons(
+            false, false, false,
             true, true,
             false, false);
 
-        // GAME LEVELS BUTTONS
+        // -------------------- GAME ICONS 
+        this.menuIcons = [];
 
-        // Base coordinates for level buttons
-        let x = -350; // First column
-        let y = -70; // Top line
+        const offset = defaultWidth / (info.gameType.length + 1);    
 
-        menuScreen.menuObjList = [];
+        for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
+            
+            const icon = game.add.image(x, defaultHeight / 2 - 70, info.gameTypeUrl[i], 1);
+            icon.anchor(0.5, 0.5);
 
-        for (let i in game.url.menu.image) {
+            icon.gameShape = info.gameShape[i];
+            icon.gameType = info.gameType[i];
 
-            // Adds level buttons
-            //try {
-            this.menuObjList[i] = game.add.image(defaultWidth / 2 + x, defaultHeight / 2 + y, 'game' + i);
-            this.menuObjList[i].anchor(0.5, 0.5);
-            this.menuObjList[i].levelType = game.url.menu.image[i][3];
-            this.menuObjList[i].gameShape = game.url.menu.image[i][2];
-            //}catch (e) { console.log("Erro:",e)}
-            // Refreshes coordinates for next button
-            if (i % 2 == 0) y = 90; // The next will be at the bottom line
-            else {
-                y = -70; // The next will be at the top line
-                x += 235; // The next will be at the next column
-            }
+            this.menuIcons.push(icon);
 
         }
 
-        game.event.add("click", menuScreen.func_onInputDown);
-        game.event.add("mousemove", menuScreen.func_onInputOver);
+        // EVENTS
+
+        game.event.add("click", this.func_onInputDown);
+        game.event.add("mousemove", this.func_onInputOver);
 
         game.render.all();
 
     },
-
-
-
-    /* EVENT HANDLER*/
-
-    func_onInputDown: function (mouseEvent) {
-
-        const x = mouseEvent.offsetX;
-        const y = mouseEvent.offsetY;
-
-        for (let i in menuScreen.menuObjList) {
-
-            const cur = menuScreen.menuObjList[i];
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
-
-            if (valid) {
-                menuScreen.func_loadGame(game.url.menu.image[i][3], game.url.menu.image[i][2]);
-                break;
-            }
-        }
-
-        navigationIcons.func_onInputDown(x, y);
-
-    },
-
-    func_onInputOver: function (mouseEvent) {
-
-        const x = mouseEvent.offsetX;
-        const y = mouseEvent.offsetY;
-        let flag = false;
-
-        menuScreen.menuObjList.forEach(cur => {
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
-
-            if (valid) {
-                flag = true;
-                cur.scaleWidth = cur.scaleHeight = 1.05;
-                menuScreen.func_showTitle(cur.levelType, cur.gameShape);
-            } else {
-                cur.scaleWidth = cur.scaleHeight = 1;
-            }
-
-        });
-
-        if (!flag) {
-            menuScreen.func_clearTitle();
-        }
-
-        navigationIcons.func_onInputOver(x, y);
-
-        game.render.all();
-
-    },
-
-
 
     /* GAME FUNCTIONS */
 
-    //calls the selected game menu screen
-    func_loadGame: function (level, shape) {
+    func_click: function (icon) {
 
         if (audioStatus) game.audio.beepSound.play();
 
-        gameShape = shape;
-        levelType = level;
-
-        if (levelType == "C") gameTypeString = gameShape.toLowerCase() + "Two";
-        else gameTypeString = gameShape.toLowerCase() + "One";
-
+        gameShape = icon.gameShape;
+        gameTypeString = icon.gameType;
         switch (gameTypeString) {
             case 'squareOne': gameType = squareOne; break;
             case 'squareTwo': gameType = squareTwo; break;
@@ -156,39 +87,409 @@ const menuScreen = {
             default: console.error("Game error: the name of the game is not valid");
         }
 
-        if (debugMode) console.log("Game State: " + gameTypeString + ", " + levelType);
+        self.menuIcons = self.lbl_game.name;
 
-        // Calls level difficulty screen
-        difficultyScreen.preload();
-
-    },
-
-    func_showTitle: function (levelType, gameShape) {
-
-        let title = "", type = "";
-
-        if (levelType == 'A') type = "I";
-        else if (levelType == 'B') type = "II";
-        else if (levelType == 'C') type = "III";
-
-        if (gameShape == "Circle") title += game.lang.circle_name;
-        else if (gameShape == "Square") title += game.lang.square_name;
-
-        if (type != "") title += " " + type;
-
-        // Shows level title on the label
-        menuScreen.lbl_game.name = title;
-
-        document.body.style.cursor = "pointer";
+        menuScreenCustom.preload();
 
     },
 
-    func_clearTitle: function () {
+    func_showTitle: function (icon) {
 
-        // Removes text from label
-        menuScreen.lbl_game.name = "";
+        let title;
+
+        switch (icon.gameShape){
+            case 'Circle' : title = game.lang.circle_name; break;
+            case 'Square' : title = game.lang.square_name; break;
+        }
+
+        const type = icon.gameType.substring(icon.gameType.length - 3);
+
+        switch (type){
+            case 'One' : title += ' I'; break;
+            case 'Two' : title += ' II'; break;
+        }
+
+        self.lbl_game.name = title;
+        
+    },
+
+    func_clearTitle: function () { 
+        self.lbl_game.name = ''; 
+    },
+
+    /* EVENTS */
+
+    func_onInputDown: function (mouseEvent) {
+        const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+
+        // check menu icons
+        for (let i in self.menuIcons) {
+            // if mouse is within the bounds of an icon
+            if ( game.math.isOverIcon(x, y, self.menuIcons[i]) ) {
+                // click first valid icon
+                self.func_click(self.menuIcons[i]);
+                break;
+            }
+        }
+
+        // check navigation icons
+        navigationIcons.func_onInputDown(x, y);
+    },
+
+    func_onInputOver: function (mouseEvent) {
+        const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+        let flag = false;
+
+        // check menu icons
+        self.menuIcons.forEach( cur => {
+            if ( game.math.isOverIcon(x, y, cur) ) {
+                cur.scale = 1.08;
+                self.func_showTitle(cur);
+                flag = true;
+            } else {
+                cur.scale = 1;
+            }
+        });
+
+        if (flag) { 
+            document.body.style.cursor = "pointer";
+        } else {
+            document.body.style.cursor = "auto";
+           // menuScreen.func_clearTitle();
+        }
+
+        // check navigation icons
+        navigationIcons.func_onInputOver(x, y);
+
+        game.render.all();
+    },
+    
+};
+
+// IN MENU SCREEN: player can select level, sublevel and difficulty
+const menuScreenCustom = {
+
+    preload: function () {
 
         document.body.style.cursor = "auto";
-    }
+        game.loop.stop();
+        game.event.clear();
+        game.animation.clear();
 
-};
+        self = this;
+
+        // LOADING MEDIA
+        game.load.sprite(url[gameTypeString].sprite);
+        game.load.image(url[gameTypeString].image);
+
+    },
+
+    create: function () {
+
+        game.render.clear();
+
+        let x, y, width, height, offsetH, offsetW;
+        const iconScale = 0.5;
+
+        // Background color
+        game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+
+        // Floor
+        for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
+        
+        // LABELS
+
+        // Add Title : Select a game
+        game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
+
+        // Selected game
+        game.add.text(defaultWidth / 2, 40, menuScreen.menuIcons, textStyles.h4_brown);
+
+        // Loads animation icons
+        navigationIcons.func_addIcons(
+            true, false, false,
+            true, true,
+            menuScreen, false);
+
+        
+        this.menuIcons = [];
+
+        offsetW = 600 / 6;
+        x = 150;
+        y = 200;
+        height = 280;
+        width = 5;
+
+        // Label 'Level'
+        game.add.text(x + offsetW, y, game.lang.level, textStyles.h2_blue_2);
+        // Label 'Sublevel'
+        const sublevelLabel = game.add.text(x + 3 * offsetW, y, game.lang.sublevel, textStyles.h2_blue_2);
+        // Label 'Difficulty'
+        game.add.text(x + 5 * offsetW, y, game.lang.difficulty, textStyles.h2_blue_2);
+
+        // Horizontal line
+        game.add.graphic.rect(x , y + 10, 600, width, undefined, 0, colors.blueMenuLine).anchor(0,0.5);
+
+        // Vertical line
+        game.add.graphic.rect(x + 2 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5,0);
+        game.add.graphic.rect(x + 4 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5,0);
+
+        // --------------------------- TURN ON/OFF FRACTION LABELS
+
+        if (gameTypeString == 'squareTwo') {
+            
+            sublevelLabel.alpha = 0.3;
+
+        } else {
+
+            // Horizontal line
+            game.add.graphic.rect(x + 4 * offsetW, y + 136, 200, width, undefined, 0, colors.blueMenuLine).anchor(0,0.5);
+
+            // Label 'Show Fractions'
+            game.add.text(x + 5 * offsetW, y + 102, game.lang.show, textStyles.h4_blue_2);
+            game.add.text(x + 5 * offsetW, y + 102 + 24, game.lang.title, textStyles.h2_blue_2);
+            
+            const frame = (fractionLabel) ? 1 : 0;
+
+            // Selection box
+            y += 40;
+            const selectionBox = game.add.sprite(x + 5 * offsetW, y + 102 + 24 - 2, 'select', frame, 0.1);
+            selectionBox.anchor(0.5, 0.5);
+            selectionBox.iconType = 'selectionBox';
+            selectionBox.originalScale = 0.1;
+            this.menuIcons.push(selectionBox);
+        } 
+
+        // ---------------------------- LEVEL ICONS
+
+        offsetH = this.func_getOffset(height, info[gameTypeString].levelType.length);
+
+        x = 150 + offsetW;
+        y = 270;
+
+        for (let i = 0; i < info[gameTypeString].levelTypeUrl.length; i++, y += offsetH) {
+
+            const icon = game.add.image(x, y, info[gameTypeString].levelTypeUrl[i], iconScale, 1);
+            icon.anchor(0.5, 0.5);
+
+            icon.levelType = info[gameTypeString].levelType[i];
+            icon.iconType = "level";
+            icon.originalScale = iconScale;
+            if (i == 0) {
+                levelType = icon.levelType;
+                icon.shadow = true;
+            }
+
+            this.menuIcons.push(icon);
+
+        }
+            
+        // ---------------------------- SUBLEVEL ICONS
+
+        offsetH = this.func_getOffset(height, info[gameTypeString].sublevelType.length);
+
+        if (gameTypeString != 'squareTwo') x += 2 * offsetW;
+        y = 270;
+
+        let icon;
+        let aux = [];
+        aux['squareOne'] = [
+            ['sublevel_right', 'Plus'],
+            ['sublevel_left', 'Minus']  
+        ];
+        aux['circleOne'] = [
+            ['sublevel_right', 'Plus'], 
+            ['sublevel_left', 'Minus'], 
+            ['sublevel_mixed', 'Mixed']
+        ];
+        aux['squareTwo'] = [
+            //['sublevel_top', 'A'],
+            ['sublevel_bottom', 'B'],
+            ['sublevel_top', 'C'],
+        ];
+        // Placing sublevel icons
+        for (let i = 0; i < aux[gameTypeString].length; i++, y += offsetH) {
+
+            icon = game.add.image(x, y, aux[gameTypeString][i][0], iconScale);
+            icon.anchor(0.5, 0.5);
+            icon.alpha = 1;
+
+            icon.sublevelType = aux[gameTypeString][i][1];
+            icon.iconType = "sublevel";
+            icon.originalScale = iconScale;
+
+            if ( i == 0 ) {
+                sublevelType = icon.sublevelType;  
+                icon.shadow = true;
+            }
+
+            this.menuIcons.push(icon);
+
+        }
+
+        // --------------------------- DIFFICULTY ICONS
+                
+        x = (gameTypeString == 'squareOne') ? 600 : 570;
+        y = 235;
+
+        for (let i = 0; i < info[gameTypeString].gameDifficulty; i++) {
+
+            // Parameters
+            const curX = x + (30 + 10) * i;
+
+            // Difficulty menuIcons
+            const icon = game.add.graphic.rect(curX, y, 30, 30, undefined, 0, colors.green, 1);
+            icon.anchor(0.5,0.5);
+            icon.difficulty = i + 1;
+            icon.iconType = 'difficulty';
+            icon.originalScale = 1;
+
+            if (i == 0) {
+                gameDifficulty = icon.difficulty;
+                icon.shadow = true;
+            }
+            this.menuIcons.push(icon);
+
+            // Difficulty numbers
+            game.add.text(curX, y + 7, i + 1, textStyles.h4_white);
+
+        }
+
+        // -------------- ENTER ICON
+
+        x = defaultWidth - 100;
+        y = defaultHeight - 110;
+
+        const enterIcon = game.add.image(x, y, 'bush');
+        enterIcon.anchor(0.5,0.5);
+        enterIcon.iconType = 'enter';
+        enterIcon.originalScale = 0.9;
+
+        this.menuIcons.push(enterIcon);
+
+        game.add.text(x, y, game.lang.continue.toUpperCase(), textStyles.p_white);
+
+        // EVENTS
+
+        game.render.all();
+
+        game.event.add("click", this.func_onInputDown);
+        game.event.add("mousemove", this.func_onInputOver);
+
+    },
+
+    /* GAME FUNCTIONS */
+
+    func_load: function (icon) {
+
+        if (audioStatus) game.audio.beepSound.play();
+
+        const type = icon.iconType;
+        switch (type) {
+            case 'level' : levelType = icon.levelType; break;
+            case 'sublevel' : sublevelType = icon.sublevelType; break;
+            case 'difficulty' : gameDifficulty = icon.difficulty; break;
+            case 'selectionBox' :
+                if (icon.curFrame == 0) {
+                    icon.curFrame = 1;
+                    fractionLabel = true;
+                } else {
+                    icon.curFrame = 0;
+                    fractionLabel = false;
+                }
+                game.render.all();
+                break;
+            case 'enter' :    
+                if (debugMode) console.log("Game State: " + gameTypeString + ", " + levelType);
+                mapPosition = 0;      // Map position
+                mapMove = true;       // Move no next point
+                completedLevels = 0;  // Reset the game progress when entering a new level
+                mapScreen.preload();
+                break;
+        }
+
+    },
+
+    func_getOffset : function (width, numberOfIcons) {
+        return width / (numberOfIcons + 1);
+    },  
+
+    /* EVENTS */
+
+    func_onInputDown: function (mouseEvent) {
+        const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+        let overIcon;
+
+        // check if clicked on an icon
+        for (let i in self.menuIcons) {
+            if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
+                overIcon = i;
+                break;
+            }
+        }
+
+        // update gui
+        if (overIcon) { 
+
+            document.body.style.cursor = "pointer";
+                
+            self.menuIcons.forEach( cur => {
+                if ( cur.iconType == self.menuIcons[overIcon].iconType ) {
+                    if (cur == self.menuIcons[overIcon]) {
+                        cur.shadow = true;
+                    } else {
+                        cur.shadow = false;
+                    }
+                }
+            });
+        
+            self.func_load(self.menuIcons[overIcon]);
+
+        } else document.body.style.cursor = "auto";
+
+        navigationIcons.func_onInputDown(x, y);
+
+        game.render.all();
+
+    },
+
+    func_onInputOver: function (mouseEvent) {
+        const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+        let overIcon;
+
+        // check if pointer is over an icon
+        for (let i in self.menuIcons) {
+            if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
+                overIcon = i;
+                break; 
+            }
+        }
+
+        // update gui
+        if (overIcon) { 
+            document.body.style.cursor = "pointer";
+            
+            self.menuIcons.forEach( cur => {
+                if ( cur.iconType == self.menuIcons[overIcon].iconType ) {
+                    if (cur == self.menuIcons[overIcon] ) {
+                        cur.scale = cur.originalScale * 1.1;
+                    } else {
+                        cur.scale = cur.originalScale; 
+                    }
+                }
+            });
+        } else {
+            self.menuIcons.forEach( cur => {
+                cur.scale = cur.originalScale; 
+            });
+            document.body.style.cursor = "auto";
+        }
+
+        // check navigation icons
+        navigationIcons.func_onInputOver(x, y);
+
+        game.render.all();
+        
+    },
+
+}

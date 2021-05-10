@@ -85,7 +85,7 @@ const squareOne = {
         navigationIcons.func_addIcons(
             true, true, true,   // left icons
             true, false,        // right icons
-            difficultyScreen, this.func_viewHelp
+            menuScreenCustom, this.func_viewHelp
         );
 
         // TRACTOR 
@@ -354,16 +354,16 @@ const squareOne = {
         if (levelType == 'A') {
             self.floor.blocks.forEach(cur => {
 
-                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
                 if (valid) self.func_clickSquare(cur);
             });
         } else {
             self.stck.blocks.forEach(cur => {
 
-                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
                 if (valid) self.func_clickSquare(cur);
             });
@@ -393,8 +393,8 @@ const squareOne = {
 
             self.floor.blocks.forEach(cur => {
 
-                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
                 if (valid) {
                     flagA = true;
@@ -410,8 +410,8 @@ const squareOne = {
 
             self.stck.blocks.forEach(cur => {
 
-                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+                const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                    (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
                 if (valid) {
                     flagB = true;
@@ -594,7 +594,7 @@ const squareOne = {
                 self.defaultBlockHeight - lineSize,
                 lineColor,
                 lineSize,
-                colors.lightBlue,
+                colors.white,
                 1);
             const anchor = (sublevelType == 'Minus') ? 1 : 0;
             block.anchor(anchor, 0);
@@ -616,11 +616,11 @@ const squareOne = {
                 const label = [];
 
                 if (divisor == 1) {
-                    label[0] = game.add.text(x, 488 - i * y, divisor, textStyles.valueLabelBlue1);
+                    label[0] = game.add.text(x, 488 - i * y, divisor, textStyles.h2_blue);
                 } else {
-                    label[0] = game.add.text(x, 479 - i * y + 16, divisor, textStyles.valueLabelBlue3);
-                    label[1] = game.add.text(x, 479 - i * y, '1', textStyles.valueLabelBlue3);
-                    label[2] = game.add.text(x, 479 - i * y, '_', textStyles.valueLabelBlue3);
+                    label[0] = game.add.text(x, 479 - i * y + 16, divisor, textStyles.p_blue);
+                    label[1] = game.add.text(x, 479 - i * y, '1', textStyles.p_blue);
+                    label[2] = game.add.text(x, 479 - i * y, '_', textStyles.p_blue);
                 }
 
                 // Add current label to group of labels
@@ -713,7 +713,7 @@ const squareOne = {
                 self.defaultBlockHeight - lineSize,
                 colors.blueBckg,
                 lineSize,
-                colors.blueBckgLevel,
+                colors.blueBckgInsideLevel,
                 1);
             const anchor = (sublevelType == 'Minus') ? 1 : 0;
             block.anchor(anchor, 0);
@@ -737,7 +737,7 @@ const squareOne = {
 
             const x = self.startX + (i * self.defaultBlockWidth * self.DIREC_LEVEL);
 
-            game.add.text(x, 462 + self.defaultBlockHeight + 58, i - 1, textStyles.valueLabelBlue1);
+            game.add.text(x, 462 + self.defaultBlockHeight + 58, i - 1, textStyles.h2_blue);
 
         }
 

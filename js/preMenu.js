@@ -3,6 +3,8 @@ const boot = {
 
     preload: function () {
 
+        info.start();
+
         document.body.style.cursor = "auto";
         game.loop.stop();
         game.event.clear();
@@ -11,9 +13,9 @@ const boot = {
         self = this;
 
         // LOADING MEDIA
-        game.load.audio(game.url.boot.audio);
-        game.load.image(game.url.boot.image);
-        game.load.sprite(game.url.boot.sprite);
+        game.load.audio(url.boot.audio);
+        game.load.image(url.boot.image);
+        game.load.sprite(url.boot.sprite);
 
     },
 
@@ -65,7 +67,7 @@ const langScreen = {
         for (let i in this.langs.flag) {
 
             // Add text for language names
-            game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.title2right);
+            game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.h2_green, 'right');
 
             // Add icons for flags
             const flag = game.add.image(defaultWidth / 2 + this.langs.x[i] + 100, defaultHeight / 2 + this.langs.y[i], this.langs.flag[i]);
@@ -92,8 +94,8 @@ const langScreen = {
 
         langScreen.listOfFlags.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
             if (valid) {
                 for (let i in langScreen.langs.flag) {
@@ -113,14 +115,14 @@ const langScreen = {
 
         langScreen.listOfFlags.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
             if (valid) {
                 flag = true;
-                cur.scaleHeight = cur.scaleWidth = 1.05;
+                cur.scale = cur.scale = 1.05;
             } else {
-                cur.scaleHeight = cur.scaleWidth = 1;
+                cur.scale = cur.scale = 1;
             }
         });
 
@@ -207,23 +209,21 @@ const nameScreen = {
 
         // Set title and warning text
 
-        game.add.text(defaultWidth / 2, defaultHeight / 2 - 100, game.lang.insert_name, textStyles.title1);
+        game.add.text(defaultWidth / 2, defaultHeight / 2 - 100, game.lang.insert_name, textStyles.h1_green);
 
-        this.warningEmptyName = game.add.text(defaultWidth / 2, defaultHeight / 2 - 70, "", textStyles.overtitle);
+        this.warningEmptyName = game.add.text(defaultWidth / 2, defaultHeight / 2 - 70, "", textStyles.h4_brown);
 
         // Set 'ok' button that gets player's information
-        this.okBtn = game.add.graphic.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.teal, 0.5);
+        this.okBtn = game.add.graphic.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.gray, 0.6);
 
         // Set button Text
-        game.add.text(defaultWidth / 2 + 1, defaultHeight / 2 + 112, game.lang.ready, textStyles.buttonLabel);
+        game.add.text(defaultWidth / 2 + 1, defaultHeight / 2 + 112, game.lang.ready, textStyles.h1_white);
 
         // Makes text field visible
-        document.getElementById("text-field").style.visibility = "visible";
-        document.getElementById("text-field").style.top = "300px";
-        document.getElementById("text-field").style.marginLeft = "240px";
+        document.getElementById("textbox").style.visibility = "visible";
 
         // Does the same as the button click when the player presses "enter"
-        document.getElementById("name_id").addEventListener('keypress', function (e) {
+        document.getElementById("textbox-content").addEventListener('keypress', function (e) {
             const keycode = e.key || e.code;
             if (keycode == 'Enter') {
 
@@ -251,8 +251,8 @@ const nameScreen = {
 
         const cur = self.okBtn;
 
-        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
         if (valid) {
 
@@ -274,15 +274,15 @@ const nameScreen = {
 
         const cur = self.okBtn;
 
-        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+        const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+            (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
         if (valid) {
             document.body.style.cursor = "pointer";
             cur.alpha = 0.4;
         } else {
             document.body.style.cursor = "auto";
-            cur.alpha = 0.5;
+            cur.alpha = 0.6;
         }
 
         game.render.all();
@@ -296,7 +296,7 @@ const nameScreen = {
     func_checkEmptyName: function () {
 
         // If text field is empty displays error message
-        if (document.getElementById("name_id").value == "") {
+        if (document.getElementById("textbox-content").value == "") {
             self.warningEmptyName.name = game.lang.empty_name;
             return false;
         }
@@ -307,11 +307,11 @@ const nameScreen = {
     func_saveName: function () {
 
         // Saves player's input in global variable 'playerName'
-        playerName = document.getElementById("name_id").value;
+        playerName = document.getElementById("textbox-content").value;
 
         // Hides and clears text field
-        document.getElementById("text-field").style.visibility = "hidden";
-        document.getElementById("name_id").value = "";
+        document.getElementById("textbox").style.visibility = "hidden";
+        document.getElementById("textbox-content").value = "";
 
         if (audioStatus) game.audio.beepSound.play();
 

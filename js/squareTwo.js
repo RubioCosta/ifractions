@@ -91,7 +91,7 @@ const squareTwo = {
         // Calls function that loads navigation icons
         navigationIcons.func_addIcons(true, true, false,
             true, false,
-            difficultyScreen, false);
+            menuScreenCustom, false);
 
         //Add kid
         this.kidAnimation = game.add.sprite(100, 470, 'kid_standing', 5, 0.8);
@@ -141,7 +141,6 @@ const squareTwo = {
         let blockWidth = this.figureWidth / totalBlocksA; // width of each block in A
         let lineColor = colors.darkGreen;
         let fillColor = colors.lightGreen;
-        let fillColorAux = colors.lighterGreen;
 
         // Create blocks
         for (let i = 0; i < totalBlocksA; i++) {
@@ -158,7 +157,7 @@ const squareTwo = {
             // Auxiliar blocks
             const alpha = (sublevelType == 'A') ? 0.2 : 0;
             const yAux = yA + figureHeight + 10; // on the bottom of A
-            const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColorAux, alpha);
+            const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
             self.A.auxBlocks.push(auxBlock);
 
         }
@@ -167,14 +166,14 @@ const squareTwo = {
         let xLabel = xA + this.figureWidth + 30;
         let yLabel = yA + figureHeight / 2;
 
-        this.A.label = game.add.text(xLabel, yLabel, this.A.blocks.length, textStyles.valueLabelBlue2);
+        this.A.label = game.add.text(xLabel, yLabel, this.A.blocks.length, textStyles.h4_blue);
 
         // 'selected blocks/fraction' label for A : at the bottom of A
         yLabel = yA + figureHeight + 34;
 
-        self.A.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.valueLabelBlue2);
-        self.A.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.valueLabelBlue2);
-        self.A.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.valueLabelBlue2);
+        self.A.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.h4_blue);
+        self.A.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.h4_blue);
+        self.A.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.h4_blue);
         self.A.fractions[0].alpha = 0;
         self.A.fractions[1].alpha = 0;
         self.A.fractions[2].alpha = 0;
@@ -186,7 +185,6 @@ const squareTwo = {
         blockWidth = this.figureWidth / totalBlocksB; // width of each block in B
         lineColor = colors.darkRed;
         fillColor = colors.lightRed;
-        fillColorAux = colors.lighterRed;
 
         // Blocks and auxiliar blocks
         for (let i = 0; i < totalBlocksB; i++) {
@@ -202,9 +200,9 @@ const squareTwo = {
             self.B.blocks.push(block);
 
             // Auxiliar blocks
-            const alpha = (sublevelType == 'A') ? 0.2 : 0;
+            const alpha = (sublevelType == 'A') ? 0.1 : 0;
             const yAux = yB + figureHeight + 10; // on the bottom of B
-            const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColorAux, alpha);
+            const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
             self.B.auxBlocks.push(auxBlock);
 
         }
@@ -213,22 +211,22 @@ const squareTwo = {
         xLabel = xB + this.figureWidth + 30;
         yLabel = yB + figureHeight / 2;
 
-        this.B.label = game.add.text(xLabel, yLabel, this.B.blocks.length, textStyles.valueLabelBlue2);
+        this.B.label = game.add.text(xLabel, yLabel, this.B.blocks.length, textStyles.h4_blue);
 
         // Label fraction
         yLabel = yB + figureHeight + 34;
 
-        self.B.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.valueLabelBlue2);
-        self.B.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.valueLabelBlue2);
-        self.B.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.valueLabelBlue2);
+        self.B.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.h4_blue);
+        self.B.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.h4_blue);
+        self.B.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.h4_blue);
         self.B.fractions[0].alpha = 0;
         self.B.fractions[1].alpha = 0;
         self.B.fractions[2].alpha = 0;
 
         // Invalid selection text
-        self.A.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 225, "", textStyles.overtitle);
+        self.A.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 225, "", textStyles.h4_brown);
 
-        self.B.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 45, "", textStyles.overtitle);
+        self.B.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 45, "", textStyles.h4_brown);
 
 
 
@@ -343,14 +341,14 @@ const squareTwo = {
         // click block in A
         self.A.blocks.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
             if (valid) self.func_clickSquare(cur);
         });
 
         // click block in B
         self.B.blocks.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
             if (valid) self.func_clickSquare(cur);
         });
 
@@ -371,8 +369,8 @@ const squareTwo = {
         // mouse over A : show fraction
         self.A.blocks.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
             if (valid) {
                 flagA = true;
@@ -384,8 +382,8 @@ const squareTwo = {
         // mouse over B : show fraction
         self.B.blocks.forEach(cur => {
 
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scaleHeight) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scaleWidth));
+            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
+                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
 
             if (valid) {
                 flagB = true;
