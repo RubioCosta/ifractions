@@ -1,70 +1,59 @@
-/*
-
-    GAME LEVELS - CIRCLE I & II: balloon level
-    
-    Name of game state : 'CircleOne' 
-    Shape : circle
-    Character : kid/balloon
-    Theme : flying a balloon
-    Concept : 'How much the kid has to walk to get to the balloon?'
-    Represent fractions as : circles
-
-    # of different difficulties for each level : 5
-
-    Levels can be : 'A' or 'B' (in variable 'levelType')
-
-        A : Player can place balloon position
-            Place balloon in position (so the kid can get to it)
-        B : Player can select # of circles
-            Selects number of circles (that represent distance kid needs to walk to get to the balloon)
-
-    Sublevels can be : 'Plus', 'Minus' or 'Mixed' (in variable 'sublevelType')
-    
-        Plus : addition of fractions
-            Represented by : kid going to the right (floor positions 0..5)
-        Minus : subtraction of fractions
-            Represented by: kid going to the left (floor positions 5..0)
-        Mixed : Mix addition and subtraction of fractions in same 
-            Represented by: kid going to the left (floor positions 0..5)
-*/
-
+/**
+ *  GAME STATE
+ * 
+ *  LEVELS - CIRCLE I & II: balloon level
+ *    
+ *  Name of game state : 'circleOne' 
+ *  Shape : circle
+ *  Character : kid/balloon
+ *  Theme : flying a balloon
+ *  Concept : 'How much the kid has to walk to get to the balloon?'
+ *  Represent fractions as : circles
+ *
+ *  # of different difficulties for each level : 5
+ *
+ *  Levels can be : 'A' or 'B' (in variable 'levelType')
+ *
+ *      A : Player can place balloon position
+ *          Place balloon in position (so the kid can get to it)
+ *      B : Player can select # of circles
+ *          Selects number of circles (that represent distance kid needs to walk to get to the balloon)
+ *
+ *  Sublevels can be : 'Plus', 'Minus' or 'Mixed' (in variable 'sublevelType')
+ *   
+ *      Plus : addition of fractions
+ *          Represented by : kid going to the right (floor positions 0..5)
+ *      Minus : subtraction of fractions
+ *          Represented by: kid going to the left (floor positions 5..0)
+ *      Mixed : Mix addition and subtraction of fractions in same 
+ *          Represented by: kid going to the left (floor positions 0..5)
+ *
+ * @namespace
+ */
 const circleOne = {
 
-    preload: function () {
-
-        document.body.style.cursor = "auto";
-        game.loop.stop();
-        game.event.clear();
-        game.animation.clear();
-
-        self = this;
-
-        // NOTHING TO LOAD HERE
-        circleOne.create();
-
-    },
-
+    /**
+     * Main code
+     */
     create: function () {
-
-        game.render.clear();
 
         // CONTROL VARIABLES
 
         this.availableAnimations = [];
         this.changeAnimationFrames = undefined;
-        this.checkAnswer = false; //Check kid inside ballon's basket
-        this.animate = false; //Start move animation
-        this.animateEnding = false; //Start ballon fly animation
-        this.hasClicked = false; //Air ballon positioned
-        this.result = false; //Game is correct
+        this.checkAnswer = false; // Check kid inside ballon's basket
+        this.animate = false; // Start move animation
+        this.animateEnding = false; // Start ballon fly animation
+        this.hasClicked = false; // Air ballon positioned
+        this.result = false; // Game is correct
         this.count = 0;
 
-        this.divisorsList = ""; // used in func_postScore
+        this.divisorsList = ''; // Used in func_postScore
 
         let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)         
 
         const startX = (sublevelType == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
-        this.correctX = startX; //Ending position, accumulative
+        this.correctX = startX; // Ending position, accumulative
 
         // BACKGROUND
 
@@ -94,9 +83,9 @@ const circleOne = {
 
         // Calls function that loads navigation icons
         navigationIcons.func_addIcons(
-            true, true, true, // left buttons
-            true, false,      // right buttons
-            menuScreenCustom, this.func_viewHelp
+            true, true, true, // Left buttons
+            true, false,      // Right buttons
+            'customMenu', this.func_viewHelp
         );
 
 
@@ -125,7 +114,7 @@ const circleOne = {
         const min = (sublevelType == 'Mixed' && mapPosition < 2) ? 2 : mapPosition; // Mixed level has at least 2 fractions
         const total = game.math.randomInRange(min, max); // Total number of circles
 
-        // levelType 'B' exclusive variables
+        // LevelType 'B' exclusive variables
         this.fractionIndex = -1; // Index of clicked circle (game B)
         this.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
 
@@ -140,9 +129,9 @@ const circleOne = {
 
             const divisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
 
-            if (divisor == gameDifficulty) hasBaseDifficulty = true; // true if after for ends has at least 1 '1/difficulty' fraction
+            if (divisor == gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
 
-            this.divisorsList += divisor + ","; // Add this divisor to the list of divisors (for func_postScore)
+            this.divisorsList += divisor + ','; // Add this divisor to the list of divisors (for func_postScore)
 
             // Set each circle direction
             let direction;
@@ -157,7 +146,7 @@ const circleOne = {
             }
             this.circles.direction[i] = direction;
 
-            // set each circle color
+            // Set each circle color
             let lineColor, anticlockwise;
 
             if (direction == 'Right') {
@@ -192,7 +181,7 @@ const circleOne = {
 
                 let degree = 360 / divisor;
 
-                if (direction == 'Right') degree = 360 - degree; // anticlockwise equivalent
+                if (direction == 'Right') degree = 360 - degree; // Anticlockwise equivalent
 
                 circle = game.add.graphic.arc(startX, 490 - i * this.circles.diameter, this.circles.diameter,
                     0, game.math.degreeToRad(degree), anticlockwise,
@@ -211,7 +200,7 @@ const circleOne = {
 
             circle.rotate = 90;
 
-            //If game is type B (select fractions)
+            // If game is type B (select fractions)
             if (levelType == 'B') {
                 circle.alpha = 0.5;
                 circle.index = i;
@@ -224,20 +213,20 @@ const circleOne = {
 
         }
 
-        //Calculate next circle
+        // Calculate next circle
         this.nextX = startX + this.circles.distance[0] * this.circles.direc[0];
 
 
 
-        // check if need to restart
-        let restart = false;
+        // Check if need to restart
+        this.restart = false;
 
-        //If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
+        // If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
         if (this.correctX < 66 || this.correctX > 66 + 3 * 260 || !hasBaseDifficulty) {
-            restart = true;
+            this.restart = true;
         }
 
-        //If game is type B, selectiong a random balloon place
+        // If game is type B, selectiong a random balloon place
         if (levelType == 'B') {
 
             this.balloonPlace = startX;
@@ -247,9 +236,9 @@ const circleOne = {
                 this.balloonPlace += this.circles.distance[i] * this.circles.direc[i];
             }
 
-            //If balloon position is out of bounds, restart
+            // If balloon position is out of bounds, restart
             if (this.balloonPlace < 66 || this.balloonPlace > 66 + 5 * distanceBetweenPoints) {
-                restart = true;
+                this.restart = true;
             }
 
         }
@@ -281,39 +270,36 @@ const circleOne = {
         this.basket = game.add.image(this.balloonPlace, 472, 'balloon_basket');
         this.basket.anchor(0.5, 0.5);
 
-        // help pointer
+        // Help pointer
         this.help = game.add.image(0, 0, 'help_pointer', 0.5);
         this.help.anchor(0.5, 0);
         this.help.alpha = 0;
 
 
 
-        if (restart) {
-            circleOne.preload();
-        } else {
-            game.render.all();
-
+        if (!this.restart) {
             game.timer.start(); // Set a timer for the current level (used in func_postScore)
 
-            game.event.add('click', circleOne.func_onInputDown);
-            game.event.add('mousemove', circleOne.func_onInputOver);
-
-            game.loop.start(this);
+            game.event.add('click', this.func_onInputDown);
+            game.event.add('mousemove', this.func_onInputOver);
         }
 
     },
 
+    /**
+     * Game loop
+     */
     update: function () {
 
         self.count++;
 
-        //Start animation
+        // Start animation
         if (self.animate) {
 
             let cur = self.circles.cur;
             let DIREC = self.circles.direc[cur];
 
-            if (self.count % 2 == 0) { // lowers animation
+            if (self.count % 2 == 0) { // Lowers animation
 
                 // Move kid
                 self.kid.x += 2 * DIREC;
@@ -341,7 +327,7 @@ const circleOne = {
 
                     lowerCircles = self.circles.all[cur].x <= self.nextX;
 
-                    // if just changed from 'right' to 'left' inform to change direction of kid animation
+                    // If just changed from 'right' to 'left' inform to change direction of kid animation
                     if (self.changeAnimationFrames == undefined && cur > 0 && self.circles.direction[cur - 1] == 'Right') {
                         self.changeAnimationFrames = true;
                     }
@@ -370,7 +356,7 @@ const circleOne = {
                     self.kid.y += self.circles.diameter; // Lower kid
 
 
-                    self.circles.cur++; // update current circle
+                    self.circles.cur++; // Update current circle
 
                     cur = self.circles.cur;
                     DIREC = self.circles.direc[cur];
@@ -388,7 +374,7 @@ const circleOne = {
 
         }
 
-        //Check if kid is inside the basket
+        // Check if kid is inside the basket
         if (self.checkAnswer) {
 
             game.timer.stop();
@@ -396,14 +382,14 @@ const circleOne = {
             game.animation.stop(self.kid.animation[0]);
 
             if (self.func_checkOverlap(self.basket, self.kid)) {
-                self.result = true; // answer is correct
+                self.result = true; // Answer is correct
                 self.kid.curFrame = (self.kid.curFrame < 12) ? 24 : 25;
                 if (audioStatus) game.audio.okSound.play();
                 game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
                 completedLevels++;
-                if (debugMode) console.log("completedLevels = " + completedLevels);
+                if (debugMode) console.log('completedLevels = ' + completedLevels);
             } else {
-                self.result = false; // answer is incorrect
+                self.result = false; // Answer is incorrect
                 if (audioStatus) game.audio.errorSound.play();
                 game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
             }
@@ -417,7 +403,7 @@ const circleOne = {
 
         }
 
-        // balloon flying animation
+        // Balloon flying animation
         if (self.animateEnding) {
 
             self.balloon.y -= 2;
@@ -430,7 +416,7 @@ const circleOne = {
                 if (self.result) mapMove = true;
                 else mapMove = false;
 
-                mapScreen.preload();
+                game.state.start('map');
 
             }
         }
@@ -442,6 +428,11 @@ const circleOne = {
 
     /* EVENT HANDLER */
 
+    /**
+     * Called by mouse click event 
+     * 
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
     func_onInputDown: function (mouseEvent) {
 
         const x = mouseEvent.offsetX;
@@ -459,8 +450,7 @@ const circleOne = {
         // LEVEL B : click circle
         if (levelType == 'B') {
             self.circles.all.forEach(cur => {
-                const distance = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor);
-                const valid = distance <= (cur.diameter / 2) * cur.scale;
+                const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
                 if (valid) self.func_clicked(cur);
             });
         }
@@ -471,6 +461,11 @@ const circleOne = {
 
     },
 
+    /**
+     * Called by mouse move event
+     * 
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
     func_onInputOver: function (mouseEvent) {
 
         const x = mouseEvent.offsetX;
@@ -485,14 +480,15 @@ const circleOne = {
                 self.basket.x = x;
             }
 
+            document.body.style.cursor = 'auto';
+
         }
 
         // LEVEL B : hover circle
         if (levelType == 'B' && !self.hasClicked) {
 
             self.circles.all.forEach(cur => {
-                const distance = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor);
-                const valid = distance <= (cur.diameter / 2) * cur.scale;
+                const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
                 if (valid) {
                     self.func_overCircle(cur);
                     flag = true;
@@ -502,6 +498,8 @@ const circleOne = {
 
         }
 
+        navigationIcons.func_onInputOver(x, y);
+
         game.render.all();
 
     },
@@ -510,11 +508,17 @@ const circleOne = {
 
     /* CALLED BY EVENT HANDLER */
 
-    // in levelType 'B'
+    /**
+     * (in levelType 'B')
+     * 
+     * Function called when cursor is over a valid circle
+     * 
+     * @param {object} cur circle the cursor is over
+     */
     func_overCircle: function (cur) {
 
         if (!self.hasClicked) {
-            document.body.style.cursor = "pointer";
+            document.body.style.cursor = 'pointer';
             for (let i in self.circles.all) {
                 self.circles.all[i].alpha = (i <= cur.index) ? 1 : 0.5;
             }
@@ -522,11 +526,15 @@ const circleOne = {
 
     },
 
-    // in levelType 'B'
+    /**
+     * (in levelType 'B')
+     * 
+     * Function called when cursor is out of a valid circle
+     */
     func_outCircle: function () {
 
         if (!self.hasClicked) {
-            document.body.style.cursor = "auto";
+            document.body.style.cursor = 'auto';
             self.circles.all.forEach(cur => {
                 cur.alpha = 0.5;
             });
@@ -534,7 +542,13 @@ const circleOne = {
 
     },
 
-    // in levelType 'B'
+    /**
+     * (in levelType 'B')
+     * 
+     * Function called when player clicked over a valid circle
+     * 
+     * @param {number|object} cur clicked circle
+     */
     func_clicked: function (cur) {
 
         if (!self.hasClicked) {
@@ -546,7 +560,7 @@ const circleOne = {
                 // On levelType B
             } else if (levelType == 'B') {
 
-                document.body.style.cursor = "auto";
+                document.body.style.cursor = 'auto';
 
                 for (let i in self.circles.all) {
                     if (i <= cur.index) {
@@ -561,7 +575,7 @@ const circleOne = {
 
             if (audioStatus) game.audio.beepSound.play();
 
-            // hide fractions
+            // Hide fractions
             if (fractionLabel) {
                 self.circles.label.forEach(cur => {
                     cur.forEach(cur => {
@@ -590,17 +604,27 @@ const circleOne = {
 
     /* GAME FUNCTIONS */
 
+    /**
+     * Checks if 2 images overlap
+     * 
+     * @param {object} spriteA image 1
+     * @param {object} spriteB image 2
+     * @returns {boolean}
+     */
     func_checkOverlap: function (spriteA, spriteB) {
 
         const xA = spriteA.x;
         const xB = spriteB.x;
 
-        // consider it comming from both sides
+        // Consider it comming from both sides
         if (Math.abs(xA - xB) > 14) return false;
         else return true;
 
     },
 
+    /**
+     * Display correct answer
+     */
     func_viewHelp: function () {
 
         if (!self.hasClicked) {
@@ -625,21 +649,24 @@ const circleOne = {
 
     /* METADATA FOR GAME */
 
+    /**
+     * Saves players data after level
+     */
     func_postScore: function () {
 
         // Create some variables we need to send to our PHP file
-        const data = "&s_game=" + gameShape
-            + "&s_mode=" + levelType
-            + "&s_oper=" + sublevelType
-            + "&s_leve=" + gameDifficulty
-            + "&s_posi=" + mapPosition
-            + "&s_resu=" + self.result
-            + "&s_time=" + game.timer.elapsed
-            + "&s_deta="
-            + "numCircles:" + self.circles.all.length
-            + ", valCircles: " + self.divisorsList
-            + " balloonX: " + self.basket.x
-            + ", selIndex: " + self.fractionIndex;
+        const data = '&s_game=' + gameShape
+            + '&s_mode=' + levelType
+            + '&s_oper=' + sublevelType
+            + '&s_leve=' + gameDifficulty
+            + '&s_posi=' + mapPosition
+            + '&s_resu=' + self.result
+            + '&s_time=' + game.timer.elapsed
+            + '&s_deta='
+            + 'numCircles:' + self.circles.all.length
+            + ', valCircles: ' + self.divisorsList
+            + ' balloonX: ' + self.basket.x
+            + ', selIndex: ' + self.fractionIndex;
 
         postScore(data);
 

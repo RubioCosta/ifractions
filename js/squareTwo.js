@@ -1,48 +1,36 @@
-/*
-    GAME LEVELS - SQUARE III: fraction comparisson level
-    
-    Name of game state : 'SquareTwo' 
-    Shape : square
-    Character : kid
-    Theme : (not themed)
-    Concept : player select equivalent dividends for fractions with different divisors
-    Represent fractions as : subdivided blocks
-
-    # of different difficulties for each level : 5
-
-    Level : 'C' (in variable 'levelType')
-
-        C : Player selects equivalent fractions of both blocks 
-    
-    Sublevels can be : 'A', 'B' or 'C' (in variable 'sublevelType')
-    
-        A : equivalence of fractions (with low opacity blocks under the selectable blocks)
-            top has more subdivisions
-        B : equivalence of fractions 
-            top has more subdivisions
-        C : equivalence of fractions
-            bottom has more subdivisions
-*/
-
+/**
+ *  GAME STATE
+ * 
+ *  LEVELS - SQUARE III: fraction comparisson level
+ *   
+ *  Name of game state : 'squareTwo' 
+ *  Shape : square
+ *  Character : kid
+ *  Theme : (not themed)
+ *  Concept : player select equivalent dividends for fractions with different divisors
+ *  Represent fractions as : subdivided blocks
+ *
+ *  # of different difficulties for each level : 5
+ *
+ *  Level : 'C' (in variable 'levelType')
+ *
+ *      C : Player selects equivalent fractions of both blocks 
+ *  
+ *  Sublevels can be : 'B' or 'C' (in variable 'sublevelType')
+ *  
+ *      B : equivalence of fractions 
+ *          top has more subdivisions
+ *      C : equivalence of fractions
+ *          bottom has more subdivisions
+ * 
+ * @namespace
+ */
 const squareTwo = {
 
-    preload: function () {
-
-        document.body.style.cursor = "auto";
-        game.loop.stop();
-        game.event.clear();
-        game.animation.clear();
-
-        self = this;
-
-        // NOTHING TO LOAD HERE
-        squareTwo.create();
-
-    },
-
+    /**
+     * Main code
+     */
     create: function () {
-
-        game.render.clear();
 
         // CONTROL VARIABLES
 
@@ -50,10 +38,10 @@ const squareTwo = {
         this.delay = 0;         // Counter for game dalays
         this.endLevel = false;
 
-        self.A = {
+        this.A = {
             blocks: [],     // List of selection blocks
             auxBlocks: [],  // List of shadow under selection blocks
-            fractions: [],  // fraction numbers
+            fractions: [],  // Fraction numbers
 
             selected: 0,    // Number of selected blocks for A
             hasClicked: false,  // Check if player clicked blocks from A
@@ -62,7 +50,7 @@ const squareTwo = {
             label: undefined,
         };
 
-        self.B = {
+        this.B = {
             blocks: [],
             auxBlocks: [],
             fractions: [],
@@ -89,11 +77,12 @@ const squareTwo = {
         for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
 
         // Calls function that loads navigation icons
-        navigationIcons.func_addIcons(true, true, false,
+        navigationIcons.func_addIcons(
+            true, true, false,
             true, false,
-            menuScreenCustom, false);
+            'customMenu', false);
 
-        //Add kid
+        // Add kid
         this.kidAnimation = game.add.sprite(100, 470, 'kid_standing', 5, 0.8);
         this.kidAnimation.anchor(0.5, 0.7);
 
@@ -123,22 +112,22 @@ const squareTwo = {
 
 
 
-        // number of subdivisions of A and B (blocks)
+        // Number of subdivisions of A and B (blocks)
         const totalBlocksA = points[randomIndex];
         const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
         if (debugMode) {
-            console.log("----------");
-            console.log("Difficulty " + gameDifficulty + ", ini " + ((gameDifficulty - 1) * 2 + 1) + ", end " + ((gameDifficulty - 1) * 2 + 3));
-            console.log("Rpoint " + randomIndex + ", val " + totalBlocksA);
-            console.log("total blocks A " + totalBlocksA + ", total blocks B ");
+            console.log('----------');
+            console.log('Difficulty ' + gameDifficulty + ', ini ' + ((gameDifficulty - 1) * 2 + 1) + ', end ' + ((gameDifficulty - 1) * 2 + 3));
+            console.log('Rpoint ' + randomIndex + ', val ' + totalBlocksA);
+            console.log('total blocks A ' + totalBlocksA + ', total blocks B ');
         }
 
 
 
         // CREATING TOP FIGURE (A)
 
-        let blockWidth = this.figureWidth / totalBlocksA; // width of each block in A
+        let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in A
         let lineColor = colors.darkGreen;
         let fillColor = colors.lightGreen;
 
@@ -152,13 +141,13 @@ const squareTwo = {
             block.figure = 'A';
             block.index = i;
             block.finalX = xA;
-            self.A.blocks.push(block);
+            this.A.blocks.push(block);
 
             // Auxiliar blocks
             const alpha = (sublevelType == 'A') ? 0.2 : 0;
-            const yAux = yA + figureHeight + 10; // on the bottom of A
+            const yAux = yA + figureHeight + 10; // On the bottom of A
             const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
-            self.A.auxBlocks.push(auxBlock);
+            this.A.auxBlocks.push(auxBlock);
 
         }
 
@@ -171,18 +160,18 @@ const squareTwo = {
         // 'selected blocks/fraction' label for A : at the bottom of A
         yLabel = yA + figureHeight + 34;
 
-        self.A.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.h4_blue);
-        self.A.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.h4_blue);
-        self.A.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.h4_blue);
-        self.A.fractions[0].alpha = 0;
-        self.A.fractions[1].alpha = 0;
-        self.A.fractions[2].alpha = 0;
+        this.A.fractions[0] = game.add.text(xLabel, yLabel, '', textStyles.h4_blue);
+        this.A.fractions[1] = game.add.text(xLabel, yLabel + 21, '', textStyles.h4_blue);
+        this.A.fractions[2] = game.add.text(xLabel, yLabel, '___', textStyles.h4_blue);
+        this.A.fractions[0].alpha = 0;
+        this.A.fractions[1].alpha = 0;
+        this.A.fractions[2].alpha = 0;
 
 
 
         // CREATING BOTTOM FIGURE (B)
 
-        blockWidth = this.figureWidth / totalBlocksB; // width of each block in B
+        blockWidth = this.figureWidth / totalBlocksB; // Width of each block in B
         lineColor = colors.darkRed;
         fillColor = colors.lightRed;
 
@@ -197,13 +186,13 @@ const squareTwo = {
             block.figure = 'B';
             block.index = i;
             block.finalX = xB;
-            self.B.blocks.push(block);
+            this.B.blocks.push(block);
 
             // Auxiliar blocks
             const alpha = (sublevelType == 'A') ? 0.1 : 0;
-            const yAux = yB + figureHeight + 10; // on the bottom of B
+            const yAux = yB + figureHeight + 10; // On the bottom of B
             const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
-            self.B.auxBlocks.push(auxBlock);
+            this.B.auxBlocks.push(auxBlock);
 
         }
 
@@ -216,31 +205,30 @@ const squareTwo = {
         // Label fraction
         yLabel = yB + figureHeight + 34;
 
-        self.B.fractions[0] = game.add.text(xLabel, yLabel, "", textStyles.h4_blue);
-        self.B.fractions[1] = game.add.text(xLabel, yLabel + 21, "", textStyles.h4_blue);
-        self.B.fractions[2] = game.add.text(xLabel, yLabel, "___", textStyles.h4_blue);
-        self.B.fractions[0].alpha = 0;
-        self.B.fractions[1].alpha = 0;
-        self.B.fractions[2].alpha = 0;
+        this.B.fractions[0] = game.add.text(xLabel, yLabel, '', textStyles.h4_blue);
+        this.B.fractions[1] = game.add.text(xLabel, yLabel + 21, '', textStyles.h4_blue);
+        this.B.fractions[2] = game.add.text(xLabel, yLabel, '___', textStyles.h4_blue);
+        this.B.fractions[0].alpha = 0;
+        this.B.fractions[1].alpha = 0;
+        this.B.fractions[2].alpha = 0;
 
         // Invalid selection text
-        self.A.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 225, "", textStyles.h4_brown);
+        this.A.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 225, '', textStyles.h4_brown);
 
-        self.B.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 45, "", textStyles.h4_brown);
+        this.B.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 45, '', textStyles.h4_brown);
 
 
-
-        game.render.all();
 
         game.timer.start(); // Set a timer for the current level (used in func_postScore)
 
-        game.event.add("click", squareTwo.func_onInputDown);
-        game.event.add("mousemove", squareTwo.func_onInputOver);
-
-        game.loop.start(this);
+        game.event.add('click', this.func_onInputDown);
+        game.event.add('mousemove', this.func_onInputOver);
 
     },
 
+    /**
+     * Game loop
+     */
     update: function () {
 
         // Animate blocks
@@ -267,7 +255,7 @@ const squareTwo = {
 
         }
 
-        // if A and B are already clicked
+        // If A and B are already clicked
         if (self.A.hasClicked && self.B.hasClicked && !self.endLevel) {
 
             game.timer.stop();
@@ -279,27 +267,27 @@ const squareTwo = {
 
                 self.result = (self.A.selected / self.A.blocks.length) == (self.B.selected / self.B.blocks.length);
 
-                // fractions are equivalent : CORRECT
+                // Fractions are equivalent : CORRECT
                 if (self.result) {
 
                     if (audioStatus) game.audio.okSound.play();
 
                     game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
 
-                    mapMove = true; // allow character to move to next level in map state
+                    mapMove = true; // Allow character to move to next level in map state
 
                     completedLevels++;
 
-                    if (debugMode) console.log("completedLevels = " + completedLevels);
+                    if (debugMode) console.log('completedLevels = ' + completedLevels);
 
-                    // fractions are not equivalent : INCORRECT
+                    // Fractions are not equivalent : INCORRECT
                 } else {
 
                     if (audioStatus) game.audio.errorSound.play();
 
                     game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
 
-                    mapMove = false; // doesnt allow character to move to next level in map state
+                    mapMove = false; // Doesnt allow character to move to next level in map state
 
                 }
 
@@ -307,7 +295,7 @@ const squareTwo = {
 
                 self.endLevel = true;
 
-                // reset delay values for next delay
+                // Reset delay values for next delay
                 self.delay = 0;
 
             }
@@ -320,7 +308,7 @@ const squareTwo = {
             self.delay++;
 
             if (self.delay >= 80) {
-                mapScreen.preload();
+                game.state.start('map');
             }
 
         }
@@ -333,32 +321,38 @@ const squareTwo = {
 
     /* EVENT HANDLER */
 
+    /**
+     * Called by mouse click event
+     * 
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
     func_onInputDown: function (mouseEvent) {
 
         const x = mouseEvent.offsetX;
         const y = mouseEvent.offsetY;
 
-        // click block in A
+        // Click block in A
         self.A.blocks.forEach(cur => {
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-            if (valid) self.func_clickSquare(cur);
+            if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
         });
 
-        // click block in B
+        // Click block in B
         self.B.blocks.forEach(cur => {
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-            if (valid) self.func_clickSquare(cur);
+            if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
         });
 
-        // click navigation icons
+        // Click navigation icons
         navigationIcons.func_onInputDown(x, y);
 
         game.render.all();
 
     },
 
+    /**
+     * Called by mouse move event
+     * 
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
     func_onInputOver: function (mouseEvent) {
 
         const x = mouseEvent.offsetX;
@@ -366,37 +360,29 @@ const squareTwo = {
         let flagA = false;
         let flagB = false;
 
-        // mouse over A : show fraction
+        // Mouse over A : show fraction
         self.A.blocks.forEach(cur => {
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-
-            if (valid) {
+            if (game.math.isOverIcon(x, y, cur)) {
                 flagA = true;
                 self.func_overSquare(cur);
             }
         });
         if (!flagA) self.func_outSquare('A');
 
-        // mouse over B : show fraction
+        // Mouse over B : show fraction
         self.B.blocks.forEach(cur => {
-
-            const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
-                (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-
-            if (valid) {
+            if (game.math.isOverIcon(x, y, cur)) {
                 flagB = true;
                 self.func_overSquare(cur);
             }
         });
         if (!flagB) self.func_outSquare('B');
 
-        if (!flagA && !flagB) document.body.style.cursor = "auto";
+        if (!flagA && !flagB) document.body.style.cursor = 'auto';
 
 
 
-        // mouse over navigation icons : show name
+        // Mouse over navigation icons : show name
         navigationIcons.func_onInputOver(x, y);
 
         game.render.all();
@@ -407,38 +393,43 @@ const squareTwo = {
 
     /* CALLED BY EVENT HANDLER */
 
+    /**
+     * Function called when cursor is over a valid rectangle
+     * 
+     * @param {object} curBlock rectangle the cursor is over
+     */
     func_overSquare: function (curBlock) { // curBlock : self.A.blocks[i] || self.B.blocks[i]
 
-        const curSet = curBlock.figure; // "A" || "B"
+        const curSet = curBlock.figure; // 'A' || 'B'
 
         if (!self[curSet].hasClicked) { // self.A.hasClicked || self.B.hasClicked 
 
             // If over fraction 'n/n' shows warning message not allowing it
             if (curBlock.index == self[curSet].blocks.length - 1) {
 
-                const otherSet = (curSet == "A") ? "B" : "A";
+                const otherSet = (curSet == 'A') ? 'B' : 'A';
 
                 self[curSet].warningText.name = game.lang.error_msg;
-                self[otherSet].warningText.name = "";
+                self[otherSet].warningText.name = '';
 
                 self.func_outSquare(curSet);
 
             } else {
 
-                document.body.style.cursor = "pointer";
+                document.body.style.cursor = 'pointer';
 
-                self.A.warningText.name = "";
-                self.B.warningText.name = "";
+                self.A.warningText.name = '';
+                self.B.warningText.name = '';
 
-                // selected blocks become fully visible
+                // Selected blocks become fully visible
                 for (let i in self[curSet].blocks) {
                     self[curSet].blocks[i].alpha = (i <= curBlock.index) ? 1 : 0.5;
                 }
 
-                self[curSet].fractions[0].name = curBlock.index + 1; // nominator : selected blocks
-                self[curSet].fractions[1].name = self[curSet].blocks.length; // denominator : total blocks
+                self[curSet].fractions[0].name = curBlock.index + 1; // Nominator : selected blocks
+                self[curSet].fractions[1].name = self[curSet].blocks.length; // Denominator : total blocks
 
-                const newX = curBlock.finalX + ((curBlock.index + 1) * (self.figureWidth / self[curSet].blocks.length)) + 25;;
+                const newX = curBlock.finalX + ((curBlock.index + 1) * (self.figureWidth / self[curSet].blocks.length)) + 25;
                 self[curSet].fractions[0].x = newX;
                 self[curSet].fractions[1].x = newX;
                 self[curSet].fractions[2].x = newX;
@@ -451,6 +442,11 @@ const squareTwo = {
 
     },
 
+    /**
+     * Function called when cursor is out of a valid rectangle
+     * 
+     * @param {object} curSet set of rectangles (top or bottom)
+     */
     func_outSquare: function (curSet) { // curSet : self.A || self.B
 
         if (!self[curSet].hasClicked) {
@@ -467,20 +463,25 @@ const squareTwo = {
 
     },
 
+    /**
+     * Function called when player clicked a valid rectangle
+     * 
+     * @param {object} curBlock clicked rectangle
+     */
     func_clickSquare: function (curBlock) { // curBlock : self.A.blocks[i] || self.B.blocks[i]
 
-        const curSet = curBlock.figure; // "A" || "B"
+        const curSet = curBlock.figure; // 'A' || 'B'
 
         if (!self[curSet].hasClicked && curBlock.index != self[curSet].blocks.length - 1) {
 
-            document.body.style.cursor = "auto";
+            document.body.style.cursor = 'auto';
 
-            // turn auxiliar blocks invisible
+            // Turn auxiliar blocks invisible
             for (let i in self[curSet].blocks) {
                 if (i > curBlock.index) self[curSet].auxBlocks[i].alpha = 0;
             }
 
-            // turn value label invisible
+            // Turn value label invisible
             self[curSet].label.alpha = 0;
 
             if (audioStatus) game.audio.beepSound.play();
@@ -488,7 +489,7 @@ const squareTwo = {
             // Save number of selected blocks
             self[curSet].selected = curBlock.index + 1;
 
-            // set fraction x position
+            // Set fraction x position
             const newX = curBlock.finalX + (self[curSet].selected * (self.figureWidth / self[curSet].blocks.length)) + 25;
             self[curSet].fractions[0].x = newX;
             self[curSet].fractions[1].x = newX;
@@ -497,8 +498,8 @@ const squareTwo = {
             self[curSet].fractions[1].alpha = 1;
             self[curSet].fractions[2].alpha = 1;
 
-            self[curSet].hasClicked = true; // inform player have clicked in current block set
-            self[curSet].animate = true; // let it initiate animation
+            self[curSet].hasClicked = true; // Inform player have clicked in current block set
+            self[curSet].animate = true; // Let it initiate animation
 
         }
 
@@ -510,21 +511,24 @@ const squareTwo = {
 
     /* METADATA FOR GAME */
 
+    /**
+     * Saves players data after level
+     */
     func_postScore: function () {
 
         // Create some variables we need to send to our PHP file
-        const data = "&s_game=" + gameShape
-            + "&s_mode=" + levelType
-            + "&s_oper=Equal"
-            + "&s_leve=" + gameDifficulty
-            + "&s_posi=" + mapPosition
-            + "&s_resu=" + self.result
-            + "&s_time=" + game.timer.elapsed
-            + "&s_deta="
-            + "numBlocksA: " + self.A.blocks.length
-            + ", valueA: " + self.A.selected
-            + ", numBlocksB: " + self.B.blocks.length
-            + ", valueB: " + self.B.selected;;
+        const data = '&s_game=' + gameShape
+            + '&s_mode=' + levelType
+            + '&s_oper=Equal'
+            + '&s_leve=' + gameDifficulty
+            + '&s_posi=' + mapPosition
+            + '&s_resu=' + self.result
+            + '&s_time=' + game.timer.elapsed
+            + '&s_deta='
+            + 'numBlocksA: ' + self.A.blocks.length
+            + ', valueA: ' + self.A.selected
+            + ', numBlocksB: ' + self.B.blocks.length
+            + ', valueB: ' + self.B.selected;
 
         postScore(data);
 

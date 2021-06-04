@@ -16,196 +16,186 @@
 .................................................... 
 */
 
+// Can be: 'squareOne', 'squareTwo' or 'circleOne'
+let gameType, gameTypeString;
+
+// Can be: 'circle' or 'square'
+let gameShape;
+
+// In squareOne/circleOne 	can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures)
+// In squareTwo           	can be: 'C' (comparing fractions)
+let levelType;
+
+// In squareOne		can be: 'Plus' or 'Minus'
+// In circleOne 	can be: 'Plus', 'Minus' or 'Mixed'
+// In squareTwo     can be: 'B' or 'C'
+let sublevelType;
+
+// In squareOne 			can be: 1..3
+// In circleOne/squareTwo	can be: 1..5
+let gameDifficulty;
+
+const medSrc = 'assets/img/'; // Base directory for media
 const defaultWidth = 900;
 const defaultHeight = 600;
-const medSrc = "assets/img/";
-
 const debugMode = false; 	// Turns console messages ON/OFF
 let audioStatus = false; 	// Turns game audio ON/OFF
 let fractionLabel = true; 	// Turns showing fractions in levels ON/OFF
 
 let playerName;
 let langString; 		// String that contains the selected language
-
 let self;				// Current state
-
-let mapPosition;		// character position in the map (1..4 valid, 5 end)
+let mapPosition;		// Character position in the map (1..4 valid, 5 end)
 let mapMove;			// When true, the character can move to next position in the map
 let completedLevels;	// Number of finished levels in the map
 
-/* GAME TYPE (in menu screen)
- * can be: squareOne, 'SquareTwo' or 'CircleOne' */
-let gameType, gameTypeString;
-
-let gameShape;	// can be: 'circle' or 'square'
-
-/* LEVEL TYPE (in menu screen)
- * in squareOne/circleOne 	can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures)
- * in squareTwo           	can be: 'C' (comparing fractions) */
-let levelType;
-
-/* SUBLEVEL TYPE (in difficulty screen)
- * in squareOne		can be: 'Plus' or 'Minus'
- * in circleOne 	can be: 'Plus', 'Minus' or 'Mixed'
- * in squareTwo     can be: 'A', 'B' or 'C' */
-let sublevelType;
-
-/* GAME DIFFICULTY 
- * in squareOne 			can be: 1..3
- * in circleOne/squareTwo	can be: 1..5 */
-let gameDifficulty;
-
+// Informations for each game
 const info = {
 
-	squareOne : {
-		gameShape : 'Square',
-		gameType : 'squareOne',
-		gameTypeUrl : 'game0',
-		levelType : ['A', 'B'],
-		levelTypeUrl : ['level0', 'level1'],
-		sublevelType : ['Plus', 'Minus'],
-		gameDifficulty : 3
+	squareOne: {
+		gameShape: 'square',
+		gameType: 'squareOne',
+		gameTypeUrl: 'game0',
+		levelType: ['A', 'B'],
+		levelTypeUrl: ['level0', 'level1'],
+		sublevelType: ['Plus', 'Minus'],
+		gameDifficulty: 3
 	},
 
-	circleOne : {
-		gameShape : 'Circle',
-		gameType : 'circleOne',
-		gameTypeUrl : 'game1',
-		levelType : ['A', 'B'],
-		levelTypeUrl : ['level2','level3'],
-		sublevelType : ['Plus', 'Minus', 'Mixed'],
-		gameDifficulty : 5
+	circleOne: {
+		gameShape: 'circle',
+		gameType: 'circleOne',
+		gameTypeUrl: 'game1',
+		levelType: ['A', 'B'],
+		levelTypeUrl: ['level2', 'level3'],
+		sublevelType: ['Plus', 'Minus', 'Mixed'],
+		gameDifficulty: 5
 	},
 
-	squareTwo : {
-		gameShape : 'Square',
-		gameType : 'squareTwo',
-		gameTypeUrl : 'game2',
-		levelType : ['C'],
-		levelTypeUrl : [],
-		sublevelType : [/*'A',*/ 'B', 'C'],
-		gameDifficulty : 5
+	squareTwo: {
+		gameShape: 'square',
+		gameType: 'squareTwo',
+		gameTypeUrl: 'game2',
+		levelType: ['C'],
+		levelTypeUrl: [],
+		sublevelType: [/*'A',*/ 'B', 'C'],
+		gameDifficulty: 5
 	},
 
-	gameShape : [],
-	gameType : [],
-	gameTypeUrl : [],
-	levelType : [],
-	levelTypeUrl : [],
-	sublevelType : [],
-	gameDifficulty : [],
+	gameShape: [],
+	gameType: [],
+	gameTypeUrl: [],
+	levelType: [],
+	levelTypeUrl: [],
+	sublevelType: [],
+	gameDifficulty: [],
 
-	start : function () {
+	/**
+	 * Load values
+	 */
+	start: function () {
 
-		info.gameShape = [ 
-			info.squareOne.gameShape, 
-			info.circleOne.gameShape, 
+		info.gameShape = [
+			info.squareOne.gameShape,
+			info.circleOne.gameShape,
 			info.squareTwo.gameShape
 		];
-	
-		info.gameType = [ 
-			info.squareOne.gameType, 
+
+		info.gameType = [
+			info.squareOne.gameType,
 			info.circleOne.gameType,
 			info.squareTwo.gameType
 		];
-	
-		info.gameTypeUrl = [ 
-			info.squareOne.gameTypeUrl, 
+
+		info.gameTypeUrl = [
+			info.squareOne.gameTypeUrl,
 			info.circleOne.gameTypeUrl,
 			info.squareTwo.gameTypeUrl
 		];
-	
+
 		info.levelType = info.squareOne.levelType.concat(info.circleOne.levelType, info.squareTwo.levelType);
-	
+
 		info.levelTypeUrl = info.squareOne.levelTypeUrl.concat(info.circleOne.levelTypeUrl, info.squareTwo.levelTypeUrl);
-	
+
 		info.sublevelType = info.squareOne.sublevelType.concat(info.circleOne.sublevelType, info.squareTwo.sublevelType);
-	
-		info.gameDifficulty = [ 
-			info.squareOne.gameDifficulty, 
-			info.circleOne.gameDifficulty, 
-			info.squareTwo.gameDifficulty 
+
+		info.gameDifficulty = [
+			info.squareOne.gameDifficulty,
+			info.circleOne.gameDifficulty,
+			info.squareTwo.gameDifficulty
 		];
 
-	},
+	}
 
 };
 
 // Colors
 const colors = {
+	// Blues
+	blueBckg: '#cce5ff', // Background color 
+	blueBckgOff: '#adc8e6',
+	blueBckgInsideLevel: '#a8c0e6', // Background color in squareOne (used for floor gap)
+	blue: '#003cb3', // Subtitle
+	blueMenuLine: '#b7cdf4',
+	darkBlue: '#183780', // Line color that indicates right and fraction numbers
 
-	// blues
+	// Reds
+	red: '#b30000', // Linecolor that indicates left
+	lightRed: '#d27979', // squareTwo figures
+	darkRed: '#330000', // squareTwo figures and some titles
 
-	blueBckg: "#cce5ff", // background color 
-	blueBckgOff: "#adc8e6",
-	blueBckgInsideLevel: "#a8c0e6", // background color in squareOne (used for floor gap)
-	blue: "#003cb3", // subtitle
-	blueMenuLine: "#b7cdf4",
-	darkBlue: "#183780", // linecolor that indicates right and fraction numbers
+	// Greens
+	green: '#00804d', // Title
+	lightGreen: '#83afaf', // squareTwo figures
+	darkGreen: '#1e2f2f', // squareTwo figures
+	intenseGreen: '#00d600',
 
-	// reds
-
-	red: "#b30000", // linecolor that indicates left
-	lightRed: "#d27979", // squareTwo figures
-	darkRed: "#330000", // squareTwo figures and some titles
-
-	// greens
-
-	green: "#00804d", // title
-	lightGreen: "#83afaf", // squareTwo figures
-	darkGreen: "#1e2f2f", // squareTwo figures
-	intenseGreen: "#00d600",
-
-	// neutrals
-	
-	white: "#efeff5",
-	gray: "#708090",
-	black: "#000",
-	yellow: "#fff570",
+	// Basics
+	white: '#efeff5',
+	gray: '#708090',
+	black: '#000',
+	yellow: '#fff570'
 };
 
 // Text styles
 const textStyles = {
+	h1_green: { font: '32px Arial,sans-serif', fill: colors.green, align: 'center' }, // Menu title
+	h2_green: { font: '26px Arial,sans-serif', fill: colors.green, align: 'center' }, // Flag labels (langState)
 
-	h1_green: { font: "32px Arial,sans-serif", fill: colors.green, align: "center" }, // menu title
-	h2_green: { font: "26px Arial,sans-serif", fill: colors.green, align: 'center' }, // flag labels (langScreen)
+	h1_white: { font: '32px Arial,sans-serif', fill: colors.white, align: 'center' }, // Ok button (nameState)
+	h2_white: { font: '26px Arial,sans-serif', fill: colors.white, align: 'center' }, // Difficulty buttons (menuState)
+	h4_white: { font: '20px Arial,sans-serif', fill: colors.white, align: 'center' }, // Difficulty numbers (menuState)
+	p_white: { font: '14px Arial,sans-serif', fill: colors.white, align: 'center' }, // Enter button (menuState)
 
-	h1_white: { font: '32px Arial,sans-serif', fill: colors.white, align: 'center' }, // ok button (nameScreen)
-	h2_white: { font: '26px Arial,sans-serif', fill: colors.white, align: 'center' }, // difficulty buttons (menuScreen)
-	h4_white: { font: '20px Arial,sans-serif', fill: colors.white, align: 'center' }, // difficulty numbers (menuScreen)
-	p_white: { font: '14px Arial,sans-serif', fill: colors.white, align: 'center' }, // enter button (menuScreen)
+	h2_brown: { font: '26px Arial,sans-serif', fill: colors.darkRed, align: 'center' }, // Map difficulty label
+	h4_brown: { font: '20px Arial,sans-serif', fill: colors.darkRed, align: 'center' }, // Menu overtitle
 
-	h2_brown: { font: "26px Arial,sans-serif", fill: colors.darkRed, align: "center" }, // map difficulty label
-	h4_brown: { font: "20px Arial,sans-serif", fill: colors.darkRed, align: "center" }, // menu overtitle
-
-	h2_blue_2: { font: "26px Arial,sans-serif", fill: colors.blue, align: "center" }, // menu subtitle
-	h4_blue_2: { font: "20px Arial,sans-serif", fill: colors.blue, align: "center" }, // menu subtitle
-	h2_blue: { font: '26px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
-	h4_blue: { font: '20px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
-	p_blue: { font: '14px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // fractions
-
+	h2_blue_2: { font: '26px Arial,sans-serif', fill: colors.blue, align: 'center' }, // Menu subtitle
+	h4_blue_2: { font: '20px Arial,sans-serif', fill: colors.blue, align: 'center' }, // Menu subtitle
+	h2_blue: { font: '26px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // Fractions
+	h4_blue: { font: '20px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // Fractions
+	p_blue: { font: '14px Arial,sans-serif', fill: colors.darkBlue, align: 'center' } // Fractions
 };
 
-
 // List of media URL
-url = {
+const url = {
 	boot: {
 		image: [
 			// Scene
 			['bgimage', medSrc + 'scene/bg.jpg'],
-			['bgmap', 	medSrc + 'scene/bg_map.png'],
-			['bush', 	medSrc + 'scene/bush.png'],
-			['cloud', 	medSrc + 'scene/cloud.png'],
-			['floor', 	medSrc + 'scene/floor.png'],
-			['place_off', 	medSrc + 'scene/place_off.png'],
-			['place_on', 	medSrc + 'scene/place_on.png'],
-			['rock', 	medSrc + 'scene/rock.png'],
-			['road', 	medSrc + 'scene/road.png'],
-			['sign', 	medSrc + 'scene/sign.png'],
-			['tree1', 	medSrc + 'scene/tree.png'],
-			['tree2', 	medSrc + 'scene/tree2.png'],
-			['tree3', 	medSrc + 'scene/tree3.png'],
-			['tree4', 	medSrc + 'scene/tree4.png'],
+			['bgmap', medSrc + 'scene/bg_map.png'],
+			['bush', medSrc + 'scene/bush.png'],
+			['cloud', medSrc + 'scene/cloud.png'],
+			['floor', medSrc + 'scene/floor.png'],
+			['place_off', medSrc + 'scene/place_off.png'],
+			['place_on', medSrc + 'scene/place_on.png'],
+			['rock', medSrc + 'scene/rock.png'],
+			['road', medSrc + 'scene/road.png'],
+			['sign', medSrc + 'scene/sign.png'],
+			['tree1', medSrc + 'scene/tree.png'],
+			['tree2', medSrc + 'scene/tree2.png'],
+			['tree3', medSrc + 'scene/tree3.png'],
+			['tree4', medSrc + 'scene/tree4.png'],
 			// Flags
 			['flag_BR', medSrc + 'flag/BRAZ.jpg'],
 			['flag_FR', medSrc + 'flag/FRAN.jpg'],
@@ -213,29 +203,29 @@ url = {
 			['flag_PE', medSrc + 'flag/PERU.jpg'],
 			['flag_US', medSrc + 'flag/UNST.jpg'],
 			// Navigation icons on the top of the page
-			['back', 		medSrc + 'navig_icon/back.png'],
-			['help', 		medSrc + 'navig_icon/help.png'],
-			['home', 		medSrc + 'navig_icon/home.png'],
-			['language', 	medSrc + 'navig_icon/language.png'],
-			['menu', 		medSrc + 'navig_icon/menu.png'],
+			['back', medSrc + 'navig_icon/back.png'],
+			['help', medSrc + 'navig_icon/help.png'],
+			['home', medSrc + 'navig_icon/home.png'],
+			['language', medSrc + 'navig_icon/language.png'],
+			['menu', medSrc + 'navig_icon/menu.png'],
 			// Interactive icons
-			['arrow_down', 		medSrc + 'interac_icon/down.png'],
-			['error', 			medSrc + 'interac_icon/error.png'],
-			['help_pointer', 	medSrc + 'interac_icon/pointer.png'],
-			['ok',				medSrc + 'interac_icon/ok.png'],
+			['arrow_down', medSrc + 'interac_icon/down.png'],
+			['error', medSrc + 'interac_icon/error.png'],
+			['help_pointer', medSrc + 'interac_icon/pointer.png'],
+			['ok', medSrc + 'interac_icon/ok.png'],
 			// Non-interactive icons
-			['arrow_double', 	medSrc + 'non_interac_icon/double.png'],
-			['arrow_left', 		medSrc + 'non_interac_icon/left_arrow.png'],
-			['arrow_right', 	medSrc + 'non_interac_icon/right_arrow.png'],
-			['equal', 			medSrc + 'non_interac_icon/equal.png']
+			['arrow_double', medSrc + 'non_interac_icon/double.png'],
+			['arrow_left', medSrc + 'non_interac_icon/left_arrow.png'],
+			['arrow_right', medSrc + 'non_interac_icon/right_arrow.png'],
+			['equal', medSrc + 'non_interac_icon/equal.png']
 		],
 		sprite: [
 			// Game Sprites
-			['kid_walk', 	medSrc + 'character/kid/walk.png', 26],
+			['kid_walk', medSrc + 'character/kid/walk.png', 26],
 			// Navigation icons on the top of the page
-			['audio', 		medSrc + 'navig_icon/audio.png', 2],
+			['audio', medSrc + 'navig_icon/audio.png', 2],
 			// Interactive icons
-			['select', 		medSrc + 'interac_icon/selectionBox.png', 2]
+			['select', medSrc + 'interac_icon/selectionBox.png', 2]
 		],
 		audio: [
 			// Sound effects
@@ -250,15 +240,15 @@ url = {
 			['game0', medSrc + 'levels/squareOne.png'], // Square I
 			['game1', medSrc + 'levels/circleOne.png'], // Circle I
 			['game2', medSrc + 'levels/squareTwo.png'], // Square II
-			// level
+			// Level
 			['level0', medSrc + 'levels/squareOne_1.png'], // Square I : A
 			['level1', medSrc + 'levels/squareOne_2.png'], // Square I : B
 			['level2', medSrc + 'levels/circleOne_1.png'], // Circle I : A
 			['level3', medSrc + 'levels/circleOne_2.png'], // Circle I : B
 			['level4', medSrc + 'levels/squareTwo.png'],  // Square II : C
-			// sublevel
-			['sublevel_right', medSrc + 'levels/sublevel_right.png'], // Square I/II : left
-			['sublevel_left', medSrc + 'levels/sublevel_left.png'], // Square I/II : right
+			// Sublevel
+			['sublevel_right', medSrc + 'levels/sublevel_right.png'], // Square/circle I : right
+			['sublevel_left', medSrc + 'levels/sublevel_left.png'], // Square/circle I : left
 			['sublevel_mixed', medSrc + 'levels/sublevel_mixed.png'], // Circle I : mixed
 			['sublevel_top', medSrc + 'levels/sublevel_top.png'], // Square II : top
 			['sublevel_bottom', medSrc + 'levels/sublevel_bottom.png']  // Square II : bottom
@@ -269,8 +259,8 @@ url = {
 	squareOne: {
 		image: [
 			// Scene
-			['farm', 	medSrc + 'scene/farm.png'],
-			['garage', 	medSrc + 'scene/garage.png']
+			['farm', medSrc + 'scene/farm.png'],
+			['garage', medSrc + 'scene/garage.png']
 		],
 		sprite: [
 			// Game sprites
@@ -281,13 +271,13 @@ url = {
 	squareTwo: {
 		image: [
 			// Scene
-			['house', 	medSrc + 'scene/house.png'],
-			['school', 	medSrc + 'scene/school.png']
+			['house', medSrc + 'scene/house.png'],
+			['school', medSrc + 'scene/school.png']
 		],
 		sprite: [
 			// Game sprites
-			['kid_standing', 	medSrc + 'character/kid/lost.png', 6],
-			['kid_run', 		medSrc + 'character/kid/run.png', 12]
+			['kid_standing', medSrc + 'character/kid/lost.png', 6],
+			['kid_run', medSrc + 'character/kid/run.png', 12]
 		],
 		audio: []
 	},
@@ -311,14 +301,23 @@ url = {
 // Navigation icons on the top of the screen
 const navigationIcons = {
 
-	// Add navigation icons on the top of the screen based on parameters
-
-	func_addIcons: function (left_btn0, left_btn1, left_btn2, 	// first 3 icon spaces
-		right_btn0, right_btn1, 			// last 2 icon spaces
-		level, helpBtn) { 					// auxiliar variables
+	/**
+	 * Add navigation icons.
+	 * The icons on the left are ordered from left to right.
+	 * The icons on the right are ordered from right to left.
+	 * 
+	 * @param {boolean} leftIcon0 1st left icon 
+	 * @param {boolean} leftIcon1 2nd left icon
+	 * @param {boolean} leftIcon2 3rd left icon
+	 * @param {boolean} rightIcon0 1st right icon
+	 * @param {boolean} rightIcon1 2nd right icon
+	 * @param {string} level state to be called by the 'back' button
+	 * @param {function} help function in the current state that display correct answer
+	 */
+	func_addIcons: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, level, help) {
 
 		this.level = level;
-		this.helpBtn = helpBtn;
+		this.help = help;
 
 		let left_x = 10;
 		let right_x = defaultWidth - 50 - 10;
@@ -327,25 +326,27 @@ const navigationIcons = {
 
 		// 'Descriptive labels' for the navigation icons
 
-		this.left_text = game.add.text(left_x, 73, "", textStyles.h4_brown, 'left');
+		this.left_text = game.add.text(left_x, 73, '', textStyles.h4_brown, 'left');
 
-		this.right_text = game.add.text(right_x + 50, 73, "", textStyles.h4_brown, 'right');
+		this.right_text = game.add.text(right_x + 50, 73, '', textStyles.h4_brown, 'right');
+
+
 
 		// 'Icons' on the LEFT side of the page
 
-		if (left_btn0) { // Return to select difficulty screen
+		if (leftIcon0) { // Return to select difficulty screen
 			const icon_back = game.add.image(left_x, 10, 'back');
 			this.iconsList.push(icon_back);
 			left_x += 50; // Offsets value of x for next icon
 		}
 
-		if (left_btn1) { // Return to main menu screen
+		if (leftIcon1) { // Return to main menu screen
 			const icon_list = game.add.image(left_x, 10, 'menu');
 			this.iconsList.push(icon_list);
 			left_x += 50; // Offsets value of x for next icon
 		}
 
-		if (left_btn2) { // In some levels, shows solution to the game
+		if (leftIcon2) { // In some levels, shows solution to the game
 			const icon_help = game.add.image(left_x, 10, 'help');
 			this.iconsList.push(icon_help);
 			left_x += 50; // Offsets value of x for next icon
@@ -353,14 +354,14 @@ const navigationIcons = {
 
 		// 'Icons' on the RIGHT side of the page
 
-		if (right_btn0) { // Turns game audio on/off
+		if (rightIcon0) { // Turns game audio on/off
 			this.icon_audio = game.add.sprite(right_x, 10, 'audio', 1);
 			audioStatus ? this.icon_audio.curFrame = 0 : this.icon_audio.curFrame = 1;
 			this.iconsList.push(this.icon_audio);
 			right_x -= 50; // Offsets value of x for next icon
 		}
 
-		if (right_btn1) { // Return to select language screen
+		if (rightIcon1) { // Return to select language screen
 			icon_world = game.add.image(right_x, 10, 'language');
 			this.iconsList.push(icon_world);
 			right_x -= 50; // Offsets value of x for next icon
@@ -368,31 +369,39 @@ const navigationIcons = {
 
 	},
 
-	func_CallScreen: function (screen) {
+	/**
+	 * When back icon is clicked go this state
+	 * 
+	 * @param {string} state name of the next state
+	 */
+	func_CallState: function (state) {
 
 		if (audioStatus) game.audio.beepSound.play();
 
 		game.event.clear(self);
 
-		screen.preload();
+		game.state.start(state);
 
 	},
 
+	/**
+	 * Called by mouse click event 
+	 * 
+	 * @param {number} x contains the mouse x coordinate
+	 * @param {number} y contains the mouse y coordinate
+	 */
 	func_onInputDown: function (x, y) {
 
 		navigationIcons.iconsList.forEach(cur => {
 
-			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
-				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-
-			if (valid) {
+			if (game.math.isOverIcon(x, y, cur)) {
 				const name = cur.name;
 				switch (name) {
-					case 'back' : navigationIcons.func_CallScreen(navigationIcons.level); break;
-					case 'menu' : navigationIcons.func_CallScreen(menuScreen); break;
-					case 'help' : navigationIcons.helpBtn(); break;
-					case 'language' : navigationIcons.func_CallScreen(langScreen); break;
-					case  'audio' :
+					case 'back': navigationIcons.func_CallState(navigationIcons.level); break;
+					case 'menu': navigationIcons.func_CallState('menu'); break;
+					case 'help': navigationIcons.help(); break;
+					case 'language': navigationIcons.func_CallState('lang'); break;
+					case 'audio':
 						if (audioStatus) {
 							audioStatus = false;
 							navigationIcons.icon_audio.curFrame = 1;
@@ -402,22 +411,25 @@ const navigationIcons = {
 						}
 						game.render.all();
 						break;
-					default: console.log("Game error: error in navigation icon")
+					default: console.log('Game error: error in navigation icon');
 				}
 			}
 		});
 	},
 
+	/**
+	 * Called by mouse move event
+	 * 
+	 * @param {number} x contains the mouse x coordinate
+	 * @param {number} y contains the mouse y coordinate
+	 */
 	func_onInputOver: function (x, y) {
 
 		let flag = false;
 
 		navigationIcons.iconsList.forEach(cur => {
 
-			const valid = y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
-				(x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-
-			if (valid) {
+			if (game.math.isOverIcon(x, y, cur)) {
 
 				flag = true;
 
@@ -433,32 +445,36 @@ const navigationIcons = {
 		});
 
 		if (!flag) {
-			navigationIcons.left_text.name = "";
-			navigationIcons.right_text.name = "";
+			navigationIcons.left_text.name = '';
+			navigationIcons.right_text.name = '';
 		} else {
-			document.body.style.cursor = "pointer";
+			document.body.style.cursor = 'pointer';
 		}
 
 	}
 
 };
 
-// Send game information to database 
+/**
+ * Sends game information to database
+ *  
+ * @param {string} extraData player information for the current game
+ */
 const postScore = function (extraData) {
 
 	// Create some variables we need to send to our PHP file
-	const data = "s_ip=143.107.45.11"
-		+ "&s_name=" + playerName
-		+ "&s_lang=" + langString
+	const data = 's_ip=143.107.45.11'
+		+ '&s_name=' + playerName
+		+ '&s_lang=' + langString
 		+ extraData;
 
-	const url = "php/save.php";
+	const url = 'php/save.php';
 
 	const hr = new XMLHttpRequest();
 
-	hr.open("POST", url, true);
+	hr.open('POST', url, true);
 
-	hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	hr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
 	hr.onreadystatechange = function () {
 		if (debugMode) console.log(hr);
@@ -467,11 +483,10 @@ const postScore = function (extraData) {
 		}
 	}
 
-	// Send the data to PHP now... and wait for response to update the status div
 	hr.send(data); // Actually execute the request
 
 	if (debugMode) {
-		console.log("processing...");
+		console.log('processing...');
 		console.log(data);
 	}
 

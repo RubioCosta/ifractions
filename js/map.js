@@ -1,41 +1,32 @@
-// MAP SCREEN: game map where character advances as he passes a level
-const mapScreen = {
+/**
+ * MAP STATE: game map where character advances as he passes a level
+ * 
+ * @namespace
+ */
+const mapState = {
 
-    preload: function () {
-
-        document.body.style.cursor = "auto";
-        game.loop.stop();
-        game.event.clear();
-        game.animation.clear();
-
-        self = this;
-
-        // NOTHING TO LOAD HERE 
-        mapScreen.create();
-
-    },
-
+    /**
+     * Main code
+     */
     create: function () {
-
-        game.render.clear();
 
         // Background color
         game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
 
-        // map
+        // Map
         game.add.image(0, 40, 'bgmap');
 
         // Calls function that loads navigation icons
-        navigationIcons.func_addIcons(true, true, false, // left icons
-            false, false, // right icons
-            menuScreenCustom, false);
+        navigationIcons.func_addIcons(true, true, false, // Left icons
+            false, false, // Right icons
+            'customMenu', false);
 
         // Progress bar
         const percentText = 4 * 25;
 
         if (completedLevels == 4) game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
         else game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
-        
+
         game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1);
         game.add.text(820, 38, percentText + '%', textStyles.h2_blue, 'left');
         game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
@@ -46,15 +37,15 @@ const mapScreen = {
             y: [486, 422, 358, 294, 230, 166]
         };
 
-        if (gameTypeString == "squareOne") {
-            //Garage
+        if (gameTypeString == 'squareOne') {
+            // Garage
             game.add.image(this.points.x[0], this.points.y[0], 'garage', 0.4).anchor(0.5, 1);
-            //Farm
+            // Farm
             game.add.image(this.points.x[5], this.points.y[5], 'farm', 0.6).anchor(0.1, 0.7);
         } else {
-            //House
+            // House
             game.add.image(this.points.x[0], this.points.y[0], 'house', 0.7).anchor(0.7, 0.8);
-            //School
+            // School
             game.add.image(this.points.x[5], this.points.y[5], 'school', 0.35).anchor(0.2, 0.7);
         }
 
@@ -99,14 +90,14 @@ const mapScreen = {
         }
 
         // Game Character 
-        if (gameTypeString == "squareOne") {
+        if (gameTypeString == 'squareOne') {
 
             if (sublevelType == 'Plus') {
                 this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'tractor', 0, 0.5);
-                this.character.animation = ["green_tractor", [0, 1, 2, 3, 4], 3];
+                this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
             } else {
                 this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'tractor', 10, 0.5);
-                this.character.animation = ["red_tractor", [10, 11, 12, 13, 14], 3];
+                this.character.animation = ['red_tractor', [10, 11, 12, 13, 14], 3];
             }
 
             this.character.rotate = -30; // 25 anticlock
@@ -114,13 +105,12 @@ const mapScreen = {
         } else {
 
             this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'kid_run', 0, 0.4);
-            this.character.animation = ["kid", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
+            this.character.animation = ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
 
         }
 
         this.character.anchor(0.5, 1);
         game.animation.play(this.character.animation[0]);
-
 
         this.count = 0;
 
@@ -132,15 +122,14 @@ const mapScreen = {
         self.speedX = (xB - xA) / speed;
         self.speedY = (yA - yB) / speed;
 
-        game.event.add("click", mapScreen.func_onInputDown);
-        game.event.add("mousemove", mapScreen.func_onInputOver);
-
-        game.render.all();
-
-        game.loop.start(this);
+        game.event.add('click', this.func_onInputDown);
+        game.event.add('mousemove', this.func_onInputOver);
 
     },
 
+    /**
+     * Game loop
+     */
     update: function () {
 
         let endUpdate = false;
@@ -149,12 +138,12 @@ const mapScreen = {
 
         if (self.count > 60) { // Wait 1 second before moving or staring a game
 
-            if (mapMove) { // move character on screen for 1 second
+            if (mapMove) { // Move character on screen for 1 second
                 self.character.x += self.speedX;
                 self.character.y -= self.speedY;
-                if (Math.ceil(self.character.x) >= self.points.x[mapPosition + 1]) { // reached next map position
+                if (Math.ceil(self.character.x) >= self.points.x[mapPosition + 1]) { // Reached next map position
                     mapMove = false;
-                    mapPosition++; //set new next position
+                    mapPosition++; // Set new next position
                 }
             }
 
@@ -178,53 +167,54 @@ const mapScreen = {
 
     /* EVENT HANDLER */
 
+    /**
+     * Called by mouse click event
+     * 
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
     func_onInputDown: function (mouseEvent) {
-
         navigationIcons.func_onInputDown(mouseEvent.offsetX, mouseEvent.offsetY);
-
     },
 
+    /**
+     * Called by mouse move event
+     * 
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
     func_onInputOver: function (mouseEvent) {
-
         navigationIcons.func_onInputOver(mouseEvent.offsetX, mouseEvent.offsetY);
-
     },
 
 
 
     /* GAME FUNCTIONS */
 
+    /**
+     * Calls game state
+     */
     func_loadGame: function () {
 
         if (audioStatus) game.audio.beepSound.play();
 
-        if (mapPosition <= 4) gameType.preload();
-        else endScreen.preload();
+        if (mapPosition <= 4) game.state.start('' + gameTypeString + '');
+        else game.state.start('end');
 
     },
 
 };
 
-// ENDING SCREEN: animation after a full level is completed
-const endScreen = {
+/**
+ * ENDING STATE: animation after a full level is completed
+ * 
+ * @namespace
+ */
+const endState = {
 
-    preload: function () {
-
-        document.body.style.cursor = "auto";
-        game.loop.stop();
-        game.event.clear();
-        game.animation.clear();
-
-        self = this;
-
-        // NOTHING TO LOAD HERE
-        endScreen.create();
-
-    },
-
+    /**
+     * Main code
+     */
     create: function () {
 
-        game.render.clear();
         self.preAnimate = false;
         self.animate = true;
 
@@ -234,17 +224,17 @@ const endScreen = {
         // Background
         game.add.image(0, 0, 'bgimage');
 
-        //Clouds
+        // Clouds
         game.add.image(300, 100, 'cloud');
         game.add.image(660, 80, 'cloud');
         game.add.image(110, 85, 'cloud', 0.8);
 
-        //Floor
+        // Floor
         for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
 
         // Progress bar
-        game.add.graphic.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // progress
-        game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // box
+        game.add.graphic.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // Progress
+        game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
         game.add.text(820, 38, '100%', textStyles.h2_blue, 'left');
         game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
 
@@ -258,15 +248,15 @@ const endScreen = {
                 this.preAnimate = true;
                 this.animate = false;
 
-                //School
+                // School
                 game.add.image(600, 222, 'school', 0.7);
 
-                //kid
+                // Kid
                 this.character = game.add.sprite(0, -152, 'kid_run', 0, 0.7);
                 this.character.anchor(0.5, 0.5);
                 this.character.animation = ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3];
 
-                // balloon
+                // Balloon
                 this.balloon = game.add.image(0, -260, 'balloon');
                 this.balloon.anchor(0.5, 0.5);
 
@@ -277,10 +267,10 @@ const endScreen = {
 
             case 'squareTwo':
 
-                //School
+                // School
                 game.add.image(600, 222, 'school', 0.7);
 
-                //kid
+                // Kid
                 this.character = game.add.sprite(0, 460, 'kid_run', 6, 0.7);
                 this.character.anchor(0.5, 0.5);
                 this.character.animation = ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3];
@@ -289,10 +279,10 @@ const endScreen = {
 
             case 'squareOne':
 
-                //Farm
+                // Farm
                 game.add.image(650, 260, 'farm', 1.1);
 
-                //tractor
+                // Tractor
                 this.character = game.add.sprite(0, 490, 'tractor', 0, 0.7);
                 this.character.anchor(0.5, 0.5);
                 if (sublevelType == 'Plus') {
@@ -310,12 +300,11 @@ const endScreen = {
 
         game.add.image(30, 585, 'tree4', 0.85).anchor(0, 1);
 
-        game.render.all();
-
-        game.loop.start(this);
-
     },
 
+    /**
+     * Game loop
+     */
     update: function () {
 
         // Balloon falling
@@ -341,7 +330,7 @@ const endScreen = {
 
         }
 
-        // character running
+        // Character running
         if (self.animate) {
 
             if (self.character.x <= 700) {
@@ -353,7 +342,7 @@ const endScreen = {
                 animate = false;
                 completedLevels = 0;
                 game.animation.stop(self.character.animation[0]);
-                menuScreen.preload();
+                game.state.start('menu');
 
             }
 
