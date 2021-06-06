@@ -49,7 +49,7 @@ You have to set values for the following variables in **/php/save.php** to match
 
 ## 3) /js/globals.js
 
-There is a global function **postScore() ** inside /js/globals.js. When the information is collected on the current game file, it is sent as a parameter to this function. Here is where all the information collecting is completed, the data is sent to /php/save.php and the connection to the database done.
+There is a global function **postScore()** inside /js/globals.js. When the information is collected on the current game file, it is sent as a parameter to this function. Here is where all the information collecting is completed, the data is sent to /php/save.php and the connection to the database done.
 
 	const data = 's_ip='// INSERT the IP of the machine where the MySQL was set up
 		+ '&s_name=' + //player's name

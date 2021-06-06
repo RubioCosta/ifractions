@@ -154,7 +154,7 @@ const colors = {
 	white: '#efeff5',
 	gray: '#708090',
 	black: '#000',
-	yellow: '#fff570'
+	yellow: '#ffef1f'
 };
 
 // Text styles
@@ -407,6 +407,7 @@ const navigationIcons = {
 							navigationIcons.icon_audio.curFrame = 1;
 						} else {
 							audioStatus = true;
+							if (audioStatus) game.audio.beepSound.play();
 							navigationIcons.icon_audio.curFrame = 0;
 						}
 						game.render.all();

@@ -120,6 +120,7 @@ const menuState = {
         if (flag) {
             document.body.style.cursor = 'pointer';
         } else {
+            self.func_clearTitle();
             document.body.style.cursor = 'auto';
         }
 
