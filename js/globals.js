@@ -463,7 +463,7 @@ const navigationIcons = {
 const postScore = function (extraData) {
 
 	// Create some variables we need to send to our PHP file
-	const data = 's_ip=143.107.45.11'
+	const data = 's_ip=143.107.45.11' // INSERT database server IP
 		+ '&s_name=' + playerName
 		+ '&s_lang=' + langString
 		+ extraData;

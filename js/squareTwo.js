@@ -219,7 +219,7 @@ const squareTwo = {
 
 
 
-        game.timer.start(); // Set a timer for the current level (used in func_postScore)
+        game.timer.start(); // Set a timer for the current level (used in postScore)
 
         game.event.add('click', this.func_onInputDown);
         game.event.add('mousemove', this.func_onInputOver);
@@ -291,7 +291,7 @@ const squareTwo = {
 
                 }
 
-                self.func_postScore();
+                self.postScore();
 
                 self.endLevel = true;
 
@@ -514,9 +514,9 @@ const squareTwo = {
     /**
      * Saves players data after level
      */
-    func_postScore: function () {
+    postScore: function () {
 
-        // Create some variables we need to send to our PHP file
+        // Saves player data to send to the database
         const data = '&s_game=' + gameShape
             + '&s_mode=' + levelType
             + '&s_oper=Equal'

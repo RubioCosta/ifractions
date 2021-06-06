@@ -1,16 +1,17 @@
 <?php
-
-// IMPORTANT
-
-// * database name : db_ifractions
-// * table name : ifractions
-
-// php/save.php on line 24, referer: http://milanesa.ime.usp.br/ifractions1/
-
 // @see js/globals.js
 // @see js/circleOne.js
 // @see js/squareOne.js
 // @see js/squareTwo.js
+
+// change these values according to your database settings
+
+$servername = "localhost"; 	// INSERT MySQL name
+$username = "put_username";	// INSERT MySQL user name
+$password = "put_password"; // INSERT MySQL password
+$dbname = "db_ifractions";	// INSERT database name (default=db_ifractions) 
+
+$tablename = "ifractions";	// INSERT table name (default=ifractions)
 
 function remove_accents ($stripAccents) {
   /*
@@ -37,11 +38,6 @@ function clientIP () {
   }
   return $strIP;
 }
-
-$servername = "localhost";
-$username = "root"; // put here the name of user root of MySQL
-$password = "put_paswd"; // put here the password of user root of MySQL
-$dbname = "put_name_of_base"; // put here the name of data base used to register iFraction use
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -75,7 +71,7 @@ if (is_object($lang))
   $lang = json_decode($lang);
 
 // Table 'ifractions': id s_hostip s_playername s_datetime s_lang s_game s_mode s_operator s_level s_mappos s_result s_time s_details
-$sql = "INSERT INTO ifractions
+$sql = "INSERT INTO $tablename
 (s_hostip, s_playername, s_datetime, s_lang, s_game, s_mode, s_operator, s_level, s_mappos, s_result, s_time, s_details)
 VALUES
 ('$ip', '$name', '$date', '$lang', '$game', '$mode', '$oper', $leve, $posi, '$resu', $time, '$deta')";

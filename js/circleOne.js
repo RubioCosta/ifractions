@@ -48,7 +48,7 @@ const circleOne = {
         this.result = false; // Game is correct
         this.count = 0;
 
-        this.divisorsList = ''; // Used in func_postScore
+        this.divisorsList = ''; // Used in postScore()
 
         let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)         
 
@@ -131,7 +131,7 @@ const circleOne = {
 
             if (divisor == gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
 
-            this.divisorsList += divisor + ','; // Add this divisor to the list of divisors (for func_postScore)
+            this.divisorsList += divisor + ','; // Add this divisor to the list of divisors (for postScore())
 
             // Set each circle direction
             let direction;
@@ -278,7 +278,7 @@ const circleOne = {
 
 
         if (!this.restart) {
-            game.timer.start(); // Set a timer for the current level (used in func_postScore)
+            game.timer.start(); // Set a timer for the current level (used in postScore())
 
             game.event.add('click', this.func_onInputDown);
             game.event.add('mousemove', this.func_onInputOver);
@@ -394,7 +394,7 @@ const circleOne = {
                 game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
             }
 
-            self.func_postScore();
+            self.postScore();
 
             self.animateEnding = true;
             self.checkAnswer = false;
@@ -652,9 +652,9 @@ const circleOne = {
     /**
      * Saves players data after level
      */
-    func_postScore: function () {
+    postScore: function () {
 
-        // Create some variables we need to send to our PHP file
+        // Saves player data to send to the database
         const data = '&s_game=' + gameShape
             + '&s_mode=' + levelType
             + '&s_oper=' + sublevelType

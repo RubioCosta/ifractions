@@ -44,7 +44,7 @@ const squareOne = {
         this.result = false;        // Checks player 'answer' 
         this.count = 0;             // An 'x' position counter used in the tractor animation        
 
-        this.divisorsList = '';     // Hold the divisors for each fraction on stacked blocks (created for func_postScore)
+        this.divisorsList = '';     // Hold the divisors for each fraction on stacked blocks (created for postScore())
 
         this.DIREC_LEVEL = (sublevelType == 'Minus') ? -1 : 1;    // Will be multiplied to values to easily change tractor direction when needed
         this.animationSpeed = 2 * this.DIREC_LEVEL;   // X distance in which the tractor moves in each iteration of the animation
@@ -154,7 +154,7 @@ const squareOne = {
 
 
         if (!this.restart) {
-            game.timer.start(); // Set a timer for the current level (used in func_postScore)
+            game.timer.start(); // Set a timer for the current level (used in postScore())
 
             game.event.add('click', this.func_onInputDown);
             game.event.add('mousemove', this.func_onInputOver);
@@ -289,7 +289,7 @@ const squareOne = {
 
             }
 
-            self.func_postScore();
+            self.postScore();
 
 
 
@@ -574,7 +574,7 @@ const squareOne = {
             let divisor = game.math.randomInRange(1, gameDifficulty); // Set divisor for fraction
             if (divisor == gameDifficulty) hasBaseDifficulty = true;
             if (divisor == 3) divisor = 4; // Make sure valid divisors are 1, 2 and 4 (not 3)
-            self.divisorsList += divisor + ','; // List of divisors (for func_postScore())
+            self.divisorsList += divisor + ','; // List of divisors (for postScore())
 
             const curBlockWidth = self.defaultBlockWidth / divisor; // Current width is a fraction of the default
 
@@ -774,9 +774,9 @@ const squareOne = {
     /**
      * Saves players data after level 
      */
-    func_postScore: function () {
+    postScore: function () {
 
-        // Create some variables we need to send to our PHP file
+        // Saves player data to send to the database
         const data = '&s_game=' + gameShape
             + '&s_mode=' + levelType
             + '&s_oper=' + sublevelType
