@@ -35,7 +35,7 @@ Considering the database name to be **db_ifractins** and the table to be **ifrac
 		line_time varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
 		line_details varchar(120) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
 		PRIMARY KEY (line_id)
-	) ENGINE = InnoDB AUTO_INCREMENT = 1816 DEFAULT CHARSET = latin1;
+	) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = latin1;
 
 ## 2) /php/save.php
 
@@ -66,13 +66,13 @@ There is also a function **postScore()** in every game file:
 
 After each level is completed, information about the player's progress is sent do the database through the function **postScore()**. The data collected in the game is structured as a string that is going to be sent to the database (as can be seen below).
 
-	const data = '&line_game=' +	// collect game shape
-	+ '&line_mode=' +	// collect level type
-	+ '&line_oper=' +	// collect sublevelType
-	+ '&line_leve=' +	// collect the selected difficulty for the game
-	+ '&line_posi=' +	// collect the players position on the map
-	+ '&line_resu=' +	// collect status for players answer (correct or incorrect)
-	+ '&line_time=' +	// collect time spent finishing the game
-	+ '&line_deta=' +	// collect extra details specific to current game
+	const data = '&line_game=' + // collect game shape
+	+ '&line_mode=' + // collect level type
+	+ '&line_oper=' + // collect sublevelType
+	+ '&line_leve=' + // collect the selected difficulty for the game
+	+ '&line_posi=' + // collect the players position on the map
+	+ '&line_resu=' + // collect status for players answer (correct or incorrect)
+	+ '&line_time=' + // collect time spent finishing the game
+	+ '&line_deta=' + // collect extra details specific to current game
 
 The variable **data** is then sent as a parameter to the global function **postScore()** in **/js/globals.js**, that completes the string and sends the information to the database using /php/save.php.
