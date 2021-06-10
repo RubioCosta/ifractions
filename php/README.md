@@ -21,20 +21,20 @@ Considering the database name to be **db_ifractins** and the table to be **ifrac
 	USE db_ifractions;
 
 	CREATE TABLE ifractions (
-		id int(11) NOT NULL AUTO_INCREMENT,
-		s_hostip varchar(255) DEFAULT NULL,
-		s_playername varchar(256) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_datetime varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_lang varchar(6) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_game varchar(10) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_mode varchar(1) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_operator varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_level int(5) NOT NULL,
-		s_mappos int(5) NOT NULL,
-		s_result varchar(6) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_time varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		s_details varchar(120) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-		PRIMARY KEY (id)
+		line_id int(11) NOT NULL AUTO_INCREMENT,
+		line_hostip varchar(255) DEFAULT NULL,
+		line_playername varchar(256) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_datetime varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_lang varchar(6) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_game varchar(10) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_mode varchar(1) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_operator varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_level int(5) NOT NULL,
+		line_mappos int(5) NOT NULL,
+		line_result varchar(6) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_time varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		line_details varchar(120) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+		PRIMARY KEY (line_id)
 	) ENGINE = InnoDB AUTO_INCREMENT = 1816 DEFAULT CHARSET = latin1;
 
 ## 2) /php/save.php
@@ -51,9 +51,9 @@ You have to set values for the following variables in **/php/save.php** to match
 
 There is a global function **postScore()** inside /js/globals.js. When the information is collected on the current game file, it is sent as a parameter to this function. Here is where all the information collecting is completed, the data is sent to /php/save.php and the connection to the database done.
 
-	const data = 's_ip='// INSERT the IP of the machine where the MySQL was set up
-		+ '&s_name=' + //player's name
-		+ '&s_lang=' + // selected language for the game
+	const data = 'line_ip='// INSERT the IP of the machine where the MySQL was set up
+		+ '&line_name=' + //player's name
+		+ '&line_lang=' + // selected language for the game
 		+ // data received from the game as parameter to this function
 
 
@@ -66,13 +66,13 @@ There is also a function **postScore()** in every game file:
 
 After each level is completed, information about the player's progress is sent do the database through the function **postScore()**. The data collected in the game is structured as a string that is going to be sent to the database (as can be seen below).
 
-	const data = '&s_game=' +	// collect game shape
-	+ '&s_mode=' +	// collect level type
-	+ '&s_oper=' +	// collect sublevelType
-	+ '&s_leve=' +	// collect the selected difficulty for the game
-	+ '&s_posi=' +	// collect the players position on the map
-	+ '&s_resu=' +	// collect status for players answer (correct or incorrect)
-	+ '&s_time=' +	// collect time spent finishing the game
-	+ '&s_deta=' +	// collect extra details specific to current game
+	const data = '&line_game=' +	// collect game shape
+	+ '&line_mode=' +	// collect level type
+	+ '&line_oper=' +	// collect sublevelType
+	+ '&line_leve=' +	// collect the selected difficulty for the game
+	+ '&line_posi=' +	// collect the players position on the map
+	+ '&line_resu=' +	// collect status for players answer (correct or incorrect)
+	+ '&line_time=' +	// collect time spent finishing the game
+	+ '&line_deta=' +	// collect extra details specific to current game
 
 The variable **data** is then sent as a parameter to the global function **postScore()** in **/js/globals.js**, that completes the string and sends the information to the database using /php/save.php.
