@@ -1,29 +1,28 @@
 <?php
+// LInE - Free Education, Private Data
+//
+// This PHP must be used if you intend to register in MySQL server the students interactions.
+// Adjust the names here and those in your MySQL server.
+//
 // @see js/globals.js
 // @see js/circleOne.js
 // @see js/squareOne.js
 // @see js/squareTwo.js
 
-// change these values according to your database settings
-
-$servername = "localhost"; 	// INSERT MySQL name
+// Change these values according to your database settings
+$servername = "localhost"; 	// INSERT MySQL name (e.g "line.ime.usp.br")
 $username = "put_username";	// INSERT MySQL user name
 $password = "put_password"; // INSERT MySQL password
-$dbname = "db_ifractions";	// INSERT database name (default=db_ifractions) 
+$dbname = "db_ifractions";	// INSERT database name (default="db_ifractions") 
 
-$tablename = "ifractions";	// INSERT table name (default=ifractions)
+$tablename = "ifractions";	// INSERT table name (default="ifractions")
 
 function remove_accents ($stripAccents) {
-  /*
-  $stripAccents = strtr($stripAccents,
-         'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ',
-         'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
-  $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents);
-  */
+  // $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents); // remove all special characters - if necessary, uncomment it
   return $stripAccents;
-}
+  }
 
-// Creates array [0,1] of client data
+// Get some information about the client IP
 function clientIP () {
   if (getenv("HTTP_CLIENT_IP"))
     $ip = getenv("HTTP_CLIENT_IP");
@@ -35,9 +34,9 @@ function clientIP () {
   $resp = gethostbyaddr($ip);
   if (isset($resp) && strlen($resp)>0) {
     $strIP .= "; " . $resp;
-  }
+    }
   return $strIP;
-}
+  }
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -45,7 +44,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
-}
+  }
 
 $ip = clientIP();
 
@@ -80,12 +79,11 @@ VALUES
 if ($conn->query($sql) === TRUE) {
   print "Saved.";
   $result = "OK";
-} else {
+  } 
+else {
   print "Error: " . $sql . "<br>" . $conn->error;
   $result = "Error: " . $conn->error;
-}
-
-
+  }
 
 // DEBUG
 $date = date('Y_m_d_H_i_s');
