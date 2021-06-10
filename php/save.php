@@ -11,12 +11,12 @@
 // @see js/squareTwo.js
 
 // Change these values according to your database settings
-$servername = "localhost"; 	// INSERT MySQL name (e.g "line.ime.usp.br")
-$username = "put_username";	// INSERT MySQL user name
+$servername = "localhost";  // INSERT MySQL name (e.g "line.ime.usp.br")
+$username = "put_username"; // INSERT MySQL user name
 $password = "put_password"; // INSERT MySQL password
-$dbname = "db_ifractions";	// INSERT database name (default="db_ifractions")
+$dbname = "db_ifractions";  // INSERT database name (default="db_ifractions")
 
-$tablename = "ifractions";	// INSERT table name (default="ifractions")
+$tablename = "ifractions";  // INSERT table name (default="ifractions")
 
 function remove_accents ($stripAccents) {
   // $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents); // remove all special characters - if necessary, uncomment it
