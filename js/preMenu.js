@@ -16,7 +16,7 @@ const bootState = {
     game.load.audio(url.boot.audio);
     game.load.image(url.boot.image);
     game.load.sprite(url.boot.sprite);
-    },
+  },
 
   /**
    * Main code
@@ -24,8 +24,8 @@ const bootState = {
   create: function () {
     // Calls first screen seen by the player
     game.state.start('lang');
-    }
-  };
+  }
+};
 
 
 /**
@@ -51,7 +51,7 @@ const langState = {
       lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
       x: [-220, -220, -220, 200, 200],
       y: [-180, 0, 180, -100, 100]
-      };
+    };
 
     // Create elements on screen  
     for (let i in this.langs.flag) {
@@ -63,11 +63,11 @@ const langState = {
       flag.anchor(0.5, 0.5);
 
       this.listOfFlags.push(flag);
-      }
+    }
 
     game.event.add('click', this.func_onInputDown);
     game.event.add('mousemove', this.func_onInputOver);
-    },
+  },
 
 
   /* EVENT HANDLER*/
@@ -83,15 +83,15 @@ const langState = {
 
     self.listOfFlags.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) {
-       for (let i in self.langs.flag) {
-         if (self.langs.flag[i] == cur.name) {
-           self.func_setLang(self.langs.lang[i]);
-           break;
-           }
-         }
-       }
-      });
-    },
+        for (let i in self.langs.flag) {
+          if (self.langs.flag[i] == cur.name) {
+            self.func_setLang(self.langs.lang[i]);
+            break;
+          }
+        }
+      }
+    });
+  },
 
   /**
    * Called by mouse move event
@@ -107,17 +107,16 @@ const langState = {
       if (game.math.isOverIcon(x, y, cur)) {
         flag = true;
         cur.scale = cur.scale = 1.05;
-        }
-      else {
-          cur.scale = cur.scale = 1;
-        }
-      });
+      } else {
+        cur.scale = cur.scale = 1;
+      }
+    });
 
     if (flag) document.body.style.cursor = 'pointer';
     else document.body.style.cursor = 'auto';
 
     game.render.all();
-    },
+  },
 
 
 
@@ -133,8 +132,8 @@ const langState = {
     langString = selectedLang;
     // Calls loading screen
     game.state.start('loadLang');
-    }
-  };
+  }
+};
 
 
 /**
@@ -150,7 +149,7 @@ const loadLangState = {
   preload: function () {
     // LOADING MEDIA : selected language
     game.load.lang('assets/lang/' + langString);
-    },
+  },
 
   /**
    * Main code
@@ -164,9 +163,9 @@ const loadLangState = {
       game.state.start('name'); // First time opening ifractions ('language' >> 'name' >> 'menu')
     } else {
       game.state.start('menu'); // If changing language during the game ('language' >> >> 'menu')         
-      }
     }
-  };
+  }
+};
 
 
 
@@ -206,13 +205,13 @@ const nameState = {
       if (keycode == 'Enter') {
         if (self.func_checkEmptyName()) self.func_saveName();
         game.render.all(); // Can show empty name
-        }
-      });
+      }
+    });
 
     game.event.add('click', this.func_onInputDown);
     game.event.add('mousemove', this.func_onInputOver);
 
-    },
+  },
 
 
   /* EVENT HANDLER*/
@@ -230,10 +229,10 @@ const nameState = {
     if (game.math.isOverIcon(x, y, cur)) {
       if (self.func_checkEmptyName()) {
         self.func_saveName();
-        }
       }
+    }
     game.render.all();
-    },
+  },
 
   /**
    * Called by mouse move event
@@ -248,14 +247,13 @@ const nameState = {
     if (game.math.isOverIcon(x, y, cur)) {
       document.body.style.cursor = 'pointer';
       cur.alpha = 0.4;
-      }
-    else {
+    } else {
       document.body.style.cursor = 'auto';
       cur.alpha = 0.6;
-      }
+    }
 
     game.render.all();
-    },
+  },
 
 
   /* GAME FUNCTIONS */
@@ -270,9 +268,9 @@ const nameState = {
     if (document.getElementById('textbox-content').value == '') {
       self.warningEmptyName.name = game.lang.empty_name;
       return false;
-      }
+    }
     return true;
-    },
+  },
 
   /**
    * Saves player name and calls next state
@@ -290,6 +288,6 @@ const nameState = {
 
     // Calls 'menu' state
     game.state.start('menu');
-    }
+  }
 
-  };
+};

@@ -49,7 +49,7 @@ const squareTwo = {
       animate: false,     // Animate blocks from A
       warningText: undefined,
       label: undefined,
-      };
+    };
 
     this.B = {
       blocks: [],
@@ -60,7 +60,7 @@ const squareTwo = {
       animate: false,
       warningText: undefined,
       label: undefined,
-      };
+    };
 
     // BACKGROUND AND KID
     // Add background image
@@ -94,13 +94,12 @@ const squareTwo = {
       yA = 90;
       xB = xA;
       yB = yA + 3 * figureHeight + 30;
-      }
-    else { // More subdivisions on A
+    } else { // More subdivisions on A
       xB = 230;
       yB = 90;
       xA = xB;
       yA = yB + 3 * figureHeight + 30;
-      }
+    }
 
     // Possible points for A
     const points = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
@@ -117,7 +116,7 @@ const squareTwo = {
       console.log('Difficulty ' + gameDifficulty + ', ini ' + ((gameDifficulty - 1) * 2 + 1) + ', end ' + ((gameDifficulty - 1) * 2 + 3));
       console.log('Rpoint ' + randomIndex + ', val ' + totalBlocksA);
       console.log('total blocks A ' + totalBlocksA + ', total blocks B ');
-      }
+    }
 
     // CREATING TOP FIGURE (A)
     let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in A
@@ -140,7 +139,7 @@ const squareTwo = {
       const yAux = yA + figureHeight + 10; // On the bottom of A
       const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.A.auxBlocks.push(auxBlock);
-      }
+    }
 
     // 'total blocks' label for A : on the side of A
     let xLabel = xA + this.figureWidth + 30;
@@ -179,7 +178,7 @@ const squareTwo = {
       const yAux = yB + figureHeight + 10; // On the bottom of B
       const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.B.auxBlocks.push(auxBlock);
-      }
+    }
 
     // Label block B
     xLabel = xB + this.figureWidth + 30;
@@ -205,7 +204,7 @@ const squareTwo = {
 
     game.event.add('click', this.func_onInputDown);
     game.event.add('mousemove', this.func_onInputOver);
-    },
+  },
 
   /**
    * Game loop
@@ -218,16 +217,16 @@ const squareTwo = {
           // Lower selected blocks
           for (let i = 0; i < self[cur].selected; i++) {
             self[cur].blocks[i].y += 2;
-            }
+          }
 
           // After fully lowering blocks, set fraction value
           if (self[cur].blocks[0].y >= self[cur].auxBlocks[0].y) {
             self[cur].fractions[0].name = self[cur].selected;
             self[cur].animate = false;
-            }
           }
-        });
-      }
+        }
+      });
+    }
 
     // If A and B are already clicked
     if (self.A.hasClicked && self.B.hasClicked && !self.endLevel) {
@@ -249,20 +248,19 @@ const squareTwo = {
           if (debugMode) console.log('completedLevels = ' + completedLevels);
 
           // Fractions are not equivalent : INCORRECT
-          }
-        else {
+        } else {
           if (audioStatus) game.audio.errorSound.play();
           game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
           mapMove = false; // Doesnt allow character to move to next level in map state
-          }
+        }
 
         self.postScore();
         self.endLevel = true;
 
         // Reset delay values for next delay
         self.delay = 0;
-        }
       }
+    }
 
     // Wait a bit and go to map state
     if (self.endLevel) {
@@ -270,11 +268,11 @@ const squareTwo = {
 
       if (self.delay >= 80) {
         game.state.start('map');
-        }
       }
+    }
 
     game.render.all();
-    },
+  },
 
 
   /* EVENT HANDLER */
@@ -291,18 +289,18 @@ const squareTwo = {
     // Click block in A
     self.A.blocks.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-      });
+    });
 
     // Click block in B
     self.B.blocks.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-      });
+    });
 
     // Click navigation icons
     navigationIcons.func_onInputDown(x, y);
 
     game.render.all();
-    },
+  },
 
   /**
    * Called by mouse move event
@@ -320,8 +318,8 @@ const squareTwo = {
       if (game.math.isOverIcon(x, y, cur)) {
         flagA = true;
         self.func_overSquare(cur);
-        }
-      });
+      }
+    });
     if (!flagA) self.func_outSquare('A');
 
     // Mouse over B : show fraction
@@ -329,8 +327,8 @@ const squareTwo = {
       if (game.math.isOverIcon(x, y, cur)) {
         flagB = true;
         self.func_overSquare(cur);
-        }
-      });
+      }
+    });
     if (!flagB) self.func_outSquare('B');
 
     if (!flagA && !flagB) document.body.style.cursor = 'auto';
@@ -339,7 +337,7 @@ const squareTwo = {
     navigationIcons.func_onInputOver(x, y);
 
     game.render.all();
-    },
+  },
 
 
   /* CALLED BY EVENT HANDLER */
@@ -361,8 +359,7 @@ const squareTwo = {
         self[otherSet].warningText.name = '';
 
         self.func_outSquare(curSet);
-        }
-      else {
+      } else {
         document.body.style.cursor = 'pointer';
 
         self.A.warningText.name = '';
@@ -371,7 +368,7 @@ const squareTwo = {
         // Selected blocks become fully visible
         for (let i in self[curSet].blocks) {
           self[curSet].blocks[i].alpha = (i <= curBlock.index) ? 1 : 0.5;
-          }
+        }
 
         self[curSet].fractions[0].name = curBlock.index + 1; // Nominator : selected blocks
         self[curSet].fractions[1].name = self[curSet].blocks.length; // Denominator : total blocks
@@ -382,9 +379,9 @@ const squareTwo = {
         self[curSet].fractions[2].x = newX;
 
         self[curSet].fractions[0].alpha = 1;
-        }
       }
-    },
+    }
+  },
 
   /**
    * Function called when cursor is out of a valid rectangle
@@ -399,9 +396,9 @@ const squareTwo = {
 
       self[curSet].blocks.forEach(cur => {
         cur.alpha = 0.5;
-        });
-      }
-    },
+      });
+    }
+  },
 
   /**
    * Function called when player clicked a valid rectangle
@@ -417,7 +414,7 @@ const squareTwo = {
       // Turn auxiliar blocks invisible
       for (let i in self[curSet].blocks) {
         if (i > curBlock.index) self[curSet].auxBlocks[i].alpha = 0;
-        }
+      }
 
       // Turn value label invisible
       self[curSet].label.alpha = 0;
@@ -438,22 +435,22 @@ const squareTwo = {
 
       self[curSet].hasClicked = true; // Inform player have clicked in current block set
       self[curSet].animate = true; // Let it initiate animation
-      }
+    }
 
     game.render.all();
-    },
+  },
 
 
   /* METADATA FOR GAME */
 
   /**
-   * Saves players data after level
+   * Saves players data after level ends - to be sent to database
    *
    * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
-   * @see ./php/save.php
+   * @see /php/save.php
    */
   postScore: function () {
-    // Saves player data to send to the database
+    // Creates string that is going to be sent to db
     const data = '&line_game=' + gameShape
       + '&line_mode=' + levelType
       + '&line_oper=Equal'
@@ -466,8 +463,7 @@ const squareTwo = {
       + ', valueA: ' + self.A.selected
       + ', numBlocksB: ' + self.B.blocks.length
       + ', valueB: ' + self.B.selected;
+    sendToDB(data);
+  }
 
-    postScore(data);
-    }
-
-  };
+};

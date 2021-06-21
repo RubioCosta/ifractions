@@ -11,7 +11,7 @@
 // @see js/squareTwo.js
 
 // Change these values according to your database settings
-$servername = "localhost";  // INSERT MySQL name (e.g "line.ime.usp.br")
+$servername = "localhost";  // INSERT MySQL server (e.g "line.ime.usp.br")
 $username = "put_username"; // INSERT MySQL user name
 $password = "put_password"; // INSERT MySQL password
 $dbname = "db_ifractions";  // INSERT database name (default="db_ifractions")
@@ -21,7 +21,7 @@ $tablename = "ifractions";  // INSERT table name (default="ifractions")
 function remove_accents ($stripAccents) {
   // $stripAccents = preg_replace('/[^\x20-\x7E]/','', $stripAccents); // remove all special characters - if necessary, uncomment it
   return $stripAccents;
-  }
+}
 
 // Get some information about the client IP
 function clientIP () {
@@ -35,9 +35,9 @@ function clientIP () {
   $resp = gethostbyaddr($ip);
   if (isset($resp) && strlen($resp)>0) {
     $strIP .= "; " . $resp;
-    }
-  return $strIP;
   }
+  return $strIP;
+}
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -45,7 +45,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
-  }
+}
 
 $ip = clientIP();
 
@@ -80,11 +80,10 @@ VALUES
 if ($conn->query($sql) === TRUE) {
   print "Saved.";
   $result = "OK";
-  }
-else {
+  } else {
   print "Error: " . $sql . "<br>" . $conn->error;
   $result = "Error: " . $conn->error;
-  }
+}
 
 // DEBUG
 $date = date('Y_m_d_H_i_s');

@@ -7,12 +7,12 @@ LInE - Free Education, Private Data
 ........One..........Two.............One............ }
 ......./...\..........|............./...\........... 
 ......A.....B.........C............A.....B.......... } level (levelType)
-.(floor)..(stack)..(equal).....(floor).(circle)..... } 
+.(floor)..(stack)..(equal).....(floor).(stack)...... } 
 .......\./............|..............\./............ 
 ........|.............|...............|............. 
-......./.\........../.|.\.........../.|.\........... 
-...Plus...Minus....A..B..C.....Plus.Minus.Mixed..... } sublevel (sublevelType)
-.......\./..........\.|./...........\.|./........... 
+......./.\.........../.\............/.|.\........... 
+...Plus...Minus.....B...C.......Plus.Minus.Mixed.... } sublevel (sublevelType)
+.......\./...........\./............\.|./........... 
 ........|.............|...............|............. 
 ......1,2,3.......1,2,3,4,5.......1,2,3,4,5......... } difficulty (gameDifficulty)
 .................................................... 
@@ -62,7 +62,7 @@ const info = {
     levelTypeUrl: ['level0', 'level1'],
     sublevelType: ['Plus', 'Minus'],
     gameDifficulty: 3
-    },
+  },
 
   circleOne: {
     gameShape: 'circle',
@@ -72,7 +72,7 @@ const info = {
     levelTypeUrl: ['level2', 'level3'],
     sublevelType: ['Plus', 'Minus', 'Mixed'],
     gameDifficulty: 5
-    },
+  },
 
   squareTwo: {
     gameShape: 'square',
@@ -82,7 +82,7 @@ const info = {
     levelTypeUrl: [],
     sublevelType: [/*'A',*/ 'B', 'C'],
     gameDifficulty: 5
-    },
+  },
 
   gameShape: [],
   gameType: [],
@@ -101,19 +101,19 @@ const info = {
       info.squareOne.gameShape,
       info.circleOne.gameShape,
       info.squareTwo.gameShape
-      ];
+    ];
 
     info.gameType = [
       info.squareOne.gameType,
       info.circleOne.gameType,
       info.squareTwo.gameType
-      ];
+    ];
 
     info.gameTypeUrl = [
       info.squareOne.gameTypeUrl,
       info.circleOne.gameTypeUrl,
       info.squareTwo.gameTypeUrl
-      ];
+    ];
 
     info.levelType = info.squareOne.levelType.concat(info.circleOne.levelType, info.squareTwo.levelType);
 
@@ -125,9 +125,9 @@ const info = {
       info.squareOne.gameDifficulty,
       info.circleOne.gameDifficulty,
       info.squareTwo.gameDifficulty
-      ];
-    }
-  };
+    ];
+  }
+};
 
 // Colors
 const colors = {
@@ -155,7 +155,7 @@ const colors = {
   gray: '#708090',
   black: '#000',
   yellow: '#ffef1f'
-  };
+};
 
 // Text styles
 const textStyles = {
@@ -175,7 +175,7 @@ const textStyles = {
   h2_blue: { font: '26px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // Fractions
   h4_blue: { font: '20px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // Fractions
   p_blue: { font: '14px Arial,sans-serif', fill: colors.darkBlue, align: 'center' } // Fractions
-  };
+};
 
 // List of media URL
 const url = {
@@ -218,7 +218,7 @@ const url = {
       ['arrow_left', medSrc + 'non_interac_icon/left_arrow.png'],
       ['arrow_right', medSrc + 'non_interac_icon/right_arrow.png'],
       ['equal', medSrc + 'non_interac_icon/equal.png']
-      ],
+    ],
     sprite: [
       // Game Sprites
       ['kid_walk', medSrc + 'character/kid/walk.png', 26],
@@ -226,14 +226,14 @@ const url = {
       ['audio', medSrc + 'navig_icon/audio.png', 2],
       // Interactive icons
       ['select', medSrc + 'interac_icon/selectionBox.png', 2]
-      ],
+    ],
     audio: [
       // Sound effects
       ['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
       ['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
       ['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
-      ]
-    },
+    ]
+  },
   menu: {
     image: [
       // Game
@@ -252,33 +252,33 @@ const url = {
       ['sublevel_mixed', medSrc + 'levels/sublevel_mixed.png'], // Circle I : mixed
       ['sublevel_top', medSrc + 'levels/sublevel_top.png'], // Square II : top
       ['sublevel_bottom', medSrc + 'levels/sublevel_bottom.png']  // Square II : bottom
-      ],
+    ],
     sprite: [],
     audio: []
-    },
+  },
   squareOne: {
     image: [
       // Scene
       ['farm', medSrc + 'scene/farm.png'],
       ['garage', medSrc + 'scene/garage.png']
-      ],
+    ],
     sprite: [
       // Game sprites
       ['tractor', medSrc + 'character/tractor/tractor.png', 15]
-      ],
+    ],
     audio: []
-    },
+  },
   squareTwo: {
     image: [
       // Scene
       ['house', medSrc + 'scene/house.png'],
       ['school', medSrc + 'scene/school.png']
-      ],
+    ],
     sprite: [
       // Game sprites
       ['kid_standing', medSrc + 'character/kid/lost.png', 6],
       ['kid_run', medSrc + 'character/kid/run.png', 12]
-      ],
+    ],
     audio: []
   },
   circleOne: {
@@ -289,14 +289,14 @@ const url = {
       // Game images
       ['balloon', medSrc + 'character/balloon/airballoon_upper.png'],
       ['balloon_basket', medSrc + 'character/balloon/airballoon_base.png']
-      ],
+    ],
     sprite: [
       // Game sprites
       ['kid_run', medSrc + 'character/kid/run.png', 12]
-      ],
+    ],
     audio: []
-    },
-  };
+  },
+};
 
 // Navigation icons on the top of the screen
 const navigationIcons = {
@@ -332,19 +332,19 @@ const navigationIcons = {
       const icon_back = game.add.image(left_x, 10, 'back');
       this.iconsList.push(icon_back);
       left_x += 50; // Offsets value of x for next icon
-      }
+    }
 
     if (leftIcon1) { // Return to main menu screen
       const icon_list = game.add.image(left_x, 10, 'menu');
       this.iconsList.push(icon_list);
       left_x += 50; // Offsets value of x for next icon
-      }
+    }
 
     if (leftIcon2) { // In some levels, shows solution to the game
       const icon_help = game.add.image(left_x, 10, 'help');
       this.iconsList.push(icon_help);
       left_x += 50; // Offsets value of x for next icon
-      }
+    }
 
     // 'Icons' on the RIGHT side of the page
 
@@ -353,14 +353,14 @@ const navigationIcons = {
       audioStatus ? this.icon_audio.curFrame = 0 : this.icon_audio.curFrame = 1;
       this.iconsList.push(this.icon_audio);
       right_x -= 50; // Offsets value of x for next icon
-      }
+    }
 
     if (rightIcon1) { // Return to select language screen
       icon_world = game.add.image(right_x, 10, 'language');
       this.iconsList.push(icon_world);
       right_x -= 50; // Offsets value of x for next icon
-      }
-    },
+    }
+  },
 
   /**
    * When back icon is clicked go this state
@@ -372,7 +372,7 @@ const navigationIcons = {
 
     game.event.clear(self);
     game.state.start(state);
-    },
+  },
 
   /**
    * Called by mouse click event 
@@ -398,14 +398,14 @@ const navigationIcons = {
               audioStatus = true;
               if (audioStatus) game.audio.beepSound.play();
               navigationIcons.icon_audio.curFrame = 0;
-              }
+            }
             game.render.all();
             break;
           default: console.log('Game error: error in navigation icon');
-          }
         }
-      });
-    },
+      }
+    });
+  },
 
   /**
    * Called by mouse move event
@@ -427,25 +427,24 @@ const navigationIcons = {
 
         else if (cur.name == 'language') navigationIcons.right_text.name = game.lang.menu_world;
         else if (cur.name == 'audio') navigationIcons.right_text.name = game.lang.audio;
-        }
-      });
+      }
+    });
 
     if (!flag) {
       navigationIcons.left_text.name = '';
       navigationIcons.right_text.name = '';
-      }
-    else {
+    } else {
       document.body.style.cursor = 'pointer';
-      }
     }
-  };
+  }
+};
 
 /**
  * Sends game information to database
  *  
  * @param {string} extraData player information for the current game
  */
-const postScore = function (extraData) {
+const sendToDB = function (extraData) {
 
   // Create some variables we need to send to our PHP file
   // Attention: this names must be compactible to data table (MySQL server)
@@ -467,14 +466,14 @@ const postScore = function (extraData) {
     if (debugMode) console.log(hr);
     if (hr.readyState == 4 && hr.status == 200) {
       if (debugMode) console.log(hr.responseText);
-      }
     }
+  }
 
   hr.send(data); // Actually execute the request
 
   if (debugMode) {
     console.log('processing...');
     console.log(data);
-    }
+  }
 
-  };
+};

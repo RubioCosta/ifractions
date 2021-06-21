@@ -1,18 +1,18 @@
 #  save.php
 
-iFractions is developed to run mainly on the client side. However, it communicates with a database using MySQL to save the player information after each level. The file **save.php** manages the connection between the game and the database.
+iFractions is developed to run mainly on the client side. However, it communicates with a MySQL database to save info about the player's progress after each level. There's a PHP file called **save.php** that manages the connection between the game and the database. Also, the asynchronous communication is stablished using **XMLHTTPRequest**.
 
 # How to set up the database connection correctly
 
-In order for iFractions to successfully establish a connection to the database you must:
+First you'll need a MySQL database installed on the server (more info in https://www.mysql.com).
 
-1. set up a MySQL database.
+Now, in order for iFractions to successfully establish a connection to the database you must:
+
+1. create and set up the database for the game.
 2. update /php/save.php 
 3. update /js/globals.js
 
-## 1) Creating the MySQL database for iFractions
-
-You must have MySQL installed on the server. 
+## 1) Creating the database for iFractions
 
 Considering the database name to be **db_ifractins** and the table to be **ifractions**, you can setup the MySQL database as follows:
 
@@ -37,11 +37,13 @@ Considering the database name to be **db_ifractins** and the table to be **ifrac
 		PRIMARY KEY (line_id)
 	) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = latin1;
 
+Note that each column has the prefix **line_**.
+
 ## 2) /php/save.php
 
 You have to set values for the following variables in **/php/save.php** to match the database's:
 
-	$servername = "localhost"; 	// INSERT MYSQL server name
+	$servername = "localhost"; 	// INSERT MySQL server
 	$username = "put_username";	// INSERT MySQL user name
 	$password = "put_password";	// INSERT MySQL password
 	$dbname = "db_ifractions";	// INSERT database name (default=db_ifractions) 
@@ -49,7 +51,7 @@ You have to set values for the following variables in **/php/save.php** to match
 
 ## 3) /js/globals.js
 
-There is a global function **postScore()** inside /js/globals.js. When the information is collected on the current game file, it is sent as a parameter to this function. Here is where all the information collecting is completed, the data is sent to /php/save.php and the connection to the database done.
+Inside **/js/globals.js** there's a global function called **sendToDB()**. When the player's information is collected after each game, the game file sends it as a parameter to **sendToDB()**. It makes an asynchronous call to **/php/save.php**, that executes the connection to the database.
 
 	const data = 'line_ip='// INSERT the IP of the machine where the MySQL was set up
 		+ '&line_name=' + //player's name
@@ -59,12 +61,12 @@ There is a global function **postScore()** inside /js/globals.js. When the infor
 
 # Where do we use the database in the code?
 
-There is also a function **postScore()** in every game file:
-* /js/gameSquareOne.js
-* /js/gameSquareTwo.js
-* /js/gameCircleOne.js
+There is a function **postScore()** in every game file:
+* /js/squareOne.js
+* /js/squareTwo.js
+* /js/circleOne.js
 
-After each level is completed, information about the player's progress is sent do the database through the function **postScore()**. The data collected in the game is structured as a string that is going to be sent to the database (as can be seen below).
+After each level is completed (with the player's answer being correct or not), before going back to the level map, the function **postScore()**, is called. It joins all the player's progress information into a string (as can be seen below), that is sent as a parameter to **sendToDB()**, from **/js/globals.js**, that sends it to the database.
 
 	const data = '&line_game=' + // collect game shape
 	+ '&line_mode=' + // collect level type
@@ -74,5 +76,3 @@ After each level is completed, information about the player's progress is sent d
 	+ '&line_resu=' + // collect status for players answer (correct or incorrect)
 	+ '&line_time=' + // collect time spent finishing the game
 	+ '&line_deta=' + // collect extra details specific to current game
-
-The variable **data** is then sent as a parameter to the global function **postScore()** in **/js/globals.js**, that completes the string and sends the information to the database using /php/save.php.

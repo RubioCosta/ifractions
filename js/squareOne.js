@@ -80,12 +80,11 @@ const squareOne = {
     if (sublevelType == 'Plus') {
       this.tractor.anchor(1, 0.5);
       this.tractor.animation = ['move', [0, 1, 2, 3, 4], 4];
-      }
-    else {
+    } else {
       this.tractor.anchor(0, 0.5);
       this.tractor.animation = ['move', [5, 6, 7, 8, 9], 4];
       this.tractor.curFrame = 5;
-      }
+    }
 
     // STACKED BLOCKS variables
     this.stck = {
@@ -100,7 +99,7 @@ const squareOne = {
 
       // Correct values
       correctIndex: undefined, // (levelType 'B') index of the CORRECT 'stacked' block
-      };
+    };
 
     // FLOOR BLOCKS variables
     this.floor = {
@@ -115,7 +114,7 @@ const squareOne = {
       correctX: undefined,  // 'x' coordinate of CORRECT 'floor' block
       correctXA: undefined, // Temporary variable 
       correctXB: undefined, // Temporary variable
-      };
+    };
 
     // CREATING STACKED BLOCKS
     this.restart = this.func_createStckBlocks();
@@ -129,7 +128,7 @@ const squareOne = {
       this.arrow = game.add.image(this.startX + this.defaultBlockWidth * this.DIREC_LEVEL, 480, 'arrow_down');
       this.arrow.anchor(0.5, 0.5);
       this.arrow.alpha = 0.5;
-      }
+    }
 
     // Help pointer
     this.help = game.add.image(0, 0, 'help_pointer', 0.5);
@@ -140,8 +139,8 @@ const squareOne = {
       game.timer.start(); // Set a timer for the current level (used in postScore())
       game.event.add('click', this.func_onInputDown);
       game.event.add('mousemove', this.func_onInputOver);
-      }
-    },
+    }
+  },
 
   /**
    * Game loop
@@ -162,7 +161,7 @@ const squareOne = {
       // Move 'stacked blocks'
       for (let i in stck.blocks) {
         stck.blocks[i].x += self.animationSpeed;
-        }
+      }
 
       // MANAGE BLOCKS AND FLOOR GAPS
       // If block is 1/n (not 1/1) there's an extra block space to go through before the start of next block
@@ -187,12 +186,11 @@ const squareOne = {
           // (B) selected stacked index doesnt fit last floor gap (fixed) AKA TOO MANY STACKED BLOCKS (DOESNT CHECK NOT ENOUGH)
           if ((sublevelType == 'Plus' && curEnd > selectedEnd) || (sublevelType == 'Minus' && curEnd < selectedEnd)) {
             lowerBlock = false;
-            }
           }
-        else {
+        } else {
           // Update to next block end
           stck.curBlockEnd += stck.blocks[stck.curIndex + 1].width * self.DIREC_LEVEL;
-          }
+        }
 
         // Fill floor gap
         if (lowerBlock) {
@@ -203,23 +201,23 @@ const squareOne = {
             if ((sublevelType == 'Plus' && floor.blocks[i].x < curEnd) || (sublevelType == 'Minus' && floor.blocks[i].x > curEnd)) {
               floor.blocks[i].alpha = 0.2;
               floor.curIndex = i;
-              }
             }
+          }
 
           // Lower
           stck.blocks[stck.curIndex].alpha = 0;
           stck.blocks.forEach(cur => { cur.y += self.defaultBlockHeight - 2; }); // Lower stacked blocks
-          }
+        }
 
         stck.curIndex++;
-        }
+      }
 
       // WHEN REACHED END POSITION
       if (stck.curIndex > stck.index || floor.curIndex == floor.index) {
         self.animate = false;
         self.checkAnswer = true;
-        }
       }
+    }
 
     // When animation ends check answer
     if (self.checkAnswer) {
@@ -229,10 +227,9 @@ const squareOne = {
 
       if (levelType == 'A') {
         self.result = self.floor.index == self.floor.correctIndex;
-        }
-      else {
+      } else {
         self.result = self.stck.index == self.stck.correctIndex;
-        }
+      }
 
       // Give feedback to player and turns on sprite animation
       if (self.result) { // Correct answer
@@ -244,19 +241,18 @@ const squareOne = {
 
         completedLevels++; // Increases number os passed levels
         if (debugMode) console.log('completedLevels = ' + completedLevels);
-        }
-      else { // Incorrect answer
+      } else { // Incorrect answer
         // Displays feedback image and sound
         game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
         if (audioStatus) game.audio.errorSound.play();
-        }
+      }
 
       self.postScore();
 
       // AFTER CHECK ANSWER
       self.checkAnswer = false;
       self.animateEnding = true;
-      }
+    }
 
     // Starts 'ending' tractor moving animation
     if (self.animateEnding) {
@@ -274,10 +270,10 @@ const squareOne = {
         else mapMove = false;
 
         game.state.start('map');
-        }
       }
+    }
     game.render.all();
-    },
+  },
 
 
   /* EVENT HANDLER */
@@ -294,18 +290,17 @@ const squareOne = {
     if (levelType == 'A') {
       self.floor.blocks.forEach(cur => {
         if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-        });
-      }
-    else {
+      });
+    } else {
       self.stck.blocks.forEach(cur => {
         if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-        });
-      }
+      });
+    }
 
     navigationIcons.func_onInputDown(x, y);
 
     game.render.all();
-    },
+  },
 
   /**
    * Called by mouse move event
@@ -323,34 +318,34 @@ const squareOne = {
       if (!self.hasClicked && !self.animateEnding) {
         if (game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8) {
           self.arrow.x = (x < 250) ? 250 : x; // Limits the arrow left position to 250
-          }
         }
+      }
 
       self.floor.blocks.forEach(cur => {
         if (game.math.isOverIcon(x, y, cur)) {
           flagA = true;
           self.func_overSquare(cur);
-          }
-        });
+        }
+      });
 
       if (!flagA) self.func_outSquare('A');
-      }
+    }
 
     if (levelType == 'B') {
       self.stck.blocks.forEach(cur => {
         if (game.math.isOverIcon(x, y, cur)) {
           flagB = true;
           self.func_overSquare(cur);
-          }
-        });
+        }
+      });
 
       if (!flagB) self.func_outSquare('B');
-      }
+    }
 
     navigationIcons.func_onInputOver(x, y);
 
     game.render.all();
-    },
+  },
 
 
   /* CALLED BY EVENT HANDLER */
@@ -368,23 +363,22 @@ const squareOne = {
       if (levelType == 'A') {
         for (let i in self.floor.blocks) {
           self.floor.blocks[i].alpha = (i <= cur.index) ? 1 : 0.5;
-          }
+        }
 
         // Saves the index of the selected 'floor' block
         self.floor.index = cur.index;
 
         // On leveltype B
-        }
-      else {
+      } else {
         for (let i in self.stck.blocks) {
           self.stck.blocks[i].alpha = (i <= cur.index) ? 0.5 : 0.2;
-          }
+        }
 
         // Saves the index of the selected 'stack' block
         self.stck.index = cur.index;
-        }
       }
-    },
+    }
+  },
 
   /**
    * Function called when cursos is out of a valid rectangle
@@ -397,20 +391,19 @@ const squareOne = {
       if (levelType == 'A') {
         for (let i in self.floor.blocks) {
           self.floor.blocks[i].alpha = 0.5; // Back to normal
-          }
+        }
 
         self.floor.index = -1;
         // On level type B
-        }
-      else {
+      } else {
         for (let i in self.stck.blocks) {
           self.stck.blocks[i].alpha = 0.5; // Back to normal
-          }
+        }
 
         self.stck.index = -1;
-        }
       }
-    },
+    }
+  },
 
   /**
    * Function called when player clicks on a valid rectangle
@@ -428,24 +421,23 @@ const squareOne = {
         for (let i in self.floor.blocks) {
           // (SELECTION : self.FLOOR.index)
           if (i > self.floor.index) self.floor.blocks[i].alpha = 0; // Make unselected 'floor' blocks invisible
-          }
+        }
 
         // (FIXED : self.STCK.index) save the 'stacked' blocks index
         self.stck.index = self.stck.blocks.length - 1;
         // On leveltype B
-        }
-      else {
+      } else {
         for (let i in self.stck.blocks) {
           // (FIXED : self.STCK.index)
           if (i > self.stck.index) self.stck.blocks[i].alpha = 0; // Make unselected 'stacked' blocks invisible
-          }
+        }
 
         // (SELECTION : self.FLOOR.index) save the 'floor' blocks index to compare to the stacked index in update
         self.floor.index = self.floor.blocks.length - 1;
 
         // Save the updated total stacked blocks to compare in update
         self.stck.blocks.length = self.stck.index + 1;
-        }
+      }
 
       // Play beep sound
       if (audioStatus) game.audio.beepSound.play();
@@ -454,8 +446,8 @@ const squareOne = {
       if (fractionLabel) {
         self.stck.labels.forEach(cur => {
           cur.forEach(cur => { cur.alpha = 0; });
-          });
-        }
+        });
+      }
       // Hide solution pointer
       if (self.help != undefined) self.help.alpha = 0;
 
@@ -464,8 +456,8 @@ const squareOne = {
 
       self.hasClicked = true;
       self.animate = true;
-      }
-    },
+    }
+  },
 
 
   /* GAME FUNCTIONS */
@@ -511,7 +503,7 @@ const squareOne = {
       if (levelType == 'B') {
         block.alpha = 0.5;
         block.index = i;
-        }
+      }
 
       self.stck.blocks.push(block);
 
@@ -524,16 +516,15 @@ const squareOne = {
 
         if (divisor == 1) {
           label[0] = game.add.text(x, 488 - i * y, divisor, textStyles.h2_blue);
-          }
-        else {
+        } else {
           label[0] = game.add.text(x, 479 - i * y + 16, divisor, textStyles.p_blue);
           label[1] = game.add.text(x, 479 - i * y, '1', textStyles.p_blue);
           label[2] = game.add.text(x, 479 - i * y, '_', textStyles.p_blue);
-          }
+        }
         // Add current label to group of labels
         self.stck.labels.push(label);
-        }
       }
+    }
 
     // Will be used as a counter in update, adding in the width of each stacked block to check if the end matches the floor selected position
     self.stck.curBlockEnd = self.startX + self.stck.blocks[0].width * self.DIREC_LEVEL;
@@ -548,12 +539,12 @@ const squareOne = {
         self.floor.correctXA > (self.startX - self.defaultBlockWidth)))
     ) {
       restart = true; // If any error is found restart the level
-      }
+    }
 
     if (debugMode) console.log('Stacked blocks: ' + total + ' (min: ' + (mapPosition + 2) + ', max: ' + max + ')');
 
     return restart;
-    },
+  },
 
   /**
    * Create floor blocks for the level (called in create())
@@ -573,8 +564,8 @@ const squareOne = {
 
       for (let i = 0; i <= self.stck.correctIndex; i++) {
         self.floor.correctXB += self.stck.blocks[i].width * self.DIREC_LEVEL; // Equivalent x position on the floor
-        }
       }
+    }
 
     let flag = true;
 
@@ -583,18 +574,18 @@ const squareOne = {
       const x = self.startX + (self.defaultBlockWidth + i * blockWidth) * self.DIREC_LEVEL;
 
       if (flag && levelType == 'A') {
-        if ( (sublevelType == 'Plus' && x >= self.floor.correctXA) || (sublevelType == 'Minus' && x <= self.floor.correctXA) ) {
+        if ((sublevelType == 'Plus' && x >= self.floor.correctXA) || (sublevelType == 'Minus' && x <= self.floor.correctXA)) {
           self.floor.correctIndex = i - 1; // Set index of correct floor block
           flag = false;
-          }
         }
+      }
 
       if (levelType == 'B') {
-        if ( (sublevelType == 'Plus' && x >= self.floor.correctXB) || (sublevelType == 'Minus' && x <= self.floor.correctXB) ) {
+        if ((sublevelType == 'Plus' && x >= self.floor.correctXB) || (sublevelType == 'Minus' && x <= self.floor.correctXB)) {
           total = i;
           break;
-          }
         }
+      }
 
       // Create floor block
       const lineSize = 0.9;
@@ -614,11 +605,11 @@ const squareOne = {
       if (levelType == 'A') {
         block.alpha = 0.5;
         block.index = i;
-        }
+      }
 
       // Add current label to group of labels
       self.floor.blocks.push(block);
-      }
+    }
 
     if (levelType == 'A') self.floor.correctX = self.floor.correctXA;
     else if (levelType == 'B') self.floor.correctX = self.floor.correctXB;
@@ -627,8 +618,8 @@ const squareOne = {
     for (let i = 1; i < 10; i++) {
       const x = self.startX + (i * self.defaultBlockWidth * self.DIREC_LEVEL);
       game.add.text(x, 462 + self.defaultBlockHeight + 58, i - 1, textStyles.h2_blue);
-      }
-    },
+    }
+  },
 
   /**
    * Display correct answer
@@ -641,29 +632,28 @@ const squareOne = {
         self.help.x = self.floor.correctX - aux.width / 2 * self.DIREC_LEVEL;
         self.help.y = 501;
         // On levelType B
-        }
-      else {
+      } else {
         const aux = self.stck.blocks[self.stck.correctIndex];
         self.help.x = aux.x + aux.width / 2 * self.DIREC_LEVEL;
         self.help.y = aux.y;
-        }
+      }
 
       self.help.alpha = 0.7;
-      }
-    },
+    }
+  },
 
 
 
   /* METADATA FOR GAME */
 
   /**
-   * Saves players data after level
+   * Saves players data after level ends - to be sent to database
    *
    * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
-   * @see ./php/save.php
+   * @see /php/save.php
    */
   postScore: function () {
-    // Saves player data to send to the database
+    // Creates string that is going to be sent to db
     const data = '&line_game=' + gameShape
       + '&line_mode=' + levelType
       + '&line_oper=' + sublevelType
@@ -676,8 +666,7 @@ const squareOne = {
       + ', valBlocks: ' + self.divisorsList // Ends in ','
       + ' blockIndex: ' + self.stck.index
       + ', floorIndex: ' + self.floor.index;
+    sendToDB(data);
+  },
 
-    postScore(data);
-    },
-
-  };
+};
