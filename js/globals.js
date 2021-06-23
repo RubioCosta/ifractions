@@ -1,5 +1,5 @@
 /*
-LInE - Free Education, Private Data
+LInE - Free Education, Private Data.
 
 .................................................... 
 .............square.................circle.......... }					} (gameShape)		 			 
@@ -18,40 +18,118 @@ LInE - Free Education, Private Data
 .................................................... 
 */
 
-// Can be: 'squareOne', 'squareTwo' or 'circleOne'
-let gameType, gameTypeString;
+const medSrc = 'assets/img/'; // Base directory for media
+const defaultWidth = 900; // Default width for the Canvas
+const defaultHeight = 600; // Default height for the Canvas
 
-// Can be: 'circle' or 'square'
+/**
+ * Selected game object.<br>
+ * Can be the objects: squareOne, squareTwo or circleOne.
+ * 
+ * @type {object}
+ */ 
+let gameType;
+
+/**
+ * Name of the selected game.<br>
+ * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
+ * 
+ * @type {string}
+ */
+let gameTypestring;
+
+/**
+ * Shape that makes the name of the game - e.g in 'squareOne' it is 'square'.<br>
+ * Can be: 'circle' or 'square'.
+ * 
+ * @type {string}
+ */
 let gameShape;
 
-// In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures)
-// In squareTwo             can be: 'C' (comparing fractions)
+/**
+ * Holds game level.<br>
+ * In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures).<br>
+ * In squareTwo             can be: 'C' (comparing fractions).
+ * 
+ * @type {string}
+ */
 let levelType;
 
-// In squareOne     can be: 'Plus' or 'Minus'
-// In circleOne     can be: 'Plus', 'Minus' or 'Mixed'
-// In squareTwo     can be: 'B' or 'C'
+/**
+ * Holds game operation.<br>
+ * In squareOne     can be: 'Plus' or 'Minus'.<br>
+ * In circleOne     can be: 'Plus', 'Minus' or 'Mixed'.<br>
+ * In squareTwo     can be: 'B' or 'C'
+ * 
+ * @type {string}
+ */
 let sublevelType;
 
-// In squareOne     can be: 1..3
-// In circleOne/squareTwo  can be: 1..5
+/**
+ * Holds game difficulty.<br> 
+ * In squareOne             can be: 1..3.<br>
+ * In circleOne/squareTwo   can be: 1..5.
+ * 
+ * @type {number}
+ */
 let gameDifficulty;
 
-const medSrc = 'assets/img/'; // Base directory for media
-const defaultWidth = 900;
-const defaultHeight = 600;
-const debugMode = false;   // Turns console messages ON/OFF
-let audioStatus = false;   // Turns game audio ON/OFF
-let fractionLabel = true;  // Turns showing fractions in levels ON/OFF
 
+
+/**
+ * Turns console messages ON/OFF (for debug purposes only)
+ * @type {boolean}
+ */
+const debugMode = false;
+/**
+ * Turns game audio ON/OFF
+ * @type {boolean}
+ */
+let audioStatus = false; 
+/**
+ * Turns displaying the fraction labels on levels ON/OFF
+ * @type {boolean}
+ */
+let fractionLabel = true;
+
+
+/**
+ * Player's name
+ * @type {string}
+ */
 let playerName;
-let langString;      // String that contains the selected language
-let self;            // Current state
-let mapPosition;     // Character position in the map (1..4 valid, 5 end)
-let mapMove;         // When true, the character can move to next position in the map
-let completedLevels; // Number of finished levels in the map
+/**
+ * String that contains the selected language.<br>
+ * It is the name of the language file.
+ * @type {string}
+ */
+let langstring;
+/**
+ * Holds the current state.<br>
+ * Is used as if it was a 'this' inside state functions.
+ * @type {object}
+ */
+let self;
+/**
+ * Character position on the map (1..4: valid; 5: end)
+ * @type {number}
+ */
+let mapPosition;
+/**
+ * When true, the character can move to next position in the map
+ * @type {boolean}
+ */     
+let mapMove;
+/**
+ * Number of finished levels in the map
+ * @type {number}
+ */
+let completedLevels;
 
-// Informations for each game
+/**
+ * Metadata for all games
+ * @type {object}
+ */
 const info = {
 
   squareOne: {
@@ -129,7 +207,10 @@ const info = {
   }
 };
 
-// Colors
+/**
+ * Preset colors for graphic elements.
+ * @type {object}
+ */ 
 const colors = {
   // Blues
   blueBckg: '#cce5ff', // Background color 
@@ -157,7 +238,11 @@ const colors = {
   yellow: '#ffef1f'
 };
 
-// Text styles
+/**
+ * Preset text styles for game text.<br>
+ * Contains: font, size, text color and text align.
+ * @type {object} 
+ */
 const textStyles = {
   h1_green: { font: '32px Arial,sans-serif', fill: colors.green, align: 'center' }, // Menu title
   h2_green: { font: '26px Arial,sans-serif', fill: colors.green, align: 'center' }, // Flag labels (langState)
@@ -178,6 +263,11 @@ const textStyles = {
 };
 
 // List of media URL
+/**
+ * List of URL for all media in the game.<br>
+ * Divided: 1st by the state that loads the media / 2nd by the media type.
+ * @type {object}
+ */
 const url = {
   boot: {
     image: [
@@ -298,11 +388,14 @@ const url = {
   },
 };
 
-// Navigation icons on the top of the screen
+/**
+ * Manages navigation icons on the top of the screen
+ * @namespace
+ */
 const navigationIcons = {
 
   /**
-   * Add navigation icons.
+   * Add navigation icons.<br>
    * The icons on the left are ordered from left to right.
    * The icons on the right are ordered from right to left.
    * 
@@ -312,7 +405,7 @@ const navigationIcons = {
    * @param {boolean} rightIcon0 1st right icon
    * @param {boolean} rightIcon1 2nd right icon
    * @param {string} level state to be called by the 'back' button
-   * @param {function} help function in the current state that display correct answer
+   * @param {function} help function in the current game state that display correct answer
    */
   func_addIcons: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, level, help) {
     this.level = level;
@@ -363,7 +456,7 @@ const navigationIcons = {
   },
 
   /**
-   * When back icon is clicked go this state
+   * When 'back' icon is clicked go to this state
    * 
    * @param {string} state name of the next state
    */
@@ -451,7 +544,7 @@ const sendToDB = function (extraData) {
   // @see php/save.php
   const data = 'line_ip=143.107.45.11' // INSERT database server IP
     + '&line_name=' + playerName
-    + '&line_lang=' + langString
+    + '&line_lang=' + langstring
     + extraData;
 
   const url = 'php/save.php';

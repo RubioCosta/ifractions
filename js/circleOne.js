@@ -3,10 +3,10 @@
  * LInE - Free Education, Private Data
  *
  * iFractions GAME STATE
- * 
+ *
  * LEVELS - CIRCLE I & II: balloon level
- *   
- * Name of game state : 'circleOne' 
+ *
+ * Name of game state : 'circleOne'
  * Shape : circle
  * Character : kid/balloon
  * Theme : flying a balloon
@@ -23,12 +23,12 @@
  *         Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
  * Sublevels can be : 'Plus', 'Minus' or 'Mixed' (in variable 'sublevelType')
- *  
+ *
  *     Plus : addition of fractions
  *         Represented by : kid going to the right (floor positions 0..5)
  *     Minus : subtraction of fractions
  *         Represented by: kid going to the left (floor positions 5..0)
- *     Mixed : Mix addition and subtraction of fractions in same 
+ *     Mixed : Mix addition and subtraction of fractions in same
  *         Represented by: kid going to the left (floor positions 0..5)
  *
  * @namespace
@@ -51,7 +51,7 @@ const circleOne = {
 
     this.divisorsList = ''; // Used in postScore()
 
-    let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)         
+    let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
 
     const startX = (sublevelType == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
     this.correctX = startX; // Ending position, accumulative
@@ -71,7 +71,7 @@ const circleOne = {
     // Road
     this.road = game.add.image(47, 515, 'road', 1.01, 0.94);
 
-    // Road points 
+    // Road points
     const distanceBetweenPoints = 156; // Distance between road points
 
     for (let i = 0; i <= 5; i++) {
@@ -227,7 +227,7 @@ const circleOne = {
       }
     }
 
-    // KID 
+    // KID
     this.availableAnimations['Right'] = ['Right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 4];
     this.availableAnimations['Left'] = ['Left', [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12], 4];
 
@@ -288,7 +288,7 @@ const circleOne = {
         self.circles.angle[cur] += 4.6 * DIREC;
         self.circles.all[cur].angleEnd = game.math.degreeToRad(self.circles.angle[cur]);
 
-        // When finish current circle 
+        // When finish current circle
         let lowerCircles;
         if (self.circles.direction[cur] == 'Right') {
           lowerCircles = self.circles.all[cur].x >= self.nextX;
@@ -318,7 +318,7 @@ const circleOne = {
         if (lowerCircles) {
           self.circles.all[cur].alpha = 0; // Cicle disappear
           self.circles.all.forEach(cur => {
-            cur.y += self.circles.diameter; // Lower circles             
+            cur.y += self.circles.diameter; // Lower circles
           });
           self.kid.y += self.circles.diameter; // Lower kid
 
@@ -387,8 +387,8 @@ const circleOne = {
   /* EVENT HANDLER */
 
   /**
-   * Called by mouse click event 
-   * 
+   * Called by mouse click event
+   *
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   func_onInputDown: function (mouseEvent) {
@@ -418,7 +418,7 @@ const circleOne = {
 
   /**
    * Called by mouse move event
-   * 
+   *
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   func_onInputOver: function (mouseEvent) {

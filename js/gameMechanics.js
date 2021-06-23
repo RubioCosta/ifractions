@@ -940,7 +940,7 @@ const game = {
     _clear: function () {
       if (game.loop.id != undefined) {
         cancelAnimationFrame(game.loop.id);	// Cancel animation event
-        game.loop.id = undefined;		// Clear object that holds animation event	
+        game.loop.id = undefined;		// Clear object that holds animation event
         game.loop.curState = undefined;	// Clear object that holds current state
         game.loop.status = 'off'; 	// Inform animation must end (read in _run())
         displayFps.innerHTML = '';	// Stop showing fps
