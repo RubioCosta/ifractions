@@ -21,6 +21,12 @@ LInE - Free Education, Private Data.
 const medSrc = 'assets/img/'; // Base directory for media
 const defaultWidth = 900; // Default width for the Canvas
 const defaultHeight = 600; // Default height for the Canvas
+/**
+ * HTMLCanvasElement : Canvas where all the game elements are rendered.
+ * 
+ * @type {object}
+ */
+let canvas;
 
 /**
  * Selected game object.<br>
@@ -35,7 +41,7 @@ let gameType;
  * 
  * @type {string}
  */
-let gameTypestring;
+let gameTypeString;
 /**
  * Used for text and game information.<br>
  * Shape that makes the name of the game - e.g in 'squareOne' it is 'square'.<br>
@@ -292,14 +298,11 @@ const url = {
       ['menu', medSrc + 'navig_icon/menu.png'],
       // Interactive icons
       ['arrow_down', medSrc + 'interac_icon/down.png'],
+      ['close', medSrc + 'interac_icon/close.png'],
       ['error', medSrc + 'interac_icon/error.png'],
       ['help_pointer', medSrc + 'interac_icon/pointer.png'],
+      ['info', medSrc + 'interac_icon/info.png'],
       ['ok', medSrc + 'interac_icon/ok.png'],
-      // Non-interactive icons
-      ['arrow_double', medSrc + 'non_interac_icon/double.png'],
-      ['arrow_left', medSrc + 'non_interac_icon/left_arrow.png'],
-      ['arrow_right', medSrc + 'non_interac_icon/right_arrow.png'],
-      ['equal', medSrc + 'non_interac_icon/equal.png']
     ],
     sprite: [
       // Game Sprites
