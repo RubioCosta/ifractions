@@ -15,17 +15,17 @@
  *
  * Levels can be : 'A' or 'B' (in variable 'levelType')
  *
- *     A : Player can select # of 'floor blocks' (hole in the ground)
- *         Selects size of hole to be made in the ground (to fill with the blocks in front of the truck)
- *     B : Player can select # of 'stacked blocks' (in front of the truck)
- *         Selects number of blocks in front of the truck (to fill the hole on the ground)
+ *   A : Player can select # of 'floor blocks' (hole in the ground)
+ *       Selects size of hole to be made in the ground (to fill with the blocks in front of the truck)
+ *   B : Player can select # of 'stacked blocks' (in front of the truck)
+ *       Selects number of blocks in front of the truck (to fill the hole on the ground)
  *
  * Sublevels can be : 'Plus' or 'Minus' (in variable 'sublevelType')
  *
- *     Plus : addition of fractions
- *         Represented by : tractor going to the right (floor positions 0..8
- *     Minus : subtraction of fractions
- *         Represented by: tractor going to the left (floor positions 8..0)
+ *   Plus : addition of fractions
+ *     Represented by : tractor going to the right (floor positions 0..8
+ *   Minus : subtraction of fractions
+ *     Represented by: tractor going to the left (floor positions 8..0)
  *
  * @namespace
  */

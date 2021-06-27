@@ -212,6 +212,7 @@ const game = {
           get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
           get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
         };
+        med.originalScale = med.scale;
         game.render.queue.push(med);
         return med;
       }
@@ -264,6 +265,7 @@ const game = {
           get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
           get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
         };
+        med.originalScale = med.scale;
         game.render.queue.push(med);
         return med;
       }
@@ -304,8 +306,13 @@ const game = {
           align: align || style.align || game.add._default.align,
 
           anchor: function () { console.error('Game error: there\'s no anchor for text'); },
+          set style (style) {
+            this.font = style.font;
+            this.fill = style.fill;
+            this.align = style.align;
+          },
           get xWithAnchor() { return this.x; },
-          get yWithAnchor() { return this.y; }
+          get yWithAnchor() { return this.y; },
         };
         game.render.queue.push(med);
         return med;
@@ -369,6 +376,7 @@ const game = {
             get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
             get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
           };
+          med.originalScale = med.scale;
           if (width != 0) { med.width = width || game.add._default.width; }
           if (height != 0) { med.height = height || width || game.add._default.height; }
           if (lineWidth != 0) { med.lineWidth = lineWidth || game.add._default.lineWidth; }
@@ -433,6 +441,7 @@ const game = {
             get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
             get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
           };
+          med.originalScale = med.scale;
           if (diameter != 0) {
             med.diameter = diameter || game.add._default.diameter;
             med.width = med.height = med.diameter;
@@ -505,6 +514,7 @@ const game = {
             get xWithAnchor() { return this.x - (this.width * this.scale * this.xAnchor); },
             get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
           };
+          med.originalScale = med.scale;
           if (diameter != 0) {
             med.diameter = diameter || game.add._default.diameter;
             med.width = med.height = med.diameter;

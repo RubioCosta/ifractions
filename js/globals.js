@@ -1,21 +1,21 @@
 /*
 LInE - Free Education, Private Data.
 
-.................................................... 
-.............square.................circle.......... }					} (gameShape)		 			 
-.........../........\.................|............. } game (gameType)
-........One..........Two.............One............ }
-......./...\..........|............./...\........... 
-......A.....B.........C............A.....B.......... } level (levelType)
-.(floor)..(stack)..(equal).....(floor).(stack)...... } 
-.......\./............|..............\./............ 
-........|.............|...............|............. 
-......./.\.........../.\............/.|.\........... 
-...Plus...Minus.....B...C.......Plus.Minus.Mixed.... } sublevel (sublevelType)
-.......\./...........\./............\.|./........... 
-........|.............|...............|............. 
-......1,2,3.......1,2,3,4,5.......1,2,3,4,5......... } difficulty (gameDifficulty)
-.................................................... 
+..................................................... 
+...............square....................circle...... }				        	} (gameShape)
+.........../...........\....................|........ } game (gameType)
+........One.............Two................One....... }
+......./...\.........../...\............./....\...... 
+......A.....B.........A.....B...........A......B..... } level (levelType)
+.(floor)..(stack)..(top)..(bottom)..(floor)..(stack). } 
+.......\./.............\./................\./........ 
+........|...............|..................|......... 
+......./.\..............|................/.|.\....... 
+...Plus...Minus.......Equals........Plus.Minus.Mixed. } sublevel (sublevelType)
+.......\./..............|................\.|./....... 
+........|...............|..................|......... 
+......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... } difficulty (gameDifficulty)
+..................................................... 
 */
 
 const medSrc = 'assets/img/'; // Base directory for media
@@ -29,7 +29,6 @@ const defaultHeight = 600; // Default height for the Canvas
  * @type {object}
  */ 
 let gameType;
-
 /**
  * Name of the selected game.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
@@ -37,7 +36,6 @@ let gameType;
  * @type {string}
  */
 let gameTypestring;
-
 /**
  * Shape that makes the name of the game - e.g in 'squareOne' it is 'square'.<br>
  * Can be: 'circle' or 'square'.
@@ -45,26 +43,23 @@ let gameTypestring;
  * @type {string}
  */
 let gameShape;
-
 /**
  * Holds game level.<br>
  * In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures).<br>
- * In squareTwo             can be: 'C' (comparing fractions).
+ * In squareTwo             can be: 'A' (more subdivisions on top) or 'B' (more subdivisions on bottom).
  * 
  * @type {string}
  */
 let levelType;
-
 /**
  * Holds game operation.<br>
  * In squareOne     can be: 'Plus' or 'Minus'.<br>
  * In circleOne     can be: 'Plus', 'Minus' or 'Mixed'.<br>
- * In squareTwo     can be: 'B' or 'C'
+ * In squareTwo     can be: 'Equals'.
  * 
  * @type {string}
  */
 let sublevelType;
-
 /**
  * Holds game difficulty.<br> 
  * In squareOne             can be: 1..3.<br>
@@ -73,9 +68,6 @@ let sublevelType;
  * @type {number}
  */
 let gameDifficulty;
-
-
-
 /**
  * Turns console messages ON/OFF (for debug purposes only)
  * @type {boolean}
@@ -91,8 +83,6 @@ let audioStatus = false;
  * @type {boolean}
  */
 let fractionLabel = true;
-
-
 /**
  * Player's name
  * @type {string}
@@ -156,9 +146,9 @@ const info = {
     gameShape: 'square',
     gameType: 'squareTwo',
     gameTypeUrl: 'game2',
-    levelType: ['C'],
-    levelTypeUrl: [],
-    sublevelType: [/*'A',*/ 'B', 'C'],
+    levelType: ['A', 'B'],
+    levelTypeUrl: ['level4', 'level5'],
+    sublevelType: ['Equals'],
     gameDifficulty: 5
   },
 
@@ -249,6 +239,7 @@ const textStyles = {
 
   h1_white: { font: '32px Arial,sans-serif', fill: colors.white, align: 'center' }, // Ok button (nameState)
   h2_white: { font: '26px Arial,sans-serif', fill: colors.white, align: 'center' }, // Difficulty buttons (menuState)
+  h3__white: { font: '23px Arial,sans-serif', fill: colors.white, align: 'center' }, // Difficulty numbers (menuState)
   h4_white: { font: '20px Arial,sans-serif', fill: colors.white, align: 'center' }, // Difficulty numbers (menuState)
   p_white: { font: '14px Arial,sans-serif', fill: colors.white, align: 'center' }, // Enter button (menuState)
 
@@ -330,20 +321,22 @@ const url = {
       ['game0', medSrc + 'levels/squareOne.png'], // Square I
       ['game1', medSrc + 'levels/circleOne.png'], // Circle I
       ['game2', medSrc + 'levels/squareTwo.png'], // Square II
-      // Level
-      ['level0', medSrc + 'levels/squareOne_1.png'], // Square I : A
-      ['level1', medSrc + 'levels/squareOne_2.png'], // Square I : B
-      ['level2', medSrc + 'levels/circleOne_1.png'], // Circle I : A
-      ['level3', medSrc + 'levels/circleOne_2.png'], // Circle I : B
-      ['level4', medSrc + 'levels/squareTwo.png'],  // Square II : C
-      // Sublevel
-      ['sublevel_right', medSrc + 'levels/sublevel_right.png'], // Square/circle I : right
-      ['sublevel_left', medSrc + 'levels/sublevel_left.png'], // Square/circle I : left
-      ['sublevel_mixed', medSrc + 'levels/sublevel_mixed.png'], // Circle I : mixed
-      ['sublevel_top', medSrc + 'levels/sublevel_top.png'], // Square II : top
-      ['sublevel_bottom', medSrc + 'levels/sublevel_bottom.png']  // Square II : bottom
     ],
-    sprite: [],
+    sprite: [
+      // level
+      ['level0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
+      ['level1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B
+      ['level2', medSrc + 'levels/circleOne_1.png', 2], // Circle I : A
+      ['level3', medSrc + 'levels/circleOne_2.png', 2], // Circle I : B
+      ['level4', medSrc + 'levels/squareTwo_1.png', 2], // Square II : top
+      ['level5', medSrc + 'levels/squareTwo_2.png', 2], // Square II : bottom
+      // Sublevel
+      ['operation_plus', medSrc + 'levels/operation_plus.png', 2], // Square/circle I : right
+      ['operation_minus', medSrc + 'levels/operation_minus.png', 2], // Square/circle I : left
+      ['operation_mixed', medSrc + 'levels/operation_mixed.png', 2], // Circle I : mixed 
+      ['operation_equals', medSrc + 'levels/operation_equals.png', 2], // Square II : equals
+      
+    ],
     audio: []
   },
   squareOne: {

@@ -15,16 +15,16 @@
  *
  * # of different difficulties for each level : 5
  *
- * Level : 'C' (in variable 'levelType')
+ * Levels can be : 'A' or 'B' (in variable 'levelType')
+ * 
+ *   A : equivalence of fractions 
+ *       top has more subdivisions
+ *   B : equivalence of fractions
+ *       bottom has more subdivisions
+ * 
+ * Sublevel : 'Equals' (in variable 'sublevelType')
  *
- *     C : Player selects equivalent fractions of both blocks 
- * 
- * Sublevels can be : 'B' or 'C' (in variable 'sublevelType')
- * 
- *     B : equivalence of fractions 
- *         top has more subdivisions
- *     C : equivalence of fractions
- *         bottom has more subdivisions
+ *   Equals : Player selects equivalent fractions of both blocks 
  * 
  * @namespace
  */
@@ -89,7 +89,7 @@ const squareTwo = {
 
     // Coordinates for A and B
     let xA, xB, yA, yB;
-    if (sublevelType != 'C') { // More subdivisions on B
+    if (levelType != 'B') { // More subdivisions on B
       xA = 230;
       yA = 90;
       xB = xA;
@@ -120,9 +120,9 @@ const squareTwo = {
 
     // CREATING TOP FIGURE (A)
     let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in A
-    let lineColor = colors.darkGreen;
-    let fillColor = colors.lightGreen;
-
+    let lineColor = colors.darkRed;
+    let fillColor = colors.lightRed;
+    
     // Create blocks
     for (let i = 0; i < totalBlocksA; i++) {
       const x = xA + i * blockWidth;
@@ -135,7 +135,8 @@ const squareTwo = {
       this.A.blocks.push(block);
 
       // Auxiliar blocks
-      const alpha = (sublevelType == 'A') ? 0.2 : 0;
+      const alpha = (fractionLabel) ? 0.1 : 0;
+
       const yAux = yA + figureHeight + 10; // On the bottom of A
       const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.A.auxBlocks.push(auxBlock);
@@ -159,8 +160,8 @@ const squareTwo = {
 
     // CREATING BOTTOM FIGURE (B)
     blockWidth = this.figureWidth / totalBlocksB; // Width of each block in B
-    lineColor = colors.darkRed;
-    fillColor = colors.lightRed;
+    lineColor = colors.darkGreen;
+    fillColor = colors.lightGreen;
 
     // Blocks and auxiliar blocks
     for (let i = 0; i < totalBlocksB; i++) {
@@ -174,7 +175,7 @@ const squareTwo = {
       this.B.blocks.push(block);
 
       // Auxiliar blocks
-      const alpha = (sublevelType == 'A') ? 0.1 : 0;
+      const alpha = (fractionLabel) ? 0.1 : 0;
       const yAux = yB + figureHeight + 10; // On the bottom of B
       const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.B.auxBlocks.push(auxBlock);

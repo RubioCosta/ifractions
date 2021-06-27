@@ -17,19 +17,19 @@
  *
  * Levels can be : 'A' or 'B' (in variable 'levelType')
  *
- *     A : Player can place balloon position
- *         Place balloon in position (so the kid can get to it)
- *     B : Player can select # of circles
- *         Selects number of circles (that represent distance kid needs to walk to get to the balloon)
+ *   A : Player can place balloon position
+ *       Place balloon in position (so the kid can get to it)
+ *   B : Player can select # of circles
+ *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
  * Sublevels can be : 'Plus', 'Minus' or 'Mixed' (in variable 'sublevelType')
  *
- *     Plus : addition of fractions
- *         Represented by : kid going to the right (floor positions 0..5)
- *     Minus : subtraction of fractions
- *         Represented by: kid going to the left (floor positions 5..0)
- *     Mixed : Mix addition and subtraction of fractions in same
- *         Represented by: kid going to the left (floor positions 0..5)
+ *   Plus : addition of fractions
+ *     Represented by : kid going to the right (floor positions 0..5)
+ *   Minus : subtraction of fractions
+ *     Represented by: kid going to the left (floor positions 5..0)
+ *   Mixed : Mix addition and subtraction of fractions in same
+ *     Represented by: kid going to the left (floor positions 0..5)
  *
  * @namespace
  */
