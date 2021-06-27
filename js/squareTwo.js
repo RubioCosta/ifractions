@@ -1,10 +1,7 @@
 /**
- *
  * LInE - Free Education, Private Data
  *
  * iFractions GAME STATE
- * 
- * LEVELS - SQUARE III: fraction comparisson level
  *  
  * Name of game state : 'squareTwo' 
  * Shape : square
@@ -13,16 +10,16 @@
  * Concept : player select equivalent dividends for fractions with different divisors
  * Represent fractions as : subdivided blocks
  *
- * # of different difficulties for each level : 5
+ * # of different difficulties : 5
  *
- * Levels can be : 'A' or 'B' (in variable 'levelType')
+ * Game modes can be : 'A' or 'B' (in variable 'gameModeType')
  * 
  *   A : equivalence of fractions 
  *       top has more subdivisions
  *   B : equivalence of fractions
  *       bottom has more subdivisions
  * 
- * Sublevel : 'Equals' (in variable 'sublevelType')
+ * Operations : 'Equals' (in variable 'gameOperationType')
  *
  *   Equals : Player selects equivalent fractions of both blocks 
  * 
@@ -89,7 +86,7 @@ const squareTwo = {
 
     // Coordinates for A and B
     let xA, xB, yA, yB;
-    if (levelType != 'B') { // More subdivisions on B
+    if (gameModeType != 'B') { // More subdivisions on B
       xA = 230;
       yA = 90;
       xB = xA;
@@ -356,7 +353,7 @@ const squareTwo = {
       if (curBlock.index == self[curSet].blocks.length - 1) {
         const otherSet = (curSet == 'A') ? 'B' : 'A';
 
-        self[curSet].warningText.name = game.lang.error_msg;
+        self[curSet].warningText.name = game.lang.s2_error_msg;
         self[otherSet].warningText.name = '';
 
         self.func_outSquare(curSet);
@@ -453,7 +450,7 @@ const squareTwo = {
   postScore: function () {
     // Creates string that is going to be sent to db
     const data = '&line_game=' + gameShape
-      + '&line_mode=' + levelType
+      + '&line_mode=' + gameModeType
       + '&line_oper=Equal'
       + '&line_leve=' + gameDifficulty
       + '&line_posi=' + mapPosition

@@ -161,8 +161,8 @@ const menuState = {
     let title;
 
     switch (icon.gameShape) {
-      case 'circle': title = game.lang.circle_name; break;
-      case 'square': title = game.lang.square_name; break;
+      case 'circle': title = game.lang.circle; break;
+      case 'square': title = game.lang.square; break;
     }
 
     const type = icon.gameType.substring(icon.gameType.length - 3);
@@ -186,7 +186,7 @@ const menuState = {
 };
 
 /**
- * SECUNDARY MENU STATE: player can select level, sublevel and difficulty
+ * SECUNDARY MENU STATE: player can select game mode, math operation and overall game difficulty
  * 
  * @namespace
  */
@@ -235,10 +235,10 @@ const customMenuState = {
     let offsetW = 600 / 6;
     let offsetH;
 
-    // Label 'Level - Mode'
-    game.add.text(x + offsetW - 12, y, game.lang.level, textStyles.h2_blue_2);
-    // Label 'Sublevel - Operation'
-    game.add.text(x + 3 * offsetW, y, game.lang.sublevel, textStyles.h2_blue_2);
+    // Label 'Game Mode'
+    game.add.text(x + offsetW - 12, y, game.lang.game_mode, textStyles.h2_blue_2);
+    // Label 'Operation'
+    game.add.text(x + 3 * offsetW, y, game.lang.operation, textStyles.h2_blue_2);
     // Label 'Difficulty'
     game.add.text(x + 5 * offsetW, y, game.lang.difficulty, textStyles.h2_blue_2);
     // Horizontal line
@@ -252,11 +252,11 @@ const customMenuState = {
       // Horizontal line
       game.add.graphic.rect(x + 4 * offsetW, y + 136, 200 + 25, width, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
 
-      // Label 'Show Fractions'
+      // Label 'Show Fractions / Auxiliar rectangles'
       game.add.text(x + 5 * offsetW, y + 102, game.lang.show, textStyles.h4_blue_2);
       
       if (gameTypeString == 'squareTwo') {
-        game.add.text(x + 5 * offsetW + 10, y + 102 + 24,  game.lang.box_guide, textStyles.h4_blue_2);
+        game.add.text(x + 5 * offsetW + 10, y + 102 + 24,  game.lang.aux_rectangle, textStyles.h4_blue_2);
       } else {
         game.add.text(x + 5 * offsetW, y + 102 + 24, game.lang.title, textStyles.h2_blue_2);
       }
@@ -270,31 +270,31 @@ const customMenuState = {
       selectionBox.iconType = 'selectionBox';
       this.menuIcons.push(selectionBox);
 
-    // --------------------------- LEVEL ICONS
+    // --------------------------- GAME MODE ICONS
 
     x = 150 + offsetW;
     y = baseY;
-    offsetH = this.func_getOffset(height, info[gameTypeString].levelType.length);
+    offsetH = this.func_getOffset(height, info[gameTypeString].gameModeType.length);
 
-    for (let i = 0; i < info[gameTypeString].levelTypeUrl.length; i++, y += offsetH) {
-      const icon = game.add.sprite(x, y, info[gameTypeString].levelTypeUrl[i], 0, iconScale, 1);
+    for (let i = 0; i < info[gameTypeString].gameModeTypeUrl.length; i++, y += offsetH) {
+      const icon = game.add.sprite(x, y, info[gameTypeString].gameModeTypeUrl[i], 0, iconScale, 1);
       icon.anchor(0.5, 0.5);
 
-      icon.levelType = info[gameTypeString].levelType[i];
-      icon.iconType = 'level';
+      icon.gameModeType = info[gameTypeString].gameModeType[i];
+      icon.iconType = 'gameMode';
       if (i == 0) {
-        levelType = icon.levelType;
+        gameModeType = icon.gameModeType;
         icon.curFrame = 1;
       }
 
       this.menuIcons.push(icon);
     }
 
-    // --------------------------- SUBLEVEL ICONS
+    // --------------------------- GAME OPERATION ICONS
 
     x += 2 * offsetW;
     y = baseY;
-    offsetH = this.func_getOffset(height, info[gameTypeString].sublevelType.length);
+    offsetH = this.func_getOffset(height, info[gameTypeString].gameOperationType.length);
 
     let icon;
     let aux = [];
@@ -311,16 +311,16 @@ const customMenuState = {
       ['operation_equals', 'Equals'],
     ];
 
-    // Placing sublevel icons
+    // Placing math operation icons
     for (let i = 0; i < aux[gameTypeString].length; i++, y += offsetH) {
       icon = game.add.sprite(x, y, aux[gameTypeString][i][0], 0, iconScale, 1);
       icon.anchor(0.5, 0.5);
 
-      icon.sublevelType = aux[gameTypeString][i][1];
-      icon.iconType = 'sublevel';
+      icon.gameOperationType = aux[gameTypeString][i][1];
+      icon.iconType = 'gameOperation';
 
       if (i == 0) {
-        sublevelType = icon.sublevelType;
+        gameOperationType = icon.gameOperationType;
         icon.curFrame = 1;
       }
 
@@ -385,8 +385,8 @@ const customMenuState = {
 
     const type = icon.iconType;
     switch (type) {
-      case 'level': levelType = icon.levelType; break;
-      case 'sublevel': sublevelType = icon.sublevelType; break;
+      case 'gameMode': gameModeType = icon.gameModeType; break;
+      case 'gameOperation': gameOperationType = icon.gameOperationType; break;
       case 'difficulty': gameDifficulty = icon.difficulty; break;
       case 'selectionBox':
         if (icon.curFrame == 0) {
@@ -399,7 +399,7 @@ const customMenuState = {
         game.render.all();
         break;
       case 'enter':
-        if (debugMode) console.log('Game State: ' + gameTypeString + ', ' + levelType);
+        if (debugMode) console.log('Game State: ' + gameTypeString + ', ' + gameModeType);
         mapPosition = 0;      // Map position
         mapMove = true;       // Move no next point
         completedLevels = 0;  // Reset the game progress when entering a new level
@@ -445,10 +445,10 @@ const customMenuState = {
       self.menuIcons.forEach(cur => {
         if (cur.iconType == self.menuIcons[overIcon].iconType) { // if its in the same icon category
           if (cur == self.menuIcons[overIcon]) { // if its the clicked icon
-            if (cur.iconType == 'level' || cur.iconType == 'sublevel') cur.curFrame = 1;
+            if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation') cur.curFrame = 1;
             else if (cur.iconType == 'difficulty') cur.fillColor = colors.blue;
           } else {
-            if (cur.iconType == 'level' || cur.iconType == 'sublevel') cur.curFrame = 0;
+            if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation') cur.curFrame = 0;
             else if (cur.iconType == 'difficulty') cur.fillColor = colors.gray;
           }
         }

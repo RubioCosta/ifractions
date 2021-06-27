@@ -1,5 +1,5 @@
 /**
- * MAP STATE: game map where character advances as he passes a level
+ * MAP STATE: game map with game levels - shows how many levels the player have finished / current level he is in
  * 
  * @namespace
  */
@@ -80,10 +80,10 @@ const mapState = {
 
       const aux = (i < mapPosition || (mapMove && i == mapPosition)) ? 'place_on' : 'place_off';
 
-      // Map road positions
+      // Map road positions - game levels
       game.add.image(this.points.x[i], this.points.y[i], aux, 0.3).anchor(0.5, 0.5);
 
-      // Level signs
+      // Map road signs - game level number
       game.add.image(this.points.x[i] - 20, this.points.y[i] - 60, 'sign', 0.4).anchor(0.5, 1);
       game.add.text(this.points.x[i] - 20, this.points.y[i] - 79, i, textStyles.h2_white);
 
@@ -92,7 +92,7 @@ const mapState = {
     // Game Character 
     if (gameTypeString == 'squareOne') {
 
-      if (sublevelType == 'Plus') {
+      if (gameOperationType == 'Plus') {
         this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'tractor', 0, 0.5);
         this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
       } else {
@@ -204,7 +204,7 @@ const mapState = {
 };
 
 /**
- * ENDING STATE: animation after a full level is completed
+ * ENDING STATE: animation after a full game is completed (4 levels)
  * 
  * @namespace
  */
@@ -285,7 +285,7 @@ const endState = {
         // Tractor
         this.character = game.add.sprite(0, 490, 'tractor', 0, 0.7);
         this.character.anchor(0.5, 0.5);
-        if (sublevelType == 'Plus') {
+        if (gameOperationType == 'Plus') {
           this.character.animation = ['move', [0, 1, 2, 3, 4], 4];
         } else {
           this.character.curFrame = 10;

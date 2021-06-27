@@ -6,12 +6,12 @@ LInE - Free Education, Private Data.
 .........../...........\....................|........ } game (gameType)
 ........One.............Two................One....... }
 ......./...\.........../...\............./....\...... 
-......A.....B.........A.....B...........A......B..... } level (levelType)
+......A.....B.........A.....B...........A......B..... } game mode (gameModeType)
 .(floor)..(stack)..(top)..(bottom)..(floor)..(stack). } 
 .......\./.............\./................\./........ 
 ........|...............|..................|......... 
 ......./.\..............|................/.|.\....... 
-...Plus...Minus.......Equals........Plus.Minus.Mixed. } sublevel (sublevelType)
+...Plus...Minus.......Equals........Plus.Minus.Mixed. } game math operation (gameOperationType)
 .......\./..............|................\.|./....... 
 ........|...............|..................|......... 
 ......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... } difficulty (gameDifficulty)
@@ -37,6 +37,7 @@ let gameType;
  */
 let gameTypestring;
 /**
+ * Used for text and game information.<br>
  * Shape that makes the name of the game - e.g in 'squareOne' it is 'square'.<br>
  * Can be: 'circle' or 'square'.
  * 
@@ -44,24 +45,24 @@ let gameTypestring;
  */
 let gameShape;
 /**
- * Holds game level.<br>
+ * Holds selected game mode.<br>
  * In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures).<br>
  * In squareTwo             can be: 'A' (more subdivisions on top) or 'B' (more subdivisions on bottom).
  * 
  * @type {string}
  */
-let levelType;
+let gameModeType;
 /**
- * Holds game operation.<br>
- * In squareOne     can be: 'Plus' or 'Minus'.<br>
- * In circleOne     can be: 'Plus', 'Minus' or 'Mixed'.<br>
- * In squareTwo     can be: 'Equals'.
+ * Holds game math operation.<br>
+ * In squareOne     can be: 'Plus' (green tractor goes right) or 'Minus' (red tractor goes left).<br>
+ * In circleOne     can be: 'Plus' (green tractor goes right), 'Minus' (red tractor goes left) or 'Mixed' (green tractor goes both sides).<br>
+ * In squareTwo     can be: 'Equals' (compares two rectangle subdivisions).
  * 
  * @type {string}
  */
-let sublevelType;
+let gameOperationType;
 /**
- * Holds game difficulty.<br> 
+ * Holds game overall difficulty. 1 (easier) -> n (harder).<br> 
  * In squareOne             can be: 1..3.<br>
  * In circleOne/squareTwo   can be: 1..5.
  * 
@@ -101,7 +102,7 @@ let langstring;
  */
 let self;
 /**
- * Character position on the map (1..4: valid; 5: end)
+ * Character position on the map, aka game levels (1..4: valid; 5: end)
  * @type {number}
  */
 let mapPosition;
@@ -126,9 +127,9 @@ const info = {
     gameShape: 'square',
     gameType: 'squareOne',
     gameTypeUrl: 'game0',
-    levelType: ['A', 'B'],
-    levelTypeUrl: ['level0', 'level1'],
-    sublevelType: ['Plus', 'Minus'],
+    gameModeType: ['A', 'B'],
+    gameModeTypeUrl: ['mode0', 'mode1'],
+    gameOperationType: ['Plus', 'Minus'],
     gameDifficulty: 3
   },
 
@@ -136,9 +137,9 @@ const info = {
     gameShape: 'circle',
     gameType: 'circleOne',
     gameTypeUrl: 'game1',
-    levelType: ['A', 'B'],
-    levelTypeUrl: ['level2', 'level3'],
-    sublevelType: ['Plus', 'Minus', 'Mixed'],
+    gameModeType: ['A', 'B'],
+    gameModeTypeUrl: ['mode2', 'mode3'],
+    gameOperationType: ['Plus', 'Minus', 'Mixed'],
     gameDifficulty: 5
   },
 
@@ -146,18 +147,18 @@ const info = {
     gameShape: 'square',
     gameType: 'squareTwo',
     gameTypeUrl: 'game2',
-    levelType: ['A', 'B'],
-    levelTypeUrl: ['level4', 'level5'],
-    sublevelType: ['Equals'],
+    gameModeType: ['A', 'B'],
+    gameModeTypeUrl: ['mode4', 'mode5'],
+    gameOperationType: ['Equals'],
     gameDifficulty: 5
   },
 
   gameShape: [],
   gameType: [],
   gameTypeUrl: [],
-  levelType: [],
-  levelTypeUrl: [],
-  sublevelType: [],
+  gameModeType: [],
+  gameModeTypeUrl: [],
+  gameOperationType: [],
   gameDifficulty: [],
 
   /**
@@ -183,11 +184,11 @@ const info = {
       info.squareTwo.gameTypeUrl
     ];
 
-    info.levelType = info.squareOne.levelType.concat(info.circleOne.levelType, info.squareTwo.levelType);
+    info.gameModeType = info.squareOne.gameModeType.concat(info.circleOne.gameModeType, info.squareTwo.gameModeType);
 
-    info.levelTypeUrl = info.squareOne.levelTypeUrl.concat(info.circleOne.levelTypeUrl, info.squareTwo.levelTypeUrl);
+    info.gameModeTypeUrl = info.squareOne.gameModeTypeUrl.concat(info.circleOne.gameModeTypeUrl, info.squareTwo.gameModeTypeUrl);
 
-    info.sublevelType = info.squareOne.sublevelType.concat(info.circleOne.sublevelType, info.squareTwo.sublevelType);
+    info.gameOperationType = info.squareOne.gameOperationType.concat(info.circleOne.gameOperationType, info.squareTwo.gameOperationType);
 
     info.gameDifficulty = [
       info.squareOne.gameDifficulty,
@@ -323,19 +324,18 @@ const url = {
       ['game2', medSrc + 'levels/squareTwo.png'], // Square II
     ],
     sprite: [
-      // level
-      ['level0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
-      ['level1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B
-      ['level2', medSrc + 'levels/circleOne_1.png', 2], // Circle I : A
-      ['level3', medSrc + 'levels/circleOne_2.png', 2], // Circle I : B
-      ['level4', medSrc + 'levels/squareTwo_1.png', 2], // Square II : top
-      ['level5', medSrc + 'levels/squareTwo_2.png', 2], // Square II : bottom
-      // Sublevel
+      // Game modes
+      ['mode0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
+      ['mode1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B
+      ['mode2', medSrc + 'levels/circleOne_1.png', 2], // Circle I : A
+      ['mode3', medSrc + 'levels/circleOne_2.png', 2], // Circle I : B
+      ['mode4', medSrc + 'levels/squareTwo_1.png', 2], // Square II : A
+      ['mode5', medSrc + 'levels/squareTwo_2.png', 2], // Square II : B
+      // Math operations
       ['operation_plus', medSrc + 'levels/operation_plus.png', 2], // Square/circle I : right
       ['operation_minus', medSrc + 'levels/operation_minus.png', 2], // Square/circle I : left
       ['operation_mixed', medSrc + 'levels/operation_mixed.png', 2], // Circle I : mixed 
       ['operation_equals', medSrc + 'levels/operation_equals.png', 2], // Square II : equals
-      
     ],
     audio: []
   },
@@ -397,11 +397,11 @@ const navigationIcons = {
    * @param {boolean} leftIcon2 3rd left icon
    * @param {boolean} rightIcon0 1st right icon
    * @param {boolean} rightIcon1 2nd right icon
-   * @param {string} level state to be called by the 'back' button
+   * @param {string} state state to be called by the 'back' button
    * @param {function} help function in the current game state that display correct answer
    */
-  func_addIcons: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, level, help) {
-    this.level = level;
+  func_addIcons: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, state, help) {
+    this.state = state;
     this.help = help;
 
     let left_x = 10;
@@ -472,7 +472,7 @@ const navigationIcons = {
       if (game.math.isOverIcon(x, y, cur)) {
         const name = cur.name;
         switch (name) {
-          case 'back': navigationIcons.func_CallState(navigationIcons.level); break;
+          case 'back': navigationIcons.func_CallState(navigationIcons.state); break;
           case 'menu': navigationIcons.func_CallState('menu'); break;
           case 'help': navigationIcons.help(); break;
           case 'language': navigationIcons.func_CallState('lang'); break;
@@ -507,11 +507,11 @@ const navigationIcons = {
       if (game.math.isOverIcon(x, y, cur)) {
         flag = true;
 
-        if (cur.name == 'back') navigationIcons.left_text.name = game.lang.menu_back;
-        else if (cur.name == 'menu') navigationIcons.left_text.name = game.lang.menu_list;
-        else if (cur.name == 'help') navigationIcons.left_text.name = game.lang.menu_help;
+        if (cur.name == 'back') navigationIcons.left_text.name = game.lang.nav_back;
+        else if (cur.name == 'menu') navigationIcons.left_text.name = game.lang.nav_menu;
+        else if (cur.name == 'help') navigationIcons.left_text.name = game.lang.nav_help;
 
-        else if (cur.name == 'language') navigationIcons.right_text.name = game.lang.menu_world;
+        else if (cur.name == 'language') navigationIcons.right_text.name = game.lang.nav_lang;
         else if (cur.name == 'audio') navigationIcons.right_text.name = game.lang.audio;
       }
     });
