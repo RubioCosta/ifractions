@@ -59,33 +59,36 @@ const menuState = {
       icon.iconType = 'game';
 
       this.menuIcons.push(icon);
-      
-      infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6);
-      infoIcon.anchor(0.5,0.5);
+
+      infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.6);
+      infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       this.menuIcons.push(infoIcon);
 
     }
 
-     // --------------------------- INFORMATION BOX
-    
-     let cur;
-     this.infoBoxElements = []; // grouped to be displayed/hidden when info box is oppened/closed
-     
-     cur = game.add.graphic.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.black, 0.6);
-     cur.alpha = 0;
-     cur.originalAlpha = 0.6;
-     this.infoBoxElements.push(cur);
-     
-     cur = game.add.graphic.rect(100,  100, defaultWidth - 200, defaultHeight - 200, colors.blue, 2, colors.blueBckg, 1);
-     cur.alpha = 0;
-     this.infoBoxElements.push(cur);
-     
-     this.closeIcon = game.add.image(defaultWidth - 128, 125, 'close', 0.12);
-     this.closeIcon.anchor(0.5,0.5);
-     this.closeIcon.alpha = 0;
-     this.closeIcon.iconType = 'infoBox';
-     this.infoBoxElements.push(this.closeIcon);
+    // --------------------------- INFORMATION BOX
+
+    let cur;
+    this.infoBoxElements = []; // grouped to be displayed/hidden when info box is oppened/closed
+
+    cur = game.add.graphic.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.black, 0.6);
+    cur.alpha = 0;
+    cur.originalAlpha = 0.6;
+    this.infoBoxElements.push(cur);
+
+    cur = game.add.graphic.rect(100, 100, defaultWidth - 200, defaultHeight - 200, colors.blue, 2, colors.blueBckg, 1);
+    cur.alpha = 0;
+    //cur.shadow = true;
+    //cur.shadowColor = colors.black;
+    //cur.shadowBlur = 10;
+    this.infoBoxElements.push(cur);
+
+    this.closeIcon = game.add.image(defaultWidth - 128, 125, 'close', 0.12);
+    this.closeIcon.anchor(0.5, 0.5);
+    this.closeIcon.alpha = 0;
+    this.closeIcon.iconType = 'infoBox';
+    this.infoBoxElements.push(this.closeIcon);
 
     // ------------- EVENTS
 
@@ -116,7 +119,7 @@ const menuState = {
           default: console.error('Game error: the name of the game is not valid');
         }
         self.menuIcons = self.lbl_game.name;
-        game.state.start('customMenu');  
+        game.state.start('customMenu');
         break;
       default: console.error("Game error: Problem with selected icon.");
     }
@@ -154,16 +157,16 @@ const menuState = {
   func_clearTitle: function () {
     self.lbl_game.name = '';
   },
-  
+
   /**
    * Displays game menu information boxes.
    */
   func_showInfoBox: function () {
     navigationIcons.func_addIcons( // Turn off navigation icons
-      false, false, false, 
-      false, false, 
+      false, false, false,
+      false, false,
       false, false);
-    self.infoBoxElements.forEach( cur => { cur.alpha = (cur.originalAlpha) ? cur.originalAlpha : 1; }); // Make info box visible
+    self.infoBoxElements.forEach(cur => { cur.alpha = (cur.originalAlpha) ? cur.originalAlpha : 1; }); // Make info box visible
     self.activeIcons = [self.closeIcon]; // Update activeIcons to info box icons
   },
 
@@ -175,7 +178,7 @@ const menuState = {
       false, false, false,
       true, true,
       false, false);
-    self.infoBoxElements.forEach( cur => { cur.alpha = 0; }); // Make info box invisible
+    self.infoBoxElements.forEach(cur => { cur.alpha = 0; }); // Make info box invisible
     self.activeIcons = self.menuIcons; // Update activeIcons to custom menu icons
   },
 
@@ -184,7 +187,7 @@ const menuState = {
    * 
    * @param {object} mouseEvent contains the mouse click coordinates
    */
-   func_onInputDown: function (mouseEvent) {
+  func_onInputDown: function (mouseEvent) {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
 
     // Check menu icons
@@ -214,7 +217,7 @@ const menuState = {
 
     // Check menu icons
     for (let i in self.activeIcons) {
-      if (game.math.isOverIcon(x, y, self.activeIcons[i])) {        
+      if (game.math.isOverIcon(x, y, self.activeIcons[i])) {
         overIcon = i;
         break;
       }

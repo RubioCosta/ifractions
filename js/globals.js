@@ -33,7 +33,7 @@ let canvas;
  * Can be the objects: squareOne, squareTwo or circleOne.
  * 
  * @type {object}
- */ 
+ */
 let gameType;
 /**
  * Name of the selected game.<br>
@@ -84,7 +84,7 @@ const debugMode = false;
  * Turns game audio ON/OFF
  * @type {boolean}
  */
-let audioStatus = false; 
+let audioStatus = false;
 /**
  * Turns displaying the fraction labels on levels ON/OFF
  * @type {boolean}
@@ -115,7 +115,7 @@ let mapPosition;
 /**
  * When true, the character can move to next position in the map
  * @type {boolean}
- */     
+ */
 let mapMove;
 /**
  * Number of finished levels in the map
@@ -207,7 +207,7 @@ const info = {
 /**
  * Preset colors for graphic elements.
  * @type {object}
- */ 
+ */
 const colors = {
   // Blues
   blueBckg: '#cce5ff', // Background color 

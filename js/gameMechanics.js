@@ -5,19 +5,18 @@
  */
 const game = {
 
-  audio: {}, lang: {}, // Holds cache reference to media : Directly used in code to get audio and dicitonary
-  image: {}, sprite: {}, // Holds cache reference to media : Not directly used in code 
+  audio: {}, lang: {}, // Holds cache reference to media - used in code to get audio and dicitonary
+  image: {}, sprite: {}, // [Not directly used] Holds cache reference to media 
 
-  mediaTypes: ['lang', 'audio', 'image', 'sprite'],
-  loadedMedia: [],
-  isLoaded: [],
+  mediaTypes: ['lang', 'audio', 'image', 'sprite'], // [Not directly used]
+  loadedMedia: [], // [Not directly used]
+  isLoaded: [], // [Not directly used]
 
   /**
-   * Load URLs to cache 
-   * To be used only inside function preload() if a state needs to load media
+   * Load URLs to cache <br>
+   * To be used only inside function preload() if a state needs to load media <br>
    * URLs are in globals.js
-   * game.load.<mediaType>(<arrayOfUrlsFromCurrentState>))
-   * 
+   *
    * @namespace
    */
   load: {
@@ -92,7 +91,7 @@ const game = {
       }
     },
     /**
-     * Loads spritesheets to cache 
+     * Loads spritesheets to cache
      * 
      * @param {array} urls spritesheet urls for the current state
      */
@@ -162,17 +161,18 @@ const game = {
   },
 
   /**
-   * Adds new media to 'media queue'
+   * Adds new media to 'media queue' <br>
    * All queued media is actually drawn on the canvas using game.render.all() 
    * 
    * @namespace
    */
   add: {
-    // game.add.image(x, y, img)
-    // game.add.image(x, y, img, scale)
-    // game.add.image(x, y, img, scale, alpha)
     /**
-     * Adds image to media queue
+     * Adds image to media queue <br><br>
+     * 
+     * game.add.image(x, y, img) <br>
+     * game.add.image(x, y, img, scale) <br>
+     * game.add.image(x, y, img, scale, alpha)
      * 
      * @param {number} x default x coordinate for the figure
      * @param {number} y default x coordinate for the figure
@@ -217,12 +217,13 @@ const game = {
         return med;
       }
     },
-    // game.add.sprite(x, y, img) 
-    // game.add.sprite(x, y, img, curFrame) 
-    // game.add.sprite(x, y, img, curFrame, scale) 
-    // game.add.sprite(x, y, img, curFrame, scale, alpha) 
-    /**
-     * Adds spritesheet to media queue
+    /** 
+     * Adds spritesheet to media queue <br><br>
+     * 
+     * game.add.sprite(x, y, img) <br>
+     * game.add.sprite(x, y, img, curFrame) <br>
+     * game.add.sprite(x, y, img, curFrame, scale) <br>
+     * game.add.sprite(x, y, img, curFrame, scale, alpha) 
      * 
      * @param {number} x default x coordinate for the figure
      * @param {number} y default x coordinate for the figure
@@ -270,10 +271,11 @@ const game = {
         return med;
       }
     },
-    // game.add.text(x, y, text, style) 
-    // game.add.text(x, y, text, style, align) 
     /**
-     * Adds text to media queue
+     * Adds text to media queue <br><br>
+     * 
+     * game.add.text(x, y, text, style) <br>
+     * game.add.text(x, y, text, style, align)
      * 
      * @param {number} x default x coordinate for the figure
      * @param {number} y default x coordinate for the figure
@@ -306,7 +308,7 @@ const game = {
           align: align || style.align || game.add._default.align,
 
           anchor: function () { console.error('Game error: there\'s no anchor for text'); },
-          set style (style) {
+          set style(style) {
             this.font = style.font;
             this.fill = style.fill;
             this.align = style.align;
@@ -320,17 +322,17 @@ const game = {
     },
     /**
      * Adds geometric shapes
-     * 
      * @namespace
      */
     graphic: {
-      // game.add.graphic.rect(x, y, width, height)
-      // game.add.graphic.rect(x, y, width, height, lineColor)
-      // game.add.graphic.rect(x, y, width, height, lineColor, lineWidth)
-      // game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor)
-      // game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha)
       /**
-       * Adds rectangle to media queue
+       * Adds rectangle to media queue <br><br>
+       * 
+       * game.add.graphic.rect(x, y, width, height) <br>
+       * game.add.graphic.rect(x, y, width, height, lineColor) <br>
+       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth) <br>
+       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor) <br>
+       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha) 
        * 
        * @param {number} x default x coordinate for top left corner of the rectangle
        * @param {number} y default y coordinate for top left corner of the rectangle
@@ -384,13 +386,14 @@ const game = {
           return med;
         }
       },
-      // game.add.graphic.circle(x, y, diameter)
-      // game.add.graphic.circle(x, y, diameter, lineColor)
-      // game.add.graphic.circle(x, y, diameter, lineColor, lineWidth)
-      // game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor)
-      // game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
       /**
-       * Adds circle to media queue
+       * Adds circle to media queue <br><br>
+       * 
+       * game.add.graphic.circle(x, y, diameter) <br>
+       * game.add.graphic.circle(x, y, diameter, lineColor) <br>
+       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth) <br>
+       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor) <br>
+       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
        * 
        * @param {number} x default x coordinate for the circle center
        * @param {number} y default y coordinate for the circle center
@@ -453,14 +456,15 @@ const game = {
           return med;
         }
       },
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd)
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise)
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor)
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth)
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor)
-      // game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
       /**
-       * Adds arc to media queue
+       * Adds arc to media queue <br><br>
+       * 
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd) <br>
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise) <br>
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor) <br>
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth) <br>
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor) <br>
+       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
        * 
        * @param {number} x default x coordinate for the arc center
        * @param {number} y default y coordinate for the arc center
@@ -525,6 +529,7 @@ const game = {
         }
       }
     },
+    // [Not directly used]
     _default: {
       // All media
       x: 0,
@@ -562,14 +567,14 @@ const game = {
   },
 
   /**
-   * Renders media on current screen
+   * Renders media on current screen <br>
    * Uses properties of html canvas to draw media on screen during game loop
    * 
    * @namespace
    */
   render: {
-    queue: [], // Media queue to be rendered by the current state
-    /**
+    queue: [], // [Not directly used] Media queue to be rendered by the current state
+    /** [Not directly used] 
      * Renders image on canvas
      * 
      * @param {object} cur current media in media queue
@@ -596,7 +601,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /**
+    /** [Not directly used] 
      * Renders spritesheet on canvas
      * 
      * @param {object} cur current media in media queue
@@ -627,7 +632,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /**
+    /** [Not directly used] 
      * Renders text on canvas
      * 
      * @param {object} cur current media in media queue
@@ -651,7 +656,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /**
+    /**[Not directly used] 
      * Renders geometric shapes
      * 
      * @namespace
@@ -731,9 +736,8 @@ const game = {
         if (cur.rotate && cur.rotate != 0) context.restore();
       },
     },
-    // game.render.all()
     /**
-     * Renders all queued media on screen (called during game loop)
+     * Renders all queued media on screen (called during game loop) <br><br>
      */
     all: function () {
       game.render.queue.forEach(cur => {
@@ -746,9 +750,8 @@ const game = {
         }
       });
     },
-    // game.render.clear()
     /**
-     * Clears all queued media (used when changing states)
+     * Clears all queued media (used when changing states) <br><br>
      */
     clear: function () {
       game.render.queue = [];
@@ -828,14 +831,13 @@ const game = {
 
   /**
    * Timer used to get the time spent to complete a game
-   *
+   * 
    * @namespace
    */
   timer: {
-    _start: 0,	// Start time
-    _end: 0,	// End time
-    elapsed: 0, // Elapsed time
-    // game.timer.start()
+    _start: 0,	// [Not directly used] Start time
+    _end: 0,	// [Not directly used] End time
+    elapsed: 0, // [Not directly used] Elapsed time
     /**
      * Start timer
      */
@@ -843,7 +845,6 @@ const game = {
       game.timer._start = game.timer._end = game.timer._elapsed = 0; // Clear
       game.timer._start = new Date().getTime(); // Set start time
     },
-    // game.timer.stop()
     /**
      * Stop timer
      */
@@ -862,7 +863,7 @@ const game = {
    * @namespace
    */
   event: {
-    _list: [], // List of events in current state
+    _list: [], // [Not directly used] List of events in current state
     /**
      * Create events
      * 
@@ -873,8 +874,7 @@ const game = {
       canvas.addEventListener(name, func);
       game.event._list.push([name, func]);
     },
-    // game.event.clear()
-    /**
+    /** [Not directly used] 
      * Clear list of events
      */
     clear: function () {
@@ -885,22 +885,23 @@ const game = {
     },
   },
 
-  /** Game loop - Handles repetition of function update() and sprite animation
-   * After the media queue is filled in create(), the game loop starts
+  /** [Not directly used] 
+   * Game loop - Handles repetition of function update() and sprite animation <br>
+   * After the media queue is filled in create(), the game loop starts <br>
    * It calls update() iteratively and rerenders the screen
-   * 
+   *
    * @namespace
    */
   loop: {
-    id: undefined, // Holds animation event
-    curState: undefined, // State that called the loop
-    status: 'off', // Loop status can be : 'on', 'ending' or 'off'
-    waitingToStart: undefined,
-    startTime: 0,
-    duration: 1000 / 60, // 1000: 1 second | 60: expected frames per second
-    // game.loop.start(<state>)
-    /**
+    id: undefined, // [Not directly used] Holds animation event
+    curState: undefined, // [Not directly used] State that called the loop
+    status: 'off', // [Not directly used] Loop status can be : 'on', 'ending' or 'off'
+    waitingToStart: undefined, // [Not directly used]
+    startTime: 0, // [Not directly used]
+    duration: 1000 / 60, // [Not directly used] 1000: 1 second | 60: expected frames per second
+    /** [Not directly used] 
      * Start game loop
+     * 
      * @param {object} state current state
      */
     start: function (state) {
@@ -914,14 +915,15 @@ const game = {
         if (game.loop.status == 'on') game.loop.stop();
       }
     },
-    // game.loop.stop()
     /**
+     * [Not directly used] 
      * Stop game loop
      */
     stop: function () {
       if (game.loop.status == 'on') game.loop.status = 'ending';
     },
     /**
+     * [Not directly used] 
      * Execute game loop
      */
     _run: function () {
@@ -945,6 +947,7 @@ const game = {
       }
     },
     /**
+     * [Not directly used] 
      * Resets game loop values 
      */
     _clear: function () {
@@ -964,16 +967,15 @@ const game = {
   },
 
   /**
-   * Handles spritesheet animation
-   * Called by game loop
+   * Handles spritesheet animation <br>
+   * Called by game loop <br>
    * Changes through frames in queued spritesheets 
    * 
    * @namespace
    */
   animation: {
-    queue: [], // Animation queue for current level
-    count: 0,
-    // game.animation.play(<animationName>)
+    queue: [], // [Not directly used] Animation queue for current level
+    count: 0, // [Not directly used]
     /**
      * Play animation
      * 
@@ -991,7 +993,6 @@ const game = {
       // If found, saves object in game.animation.queue
       if (newAnimation != undefined) game.animation.queue.push(newAnimation);
     },
-    // game.animation.stop(<animationName>)
     /**
      * Stop animation
      * 
@@ -1006,6 +1007,7 @@ const game = {
       });
     },
     /**
+     * [Not directly used] 
      * Executes animation
      */
     _run: function () {
@@ -1023,9 +1025,11 @@ const game = {
       });
       game.animation.count++;
     },
-    // game.animation.clear()
     /**
-     * Clear animation queue
+     * [Not directly used] 
+     * Clear animation queue <br><br>
+     * 
+     * game.animation.clear()
      */
     clear: function () {
       // Resets animation count
@@ -1041,19 +1045,19 @@ const game = {
     },
   },
 
-  /** Handles game states
-   * When an state is associated with an object, its preload(), create() and update() functions 
-   * will be executed acconrding to these rules:
-   *	* preload() : first function to be called when state is called. Loads media. Runs only once.(optional)
-   *  * create() : called right after preload(). Where the main code goes. Runs only once.
+  /** 
+   * Handles game states <br>
+   * When an state is associated with an object, its preload(), create() and update() functions <br>
+   * will be executed acconrding to these rules: <br>
+   *	* preload() : first function to be called when state is called. Loads media. Runs only once.(optional) <br>
+   *  * create() : called right after preload(). Where the main code goes. Runs only once. <br>
    *  * update() : called right after create(). Is iteratively called by game loop until end of the state. (optional)
    *
    * @namespace 
    */
   state: {
-    list: [],
-    name: undefined,
-    // game.state.add(<newStateName>,<state>)
+    list: [], // [Not directly used]
+    name: undefined, // [Not directly used]
     /**
      * Create new state
      * 
@@ -1063,7 +1067,6 @@ const game = {
     add: function (name, obj) {
       game.state.list[name] = obj;
     },
-    // game.state.start(<stateName>)
     /**
      * Start new state
      * 
@@ -1080,6 +1083,7 @@ const game = {
       else game.state._create();
     },
     /**
+     * [Not directly used] 
      * Encapsulate create() function in the current state
      */
     _create: function () {

@@ -339,7 +339,7 @@ const endState = {
 
       } else {
 
-        animate = false;
+        self.animate = false;
         completedLevels = 0;
         game.animation.stop(self.character.animation[0]);
         game.state.start('menu');

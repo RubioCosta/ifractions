@@ -119,7 +119,7 @@ const squareTwo = {
     let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in A
     let lineColor = colors.darkRed;
     let fillColor = colors.lightRed;
-    
+
     // Create blocks
     for (let i = 0; i < totalBlocksA; i++) {
       const x = xA + i * blockWidth;
