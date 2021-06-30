@@ -80,6 +80,13 @@ let gameDifficulty;
  * @type {boolean}
  */
 const debugMode = false;
+// MOODLE MODIF.
+/**
+ * defines if the game is suposed to run online or on moodle
+ * if true, on moodle
+ * if false, online
+ */
+const moodle = false;
 /**
  * Turns game audio ON/OFF
  * @type {boolean}
@@ -253,7 +260,7 @@ const textStyles = {
   h2_brown: { font: '26px Arial,sans-serif', fill: colors.darkRed, align: 'center' }, // Map difficulty label
   h4_brown: { font: '20px Arial,sans-serif', fill: colors.darkRed, align: 'center' }, // Menu overtitle
   p_brown: { font: '14px Arial,sans-serif', fill: colors.darkRed, align: 'center' }, // Map difficulty label
-  
+
   h2_blue_2: { font: '26px Arial,sans-serif', fill: colors.blue, align: 'center' }, // Menu subtitle
   h4_blue_2: { font: '20px Arial,sans-serif', fill: colors.blue, align: 'center' }, // Menu subtitle
   h2_blue: { font: '26px Arial,sans-serif', fill: colors.darkBlue, align: 'center' }, // Fractions
@@ -536,34 +543,45 @@ const navigationIcons = {
  */
 const sendToDB = function (extraData) {
 
-  // Create some variables we need to send to our PHP file
-  // Attention: this names must be compactible to data table (MySQL server)
-  // @see php/save.php
-  const data = 'line_ip=143.107.45.11' // INSERT database server IP
-    + '&line_name=' + playerName
-    + '&line_lang=' + langstring
-    + extraData;
+  // MOODLE MODIF.
+  if (moodle) {
 
-  const url = 'php/save.php';
+    if (self.result) moodleVar.hits[mapPosition - 1]++;
+    else moodleVar.errors[mapPosition - 1]++;
 
-  const hr = new XMLHttpRequest();
+    moodleVar.time[mapPosition - 1] += game.timer.elapsed;
 
-  hr.open('POST', url, true);
+  } else {
 
-  hr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // Create some variables we need to send to our PHP file
+    // Attention: this names must be compactible to data table (MySQL server)
+    // @see php/save.php
+    const data = 'line_ip=143.107.45.11' // INSERT database server IP
+      + '&line_name=' + playerName
+      + '&line_lang=' + langstring
+      + extraData;
 
-  hr.onreadystatechange = function () {
-    if (debugMode) console.log(hr);
-    if (hr.readyState == 4 && hr.status == 200) {
-      if (debugMode) console.log(hr.responseText);
+    const url = 'php/save.php';
+
+    const hr = new XMLHttpRequest();
+
+    hr.open('POST', url, true);
+
+    hr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    hr.onreadystatechange = function () {
+      if (debugMode) console.log(hr);
+      if (hr.readyState == 4 && hr.status == 200) {
+        if (debugMode) console.log(hr.responseText);
+      }
     }
+
+    hr.send(data); // Actually execute the request
+
+    if (debugMode) {
+      console.log('processing...');
+      console.log(data);
+    }
+
   }
-
-  hr.send(data); // Actually execute the request
-
-  if (debugMode) {
-    console.log('processing...');
-    console.log(data);
-  }
-
 };

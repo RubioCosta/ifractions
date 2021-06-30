@@ -21,91 +21,104 @@ const menuState = {
    */
   create: function () {
 
-    // Background color
-    game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
-    // Floor
-    for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
+    // MOODLE MODIF.
+    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
 
-    // Overtitle: Welcome, <player name>!
-    game.add.text(defaultWidth / 2, 40, game.lang.welcome + ', ' + playerName + '!', textStyles.h4_brown);
-    // Title : Select a game
-    game.add.text(defaultWidth / 2, 80, game.lang.menu_title, textStyles.h1_green);
-    // Subtitle : <game mode> 
-    this.lbl_game = game.add.text(defaultWidth / 2, 110, '', textStyles.h2_blue_2);
+      playerName = 'Aluno'; // TODO pegar o nome do aluno no bd do moodle
+      getiLMContent();
 
-    // Loads navigation icons
-    navigationIcons.func_addIcons(
-      false, false, false,
-      true, true,
-      false, false);
+    } else {
 
-    // INFO ICONS
+      // MOODLE MODIF.
+      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = 'Professor';
 
-    this.menuIcons = [];
-    let infoIcon;
+      // Background color
+      game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+      // Floor
+      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
 
-    // --------------------------- GAME ICONS 
+      // Overtitle: Welcome, <player name>!
+      game.add.text(defaultWidth / 2, 40, game.lang.welcome + ', ' + playerName + '!', textStyles.h4_brown);
+      // Title : Select a game
+      game.add.text(defaultWidth / 2, 80, game.lang.menu_title, textStyles.h1_green);
+      // Subtitle : <game mode> 
+      this.lbl_game = game.add.text(defaultWidth / 2, 110, '', textStyles.h2_blue_2);
 
-    const offset = defaultWidth / (info.gameType.length + 1);
+      // Loads navigation icons
+      navigationIcons.func_addIcons(
+        false, false, false,
+        true, true,
+        false, false);
 
-    for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
+      // INFO ICONS
 
-      const icon = game.add.image(x, defaultHeight / 2 - 70, info.gameTypeUrl[i], 1);
-      icon.anchor(0.5, 0.5);
+      this.menuIcons = [];
+      let infoIcon;
 
-      icon.gameShape = info.gameShape[i];
-      icon.gameType = info.gameType[i];
-      icon.iconType = 'game';
+      // --------------------------- GAME ICONS 
 
-      this.menuIcons.push(icon);
+      const offset = defaultWidth / (info.gameType.length + 1);
 
-      // "more information" button
-      infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.6);
-      infoIcon.anchor(0.5, 0.5);
-      infoIcon.iconType = 'infoIcon';
-      infoIcon.id = icon.gameType;
-      this.menuIcons.push(infoIcon);
+      for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
 
-    }
+        const icon = game.add.image(x, defaultHeight / 2 - 70, info.gameTypeUrl[i], 1);
+        icon.anchor(0.5, 0.5);
 
-    // --------------------------- INFO BOX
+        icon.gameShape = info.gameShape[i];
+        icon.gameType = info.gameType[i];
+        icon.iconType = 'game';
 
-    this.infoBox = document.getElementById('myModal');
+        this.menuIcons.push(icon);
 
-    // When the user clicks on the 'x', close the modal
-    document.getElementsByClassName('close')[0].onclick = function () {
-      self.infoBox.style.display = 'none';
-    }
+        // "more information" button
+        infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.6);
+        infoIcon.anchor(0.5, 0.5);
+        infoIcon.iconType = 'infoIcon';
+        infoIcon.id = icon.gameType;
+        this.menuIcons.push(infoIcon);
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == self.infoBox) {
+      }
+
+      // --------------------------- INFO BOX
+
+      this.infoBox = document.getElementById('myModal');
+
+      // When the user clicks on the 'x', close the modal
+      document.getElementsByClassName('close')[0].onclick = function () {
         self.infoBox.style.display = 'none';
       }
-    }
 
-    this.infoBoxContent = {
-      squareOne: {
-        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' I',
-        body: game.lang.infoBox_squareOne,
-        img: '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
-      },
-      squareTwo: {
-        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
-        body: game.lang.infoBox_squareTwo,
-        img: '<center> <img width=400 src="./assets/img/info-box/s2.png"> </center>',
-      },
-      circleOne: {
-        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.circle + ' I',
-        body: game.lang.infoBox_circleOne,
-        img: '<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == self.infoBox) {
+          self.infoBox.style.display = 'none';
+        }
       }
-    };
 
-    // ------------- EVENTS
+      this.infoBoxContent = {
+        squareOne: {
+          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' I',
+          body: game.lang.infoBox_squareOne,
+          img: '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
+        },
+        squareTwo: {
+          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
+          body: game.lang.infoBox_squareTwo,
+          img: '<center> <img width=400 src="./assets/img/info-box/s2.png"> </center>',
+        },
+        circleOne: {
+          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.circle + ' I',
+          body: game.lang.infoBox_circleOne,
+          img: '<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+        }
+      };
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+      // ------------- EVENTS
+
+      game.event.add('click', this.func_onInputDown);
+      game.event.add('mousemove', this.func_onInputOver);
+
+    }
 
   },
 

@@ -22,8 +22,17 @@ const bootState = {
    * Main code
    */
   create: function () {
+
     // Calls first screen seen by the player
-    game.state.start('lang');
+
+    // MOODLE MODIF.
+    if (moodle) {
+      loadLangState.firstTime = false;
+      langString = 'pt_BR';
+      game.state.start('loadLang');
+    } else {
+      game.state.start('lang');
+    }
   }
 };
 
@@ -286,8 +295,9 @@ const nameState = {
     if (audioStatus) game.audio.beepSound.play();
     if (debugMode) console.log('Username: ' + playerName);
 
+    // MOODLE MODIF.
     // Calls 'menu' state
-    game.state.start('menu');
+    if (!moodle) game.state.start('menu');
   }
 
 };

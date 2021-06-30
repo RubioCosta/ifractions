@@ -21,239 +21,251 @@ const customMenuState = {
    */
   create: function () {
 
-    const iconScale = 0.7;
-    const baseY = 270 - 40;
-    this.menuIcons = [];
-
-    // Background color
-    game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
-    // Floor
-    for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
-
-    // Overtitle : Selected game
-    game.add.text(defaultWidth / 2, 40, game.lang.game + ": " + menuState.menuIcons, textStyles.h4_brown);
-    // Title : Customize the selected game
-    game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
-
-    // Loads navigation icons
-    navigationIcons.func_addIcons(
-      true, false, false,
-      true, true,
-      'menu', false);
-
-    let x = 150;
-    let y = 200 - 40;
-    let width = 5;
-    let height = 280 + 80;
-    let offsetW = 600 / 6;
-    let offsetH, infoIcon;
-
-    // Label 'Game Mode'
-    game.add.text(x + offsetW - 12, y, game.lang.game_mode, textStyles.h2_blue_2);
-
-    infoIcon = game.add.image(x + 2 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
-    infoIcon.anchor(0.5, 0.5);
-    infoIcon.iconType = 'infoIcon';
-    infoIcon.id = 'gameMode';
-    this.menuIcons.push(infoIcon);
-
-    // Label 'Operation'
-    game.add.text(x + 3 * offsetW, y, game.lang.operation, textStyles.h2_blue_2);
-
-    infoIcon = game.add.image(x + 4 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
-    infoIcon.anchor(0.5, 0.5);
-    infoIcon.iconType = 'infoIcon';
-    infoIcon.id = 'gameOperation';
-    this.menuIcons.push(infoIcon);
-
-    // Label 'Difficulty'
-    game.add.text(x + 5 * offsetW, y, game.lang.difficulty, textStyles.h2_blue_2);
-
-    infoIcon = game.add.image(x + 6 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
-    infoIcon.anchor(0.5, 0.5);
-    infoIcon.iconType = 'infoIcon';
-    infoIcon.id = 'gameDifficulty';
-    this.menuIcons.push(infoIcon);
-
-    // Horizontal line
-    game.add.graphic.rect(x - 25, y + 10, 600 + 50, width, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
-    // Vertical lines
-    game.add.graphic.rect(x + 2 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
-    game.add.graphic.rect(x + 4 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
-
-    // --------------------------- TURN ON/OFF FRACTION LABELS / RECTANGLE GUIDE
-
-    // Horizontal line
-    game.add.graphic.rect(x + 4 * offsetW, y + 136, 200 + 25, width, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
-
-    // Label 'Show Fractions / Auxiliar rectangles'
-    game.add.text(x + 5 * offsetW, y + 102, game.lang.show, textStyles.h4_blue_2);
-
-    infoIcon = game.add.image(x + 6 * offsetW + 20, y + 102, 'info', 0.5, 0.6);
-    infoIcon.anchor(0.5, 0.5);
-    infoIcon.iconType = 'infoIcon';
-    infoIcon.id = 'gameMisc';
-    this.menuIcons.push(infoIcon);
-
-    let auxText;
-    if (gameTypeString == 'squareTwo') {
-      auxText = game.lang.aux_rectangle;
-      game.add.text(x + 5 * offsetW + 10, y + 102 + 24, auxText, textStyles.h4_blue_2);
+    // MOODLE MODIF.
+    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+      game.state.start('map');
     } else {
-      auxText = game.lang.title;
-      game.add.text(x + 5 * offsetW, y + 102 + 24, auxText, textStyles.h2_blue_2);
-    }
 
-    // Selection box
-    y += 40;
-    const frame = (fractionLabel) ? 1 : 0;
+      const iconScale = 0.7;
+      const baseY = 270 - 40;
+      this.menuIcons = [];
 
-    const selectionBox = game.add.sprite(x + 5 * offsetW, y + 102 + 24 - 2, 'select', frame, 0.11);
-    selectionBox.anchor(0.5, 0.5);
-    selectionBox.iconType = 'selectionBox';
-    this.menuIcons.push(selectionBox);
+      // Background color
+      game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+      // Floor
+      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
 
-    // --------------------------- GAME MODE ICONS
+      // Overtitle : Selected game
+      game.add.text(defaultWidth / 2, 40, game.lang.game + ": " + menuState.menuIcons, textStyles.h4_brown);
+      // Title : Customize the selected game
+      game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
 
-    x = 150 + offsetW;
-    y = baseY;
-    offsetH = this.func_getOffset(height, info[gameTypeString].gameModeType.length);
+      // Loads navigation icons
+      navigationIcons.func_addIcons(
+        true, false, false,
+        true, true,
+        'menu', false);
 
-    for (let i = 0; i < info[gameTypeString].gameModeTypeUrl.length; i++, y += offsetH) {
-      const icon = game.add.sprite(x, y, info[gameTypeString].gameModeTypeUrl[i], 0, iconScale, 1);
-      icon.anchor(0.5, 0.5);
+      let x = 150;
+      let y = 200 - 40;
+      let width = 5;
+      let height = 280 + 80;
+      let offsetW = 600 / 6;
+      let offsetH, infoIcon;
 
-      icon.gameModeType = info[gameTypeString].gameModeType[i];
-      icon.iconType = 'gameMode';
-      if (i == 0) {
-        gameModeType = icon.gameModeType;
-        icon.curFrame = 1;
+      // Label 'Game Mode'
+      game.add.text(x + offsetW - 12, y, game.lang.game_mode, textStyles.h2_blue_2);
+
+      infoIcon = game.add.image(x + 2 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon.anchor(0.5, 0.5);
+      infoIcon.iconType = 'infoIcon';
+      infoIcon.id = 'gameMode';
+      this.menuIcons.push(infoIcon);
+
+      // Label 'Operation'
+      game.add.text(x + 3 * offsetW, y, game.lang.operation, textStyles.h2_blue_2);
+
+      infoIcon = game.add.image(x + 4 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon.anchor(0.5, 0.5);
+      infoIcon.iconType = 'infoIcon';
+      infoIcon.id = 'gameOperation';
+      this.menuIcons.push(infoIcon);
+
+      // Label 'Difficulty'
+      game.add.text(x + 5 * offsetW, y, game.lang.difficulty, textStyles.h2_blue_2);
+
+      infoIcon = game.add.image(x + 6 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon.anchor(0.5, 0.5);
+      infoIcon.iconType = 'infoIcon';
+      infoIcon.id = 'gameDifficulty';
+      this.menuIcons.push(infoIcon);
+
+      // Horizontal line
+      game.add.graphic.rect(x - 25, y + 10, 600 + 50, width, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
+      // Vertical lines
+      game.add.graphic.rect(x + 2 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
+      game.add.graphic.rect(x + 4 * offsetW, y - 25, width, height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
+
+      // --------------------------- TURN ON/OFF FRACTION LABELS / RECTANGLE GUIDE
+
+      // Horizontal line
+      game.add.graphic.rect(x + 4 * offsetW, y + 136, 200 + 25, width, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
+
+      // Label 'Show Fractions / Auxiliar rectangles'
+      game.add.text(x + 5 * offsetW, y + 102, game.lang.show, textStyles.h4_blue_2);
+
+      infoIcon = game.add.image(x + 6 * offsetW + 20, y + 102, 'info', 0.5, 0.6);
+      infoIcon.anchor(0.5, 0.5);
+      infoIcon.iconType = 'infoIcon';
+      infoIcon.id = 'gameMisc';
+      this.menuIcons.push(infoIcon);
+
+      let auxText;
+      if (gameTypeString == 'squareTwo') {
+        auxText = game.lang.aux_rectangle;
+        game.add.text(x + 5 * offsetW + 10, y + 102 + 24, auxText, textStyles.h4_blue_2);
+      } else {
+        auxText = game.lang.title;
+        game.add.text(x + 5 * offsetW, y + 102 + 24, auxText, textStyles.h2_blue_2);
       }
 
-      this.menuIcons.push(icon);
-    }
+      // Selection box
+      y += 40;
+      const frame = (fractionLabel) ? 1 : 0;
 
-    // --------------------------- GAME OPERATION ICONS
+      const selectionBox = game.add.sprite(x + 5 * offsetW, y + 102 + 24 - 2, 'select', frame, 0.11);
+      selectionBox.anchor(0.5, 0.5);
+      selectionBox.iconType = 'selectionBox';
+      this.menuIcons.push(selectionBox);
 
-    x += 2 * offsetW;
-    y = baseY;
-    offsetH = this.func_getOffset(height, info[gameTypeString].gameOperationType.length);
+      // --------------------------- GAME MODE ICONS
 
-    let icon;
-    let aux = [];
-    aux['squareOne'] = [
-      ['operation_plus', 'Plus'],
-      ['operation_minus', 'Minus']
-    ];
-    aux['circleOne'] = [
-      ['operation_plus', 'Plus'],
-      ['operation_minus', 'Minus'],
-      ['operation_mixed', 'Mixed']
-    ];
-    aux['squareTwo'] = [
-      ['operation_equals', 'Equals'],
-    ];
+      x = 150 + offsetW;
+      y = baseY;
+      offsetH = this.func_getOffset(height, info[gameTypeString].gameModeType.length);
 
-    // Placing math operation icons
-    for (let i = 0; i < aux[gameTypeString].length; i++, y += offsetH) {
-      icon = game.add.sprite(x, y, aux[gameTypeString][i][0], 0, iconScale, 1);
-      icon.anchor(0.5, 0.5);
+      for (let i = 0; i < info[gameTypeString].gameModeTypeUrl.length; i++, y += offsetH) {
+        const icon = game.add.sprite(x, y, info[gameTypeString].gameModeTypeUrl[i], 0, iconScale, 1);
+        icon.anchor(0.5, 0.5);
 
-      icon.gameOperationType = aux[gameTypeString][i][1];
-      icon.iconType = 'gameOperation';
+        icon.gameModeType = info[gameTypeString].gameModeType[i];
+        icon.iconType = 'gameMode';
+        if (i == 0) {
+          gameModeType = icon.gameModeType;
+          icon.curFrame = 1;
+        }
 
-      if (i == 0) {
-        gameOperationType = icon.gameOperationType;
-        icon.curFrame = 1;
+        this.menuIcons.push(icon);
       }
 
-      this.menuIcons.push(icon);
-    }
+      // --------------------------- GAME OPERATION ICONS
 
-    // --------------------------- DIFFICULTY ICONS
+      x += 2 * offsetW;
+      y = baseY;
+      offsetH = this.func_getOffset(height, info[gameTypeString].gameOperationType.length);
 
-    x = (gameTypeString == 'squareOne') ? 625 : 585;
-    y = baseY - 25;
+      let icon;
+      let aux = [];
+      aux['squareOne'] = [
+        ['operation_plus', 'Plus'],
+        ['operation_minus', 'Minus']
+      ];
+      aux['circleOne'] = [
+        ['operation_plus', 'Plus'],
+        ['operation_minus', 'Minus'],
+        ['operation_mixed', 'Mixed']
+      ];
+      aux['squareTwo'] = [
+        ['operation_equals', 'Equals'],
+      ];
 
-    for (let i = 0; i < info[gameTypeString].gameDifficulty; i++) {
-      // Parameters
-      const curX = x + (30 + 10) * i;
+      // Placing math operation icons
+      for (let i = 0; i < aux[gameTypeString].length; i++, y += offsetH) {
+        icon = game.add.sprite(x, y, aux[gameTypeString][i][0], 0, iconScale, 1);
+        icon.anchor(0.5, 0.5);
 
-      // Difficulty menuIcons
-      const icon = game.add.graphic.rect(curX, y, 30, 30, undefined, 0, colors.gray, 1);
-      icon.anchor(0.5, 0.5);
-      icon.difficulty = i + 1;
-      icon.iconType = 'difficulty';
+        icon.gameOperationType = aux[gameTypeString][i][1];
+        icon.iconType = 'gameOperation';
 
-      if (i == 0) {
-        gameDifficulty = icon.difficulty;
-        icon.fillColor = colors.blue;
+        if (i == 0) {
+          gameOperationType = icon.gameOperationType;
+          icon.curFrame = 1;
+        }
+
+        this.menuIcons.push(icon);
       }
-      this.menuIcons.push(icon);
 
-      // Difficulty numbers
-      game.add.text(curX, y + 7, i + 1, textStyles.h4_white);
-    }
+      // --------------------------- DIFFICULTY ICONS
 
-    // --------------------------- ENTER ICON
+      x = (gameTypeString == 'squareOne') ? 625 : 585;
+      y = baseY - 25;
 
-    x = defaultWidth - 100;
-    y = defaultHeight - 110;
+      for (let i = 0; i < info[gameTypeString].gameDifficulty; i++) {
+        // Parameters
+        const curX = x + (30 + 10) * i;
 
-    const enterIcon = game.add.image(x, y, 'bush');
-    enterIcon.anchor(0.5, 0.5);
-    enterIcon.iconType = 'enter';
+        // Difficulty menuIcons
+        const icon = game.add.graphic.rect(curX, y, 30, 30, undefined, 0, colors.gray, 1);
+        icon.anchor(0.5, 0.5);
+        icon.difficulty = i + 1;
+        icon.iconType = 'difficulty';
 
-    this.menuIcons.push(enterIcon);
+        if (i == 0) {
+          gameDifficulty = icon.difficulty;
+          icon.fillColor = colors.blue;
+        }
+        this.menuIcons.push(icon);
 
-    this.enterText = game.add.text(x, y, game.lang.continue, textStyles.h4_white);
+        // Difficulty numbers
+        game.add.text(curX, y + 7, i + 1, textStyles.h4_white);
+      }
 
-    // --------------------------- INFO BOX
+      // --------------------------- ENTER ICON
 
-    this.infoBox = document.getElementById('myModal');
+      // MOODLE MODIF.
+      if (!moodle) {
 
-    // When the user clicks on the 'x', close the modal
-    document.getElementsByClassName('close')[0].onclick = function () {
-      self.infoBox.style.display = 'none';
-    }
+        x = defaultWidth - 100;
+        y = defaultHeight - 110;
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-      if (event.target == self.infoBox) {
+        const enterIcon = game.add.image(x, y, 'bush');
+        enterIcon.anchor(0.5, 0.5);
+        enterIcon.iconType = 'enter';
+
+        this.menuIcons.push(enterIcon);
+
+        this.enterText = game.add.text(x, y, game.lang.continue, textStyles.h4_white);
+
+      }
+
+      // --------------------------- INFO BOX
+
+      this.infoBox = document.getElementById('myModal');
+
+      // When the user clicks on the 'x', close the modal
+      document.getElementsByClassName('close')[0].onclick = function () {
         self.infoBox.style.display = 'none';
       }
-    }
 
-    this.infoBoxContent = {
-      gameMode: {
-        title: '<b>' + game.lang.game_mode + '</b>',
-        body: game.lang.infoBox_mode,
-        img: '' // '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
-      },
-      gameOperation: {
-        title: '<b>' + game.lang.operation + '</b>',
-        body: game.lang.infoBox_oper,
-        img: '<center> <img width=50 src="./assets/img/info-box/operation_plus.png"> ' + game.lang.plus +
-        ' <img width=50 src="./assets/img/info-box/operation_minus.png"> ' + game.lang.minus +
-        ' <img width=50 src="./assets/img/info-box/operation_mixed.png"> ' + game.lang.mixed +
-        ' <img width=50 src="./assets/img/info-box/operation_equals.png"> ' + game.lang.equals + ' </center>',
-      },
-      gameDifficulty: {
-        title: '<b>' + game.lang.difficulty + '</b>',
-        body: game.lang.infoBox_diff,
-        img: '<center> <img width=150 src="./assets/img/info-box/dif-1.png"><img width=150 src="./assets/img/info-box/dif-5.png">'
-      },
-      gameMisc: {
-        title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-        body: game.lang.infoBox_misc,
-        img: '' //'<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == self.infoBox) {
+          self.infoBox.style.display = 'none';
+        }
       }
-    };
 
-    // ------------- EVENTS
+      this.infoBoxContent = {
+        gameMode: {
+          title: '<b>' + game.lang.game_mode + '</b>',
+          body: game.lang.infoBox_mode,
+          img: '' // '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
+        },
+        gameOperation: {
+          title: '<b>' + game.lang.operation + '</b>',
+          body: game.lang.infoBox_oper,
+          img: '<center> <img width=50 src="./assets/img/info-box/operation_plus.png"> ' + game.lang.plus +
+            ' <img width=50 src="./assets/img/info-box/operation_minus.png"> ' + game.lang.minus +
+            ' <img width=50 src="./assets/img/info-box/operation_mixed.png"> ' + game.lang.mixed +
+            ' <img width=50 src="./assets/img/info-box/operation_equals.png"> ' + game.lang.equals + ' </center>',
+        },
+        gameDifficulty: {
+          title: '<b>' + game.lang.difficulty + '</b>',
+          body: game.lang.infoBox_diff,
+          img: '<center> <img width=150 src="./assets/img/info-box/dif-1.png"><img width=150 src="./assets/img/info-box/dif-5.png">'
+        },
+        gameMisc: {
+          title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+          body: game.lang.infoBox_misc,
+          img: '' //'<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+        }
+      };
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+      // ------------- EVENTS
+
+      game.event.add('click', this.func_onInputDown);
+      game.event.add('mousemove', this.func_onInputOver);
+
+    }
 
   },
 

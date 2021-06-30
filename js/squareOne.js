@@ -67,11 +67,21 @@ const squareOne = {
     for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
 
     // Calls function that loads navigation icons
-    navigationIcons.func_addIcons(
-      true, true, true,   // Left icons
-      true, false,        // Right icons
-      'customMenu', this.func_viewHelp
-    );
+
+    // MOODLE MODIF.
+    if (moodle) {
+      navigationIcons.func_addIcons(
+        false, false, false, // Left icons
+        true, false,         // Right icons
+        false, false
+      );
+    } else {
+      navigationIcons.func_addIcons(
+        true, true, true,   // Left icons
+        true, false,        // Right icons
+        'customMenu', this.func_viewHelp
+      );
+    }
 
     // TRACTOR 
     this.tractor = game.add.sprite(this.startX, 445, 'tractor', 0, 0.8);
@@ -393,7 +403,7 @@ const squareOne = {
         }
 
         self.floor.index = -1;
-      // On game mode B
+        // On game mode B
       } else {
         for (let i in self.stck.blocks) {
           self.stck.blocks[i].alpha = 0.5; // Back to normal
@@ -665,7 +675,10 @@ const squareOne = {
       + ', valBlocks: ' + self.divisorsList // Ends in ','
       + ' blockIndex: ' + self.stck.index
       + ', floorIndex: ' + self.floor.index;
-    sendToDB(data);
+
+    // MOODLE MODIF.  
+    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
+    else sendToDB(data);
   },
 
 };

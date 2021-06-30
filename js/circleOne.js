@@ -30,7 +30,7 @@
  *
  * @namespace
  */
-const circleOne = {
+ const circleOne = {
 
   /**
    * Main code
@@ -80,11 +80,21 @@ const circleOne = {
     this.trace.alpha = 0;
 
     // Calls function that loads navigation icons
-    navigationIcons.func_addIcons(
-      true, true, true, // Left buttons
-      true, false,      // Right buttons
-      'customMenu', this.func_viewHelp
-    );
+
+    // MOODLE MODIF.
+    if (moodle) {
+      navigationIcons.func_addIcons(
+        false, false, false, // Left buttons
+        true, false,         // Right buttons
+        false, false
+      );
+    } else {
+      navigationIcons.func_addIcons(
+        true, true, true, // Left buttons
+        true, false,      // Right buttons
+        'customMenu', this.func_viewHelp
+      );
+    }
 
     // CIRCLES AND FRACTIONS
     this.circles = {
@@ -593,6 +603,9 @@ const circleOne = {
       + ', valCircles: ' + self.divisorsList
       + ' balloonX: ' + self.basket.x
       + ', selIndex: ' + self.fractionIndex;
-    sendToDB(data);
+
+    // MOODLE MODIF.
+    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
+    else sendToDB(data);
   }
 };

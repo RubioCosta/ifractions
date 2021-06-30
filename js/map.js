@@ -17,9 +17,19 @@ const mapState = {
     game.add.image(0, 40, 'bgmap');
 
     // Calls function that loads navigation icons
-    navigationIcons.func_addIcons(true, true, false, // Left icons
-      false, false, // Right icons
-      'customMenu', false);
+
+    // MOODLE MODIF.
+    if (moodle) {
+      navigationIcons.func_addIcons(
+        false, false, false, // Left icons
+        false, false,        // Right icons
+        false, false);
+    } else {
+      navigationIcons.func_addIcons(
+        true, true, false, // Left icons
+        false, false,      // Right icons
+        'customMenu', false);
+    }
 
     // Progress bar
     const percentText = 4 * 25;
@@ -342,7 +352,9 @@ const endState = {
         self.animate = false;
         completedLevels = 0;
         game.animation.stop(self.character.animation[0]);
-        game.state.start('menu');
+
+        // MOODLE MODIF.
+        if (!moodle) game.state.start('menu');
 
       }
 

@@ -71,10 +71,19 @@ const squareTwo = {
     for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
 
     // Calls function that loads navigation icons
-    navigationIcons.func_addIcons(
-      true, true, false,
-      true, false,
-      'customMenu', false);
+
+    // MOODLE MODIF.
+    if (moodle) {
+      navigationIcons.func_addIcons(
+        false, false, false, // Left buttons
+        true, false,         // Right buttons
+        false, false);
+    } else {
+      navigationIcons.func_addIcons(
+        true, true, false, // Left buttons
+        true, false,       // Right buttons
+        'customMenu', false);
+    }
 
     // Add kid
     this.kidAnimation = game.add.sprite(100, 470, 'kid_standing', 5, 0.8);
@@ -461,7 +470,10 @@ const squareTwo = {
       + ', valueA: ' + self.A.selected
       + ', numBlocksB: ' + self.B.blocks.length
       + ', valueB: ' + self.B.selected;
-    sendToDB(data);
+
+    // MOODLE MODIF.
+    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
+    else sendToDB(data);
   }
 
 };
