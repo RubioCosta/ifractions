@@ -23,3 +23,19 @@ show=Mostrar
 square=Quadriláteros
 title=Frações
 welcome=Olá
+
+infoBox_squareOne=Este jogo tem temática rural, onde você joga como um trator que precisa empurrar uma porção de blocos para preencher o buraco no chão.<br>Este jogo representa frações como subdivisões de quadriláteros.<br>A soma e subtração de frações é representada como a “ida” e “volta” do trator, respectivamente.
+
+infoBox_squareTwo=Este jogo tem a temática da criança querendo chegar à escola à pé.<br>Este jogo representa frações como subdivisões de quadriláteros.<br>Aborda igualdade de frações como diferentes subdivisões em dois retângulos de mesmo tamanho.
+
+infoBox_circleOne=Este jogo tem temática de voo, onde você joga como uma criança querendo viajar num balão para chegar até a escola.<br>Este jogo representa frações como arcos.<br>A circunferência do arco é equivalente à distância da criança até o balão.<br>Este jogo aborda soma e subtração de frações como ida e volta da criança, mas também considera ambas operações de uma só vez.
+
+infoBox_mode=São variações do jogo selecionado da tela anterior.
+infoBox_oper=Tendo selecionado o modo de jogo, escolha a operação matemática envolvendo frações que será estudada com o jogo (soma, subtração, igualdade etc). Diferentes jogos cobrem diferentes operações.
+infoBox_diff=são representada por números inteiros, tal que quantomaior o valor, mais difícil o jogo
+infoBox_misc=.
+
+plus=Soma
+minus=Subtração
+mixed=Soma e Subtração
+equals=Igualdade

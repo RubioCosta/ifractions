@@ -42,7 +42,6 @@ const menuState = {
     // INFO ICONS
 
     this.menuIcons = [];
-    this.activeIcons = this.menuIcons;
     let infoIcon;
 
     // --------------------------- GAME ICONS 
@@ -60,41 +59,67 @@ const menuState = {
 
       this.menuIcons.push(icon);
 
+      // "more information" button
       infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.6);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
+      infoIcon.id = icon.gameType;
       this.menuIcons.push(infoIcon);
 
     }
 
-    // --------------------------- INFORMATION BOX
+    // --------------------------- INFO BOX
 
-    let cur;
-    this.infoBoxElements = []; // grouped to be displayed/hidden when info box is oppened/closed
+    this.infoBox = document.getElementById('myModal');
 
-    cur = game.add.graphic.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.black, 0.6);
-    cur.alpha = 0;
-    cur.originalAlpha = 0.6;
-    this.infoBoxElements.push(cur);
+    // When the user clicks on the 'x', close the modal
+    document.getElementsByClassName('close')[0].onclick = function () {
+      self.infoBox.style.display = 'none';
+    }
 
-    cur = game.add.graphic.rect(100, 100, defaultWidth - 200, defaultHeight - 200, colors.blue, 2, colors.blueBckg, 1);
-    cur.alpha = 0;
-    //cur.shadow = true;
-    //cur.shadowColor = colors.black;
-    //cur.shadowBlur = 10;
-    this.infoBoxElements.push(cur);
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == self.infoBox) {
+        self.infoBox.style.display = 'none';
+      }
+    }
 
-    this.closeIcon = game.add.image(defaultWidth - 128, 125, 'close', 0.12);
-    this.closeIcon.anchor(0.5, 0.5);
-    this.closeIcon.alpha = 0;
-    this.closeIcon.iconType = 'infoBox';
-    this.infoBoxElements.push(this.closeIcon);
+    this.infoBoxContent = {
+      squareOne: {
+        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' I',
+        body: game.lang.infoBox_squareOne,
+        img: '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
+      },
+      squareTwo: {
+        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
+        body: game.lang.infoBox_squareTwo,
+        img: '<center> <img width=400 src="./assets/img/info-box/s2.png"> </center>',
+      },
+      circleOne: {
+        title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.circle + ' I',
+        body: game.lang.infoBox_circleOne,
+        img: '<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+      }
+    };
 
     // ------------- EVENTS
 
     game.event.add('click', this.func_onInputDown);
     game.event.add('mousemove', this.func_onInputOver);
 
+  },
+
+  /**
+   * Displays game menu information boxes.
+   */
+  func_showInfoBox: function (icon) {
+    self.infoBox.style.display = 'block';
+
+    let msg = '<h3>' + self.infoBoxContent[icon.id].title + '</h3>'
+      + '<p>' + self.infoBoxContent[icon.id].body + '</p>'
+      + self.infoBoxContent[icon.id].img;
+
+    document.getElementById('infobox-content').innerHTML = msg;
   },
 
   /**
@@ -107,8 +132,7 @@ const menuState = {
     if (audioStatus) game.audio.beepSound.play();
 
     switch (icon.iconType) {
-      case 'infoIcon': self.func_showInfoBox(); break;
-      case 'infoBox': self.func_closeInfoBox(); break;
+      case 'infoIcon': self.func_showInfoBox(icon); break;
       case 'game':
         gameShape = icon.gameShape;
         gameTypeString = icon.gameType;
@@ -133,12 +157,7 @@ const menuState = {
    */
   func_showTitle: function (icon) {
 
-    let title;
-
-    switch (icon.gameShape) {
-      case 'circle': title = game.lang.circle; break;
-      case 'square': title = game.lang.square; break;
-    }
+    let title = game.lang[icon.gameShape];
 
     const type = icon.gameType.substring(icon.gameType.length - 3);
 
@@ -159,30 +178,6 @@ const menuState = {
   },
 
   /**
-   * Displays game menu information boxes.
-   */
-  func_showInfoBox: function () {
-    navigationIcons.func_addIcons( // Turn off navigation icons
-      false, false, false,
-      false, false,
-      false, false);
-    self.infoBoxElements.forEach(cur => { cur.alpha = (cur.originalAlpha) ? cur.originalAlpha : 1; }); // Make info box visible
-    self.activeIcons = [self.closeIcon]; // Update activeIcons to info box icons
-  },
-
-  /**
-   * Closes game menu information boxes.
-   */
-  func_closeInfoBox: function () {
-    navigationIcons.func_addIcons( // Turn on navigation icons
-      false, false, false,
-      true, true,
-      false, false);
-    self.infoBoxElements.forEach(cur => { cur.alpha = 0; }); // Make info box invisible
-    self.activeIcons = self.menuIcons; // Update activeIcons to custom menu icons
-  },
-
-  /**
    * Called by mouse click event
    * 
    * @param {object} mouseEvent contains the mouse click coordinates
@@ -191,11 +186,11 @@ const menuState = {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
 
     // Check menu icons
-    for (let i in self.activeIcons) {
+    for (let i in self.menuIcons) {
       // If mouse is within the bounds of an icon
-      if (game.math.isOverIcon(x, y, self.activeIcons[i])) {
+      if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
         // Click first valid icon
-        self.func_load(self.activeIcons[i]);
+        self.func_load(self.menuIcons[i]);
         break;
       }
     }
@@ -216,8 +211,8 @@ const menuState = {
     let overIcon;
 
     // Check menu icons
-    for (let i in self.activeIcons) {
-      if (game.math.isOverIcon(x, y, self.activeIcons[i])) {
+    for (let i in self.menuIcons) {
+      if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
         overIcon = i;
         break;
       }
@@ -226,19 +221,19 @@ const menuState = {
     // Update gui
     if (overIcon) { // if pointer is over icon
       document.body.style.cursor = 'pointer';
-      self.activeIcons.forEach(cur => {
-        if (cur.iconType == self.activeIcons[overIcon].iconType) { // if its in the same icon category
-          if (cur == self.activeIcons[overIcon]) { // if its the icon the pointer is over 
-            if (cur.iconType == 'game') self.func_showTitle(cur);
+      if (self.menuIcons[overIcon].iconType == 'game') self.func_showTitle(self.menuIcons[overIcon]);
+      self.menuIcons.forEach(cur => {
+        if (cur.iconType == self.menuIcons[overIcon].iconType) { // if its in the same icon category
+          if (cur == self.menuIcons[overIcon]) { // if its the icon the pointer is over 
             cur.scale = cur.originalScale * 1.1;
           } else {
-            if (cur.iconType == 'game') self.func_clearTitle(cur);
             cur.scale = cur.originalScale;
           }
         }
       });
     } else { // if pointer is not over icon
-      self.activeIcons.forEach(cur => { cur.scale = cur.originalScale; });
+      self.func_clearTitle();
+      self.menuIcons.forEach(cur => { cur.scale = cur.originalScale; });
       document.body.style.cursor = 'auto';
     }
 
