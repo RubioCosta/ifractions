@@ -68,7 +68,7 @@ const squareOne = {
 
     // Calls function that loads navigation icons
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left icons
@@ -676,7 +676,7 @@ const squareOne = {
       + ' blockIndex: ' + self.stck.index
       + ', floorIndex: ' + self.floor.index;
 
-    // MOODLE MODIF.  
+    // MOODLE  
     if (moodle) sendToDB(data, self.result, game.timer.elapsed);
     else sendToDB(data);
   },

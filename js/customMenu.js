@@ -21,7 +21,7 @@ const customMenuState = {
    */
   create: function () {
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
       game.state.start('map');
     } else {
@@ -36,7 +36,7 @@ const customMenuState = {
       for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
 
       // Overtitle : Selected game
-      game.add.text(defaultWidth / 2, 40, game.lang.game + ": " + menuState.menuIcons, textStyles.h4_brown);
+      game.add.text(defaultWidth / 2, 40, game.lang.game.toUpperCase() + ": " + menuState.menuIcons, textStyles.h4_brown);
       // Title : Customize the selected game
       game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
 
@@ -54,7 +54,7 @@ const customMenuState = {
       let offsetH, infoIcon;
 
       // Label 'Game Modes'
-      game.add.text(x + offsetW - 12, y, game.lang.game_mode, textStyles.h2_blue_2);
+      game.add.text(x + offsetW - 12, y, game.lang.game_modes, textStyles.h2_blue_2);
 
       infoIcon = game.add.image(x + 2 * offsetW - 30, y - 40, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
@@ -63,7 +63,7 @@ const customMenuState = {
       this.menuIcons.push(infoIcon);
 
       // Label 'Operations'
-      game.add.text(x + 3 * offsetW, y, game.lang.operation, textStyles.h2_blue_2);
+      game.add.text(x + 3 * offsetW, y, game.lang.operations, textStyles.h2_blue_2);
 
       infoIcon = game.add.image(x + 4 * offsetW - 30, y - 40, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
@@ -202,7 +202,7 @@ const customMenuState = {
 
       // --------------------------- ENTER ICON
 
-      // MOODLE MODIF.
+      // MOODLE
       if (!moodle) {
 
         x = defaultWidth - 100;
@@ -238,7 +238,7 @@ const customMenuState = {
 
         gameMode: {
           squareOne: {
-            title: '<b>' + game.lang.game_mode + '</b>',
+            title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
             img: '<table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s1_A +
               ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s1_B +
@@ -246,7 +246,7 @@ const customMenuState = {
               ' </td> <td> <img width=100% src="'+game.image['s1-B-h'].src+'"> </td> </tr> <table>'
           },
           circleOne: {
-            title: '<b>' + game.lang.game_mode + '</b>',
+            title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
             img: '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="'+game.image['c1-A-h'].src+'">' +
             ' </td> <td> &nbsp; <b>A)</b> ' + game.lang.infoBox_mode_c1_A +
@@ -254,7 +254,7 @@ const customMenuState = {
             ' </td> <td> &nbsp; <b>B)</b> ' + game.lang.infoBox_mode_c1_B +'</td> </tr> <table>'
           },
           squareTwo: {
-            title: '<b>' + game.lang.game_mode + '</b>',
+            title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
             img: '<center> <table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s2_A +
             ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s2_B +

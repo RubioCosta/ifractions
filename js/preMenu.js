@@ -21,7 +21,7 @@ const bootState = {
 
     // Calls first screen seen by the player
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle) {
       loadLangState.firstTime = false;
       const moodleLang = iLMparameters.lang;
@@ -295,7 +295,7 @@ const nameState = {
     if (audioStatus) game.audio.beepSound.play();
     if (debugMode) console.log('Username: ' + playerName);
 
-    // MOODLE MODIF.
+    // MOODLE
     // Calls 'menu' state
     if (!moodle) game.state.start('menu');
   }

@@ -21,7 +21,7 @@ const menuState = {
    */
   create: function () {
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
 
       playerName = 'Aluno'; // TODO pegar o nome do aluno no bd do moodle
@@ -29,7 +29,7 @@ const menuState = {
 
     } else {
 
-      // MOODLE MODIF.
+      // MOODLE
       if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = 'Professor';
 
       // Background color
@@ -97,19 +97,19 @@ const menuState = {
 
       this.infoBoxContent = {
         squareOne: {
-          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' I',
+          title: '<b>' + game.lang.game + ':</b> ' + game.lang.square + ' I',
           body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
-          img: '<center> <img width=60% src="'+game.image['s1-A'].src+'"./assets/img/info_box/s1-A.png"> </center>'
+          img: '<center> <img width=60% src="' + game.image['s1-A'].src + '"./assets/img/info_box/s1-A.png"> </center>'
         },
         circleOne: {
-          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.circle + ' I',
+          title: '<b>' + game.lang.game + ':</b> ' + game.lang.circle + ' I',
           body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
-          img: '<center> <img width=80% src="'+game.image['c1-A'].src+'"> </center>',
+          img: '<center> <img width=80% src="' + game.image['c1-A'].src + '"> </center>',
         },
         squareTwo: {
-          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
+          title: '<b>' + game.lang.game + ':</b> ' + game.lang.square + ' II',
           body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
-          img: '<center> <img width=80% src="'+game.image['s2'].src+'"> </center>',
+          img: '<center> <img width=80% src="' + game.image['s2'].src + '"> </center>',
         }
       };
 
@@ -172,7 +172,7 @@ const menuState = {
 
     let title = game.lang[icon.gameShape];
 
-    const type = icon.gameType.substring(icon.gameType.length - 3);
+    const type = icon.gameType.substring(-3);
 
     switch (type) {
       case 'One': title += ' I'; break;

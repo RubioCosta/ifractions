@@ -18,7 +18,7 @@ const mapState = {
 
     // Calls function that loads navigation icons
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left icons
@@ -353,7 +353,7 @@ const endState = {
         completedLevels = 0;
         game.animation.stop(self.character.animation[0]);
 
-        // MOODLE MODIF.
+        // MOODLE
         if (!moodle) game.state.start('menu');
 
       }

@@ -23,7 +23,7 @@
  * @type {boolean}
  */
 const debugMode = false;
-// MOODLE MODIF.
+// MOODLE
 /**
  * defines if the game is suposed to run online or on moodle <br>
  * - if true, on moodle <br>
@@ -282,6 +282,7 @@ const url = {
       // Scene
       ['bgimage', medSrc + 'scene/bg.jpg'],
       ['bgmap', medSrc + 'scene/bg_map.png'],
+      ['broken_sign', medSrc + 'scene/broken_sign.png'],
       ['bush', medSrc + 'scene/bush.png'],
       ['cloud', medSrc + 'scene/cloud.png'],
       ['floor', medSrc + 'scene/floor.png'],
@@ -570,7 +571,7 @@ const navigationIcons = {
  */
 const sendToDB = function (extraData) {
 
-  // MOODLE MODIF.
+  // MOODLE
   if (moodle) {
 
     if (self.result) moodleVar.hits[mapPosition - 1]++;
@@ -590,20 +591,20 @@ const sendToDB = function (extraData) {
 
     const url = 'php/save.php';
 
-    const hr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-    hr.open('POST', url, true);
+    xhr.open('POST', url, true);
 
-    hr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-    hr.onreadystatechange = function () {
-      if (debugMode) console.log(hr);
-      if (hr.readyState == 4 && hr.status == 200) {
-        if (debugMode) console.log(hr.responseText);
+    xhr.onreadystatechange = function () {
+      if (debugMode) console.log(xhr);
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        if (debugMode) console.log(xhr.responseText);
       }
     }
 
-    hr.send(data); // Actually execute the request
+    xhr.send(data); // Actually execute the request
 
     if (debugMode) {
       console.log('processing...');

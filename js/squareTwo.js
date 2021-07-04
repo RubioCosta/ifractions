@@ -72,7 +72,7 @@ const squareTwo = {
 
     // Calls function that loads navigation icons
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left buttons
@@ -471,7 +471,7 @@ const squareTwo = {
       + ', numBlocksB: ' + self.B.blocks.length
       + ', valueB: ' + self.B.selected;
 
-    // MOODLE MODIF.
+    // MOODLE
     if (moodle) sendToDB(data, self.result, game.timer.elapsed);
     else sendToDB(data);
   }
