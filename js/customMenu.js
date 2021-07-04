@@ -53,28 +53,28 @@ const customMenuState = {
       let offsetW = 600 / 6;
       let offsetH, infoIcon;
 
-      // Label 'Game Mode'
+      // Label 'Game Modes'
       game.add.text(x + offsetW - 12, y, game.lang.game_mode, textStyles.h2_blue_2);
 
-      infoIcon = game.add.image(x + 2 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon = game.add.image(x + 2 * offsetW - 30, y - 40, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameMode';
       this.menuIcons.push(infoIcon);
 
-      // Label 'Operation'
+      // Label 'Operations'
       game.add.text(x + 3 * offsetW, y, game.lang.operation, textStyles.h2_blue_2);
 
-      infoIcon = game.add.image(x + 4 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon = game.add.image(x + 4 * offsetW - 30, y - 40, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameOperation';
       this.menuIcons.push(infoIcon);
 
-      // Label 'Difficulty'
-      game.add.text(x + 5 * offsetW, y, game.lang.difficulty, textStyles.h2_blue_2);
+      // Label 'Difficulties'
+      game.add.text(x + 5 * offsetW, y, game.lang.difficulties, textStyles.h2_blue_2);
 
-      infoIcon = game.add.image(x + 6 * offsetW - 30, y - 40, 'info', 0.5, 0.6);
+      infoIcon = game.add.image(x + 6 * offsetW - 30, y - 40, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameDifficulty';
@@ -94,7 +94,7 @@ const customMenuState = {
       // Label 'Show Fractions / Auxiliar rectangles'
       game.add.text(x + 5 * offsetW, y + 102, game.lang.show, textStyles.h4_blue_2);
 
-      infoIcon = game.add.image(x + 6 * offsetW + 20, y + 102, 'info', 0.5, 0.6);
+      infoIcon = game.add.image(x + 6 * offsetW + 20, y + 102, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameMisc';
@@ -235,29 +235,91 @@ const customMenuState = {
       }
 
       this.infoBoxContent = {
+
         gameMode: {
-          title: '<b>' + game.lang.game_mode + '</b>',
-          body: game.lang.infoBox_mode,
-          img: '' // '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
+          squareOne: {
+            title: '<b>' + game.lang.game_mode + '</b>',
+            body: game.lang.infoBox_mode,
+            img: '<table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s1_A +
+              ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s1_B +
+              ' </td> </tr> <tr> <td> <img width=100% src="'+game.image['s1-A-h'].src+'"> ' +
+              ' </td> <td> <img width=100% src="'+game.image['s1-B-h'].src+'"> </td> </tr> <table>'
+          },
+          circleOne: {
+            title: '<b>' + game.lang.game_mode + '</b>',
+            body: game.lang.infoBox_mode,
+            img: '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="'+game.image['c1-A-h'].src+'">' +
+            ' </td> <td> &nbsp; <b>A)</b> ' + game.lang.infoBox_mode_c1_A +
+            ' </td> </tr> </tr> <td> <img width=100% src="'+game.image['c1-B-h'].src+'"> ' +
+            ' </td> <td> &nbsp; <b>B)</b> ' + game.lang.infoBox_mode_c1_B +'</td> </tr> <table>'
+          },
+          squareTwo: {
+            title: '<b>' + game.lang.game_mode + '</b>',
+            body: game.lang.infoBox_mode,
+            img: '<center> <table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s2_A +
+            ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s2_B +
+            ' </td> </tr> <tr> <td> <img width=98% src="'+game.image['s2-A-h'].src+'"> ' +
+            ' </td> <td> <img width=98% src="'+game.image['s2-B-h'].src+'"> </td> </tr> <table> </center>'
+          }
         },
+
         gameOperation: {
-          title: '<b>' + game.lang.operation + '</b>',
+          title: '<b>' + game.lang.operation_math + '</b>',
           body: game.lang.infoBox_oper,
-          img: '<center> <img width=50 src="./assets/img/info-box/operation_plus.png"> ' + game.lang.plus +
-            ' <img width=50 src="./assets/img/info-box/operation_minus.png"> ' + game.lang.minus +
-            ' <img width=50 src="./assets/img/info-box/operation_mixed.png"> ' + game.lang.mixed +
-            ' <img width=50 src="./assets/img/info-box/operation_equals.png"> ' + game.lang.equals + ' </center>',
+          img: '<center> <table> <tr style="border-bottom: 5px solid white"> <td> <img width=50 src="'+game.image['operation_plus'].src+'"> ' + game.lang.plus +
+            ' </td> <td> <img width=50 src="'+game.image['operation_mixed'].src+'"> ' + game.lang.mixed +
+            ' </td> </tr> <tr> <td><img width=50 src="'+game.image['operation_minus'].src+'"> ' + game.lang.minus +
+            ' &nbsp; </td> <td> <img width=50 src="'+game.image['operation_equals'].src+'"> ' + game.lang.equals + ' </td> </tr> <table> <center>',
         },
+
         gameDifficulty: {
-          title: '<b>' + game.lang.difficulty + '</b>',
-          body: game.lang.infoBox_diff,
-          img: '<center> <img width=150 src="./assets/img/info-box/dif-1.png"><img width=150 src="./assets/img/info-box/dif-5.png">'
+          squareOne: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff + '<br>' + game.lang.infoBox_diff_obs,
+            img: '<table> <tr> <td> <b>' + game.lang.difficulty + ':</b> 1' +
+            ' </td> <td> <b>' + game.lang.difficulty + ':</b> 3'+
+            ' </td> </tr> <tr> <td> <img width=100% src="'+game.image['s1-diff-1'].src+'"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="'+game.image['s1-diff-3'].src+'"> </td> </tr> </table> <br>' +
+            game.lang.infoBox_diff_aux + '<center> <img width=50% src="'+game.image['map-s1'].src+'"> </center>'
+          },
+          circleOne: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff + '<br>' + game.lang.infoBox_diff_obs,
+            img: '<center> <table> <tr> <td style="border-right: 4px solid white"> <b>' + game.lang.difficulty + ':</b> 1' +
+            ' </td> <td> <b>' + game.lang.difficulty + ':</b> 5'+
+            ' </td> </tr> <tr> <td> <img width=100% src="'+game.image['c1-diff-1'].src+'"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="'+game.image['c1-diff-5'].src+'"> </td> </tr> </table> <center> <br>' +
+            game.lang.infoBox_diff_aux + '<center> <img width=50% src="'+game.image['map-c1s2'].src+'"> </center>'
+          },
+          squareTwo: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff,
+            img: '<table> <tr> <td> <b>' + game.lang.difficulty + ':</b> 1' +
+            ' </td> <td> <b>' + game.lang.difficulty + ':</b> 5'+
+            ' </td> </tr> <tr> <td> <img width=100% src="'+game.image['s2-diff-1'].src+'"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="'+game.image['s2-diff-5'].src+'"> </td> </tr> </table> <br>' +
+            game.lang.infoBox_diff_aux + '<center> <img width=50% src="'+game.image['map-c1s2'].src+'"> </center>'
+          },
         },
+
         gameMisc: {
-          title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-          body: game.lang.infoBox_misc,
-          img: '' //'<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+          squareOne: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_label,
+            img: '<center> <img width=80% src="'+game.image['s1-label'].src+'"> </center>',
+          },
+          circleOne: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_label,
+            img: '<center> <img width=60% src="'+game.image['c1-label'].src+'"> </center>',
+          },
+          squareTwo: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_rect,
+            img: '<center> <img width=100% src="'+game.image['s2-label'].src+'"> </center>',
+          }
         }
+
       };
 
       // ------------- EVENTS
@@ -275,9 +337,11 @@ const customMenuState = {
   func_showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
-    let msg = '<h3>' + self.infoBoxContent[icon.id].title + '</h3>'
-      + '<p>' + self.infoBoxContent[icon.id].body + '</p>'
-      + self.infoBoxContent[icon.id].img;
+    const element = (icon.id == 'gameOperation') ? self.infoBoxContent[icon.id] : self.infoBoxContent[icon.id][gameTypeString];
+
+    let msg = '<h3>' + element.title + '</h3>'
+      + '<p>' + element.body + '</p>'
+      + element.img;
 
     document.getElementById('infobox-content').innerHTML = msg;
   },

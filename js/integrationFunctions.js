@@ -1,6 +1,5 @@
 // MOODLE MODIF.
-
-console.log("integrationFunctions.js: start.");
+if (debugMode) console.log("(integrationFunctions.js start)");
 
 const moodleVar = {
   hits: [0,0,0,0],
@@ -8,7 +7,7 @@ const moodleVar = {
   time: [0,0,0,0]
 }
 
-let getParameterByName = function (name) {
+function getParameterByName (name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
   return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
 }
@@ -22,9 +21,9 @@ const iLMparameters = {
 };
 
 function getAnswer() {
-  console.log("integrationFunctions.js: start getAnswer()");
+  if (debugMode) console.log("(integrationFunctions.js) start getAnswer()");
   let str = '';
-  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // professor
+  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // student - sending results
     str += 'gameTypeString:' + gameTypeString
       + '\ngameShape:' + gameShape
       + '\ngameModeType:' + gameModeType
@@ -32,7 +31,7 @@ function getAnswer() {
       + '\ngameDifficulty:' + gameDifficulty
       + '\nfractionLabel:' + fractionLabel
       + '\nresults:';
-    for (let i = 0; i < moodleVar.hits.length; i++) {
+    for (let i = 0; i < moodleVar.hits.length; i++) { // professor - creating new assignment
       str += '{level:' + (i + 1)
         + ',hits:' + moodleVar.hits[i]
         + ',errors:' + moodleVar.errors[i]
@@ -44,11 +43,9 @@ function getAnswer() {
       alert("Erro: Você precisa escolher pelo menos um jogo");
       return x;
     }
-
     moodleVar.hits = [0, 0, 0, 0];
     moodleVar.errors = [0, 0, 0, 0];
     moodleVar.time = [0, 0, 0, 0];
-
     str += 'gameTypeString:' + gameTypeString
       + '\ngameShape:' + gameShape
       + '\ngameModeType:' + gameModeType
@@ -56,16 +53,18 @@ function getAnswer() {
       + '\ngameDifficulty:' + gameDifficulty
       + '\nfractionLabel:' + fractionLabel;
   }
-  console.log("-----------------");
-  console.log(str); 
-  console.log("-----------------");
 
-  console.log("integrationFunctions.js: end getAnswer()");
+  if (debugMode) {
+    console.log(str); 
+    console.log("(integrationFunctions.js) end getAnswer()");
+  }
+
   return str;
 }
 
 function getEvaluation() {
-  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // aluno
+  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // student
+    // TODO - evaluation method
     const nota = 1;
     parent.getEvaluationCallback(nota);
     return nota;
@@ -81,20 +80,22 @@ function decodificaArquivo(text) {
       const chave = newline[0].replace(/^\s+|\s+$/g, '');
       const valor = newline[1].replace(/^\s+|\s+$/g, '');
       gameInfo[chave.trim()] = valor.trim();
-    } catch (Error) { if (debugMode) console.log('Sintax error'); }
+    } catch (Error) { console.error('Sintax error'); }
   });
+  // update global variables
   gameTypeString = gameInfo['gameTypeString'];
   gameShape = gameInfo['gameShape'];
   gameModeType = gameInfo['gameModeType'];
   gameOperationType = gameInfo['gameOperationType'];
   gameDifficulty = parseInt(gameInfo['gameDifficulty']);
   fractionLabel = gameInfo['fractionLabel'];
-  console.log("decodificaArquivo:", gameTypeString, gameShape, gameModeType, gameOperationType, gameDifficulty, fractionLabel);
-  mapPosition = 0; // Map position
-  mapMove = true; // Move no next point
-  completedLevels = 0; // Reset the game progress when entering a new level
+  if (debugMode) console.log("(integrationFunctions.js) decodificaArquivo() :", gameTypeString, gameShape, gameModeType, gameOperationType, gameDifficulty, fractionLabel);
+  // Reset global variables to default values
+  mapPosition = 0; 
+  mapMove = true;
+  completedLevels = 0;
 
-  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // aluno
+  if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // student
     iLMparameters.return_get_answer = 1;
     iLMparameters.iLM_PARAM_ActivityEvaluation = ((mapPosition == 4) ? 1 : 0);
     iLMparameters.iLM_PARAM_ArchiveContent = text;
@@ -103,16 +104,16 @@ function decodificaArquivo(text) {
     iLMparameters.iLM_PARAM_ArchiveContent = text;
   }
 
-  game.state.start('customMenu');
+  game.state.start('customMenu'); // calls custom menu after updating game variables
 }
 
 function getiLMContent() {
   const url = iLMparameters.iLM_PARAM_Assignment;
   if (iLMparameters.iLM_PARAM_Assignment == null) {
-    console.log("integrationFunctions.js: getiLMContent(): NAO existe arquivo FRC para ser carregado (iLMparameters.iLM_PARAM_Assignment vazio), finalize.");
+    console.log("(integrationFunctions.js) getiLMContent(): NAO existe arquivo FRC para ser carregado (iLMparameters.iLM_PARAM_Assignment vazio), finalize.");
     return;
   }
-  console.log("integrationFunctions.js: getiLMContent(): tenta pegar arquivo de " + url);
+  if (debugMode) console.log("(integrationFunctions.js) getiLMContent(): tenta pegar arquivo de " + url);
   let gameFile = new XMLHttpRequest();
   gameFile.open("GET", url, true);
   gameFile.send();
@@ -123,7 +124,7 @@ function getiLMContent() {
       decodificaArquivo(text);
     }
   }
-  console.log("integrationFunctions.js: getiLMContent(): final");
+  if (debugMode) console.log("(integrationFunctions.js) getiLMContent(): final");
 }
 
-console.log("integrationFunctions.js: end.");
+if (debugMode) console.log("(integrationFunctions.js start)");

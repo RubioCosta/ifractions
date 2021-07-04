@@ -1,8 +1,4 @@
 /**
- LInE - Free Education, Private Data
- */
-
-/**
  * BOOT STATE: First state called. Loads main media
  * @namespace
  */
@@ -28,14 +24,21 @@ const bootState = {
     // MOODLE MODIF.
     if (moodle) {
       loadLangState.firstTime = false;
-      langString = 'pt_BR';
+      const moodleLang = iLMparameters.lang;
+      switch (moodleLang) {
+        case 'en' : langString = 'en_US'; break;
+        case 'pt' : langString = 'pt_BR'; break;
+        case 'fr' : langString = 'fr_FR'; break;
+        case 'es' : langString = 'es_PE'; break;
+        case 'it' : langString = 'it_IT'; break;
+        default: langString = 'en_US';
+      }
       game.state.start('loadLang');
     } else {
       game.state.start('lang');
     }
   }
 };
-
 
 /**
  * LANGUAGE STATE: the player can choose a preferred language for the text to be displayed in the game
@@ -144,7 +147,6 @@ const langState = {
   }
 };
 
-
 /**
  * LOADING LANGUAGE STATE: Loads selected language to be able to translate the game text 
  * 
@@ -175,8 +177,6 @@ const loadLangState = {
     }
   }
 };
-
-
 
 /**
  * NAME STATE: asks for player's name

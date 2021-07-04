@@ -1,6 +1,6 @@
-/*
-LInE - Free Education, Private Data.
+// LInE - Free Education, Private Data.
 
+/*
 ..................................................... 
 ...............square....................circle...... }				        	} (gameShape)
 .........../...........\....................|........ } game (gameType)
@@ -18,9 +18,23 @@ LInE - Free Education, Private Data.
 ..................................................... 
 */
 
+/**
+ * Turns console messages ON/OFF (for debug purposes only)
+ * @type {boolean}
+ */
+const debugMode = false;
+// MOODLE MODIF.
+/**
+ * defines if the game is suposed to run online or on moodle <br>
+ * - if true, on moodle <br>
+ * - if false, online
+ */
+const moodle = false;
+
 const medSrc = 'assets/img/'; // Base directory for media
 const defaultWidth = 900; // Default width for the Canvas
 const defaultHeight = 600; // Default height for the Canvas
+
 /**
  * HTMLCanvasElement : Canvas where all the game elements are rendered.
  * 
@@ -76,27 +90,31 @@ let gameOperationType;
  */
 let gameDifficulty;
 /**
- * Turns console messages ON/OFF (for debug purposes only)
+ * Turns displaying the fraction labels on levels ON/OFF
  * @type {boolean}
  */
-const debugMode = false;
-// MOODLE MODIF.
+let fractionLabel = true;
 /**
- * defines if the game is suposed to run online or on moodle
- * if true, on moodle
- * if false, online
+ * Character position on the map, aka game levels (1..4: valid; 5: end)
+ * @type {number}
  */
-const moodle = false;
+let mapPosition;
+/**
+ * When true, the character can move to next position in the map
+ * @type {boolean}
+ */
+let mapMove;
+/**
+ * Number of finished levels in the map
+ * @type {number}
+ */
+let completedLevels;
+
 /**
  * Turns game audio ON/OFF
  * @type {boolean}
  */
 let audioStatus = false;
-/**
- * Turns displaying the fraction labels on levels ON/OFF
- * @type {boolean}
- */
-let fractionLabel = true;
 /**
  * Player's name
  * @type {string}
@@ -114,21 +132,6 @@ let langstring;
  * @type {object}
  */
 let self;
-/**
- * Character position on the map, aka game levels (1..4: valid; 5: end)
- * @type {number}
- */
-let mapPosition;
-/**
- * When true, the character can move to next position in the map
- * @type {boolean}
- */
-let mapMove;
-/**
- * Number of finished levels in the map
- * @type {number}
- */
-let completedLevels;
 
 /**
  * Metadata for all games
@@ -268,7 +271,6 @@ const textStyles = {
   p_blue: { font: '14px Arial,sans-serif', fill: colors.darkBlue, align: 'center' } // Fractions
 };
 
-// List of media URL
 /**
  * List of URL for all media in the game.<br>
  * Divided: 1st by the state that loads the media / 2nd by the media type.
@@ -333,6 +335,31 @@ const url = {
       ['game0', medSrc + 'levels/squareOne.png'], // Square I
       ['game1', medSrc + 'levels/circleOne.png'], // Circle I
       ['game2', medSrc + 'levels/squareTwo.png'], // Square II
+      // Info box icons
+      ['c1-A', medSrc + 'info_box/c1-A.png'],
+      ['c1-A-h', medSrc + 'info_box/c1-A-h.png'],
+      ['c1-B-h', medSrc + 'info_box/c1-B-h.png'],
+      ['c1-diff-1', medSrc + 'info_box/c1-diff-1.png'],
+      ['c1-diff-5', medSrc + 'info_box/c1-diff-5.png'],
+      ['c1-label', medSrc + 'info_box/c1-label.png'],
+      ['map-c1s2', medSrc + 'info_box/map-c1s2.png'],
+      ['map-s1', medSrc + 'info_box/map-s1.png'],
+      ['s1-A', medSrc + 'info_box/s1-A.png'],
+      ['s1-A-h', medSrc + 'info_box/s1-A-h.png'],
+      ['s1-B-h', medSrc + 'info_box/s1-B-h.png'],
+      ['s1-diff-1', medSrc + 'info_box/s1-diff-1.png'],
+      ['s1-diff-3', medSrc + 'info_box/s1-diff-3.png'],
+      ['s1-label', medSrc + 'info_box/s1-label.png'],
+      ['s2', medSrc + 'info_box/s2.png'],
+      ['s2-A-h', medSrc + 'info_box/s2-A-h.png'],
+      ['s2-B-h', medSrc + 'info_box/s2-B-h.png'],
+      ['s2-diff-1', medSrc + 'info_box/s2-diff-1.png'],
+      ['s2-diff-5', medSrc + 'info_box/s2-diff-5.png'],
+      ['s2-label', medSrc + 'info_box/s2-label.png'],
+      ['operation_plus', medSrc + 'info_box/operation_plus.png'],
+      ['operation_minus', medSrc + 'info_box/operation_minus.png'],
+      ['operation_mixed', medSrc + 'info_box/operation_mixed.png'],
+      ['operation_equals', medSrc + 'info_box/operation_equals.png'],
     ],
     sprite: [
       // Game modes
@@ -400,8 +427,8 @@ const navigationIcons = {
 
   /**
    * Add navigation icons.<br>
-   * The icons on the left are ordered from left to right.
-   * The icons on the right are ordered from right to left.
+   *  * The icons on the left are ordered from left to right. <br>
+   *  * The icons on the right are ordered from right to left.
    * 
    * @param {boolean} leftIcon0 1st left icon 
    * @param {boolean} leftIcon1 2nd left icon

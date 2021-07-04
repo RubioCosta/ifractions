@@ -574,7 +574,7 @@ const game = {
    */
   render: {
     queue: [], // [Not directly used] Media queue to be rendered by the current state
-    /** [Not directly used] 
+    /** [Not directly used] <br>
      * Renders image on canvas
      * 
      * @param {object} cur current media in media queue
@@ -601,7 +601,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /** [Not directly used] 
+    /** [Not directly used] <br>
      * Renders spritesheet on canvas
      * 
      * @param {object} cur current media in media queue
@@ -632,7 +632,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /** [Not directly used] 
+    /** [Not directly used] <br>
      * Renders text on canvas
      * 
      * @param {object} cur current media in media queue
@@ -656,7 +656,7 @@ const game = {
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /**[Not directly used] 
+    /**[Not directly used] <br>
      * Renders geometric shapes
      * 
      * @namespace
@@ -874,7 +874,7 @@ const game = {
       canvas.addEventListener(name, func);
       game.event._list.push([name, func]);
     },
-    /** [Not directly used] 
+    /** [Not directly used] <br>
      * Clear list of events
      */
     clear: function () {
@@ -885,7 +885,7 @@ const game = {
     },
   },
 
-  /** [Not directly used] 
+  /** [Not directly used] <br>
    * Game loop - Handles repetition of function update() and sprite animation <br>
    * After the media queue is filled in create(), the game loop starts <br>
    * It calls update() iteratively and rerenders the screen
@@ -899,7 +899,7 @@ const game = {
     waitingToStart: undefined, // [Not directly used]
     startTime: 0, // [Not directly used]
     duration: 1000 / 60, // [Not directly used] 1000: 1 second | 60: expected frames per second
-    /** [Not directly used] 
+    /** [Not directly used] <br>
      * Start game loop
      * 
      * @param {object} state current state
@@ -916,14 +916,14 @@ const game = {
       }
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Stop game loop
      */
     stop: function () {
       if (game.loop.status == 'on') game.loop.status = 'ending';
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Execute game loop
      */
     _run: function () {
@@ -947,7 +947,7 @@ const game = {
       }
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Resets game loop values 
      */
     _clear: function () {
@@ -1007,7 +1007,7 @@ const game = {
       });
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Executes animation
      */
     _run: function () {
@@ -1026,7 +1026,7 @@ const game = {
       game.animation.count++;
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Clear animation queue <br><br>
      * 
      * game.animation.clear()
@@ -1083,7 +1083,7 @@ const game = {
       else game.state._create();
     },
     /**
-     * [Not directly used] 
+     * [Not directly used] <br>
      * Encapsulate create() function in the current state
      */
     _create: function () {

@@ -656,7 +656,7 @@ const squareOne = {
   /* METADATA FOR GAME */
 
   /**
-   * Saves players data after level ends - to be sent to database
+   * Saves players data after level ends - to be sent to database <br>
    *
    * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
    * @see /php/save.php

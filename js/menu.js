@@ -71,7 +71,7 @@ const menuState = {
         this.menuIcons.push(icon);
 
         // "more information" button
-        infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.6);
+        infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.4);
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
         infoIcon.id = icon.gameType;
@@ -98,18 +98,18 @@ const menuState = {
       this.infoBoxContent = {
         squareOne: {
           title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' I',
-          body: game.lang.infoBox_squareOne,
-          img: '<center> <img width=300 src="./assets/img/info-box/s1-A.png"> <img width=300 src="./assets/img/info-box/s1-B.png"> </center>'
-        },
-        squareTwo: {
-          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
-          body: game.lang.infoBox_squareTwo,
-          img: '<center> <img width=400 src="./assets/img/info-box/s2.png"> </center>',
+          body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
+          img: '<center> <img width=60% src="'+game.image['s1-A'].src+'"./assets/img/info_box/s1-A.png"> </center>'
         },
         circleOne: {
           title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.circle + ' I',
-          body: game.lang.infoBox_circleOne,
-          img: '<center> <img width=300 src="./assets/img/info-box/c1-A.png"> <img width=300 src="./assets/img/info-box/c1-B.png"> </center>',
+          body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
+          img: '<center> <img width=80% src="'+game.image['c1-A'].src+'"> </center>',
+        },
+        squareTwo: {
+          title: '<b>' + game.lang.game.toLowerCase() + ':</b> ' + game.lang.square + ' II',
+          body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
+          img: '<center> <img width=80% src="'+game.image['s2'].src+'"> </center>',
         }
       };
 
