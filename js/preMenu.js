@@ -21,16 +21,16 @@ const bootState = {
 
     // Calls first screen seen by the player
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) {
       loadLangState.firstTime = false;
       const moodleLang = iLMparameters.lang;
       switch (moodleLang) {
-        case 'en' : langString = 'en_US'; break;
-        case 'pt' : langString = 'pt_BR'; break;
-        case 'fr' : langString = 'fr_FR'; break;
-        case 'es' : langString = 'es_PE'; break;
-        case 'it' : langString = 'it_IT'; break;
+        case 'en': langString = 'en_US'; break;
+        case 'pt': langString = 'pt_BR'; break;
+        case 'fr': langString = 'fr_FR'; break;
+        case 'es': langString = 'es_PE'; break;
+        case 'it': langString = 'it_IT'; break;
         default: langString = 'en_US';
       }
       game.state.start('loadLang');
@@ -52,7 +52,7 @@ const langState = {
    */
   create: function () {
     // Background color
-    game.add.graphic.rect(0, 0, 900, 600, colors.white, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
 
     // Parameters for the elements on the screen
     this.listOfFlags = [];
@@ -191,7 +191,7 @@ const nameState = {
   create: function () {
 
     // Background color
-    game.add.graphic.rect(0, 0, 900, 600, colors.white, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
 
     // Set title and warning text
 
@@ -200,7 +200,7 @@ const nameState = {
     this.warningEmptyName = game.add.text(defaultWidth / 2, defaultHeight / 2 - 70, '', textStyles.h4_brown);
 
     // Set 'ok' button that gets player's information
-    this.okBtn = game.add.graphic.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.gray, 0.6);
+    this.okBtn = game.add.geom.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.gray, 0.6);
 
     // Set button Text
     game.add.text(defaultWidth / 2 + 1, defaultHeight / 2 + 112, game.lang.ready, textStyles.h1_white);
@@ -295,7 +295,7 @@ const nameState = {
     if (audioStatus) game.audio.beepSound.play();
     if (debugMode) console.log('Username: ' + playerName);
 
-    // MOODLE
+    // FOR MOODLE
     // Calls 'menu' state
     if (!moodle) game.state.start('menu');
   }

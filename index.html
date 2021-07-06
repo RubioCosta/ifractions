@@ -16,6 +16,11 @@ www.usp.br/line
   <link rel="stylesheet" href="css/bootstrap.min.css">
 
   <style>
+    /*
+    body, .panel-body {
+      background-color: #313857;
+    }
+    */
     #iFractions-canvas {
       padding: 0 auto 0 auto;
       margin-left: auto;
@@ -144,11 +149,11 @@ www.usp.br/line
     <script src="js/circleOne.js"></script>
     <script src="js/squareOne.js"></script>
     <script src="js/squareTwo.js"></script>
+    <script src="js/stundentReport.js"></script> <!-- FOR MOODLE -->
+    <script src="js/integrationFunctions.js"></script> <!-- FOR MOODLE -->
     <script src="js/gameMechanics.js"></script>
     <script src="js/globals.js"></script>
-    <!-- MOODLE -->
-    <script src="js/integrationFunctions.js"></script>
-
+    
     <script>
       const displayFps = document.getElementById("display-fps");
 
@@ -176,7 +181,7 @@ www.usp.br/line
       game.state.add('circleOne', circleOne);
       game.state.add('squareTwo', squareTwo);
 
-      // MOODLE
+      // FOR MOODLE
       game.state.add('studentReport', studentReport);
 
       // CALLING FIRST GAME STATE

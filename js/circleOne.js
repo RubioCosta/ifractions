@@ -12,14 +12,14 @@
  *
  * # of different difficulties : 5
  *
- * Game modes can be : 'A' or 'B' (in variable 'gameModeType')
+ * Game modes can be : 'A' or 'B' (in variable 'gameMode')
  *
  *   A : Player can place balloon position
  *       Place balloon in position (so the kid can get to it)
  *   B : Player can select # of circles
  *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
- * Operations can be : 'Plus', 'Minus' or 'Mixed' (in variable 'gameOperationType')
+ * Operations can be : 'Plus', 'Minus' or 'Mixed' (in variable 'gameOperation')
  *
  *   Plus : addition of fractions
  *     Represented by : kid going to the right (floor positions 0..5)
@@ -30,7 +30,7 @@
  *
  * @namespace
  */
- const circleOne = {
+const circleOne = {
 
   /**
    * Main code
@@ -50,7 +50,7 @@
 
     let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
 
-    const startX = (gameOperationType == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
+    const startX = (gameOperation == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
     this.correctX = startX; // Ending position, accumulative
 
     // BACKGROUND
@@ -63,7 +63,7 @@
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
 
     // Road
     this.road = game.add.image(47, 515, 'road', 1.01, 0.94);
@@ -76,12 +76,12 @@
       game.add.text(66 + i * distanceBetweenPoints, 560, i, textStyles.h2_blue);
     }
 
-    this.trace = game.add.graphic.rect(startX - 1, 526, 1, 1, undefined, 1);
+    this.trace = game.add.geom.rect(startX - 1, 526, 1, 1, undefined, 1);
     this.trace.alpha = 0;
 
     // Calls function that loads navigation icons
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left buttons
@@ -114,16 +114,16 @@
     this.balloonPlace = defaultWidth / 2; // Balloon place
 
     // Number of circles
-    const max = (gameOperationType == 'Mixed' || gameModeType == 'B') ? 6 : mapPosition + 1;
-    const min = (gameOperationType == 'Mixed' && mapPosition < 2) ? 2 : mapPosition; // Mixed level has at least 2 fractions
+    const max = (gameOperation == 'Mixed' || gameMode == 'B') ? 6 : mapPosition + 1;
+    const min = (gameOperation == 'Mixed' && mapPosition < 2) ? 2 : mapPosition; // Mixed level has at least 2 fractions
     const total = game.math.randomInRange(min, max); // Total number of circles
 
-    // gameModeType 'B' exclusive variables
+    // gameMode 'B' exclusive variables
     this.fractionIndex = -1; // Index of clicked circle (game B)
     this.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
 
     // CIRCLES
-    const levelDirection = (gameOperationType == 'Minus') ? -1 : 1;
+    const levelDirection = (gameOperation == 'Minus') ? -1 : 1;
     const x = startX + 65 * levelDirection;
 
     for (let i = 0; i < total; i++) {
@@ -137,7 +137,7 @@
       // Set each circle direction
       let direction;
 
-      switch (gameOperationType) {
+      switch (gameOperation) {
         case 'Plus': direction = 'Right'; break;
         case 'Minus': direction = 'Left'; break;
         case 'Mixed':
@@ -165,7 +165,7 @@
       let circle, label = [];
 
       if (divisor == 1) {
-        circle = game.add.graphic.circle(startX, 490 - i * this.circles.diameter, this.circles.diameter,
+        circle = game.add.geom.circle(startX, 490 - i * this.circles.diameter, this.circles.diameter,
           lineColor, 2, colors.white, 1);
 
         circle.anticlockwise = anticlockwise;
@@ -181,7 +181,7 @@
 
         if (direction == 'Right') degree = 360 - degree; // Anticlockwise equivalent
 
-        circle = game.add.graphic.arc(startX, 490 - i * this.circles.diameter, this.circles.diameter,
+        circle = game.add.geom.arc(startX, 490 - i * this.circles.diameter, this.circles.diameter,
           0, game.math.degreeToRad(degree), anticlockwise,
           lineColor, 2, colors.white, 1);
 
@@ -198,7 +198,7 @@
       circle.rotate = 90;
 
       // If game is type B (select fractions)
-      if (gameModeType == 'B') {
+      if (gameMode == 'B') {
         circle.alpha = 0.5;
         circle.index = i;
       }
@@ -220,7 +220,7 @@
     }
 
     // If game is type B, selectiong a random balloon place
-    if (gameModeType == 'B') {
+    if (gameMode == 'B') {
       this.balloonPlace = startX;
       this.endIndex = game.math.randomInRange(this.numberOfPlusFractions, this.circles.all.length);
 
@@ -240,7 +240,7 @@
 
     this.kid = game.add.sprite(startX, 495 - this.circles.all.length * this.circles.diameter, 'kid_walk', 0, 0.8);
     this.kid.anchor(0.5, 0.8);
-    if (gameOperationType == 'Minus') {
+    if (gameOperation == 'Minus') {
       this.kid.animation = this.availableAnimations['Left'];
       this.kid.curFrame = 23;
     } else {
@@ -276,23 +276,23 @@
     // Start animation
     if (self.animate) {
       let cur = self.circles.cur;
-      let DIREC = self.circles.direc[cur];
+      let direc = self.circles.direc[cur];
 
       if (self.count % 2 == 0) { // Lowers animation
         // Move kid
-        self.kid.x += 2 * DIREC;
+        self.kid.x += 2 * direc;
 
         // Move circles
         for (let i in self.circles.all) {
-          self.circles.all[i].x += 2 * DIREC;
+          self.circles.all[i].x += 2 * direc;
         }
 
         // Manage line on the floor
-        self.trace.width += 2 * DIREC;
+        self.trace.width += 2 * direc;
         self.trace.lineColor = self.circles.all[cur].lineColor;
 
         // Change angle of current arc
-        self.circles.angle[cur] += 4.6 * DIREC;
+        self.circles.angle[cur] += 4.6 * direc;
         self.circles.all[cur].angleEnd = game.math.degreeToRad(self.circles.angle[cur]);
 
         // When finish current circle
@@ -332,9 +332,9 @@
           self.circles.cur++; // Update current circle
 
           cur = self.circles.cur;
-          DIREC = self.circles.direc[cur];
+          direc = self.circles.direc[cur];
 
-          self.nextX += self.circles.distance[cur] * DIREC; // Update next position
+          self.nextX += self.circles.distance[cur] * direc; // Update next position
         }
 
         // When finish all circles (final position)
@@ -403,7 +403,7 @@
     const y = mouseEvent.offsetY;
 
     // GAME MODE A : click road
-    if (gameModeType == 'A') {
+    if (gameMode == 'A') {
       const cur = self.road;
 
       const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
@@ -411,7 +411,7 @@
     }
 
     // GAME MODE B : click circle
-    if (gameModeType == 'B') {
+    if (gameMode == 'B') {
       self.circles.all.forEach(cur => {
         const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
         if (valid) self.func_clicked(cur);
@@ -434,7 +434,7 @@
     let flag = false;
 
     // GAME MODE A : balloon follow mouse
-    if (gameModeType == 'A' && !self.hasClicked) {
+    if (gameMode == 'A' && !self.hasClicked) {
       if (game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8) {
         self.balloon.x = x;
         self.basket.x = x;
@@ -444,7 +444,7 @@
     }
 
     // GAME MODE B : hover circle
-    if (gameModeType == 'B' && !self.hasClicked) {
+    if (gameMode == 'B' && !self.hasClicked) {
       self.circles.all.forEach(cur => {
         const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
         if (valid) {
@@ -463,7 +463,7 @@
   /* CALLED BY EVENT HANDLER */
 
   /**
-   * (in gameModeType 'B') <br>
+   * (in gameMode 'B') <br>
    * 
    * Function called when cursor is over a valid circle
    * 
@@ -479,7 +479,7 @@
   },
 
   /**
-   * (in gameModeType 'B') <br>
+   * (in gameMode 'B') <br>
    * 
    * Function called when cursor is out of a valid circle
    */
@@ -493,7 +493,7 @@
   },
 
   /**
-   * (in gameModeType 'B') <br>
+   * (in gameMode 'B') <br>
    * 
    * Function called when player clicked over a valid circle
    * 
@@ -502,13 +502,13 @@
   func_clicked: function (cur) {
     if (!self.hasClicked) {
 
-      // On gameModeType A
-      if (gameModeType == 'A') {
+      // On gameMode A
+      if (gameMode == 'A') {
         self.balloon.x = cur;
         self.basket.x = cur;
-        // On gameModeType B
+        // On gameMode B
       }
-      else if (gameModeType == 'B') {
+      else if (gameMode == 'B') {
 
         document.body.style.cursor = 'auto';
 
@@ -568,11 +568,11 @@
    */
   func_viewHelp: function () {
     if (!self.hasClicked) {
-      // On gameModeType A
-      if (gameModeType == 'A') {
+      // On gameMode A
+      if (gameMode == 'A') {
         self.help.x = self.correctX;
         self.help.y = 490;
-        // On gameModeType B
+        // On gameMode B
       } else {
         self.help.x = self.circles.all[self.endIndex - 1].x;
         self.help.y = self.circles.all[self.endIndex - 1].y - self.circles.diameter / 2;
@@ -592,8 +592,8 @@
   postScore: function () {
     // Creates string that is going to be sent to db
     const data = '&line_game=' + gameShape
-      + '&line_mode=' + gameModeType
-      + '&line_oper=' + gameOperationType
+      + '&line_mode=' + gameMode
+      + '&line_oper=' + gameOperation
       + '&line_leve=' + gameDifficulty
       + '&line_posi=' + mapPosition
       + '&line_resu=' + self.result
@@ -604,7 +604,7 @@
       + ' balloonX: ' + self.basket.x
       + ', selIndex: ' + self.fractionIndex;
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) sendToDB(data, self.result, game.timer.elapsed);
     else sendToDB(data);
   }

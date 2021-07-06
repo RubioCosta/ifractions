@@ -1,21 +1,33 @@
 // LInE - Free Education, Private Data.
 
 /*
+
+Generating game levels in menu:
+
 ..................................................... 
 ...............square....................circle...... }				        	} (gameShape)
 .........../...........\....................|........ } game (gameType)
 ........One.............Two................One....... }
 ......./...\.........../...\............./....\...... 
-......A.....B.........A.....B...........A......B..... } game mode (gameModeType)
-.(floor)..(stack)..(top)..(bottom)..(floor)..(stack). } 
+......A.....B.........A.....B...........A......B..... } game mode (gameMode)
+.(floor)..(stack)..(top)..(bottom)..(floor)..(stack).
 .......\./.............\./................\./........ 
 ........|...............|..................|......... 
 ......./.\..............|................/.|.\....... 
-...Plus...Minus.......Equals........Plus.Minus.Mixed. } game math operation (gameOperationType)
+...Plus...Minus.......Equals........Plus.Minus.Mixed. } game math operation (gameOperation)
 .......\./..............|................\.|./....... 
 ........|...............|..................|......... 
-......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... } difficulty (gameDifficulty)
+......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... } difficulty level (gameDifficulty)
 ..................................................... 
+
+About levels in map:
+
+..................(game.levels)......................
+......................__|__..........................
+.....................|.|.|.|.........................
+...................0,1,2,3,4,5....................... } mapPositions (mapPosition)
+...................|.........|.......................
+................(start)....(end).....................
 */
 
 /**
@@ -23,7 +35,7 @@
  * @type {boolean}
  */
 const debugMode = false;
-// MOODLE
+// FOR MOODLE
 /**
  * defines if the game is suposed to run online or on moodle <br>
  * - if true, on moodle <br>
@@ -71,7 +83,7 @@ let gameShape;
  * 
  * @type {string}
  */
-let gameModeType;
+let gameMode;
 /**
  * Holds game math operation.<br>
  * In squareOne     can be: 'Plus' (green tractor goes right) or 'Minus' (red tractor goes left).<br>
@@ -80,7 +92,7 @@ let gameModeType;
  * 
  * @type {string}
  */
-let gameOperationType;
+let gameOperation;
 /**
  * Holds game overall difficulty. 1 (easier) -> n (harder).<br> 
  * In squareOne             can be: 1..3.<br>
@@ -143,9 +155,9 @@ const info = {
     gameShape: 'square',
     gameType: 'squareOne',
     gameTypeUrl: 'game0',
-    gameModeType: ['A', 'B'],
-    gameModeTypeUrl: ['mode0', 'mode1'],
-    gameOperationType: ['Plus', 'Minus'],
+    gameMode: ['A', 'B'],
+    gameModeUrl: ['mode0', 'mode1'],
+    gameOperation: ['Plus', 'Minus'],
     gameDifficulty: 3
   },
 
@@ -153,9 +165,9 @@ const info = {
     gameShape: 'circle',
     gameType: 'circleOne',
     gameTypeUrl: 'game1',
-    gameModeType: ['A', 'B'],
-    gameModeTypeUrl: ['mode2', 'mode3'],
-    gameOperationType: ['Plus', 'Minus', 'Mixed'],
+    gameMode: ['A', 'B'],
+    gameModeUrl: ['mode2', 'mode3'],
+    gameOperation: ['Plus', 'Minus', 'Mixed'],
     gameDifficulty: 5
   },
 
@@ -163,18 +175,18 @@ const info = {
     gameShape: 'square',
     gameType: 'squareTwo',
     gameTypeUrl: 'game2',
-    gameModeType: ['A', 'B'],
-    gameModeTypeUrl: ['mode4', 'mode5'],
-    gameOperationType: ['Equals'],
+    gameMode: ['A', 'B'],
+    gameModeUrl: ['mode4', 'mode5'],
+    gameOperation: ['Equals'],
     gameDifficulty: 5
   },
 
   gameShape: [],
   gameType: [],
   gameTypeUrl: [],
-  gameModeType: [],
-  gameModeTypeUrl: [],
-  gameOperationType: [],
+  gameMode: [],
+  gameModeUrl: [],
+  gameOperation: [],
   gameDifficulty: [],
 
   /**
@@ -200,11 +212,11 @@ const info = {
       info.squareTwo.gameTypeUrl
     ];
 
-    info.gameModeType = info.squareOne.gameModeType.concat(info.circleOne.gameModeType, info.squareTwo.gameModeType);
+    info.gameMode = info.squareOne.gameMode.concat(info.circleOne.gameMode, info.squareTwo.gameMode);
 
-    info.gameModeTypeUrl = info.squareOne.gameModeTypeUrl.concat(info.circleOne.gameModeTypeUrl, info.squareTwo.gameModeTypeUrl);
+    info.gameModeUrl = info.squareOne.gameModeUrl.concat(info.circleOne.gameModeUrl, info.squareTwo.gameModeUrl);
 
-    info.gameOperationType = info.squareOne.gameOperationType.concat(info.circleOne.gameOperationType, info.squareTwo.gameOperationType);
+    info.gameOperation = info.squareOne.gameOperation.concat(info.circleOne.gameOperation, info.squareTwo.gameOperation);
 
     info.gameDifficulty = [
       info.squareOne.gameDifficulty,
@@ -571,7 +583,7 @@ const navigationIcons = {
  */
 const sendToDB = function (extraData) {
 
-  // MOODLE
+  // FOR MOODLE
   if (moodle) {
 
     if (self.result) moodleVar.hits[mapPosition - 1]++;

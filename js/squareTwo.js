@@ -12,14 +12,14 @@
  *
  * # of different difficulties : 5
  *
- * Game modes can be : 'A' or 'B' (in variable 'gameModeType')
+ * Game modes can be : 'A' or 'B' (in variable 'gameMode')
  * 
  *   A : equivalence of fractions 
  *       top has more subdivisions
  *   B : equivalence of fractions
  *       bottom has more subdivisions
  * 
- * Operations : 'Equals' (in variable 'gameOperationType')
+ * Operations : 'Equals' (in variable 'gameOperation')
  *
  *   Equals : Player selects equivalent fractions of both blocks 
  * 
@@ -68,11 +68,11 @@ const squareTwo = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
 
     // Calls function that loads navigation icons
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left buttons
@@ -86,7 +86,7 @@ const squareTwo = {
     }
 
     // Add kid
-    this.kidAnimation = game.add.sprite(100, 470, 'kid_standing', 5, 0.8);
+    this.kidAnimation = game.add.sprite(100, defaultHeight - 128, 'kid_standing', 5, 0.8);
     this.kidAnimation.anchor(0.5, 0.7);
 
     // Width and Height of A and B
@@ -95,7 +95,7 @@ const squareTwo = {
 
     // Coordinates for A and B
     let xA, xB, yA, yB;
-    if (gameModeType != 'B') { // More subdivisions on B
+    if (gameMode != 'B') { // More subdivisions on B
       xA = 230;
       yA = 90;
       xB = xA;
@@ -134,7 +134,7 @@ const squareTwo = {
       const x = xA + i * blockWidth;
 
       // Blocks
-      const block = game.add.graphic.rect(x, yA, blockWidth, figureHeight, lineColor, 2, fillColor, 0.5);
+      const block = game.add.geom.rect(x, yA, blockWidth, figureHeight, lineColor, 2, fillColor, 0.5);
       block.figure = 'A';
       block.index = i;
       block.finalX = xA;
@@ -144,7 +144,7 @@ const squareTwo = {
       const alpha = (fractionLabel) ? 0.1 : 0;
 
       const yAux = yA + figureHeight + 10; // On the bottom of A
-      const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
+      const auxBlock = game.add.geom.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.A.auxBlocks.push(auxBlock);
     }
 
@@ -174,7 +174,7 @@ const squareTwo = {
       const x = xB + i * blockWidth;
 
       // Blocks
-      const block = game.add.graphic.rect(x, yB, blockWidth, figureHeight, lineColor, 2, fillColor, 0.5);
+      const block = game.add.geom.rect(x, yB, blockWidth, figureHeight, lineColor, 2, fillColor, 0.5);
       block.figure = 'B';
       block.index = i;
       block.finalX = xB;
@@ -183,7 +183,7 @@ const squareTwo = {
       // Auxiliar blocks
       const alpha = (fractionLabel) ? 0.1 : 0;
       const yAux = yB + figureHeight + 10; // On the bottom of B
-      const auxBlock = game.add.graphic.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
+      const auxBlock = game.add.geom.rect(x, yAux, blockWidth, figureHeight, lineColor, 1, fillColor, alpha);
       this.B.auxBlocks.push(auxBlock);
     }
 
@@ -459,7 +459,7 @@ const squareTwo = {
   postScore: function () {
     // Creates string that is going to be sent to db
     const data = '&line_game=' + gameShape
-      + '&line_mode=' + gameModeType
+      + '&line_mode=' + gameMode
       + '&line_oper=Equal'
       + '&line_leve=' + gameDifficulty
       + '&line_posi=' + mapPosition
@@ -471,7 +471,7 @@ const squareTwo = {
       + ', numBlocksB: ' + self.B.blocks.length
       + ', valueB: ' + self.B.selected;
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) sendToDB(data, self.result, game.timer.elapsed);
     else sendToDB(data);
   }

@@ -21,7 +21,7 @@ const menuState = {
    */
   create: function () {
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
 
       playerName = 'Aluno'; // TODO pegar o nome do aluno no bd do moodle
@@ -29,13 +29,13 @@ const menuState = {
 
     } else {
 
-      // MOODLE
+      // FOR MOODLE
       if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = 'Professor';
 
       // Background color
-      game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+      game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
       // Floor
-      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, 501, 'floor'); }
+      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
 
       // Overtitle: Welcome, <player name>!
       game.add.text(defaultWidth / 2, 40, game.lang.welcome + ', ' + playerName + '!', textStyles.h4_brown);
@@ -170,16 +170,9 @@ const menuState = {
    */
   func_showTitle: function (icon) {
 
-    let title = game.lang[icon.gameShape];
+    const number = (icon.gameType.slice(-3) == 'One') ? 'I' : 'II';
 
-    const type = icon.gameType.substring(-3);
-
-    switch (type) {
-      case 'One': title += ' I'; break;
-      case 'Two': title += ' II'; break;
-    }
-
-    self.lbl_game.name = title;
+    self.lbl_game.name = game.lang[icon.gameShape] + ' ' + number;
 
   },
 

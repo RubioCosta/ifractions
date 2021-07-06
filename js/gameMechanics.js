@@ -324,15 +324,15 @@ const game = {
      * Adds geometric shapes
      * @namespace
      */
-    graphic: {
+    geom: {
       /**
        * Adds rectangle to media queue <br><br>
        * 
-       * game.add.graphic.rect(x, y, width, height) <br>
-       * game.add.graphic.rect(x, y, width, height, lineColor) <br>
-       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth) <br>
-       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor) <br>
-       * game.add.graphic.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha) 
+       * game.add.geom.rect(x, y, width, height) <br>
+       * game.add.geom.rect(x, y, width, height, lineColor) <br>
+       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth) <br>
+       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth, fillColor) <br>
+       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha) 
        * 
        * @param {number} x default x coordinate for top left corner of the rectangle
        * @param {number} y default y coordinate for top left corner of the rectangle
@@ -389,11 +389,11 @@ const game = {
       /**
        * Adds circle to media queue <br><br>
        * 
-       * game.add.graphic.circle(x, y, diameter) <br>
-       * game.add.graphic.circle(x, y, diameter, lineColor) <br>
-       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth) <br>
-       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor) <br>
-       * game.add.graphic.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
+       * game.add.geom.circle(x, y, diameter) <br>
+       * game.add.geom.circle(x, y, diameter, lineColor) <br>
+       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth) <br>
+       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth, fillColor) <br>
+       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
        * 
        * @param {number} x default x coordinate for the circle center
        * @param {number} y default y coordinate for the circle center
@@ -459,12 +459,12 @@ const game = {
       /**
        * Adds arc to media queue <br><br>
        * 
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd) <br>
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise) <br>
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor) <br>
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth) <br>
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor) <br>
-       * game.add.graphic.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd) <br>
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise) <br>
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor) <br>
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth) <br>
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor) <br>
+       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
        * 
        * @param {number} x default x coordinate for the arc center
        * @param {number} y default y coordinate for the arc center
@@ -661,7 +661,7 @@ const game = {
      * 
      * @namespace
      */
-    _graphic: {
+    _geom: {
       /**
        * Renders rectangle on canvas
        * 
@@ -745,8 +745,8 @@ const game = {
           case 'image': this._image(cur); break;
           case 'sprite': this._sprite(cur); break;
           case 'text': this._text(cur); break;
-          case 'rect': this._graphic._rect(cur); break;
-          case 'arc': this._graphic._arc(cur); break;
+          case 'rect': this._geom._rect(cur); break;
+          case 'arc': this._geom._arc(cur); break;
         }
       });
     },

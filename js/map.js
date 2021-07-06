@@ -11,14 +11,14 @@ const mapState = {
   create: function () {
 
     // Background color
-    game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
 
     // Map
     game.add.image(0, 40, 'bgmap');
 
     // Calls function that loads navigation icons
 
-    // MOODLE
+    // FOR MOODLE
     if (moodle) {
       navigationIcons.func_addIcons(
         false, false, false, // Left icons
@@ -34,10 +34,10 @@ const mapState = {
     // Progress bar
     const percentText = 4 * 25;
 
-    if (completedLevels == 4) game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
-    else game.add.graphic.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
+    if (completedLevels == 4) game.add.geom.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
+    else game.add.geom.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
 
-    game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1);
+    game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1);
     game.add.text(820, 38, percentText + '%', textStyles.h2_blue, 'left');
     game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
 
@@ -102,7 +102,7 @@ const mapState = {
     // Game Character 
     if (gameTypeString == 'squareOne') {
 
-      if (gameOperationType == 'Plus') {
+      if (gameOperation == 'Plus') {
         this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'tractor', 0, 0.5);
         this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
       } else {
@@ -229,7 +229,7 @@ const endState = {
     self.animate = true;
 
     // Background color
-    game.add.graphic.rect(0, 0, 900, 600, undefined, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
 
     // Background
     game.add.image(0, 0, 'bgimage');
@@ -240,11 +240,11 @@ const endState = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Floor
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, 501, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
 
     // Progress bar
-    game.add.graphic.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // Progress
-    game.add.graphic.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
+    game.add.geom.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // Progress
+    game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
     game.add.text(820, 38, '100%', textStyles.h2_blue, 'left');
     game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
 
@@ -295,7 +295,7 @@ const endState = {
         // Tractor
         this.character = game.add.sprite(0, 490, 'tractor', 0, 0.7);
         this.character.anchor(0.5, 0.5);
-        if (gameOperationType == 'Plus') {
+        if (gameOperation == 'Plus') {
           this.character.animation = ['move', [0, 1, 2, 3, 4], 4];
         } else {
           this.character.curFrame = 10;
@@ -353,7 +353,7 @@ const endState = {
         completedLevels = 0;
         game.animation.stop(self.character.animation[0]);
 
-        // MOODLE
+        // FOR MOODLE
         if (!moodle) game.state.start('menu');
 
       }
