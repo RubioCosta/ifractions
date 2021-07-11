@@ -1,5 +1,8 @@
-/**
- * MAIN MENU STATE: main menu - player can select the game he wants to play 
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [MAIN MENU STATE] Screen where the user can select a game.
  * 
  * @namespace
  */
@@ -22,15 +25,15 @@ const menuState = {
   create: function () {
 
     // FOR MOODLE
-    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') { // Student role
 
-      playerName = 'Aluno'; // TODO pegar o nome do aluno no bd do moodle
+      playerName = game.lang.student; // TODO pegar o nome do aluno no bd do moodle
       getiLMContent();
 
     } else {
 
       // FOR MOODLE
-      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = 'Professor';
+      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = game.lang.professor;
 
       // Background color
       game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
@@ -45,7 +48,7 @@ const menuState = {
       this.lbl_game = game.add.text(defaultWidth / 2, 110, '', textStyles.h2_blue_2);
 
       // Loads navigation icons
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         false, false, false,
         true, true,
         false, false);
@@ -115,8 +118,8 @@ const menuState = {
 
       // ------------- EVENTS
 
-      game.event.add('click', this.func_onInputDown);
-      game.event.add('mousemove', this.func_onInputOver);
+      game.event.add('click', this.onInputDown);
+      game.event.add('mousemove', this.onInputOver);
 
     }
 
@@ -125,7 +128,7 @@ const menuState = {
   /**
    * Displays game menu information boxes.
    */
-  func_showInfoBox: function (icon) {
+  showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
     let msg = '<h3>' + self.infoBoxContent[icon.id].title + '</h3>'
@@ -140,12 +143,12 @@ const menuState = {
    * 
    * @param {object} icon clicked icon
    */
-  func_load: function (icon) {
+  load: function (icon) {
 
     if (audioStatus) game.audio.beepSound.play();
 
     switch (icon.iconType) {
-      case 'infoIcon': self.func_showInfoBox(icon); break;
+      case 'infoIcon': self.showInfoBox(icon); break;
       case 'game':
         gameShape = icon.gameShape;
         gameTypeString = icon.gameType;
@@ -153,12 +156,11 @@ const menuState = {
           case 'squareOne': gameType = squareOne; break;
           case 'squareTwo': gameType = squareTwo; break;
           case 'circleOne': gameType = circleOne; break;
-          default: console.error('Game error: the name of the game is not valid');
+          default: console.error('Game error: the name of the game is not valid.');
         }
         self.menuIcons = self.lbl_game.name;
         game.state.start('customMenu');
         break;
-      default: console.error("Game error: Problem with selected icon.");
     }
 
   },
@@ -168,7 +170,7 @@ const menuState = {
    * 
    * @param {object} icon icon for the game
    */
-  func_showTitle: function (icon) {
+  showTitle: function (icon) {
 
     const number = (icon.gameType.slice(-3) == 'One') ? 'I' : 'II';
 
@@ -179,7 +181,7 @@ const menuState = {
   /**
    * Remove the name of the game from screen
    */
-  func_clearTitle: function () {
+  clearTitle: function () {
     self.lbl_game.name = '';
   },
 
@@ -188,7 +190,7 @@ const menuState = {
    * 
    * @param {object} mouseEvent contains the mouse click coordinates
    */
-  func_onInputDown: function (mouseEvent) {
+  onInputDown: function (mouseEvent) {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
 
     // Check menu icons
@@ -196,13 +198,13 @@ const menuState = {
       // If mouse is within the bounds of an icon
       if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
         // Click first valid icon
-        self.func_load(self.menuIcons[i]);
+        self.load(self.menuIcons[i]);
         break;
       }
     }
 
     // Check navigation icons
-    navigationIcons.func_onInputDown(x, y);
+    navigationIcons.onInputDown(x, y);
 
     game.render.all();
   },
@@ -212,7 +214,7 @@ const menuState = {
    * 
    * @param {object} mouseEvent contains the mouse move coordinates
    */
-  func_onInputOver: function (mouseEvent) {
+  onInputOver: function (mouseEvent) {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
     let overIcon;
 
@@ -225,26 +227,26 @@ const menuState = {
     }
 
     // Update gui
-    if (overIcon) { // if pointer is over icon
+    if (overIcon) { // If pointer is over icon
       document.body.style.cursor = 'pointer';
-      if (self.menuIcons[overIcon].iconType == 'game') self.func_showTitle(self.menuIcons[overIcon]);
+      if (self.menuIcons[overIcon].iconType == 'game') self.showTitle(self.menuIcons[overIcon]);
       self.menuIcons.forEach(cur => {
-        if (cur.iconType == self.menuIcons[overIcon].iconType) { // if its in the same icon category
-          if (cur == self.menuIcons[overIcon]) { // if its the icon the pointer is over 
+        if (cur.iconType == self.menuIcons[overIcon].iconType) { // If its in the same icon category
+          if (cur == self.menuIcons[overIcon]) { // If its the icon the pointer is over 
             cur.scale = cur.originalScale * 1.1;
           } else {
             cur.scale = cur.originalScale;
           }
         }
       });
-    } else { // if pointer is not over icon
-      self.func_clearTitle();
+    } else { // If pointer is not over icon
+      self.clearTitle();
       self.menuIcons.forEach(cur => { cur.scale = cur.originalScale; });
       document.body.style.cursor = 'auto';
     }
 
     // Check navigation icons
-    navigationIcons.func_onInputOver(x, y);
+    navigationIcons.onInputOver(x, y);
 
     game.render.all();
   }

@@ -1,207 +1,317 @@
+/***************************************************************
+ * LInE - Free Education, Private Data - http://www.usp.br/line
+ * 
+ * This file handles all the game mechanics.
+ **************************************************************/
+
 /**
- * Variable that handles game mechanics
+ * Variable that handles game mechanics.
  * 
  * @namespace
  */
 const game = {
 
-  audio: {}, lang: {}, // Holds cache reference to media - used in code to get audio and dicitonary
-  image: {}, sprite: {}, // [Not directly used] Holds cache reference to media 
+  image: {},  // [Not directly used] Holds cached reference to media.
+  sprite: {}, // [Not directly used] Holds cached reference to media. 
+  audio: {},  // Holds cached reference to media - game.audio.<name>.play() plays that audio once.
+  lang: {},   // Holds language dictionary in a key-value format - game.lang.<key> returns <value>.
+  loadedCur: 0, // [Not directly used] CURRENT number of cached media (on current state)
+  loadedMax: 0, // [Not directly used] EXPECTED number of cached media (on current state)
+  loadManager: { // [Not directly used] <mediaCategory> : [ <isLoading?> , <#CurrentlyCached> ]
+    lang: [false, 0],
+    audio: [false, 0],
+    image: [false, 0],
+    sprite: [false, 0],
+  },
 
-  mediaTypes: ['lang', 'audio', 'image', 'sprite'], // [Not directly used]
-  loadedMedia: [], // [Not directly used]
-  isLoaded: [], // [Not directly used]
+  /** 
+   * Handles game states. <br>
+   * 
+   * When a state is associated with an object 
+   * it can accessed using game.state.start('state name'). <br>
+
+   * That way the object can use the especial functions: preload(), create() and update(); 
+   * that behave according to the following rules: <br> 
+   * - preload() : first function to run when a state is called. Loads media. Runs only once. (is optional) <br>
+   * - create() : called right after preload(). Where the main code goes. Runs only once. (must exist) <br>
+   * - update() : called right after create(). Is iteratively called by 'game loop' until going to next state. (is optional)
+   *
+   * @namespace 
+   */
+  state: {
+    // [Not directly used] List of game states.
+    list: [],
+    // [Not directly used]
+    name: undefined,
+    /**
+     * Create new state. <br>
+     * 
+     * After a state is created, the object associated with that state 
+     * can be called using game.state.start('state name')
+     * 
+     * @param {string} name state name
+     * @param {object} obj object that should be called when accessing the state
+     */
+    add: function (name, obj) {
+      game.state.list[name] = obj;
+    },
+    /**
+     * Start new state. 
+     * 
+     * Will look for the state's preload() to load the files for the current state.
+     * If there is no preload, will call create().
+     * 
+     * @param {string} name state name
+     */
+    start: function (name) {
+      document.body.style.cursor = 'auto'; // Set cursor to default
+      game.loop.stop(); // Stop last game loop
+      game.event.clear(); // Clears last event queue
+      game.animation.clear(); // Clears last animation queue
+      game.loadedCur = 0; // Clears last state's number of loaded media
+      game.loadedMax = 0; // Clears last state's expected loaded media
+      game.state.name = name; // Updates state name
+      self = game.state.list[name]; // Updates self to current state
+      if (self.preload) {
+        game.render.clear(); // Clears render queue
+        // IF there's media to be loaded, creates progress bar
+        game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
+        self.progressBar = game.add.geom.rect(defaultWidth / 2, defaultHeight / 2, 20, 20, undefined, 0, colors.white);
+        self.progressBar.anchor(0.5, 0.5);
+        // Calls state's preload() to load the state's media
+        self.preload();
+      } else {
+        game.state.create();
+      }
+    },
+    /**
+     * [Not directly used] Encapsulate create() function in the current state.
+     */
+    create: function () {
+      game.render.clear(); // Clears render queue, removing 'progress bar' if preload() was called
+      if (!self.create) {
+        console.error('Game error: The state called does not have a \'create\' function. Unable to continue.');
+      } else {
+        self.create(); // Calls create()
+        game.render.all(); // After create() ends, renders media on canvas
+        if (self.restart && self.restart == true) { // If needed, restart state
+          game.state.start(game.state.name);
+        } else {
+          if (self.update) game.loop.start(self); // Calls update() if it exists
+        }
+      }
+    },
+  },
 
   /**
-   * Load URLs to cache <br>
-   * To be used only inside function preload() if a state needs to load media <br>
-   * URLs are in globals.js
+   * Loads media files to cache. <br>
+   * 
+   * IMPORTANT: Must ONLY be used inside the function preload(),
+   * as it calls create() after all media is cached.
+   * 
+   * @see /js/globals.js for the list of media urls (var url)
    *
    * @namespace
    */
   load: {
     /**
-     * Loads dictionary to cache
+     * Loads language dictionary into the object game.lang using Fetch API.
      * 
      * @param {string} url url for the selected language
      */
     lang: function (url) {
-      game.isLoaded['lang'] = false;
-      game.loadedMedia['lang'] = 0;
+      game.loadManager.lang[0] = true;
+      game.loadManager.lang[1] = 0;
       game.lang = {}; // Clear previously loaded language
       const init = { mode: 'same-origin' };
-      fetch(url, init) // Fetch API
-        .then(function (response) {
+      fetch(url, init)
+        .then(response => {
           return response.text();
         })
-        .then(function (text) {
+        .then(text => {
           let msg = text.split('\n');
+          game.loadedMax += msg.length - 1;
           msg.forEach(cur => {
             try {
               let msg = cur.split('=');
               game.lang[msg[0].trim()] = msg[1].trim();
             } catch (Error) { if (debugMode) console.log('Sintax error fixed'); }
-            game.load._informMediaIsLoaded(msg.length - 1, 'lang');
+            game.load.finishedOneMediaElement(msg.length - 1, 'lang');
           });
         });
     },
     /**
-     * Loads audio files to cache
+     * Caches audio files using Fetch API.
      * 
-     * @param {array} urls audio urls for the current state
+     * @param {string[]} urls audio urls for the current state
      */
     audio: function (urls) {
-      game.isLoaded['audio'] = false;
-      game.loadedMedia['audio'] = 0;
-      urls = this._getNotLoadedUrls(urls, game.audio);
+      game.loadManager.audio[0] = true;
+      game.loadManager.audio[1] = 0;
+      urls = this.getUncachedUrls(urls, game.audio);
       if (urls.length == 0) {
-        game.load._informMediaIsLoaded(0, 'audio');
+        game.load.finishedOneMediaElement(0, 'audio');
       } else {
+        game.loadedMax += urls.length - 1;
         const init = { mode: 'same-origin' };
         urls.forEach(cur => {
-          fetch(cur[1][1], init) // Fetch API
+          fetch(cur[1][1], init)
             .then(response => response.blob())
-            .then(function (myBlob) {
+            .then(myBlob => {
               game.audio[cur[0]] = new Audio(URL.createObjectURL(myBlob));
-              game.load._informMediaIsLoaded(urls.length - 1, 'audio');
+              game.load.finishedOneMediaElement(urls.length - 1, 'audio');
             });
         });
       }
     },
     /**
-     * Loads images to cache
+     * Caches image files using HTMLImageElement.
      * 
-     * @param {array} urls image urls for the current state
+     * @param {string[]} urls image urls for the current state
      */
     image: function (urls) {
-      game.isLoaded['image'] = false;
-      game.loadedMedia['image'] = 0;
-      urls = this._getNotLoadedUrls(urls, game.image);
+      game.loadManager.image[0] = true;
+      game.loadManager.image[1] = 0;
+      urls = this.getUncachedUrls(urls, game.image);
       if (urls.length == 0) {
-        game.load._informMediaIsLoaded(0, 'image');
+        game.load.finishedOneMediaElement(0, 'image');
       } else {
+        game.loadedMax += urls.length - 1;
         urls.forEach(cur => {
-          const img = new Image(); // HTMLImageElement
+          const img = new Image();
           img.onload = () => {
             game.image[cur[0]] = img;
-            game.load._informMediaIsLoaded(urls.length - 1, 'image');
+            game.load.finishedOneMediaElement(urls.length - 1, 'image');
           }
           img.src = cur[1];
         });
       }
     },
     /**
-     * Loads spritesheets to cache
+     * Caches spritesheets using HTMLImageElement.
      * 
-     * @param {array} urls spritesheet urls for the current state
+     * @param {string[]} urls spritesheet urls for the current state
      */
     sprite: function (urls) {
-      game.isLoaded['sprite'] = false;
-      game.loadedMedia['sprite'] = 0;
-      urls = this._getNotLoadedUrls(urls, game.sprite);
+      game.loadManager.sprite[0] = true;
+      game.loadManager.sprite[1] = 0;
+      urls = this.getUncachedUrls(urls, game.sprite);
       if (urls.length == 0) {
-        game.load._informMediaIsLoaded(0, 'sprite');
+        game.load.finishedOneMediaElement(0, 'sprite');
       } else {
+        game.loadedMax += urls.length - 1;
         urls.forEach(cur => {
-          const img = new Image(); // HTMLImageElement
+          const img = new Image();
           img.onload = () => {
             game.sprite[cur[0]] = img;
-            game.load._informMediaIsLoaded(urls.length - 1, 'sprite');
+            game.load.finishedOneMediaElement(urls.length - 1, 'sprite');
           }
           img.src = cur[1];
           img.frames = cur[2];
         });
       }
     },
-    /**
-     * Updates list of urls to whats not already in cache
+    /** [Not directly used] Removes the urls that are already in the cache.
      * 
-     * @param {array} urls array of urls
-     * @param {object} media whats in cache for current media type
-     * @returns {array} array of urls without what is already in cache
+     * @param {string[]} urls array of urls
+     * @param {object} media media category
+     * 
+     * @returns {string[]} array of uncached urls
      */
-    _getNotLoadedUrls: function (urls, media) {
+    getUncachedUrls: function (urls, media) {
       const newUrls = [];
-      urls.forEach(cur => { if (media[cur[0]] == undefined) newUrls.push(cur); });
+      urls.forEach(cur => {
+        if (media[cur[0]] == undefined) newUrls.push(cur);
+      });
       return newUrls;
     },
-    /**
-     * Informs that all files of current media type are loaded
+    /** [Not directly used] Informs ONE media file was loaded to cache. <br>
      * 
-     * @param {number} last last index
-     * @param {String} type media type
+     * After ALL FILES of the SAME CATEGORY are cached, calls game.load.finishedOneMediaType()
+     * 
+     * @param {number} lastIndex last index of the media array (to check if is finished)
+     * @param {String} mediaType media category (to update the cached files from that category)
      */
-    _informMediaIsLoaded: function (last, type) {
-      if (game.loadedMedia[type] == last) {
-        game.isLoaded[type] = true;
-        game.load._isPreloadDone(type);
+    finishedOneMediaElement: function (lastIndex, mediaType) {
+      // Updates progress bar
+      if (lastIndex != 0) {
+        self.progressBar.width = (200 / game.loadedMax) * game.loadedCur;
+        game.render.all();
+        game.loadedCur++;
       }
-      game.loadedMedia[type]++;
+      // If reached last index of current media array
+      if (lastIndex == game.loadManager[mediaType][1]) {
+        // Resets load manager 
+        game.loadManager[mediaType][0] = false;
+        game.loadManager[mediaType][1] = 0;
+        // Informs
+        game.load.finishedOneMediaType();
+      } else {
+        // Updates
+        game.loadManager[mediaType][1]++;
+      }
     },
-    /**
-     * When all types of media are loaded for the current state, calls function create() through state
+    /** [Not directly used] Informs ALL MEDIA files from the SAME CATEGORY are cached. <br>
      * 
-     * @param {String} type type of media fully loaded for current state
+     * After ALL CATEGORIES of media are cached, calls create() via game.state. <br>
+     * ATTENTION: Do not call create() directly.
      */
-    _isPreloadDone: function (type) {
-      let flag = true;
-      for (let i in game.mediaTypes) {
-        if (game.isLoaded[game.mediaTypes[i]] == false) { // If all media for current state is loaded, flag wont change
-          flag = false;
+    finishedOneMediaType: function () {
+      // Checks if finished loading ALL media categories
+      let endPreload = true;
+      for (let key in game.loadManager) {
+        if (game.loadManager[key][0] == true) {
+          endPreload = false;
           break;
         }
       }
-      // If flag doesnt change preload is complete
-      if (flag) {
-        game.isLoaded = [];
-        game.loadedMedia[type] = 0;
-        game.state._create();
+      // If flag doesnt change, all media is cached
+      if (endPreload) {
+        game.state.create();
       }
     }
   },
 
   /**
-   * Adds new media to 'media queue' <br>
-   * All queued media is actually drawn on the canvas using game.render.all() 
+   * Adds new media to the 'media queue' (game.render.queue). <br>
+   *  
+   * All queued media will be rendered on canvas when game.render.all() is called.
    * 
    * @namespace
    */
   add: {
     /**
-     * Adds image to media queue <br><br>
+     * Adds image to media queue.
      * 
-     * game.add.image(x, y, img) <br>
-     * game.add.image(x, y, img, scale) <br>
-     * game.add.image(x, y, img, scale, alpha)
-     * 
-     * @param {number} x default x coordinate for the figure
-     * @param {number} y default x coordinate for the figure
+     * @param {number} x x coordinate for the figure
+     * @param {number} y y coordinate for the figure
      * @param {string} img name of the cached image
-     * @param {number} scale scale for the image (default = 1)
-     * @param {number} alpha level of transparency, from 0 (invisible) to 1 (completely visible))
-     * @returns {object}
+     * @param {undefined|number} scale scale for the image (default = 1)
+     * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible) (default = 1)
+     * 
+     * @returns {object} a reference to the created image.
      */
     image: function (x, y, img, scale, alpha) {
-      if (x == undefined || y == undefined || img == undefined) console.error('Game error: missing parameters');
-      else if (game.image[img] == undefined) console.error('Game error: image not found in cache: ' + img);
+      if (x == undefined || y == undefined || img == undefined) console.error('Game error: missing parameters.');
+      else if (game.image[img] == undefined) console.error('Game error: image not found in cache: ' + img + '.');
       else {
         const med = {
           typeOfMedia: 'image',
           name: img,
 
-          x: x || game.add._default.x,
-          y: y || game.add._default.y,
-          _xWithAnchor: x || game.add._default._xWithAnchor,
-          _yWithAnchor: y || game.add._default._yWithAnchor,
-          xAnchor: game.add._default.xAnchor,
-          yAnchor: game.add._default.yAnchor,
+          x: x || game.add.default.x,
+          y: y || game.add.default.y,
+          _xWithAnchor: x || game.add.default._xWithAnchor,
+          _yWithAnchor: y || game.add.default._yWithAnchor,
+          xAnchor: game.add.default.xAnchor,
+          yAnchor: game.add.default.yAnchor,
 
-          shadow: game.add._default.shadow,
-          shadowColor: game.add._default.shadowColor,
-          shadowBlur: game.add._default.shadowBlur,
-          alpha: (alpha != undefined) ? alpha : game.add._default.alpha,
+          shadow: game.add.default.shadow,
+          shadowColor: game.add.default.shadowColor,
+          shadowBlur: game.add.default.shadowBlur,
+          alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-          scale: scale || game.add._default.scale,
+          scale: scale || game.add.default.scale,
           width: game.image[img].width,
           height: game.image[img].height,
 
@@ -218,42 +328,39 @@ const game = {
       }
     },
     /** 
-     * Adds spritesheet to media queue <br><br>
+     * Adds spritesheet to media queue. <br>
+     * A spritesheet is an image that can be cropped to show only one 'frame' at a time.
      * 
-     * game.add.sprite(x, y, img) <br>
-     * game.add.sprite(x, y, img, curFrame) <br>
-     * game.add.sprite(x, y, img, curFrame, scale) <br>
-     * game.add.sprite(x, y, img, curFrame, scale, alpha) 
-     * 
-     * @param {number} x default x coordinate for the figure
-     * @param {number} y default x coordinate for the figure
+     * @param {number} x x coordinate for the figure
+     * @param {number} y Y coordinate for the figure
      * @param {string} img name of the cached spritesheet
-     * @param {number} curFrame current frame from the spritesheet (default = 0)
-     * @param {number} scale scale for the spritesheet (default = 1)
-     * @param {number} alpha level of transparency, from 0 (invisible) to 1 (completely visible))
-     * @returns {object}
+     * @param {undefined|number} curFrame current frame (default = 0)
+     * @param {undefined|number} scale scale for the spritesheet (default = 1)
+     * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible) (default = 1)
+     * 
+     * @returns {object} a reference to the created sprite.
      */
     sprite: function (x, y, img, curFrame, scale, alpha) {
-      if (x == undefined || y == undefined || img == undefined) console.error('Game error: missing parameters');
-      else if (game.sprite[img] == undefined) console.error('Game error: sprite not found in cache: ' + img);
+      if (x == undefined || y == undefined || img == undefined) console.error('Game error: missing parameters.');
+      else if (game.sprite[img] == undefined) console.error('Game error: sprite not found in cache: ' + img + '.');
       else {
         const med = {
           typeOfMedia: 'sprite',
           name: img,
 
-          x: x || game.add._default.x,
-          y: y || game.add._default.y,
-          _xWithAnchor: x || game.add._default._xWithAnchor,
-          _yWithAnchor: y || game.add._default._yWithAnchor,
-          xAnchor: game.add._default.xAnchor,
-          yAnchor: game.add._default.yAnchor,
+          x: x || game.add.default.x,
+          y: y || game.add.default.y,
+          _xWithAnchor: x || game.add.default._xWithAnchor,
+          _yWithAnchor: y || game.add.default._yWithAnchor,
+          xAnchor: game.add.default.xAnchor,
+          yAnchor: game.add.default.yAnchor,
 
-          shadow: game.add._default.shadow,
-          shadowColor: game.add._default.shadowColor,
-          shadowBlur: game.add._default.shadowBlur,
-          alpha: (alpha != undefined) ? alpha : game.add._default.alpha,
+          shadow: game.add.default.shadow,
+          shadowColor: game.add.default.shadowColor,
+          shadowBlur: game.add.default.shadowBlur,
+          alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-          scale: scale || game.add._default.scale,
+          scale: scale || game.add.default.scale,
           width: game.sprite[img].width / game.sprite[img].frames, // Frame width
           height: game.sprite[img].height, // Frame height
 
@@ -272,42 +379,39 @@ const game = {
       }
     },
     /**
-     * Adds text to media queue <br><br>
+     * Adds text to media queue.
      * 
-     * game.add.text(x, y, text, style) <br>
-     * game.add.text(x, y, text, style, align)
-     * 
-     * @param {number} x default x coordinate for the figure
-     * @param {number} y default x coordinate for the figure
+     * @param {number} x x coordinate for the figure
+     * @param {number} y y coordinate for the figure
      * @param {string} text text to be displayed on screen
-     * @param {object} style object containing font, text color and align for the text
-     * @param {string} align text align on screen [left, center or right]
-     * @returns {object}
+     * @param {object} style object containing font, color and align for the text
+     * 
+     * @returns {object} a reference to the created text.
      */
-    text: function (x, y, text, style, align) {
-      if (x == undefined || y == undefined || text == undefined || style == undefined) console.error('Game error: missing parameters');
+    text: function (x, y, text, style) {
+      if (x == undefined || y == undefined || text == undefined || style == undefined) console.error('Game error: missing parameters.');
       else {
         const med = {
           typeOfMedia: 'text',
           name: text,
 
-          x: x || game.add._default.x,
-          y: y || game.add._default.y,
-          _xWithAnchor: x || game.add._default._xWithAnchor,
-          _yWithAnchor: y || game.add._default._yWithAnchor,
-          xAnchor: game.add._default.xAnchor,
-          yAnchor: game.add._default.yAnchor,
+          x: x || game.add.default.x,
+          y: y || game.add.default.y,
+          _xWithAnchor: x || game.add.default._xWithAnchor,
+          _yWithAnchor: y || game.add.default._yWithAnchor,
+          xAnchor: game.add.default.xAnchor,
+          yAnchor: game.add.default.yAnchor,
 
-          shadow: game.add._default.shadow,
-          shadowColor: game.add._default.shadowColor,
-          shadowBlur: game.add._default.shadowBlur,
-          alpha: game.add._default.alpha,
+          shadow: game.add.default.shadow,
+          shadowColor: game.add.default.shadowColor,
+          shadowBlur: game.add.default.shadowBlur,
+          alpha: game.add.default.alpha,
 
-          font: style.font || game.add._default.font,
-          fill: style.fill || game.add._default.fill,
-          align: align || style.align || game.add._default.align,
+          font: style.font || game.add.default.font,
+          fill: style.fill || game.add.default.fill,
+          align: style.align || game.add.default.align,
 
-          anchor: function () { console.error('Game error: there\'s no anchor for text'); },
+          anchor: function () { console.error('Game error: there\'s no anchor for text.'); },
           set style(style) {
             this.font = style.font;
             this.fill = style.fill;
@@ -321,55 +425,50 @@ const game = {
       }
     },
     /**
-     * Adds geometric shapes
+     * Adds geometric shapes.
      * @namespace
      */
     geom: {
       /**
-       * Adds rectangle to media queue <br><br>
+       * Adds rectangle to media queue.
        * 
-       * game.add.geom.rect(x, y, width, height) <br>
-       * game.add.geom.rect(x, y, width, height, lineColor) <br>
-       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth) <br>
-       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth, fillColor) <br>
-       * game.add.geom.rect(x, y, width, height, lineColor, lineWidth, fillColor, alpha) 
+       * @param {number} x x coordinate for top left corner of the rectangle
+       * @param {number} y y coordinate for top left corner of the rectangle
+       * @param {number} width rectangle width (default = 50)
+       * @param {undefined|number} height rectangle height (default = 50)
+       * @param {undefined|string} lineColor stroke color (default = black)
+       * @param {undefined|number} lineWidth stroke width (default = 1px)
+       * @param {undefined|string} fillColor fill color (default = no fill)
+       * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible)) (default = 1)
        * 
-       * @param {number} x default x coordinate for top left corner of the rectangle
-       * @param {number} y default y coordinate for top left corner of the rectangle
-       * @param {number} width rectangle width
-       * @param {number} height rectangle height
-       * @param {string} lineColor stroke color
-       * @param {number} lineWidth stroke width
-       * @param {string} fillColor fill color
-       * @param {number} alpha level of transparency, from 0 (invisible) to 1 (completely visible))
-       * @returns {object}
+       * @returns {object} a reference to the created rectangle.
        */
       rect: function (x, y, width, height, lineColor, lineWidth, fillColor, alpha) {
-        if (x == undefined || y == undefined || width == undefined) console.error('Game error: missing parameters');
+        if (x == undefined || y == undefined || width == undefined) console.error('Game error: missing parameters.');
         else {
           const med = {
             typeOfMedia: 'rect',
 
-            x: x || game.add._default.x,
-            y: y || game.add._default.y,
-            _xWithAnchor: x || game.add._default._xWithAnchor,
-            _yWithAnchor: y || game.add._default._yWithAnchor,
-            xAnchor: game.add._default.xAnchor,
-            yAnchor: game.add._default.yAnchor,
+            x: x || game.add.default.x,
+            y: y || game.add.default.y,
+            _xWithAnchor: x || game.add.default._xWithAnchor,
+            _yWithAnchor: y || game.add.default._yWithAnchor,
+            xAnchor: game.add.default.xAnchor,
+            yAnchor: game.add.default.yAnchor,
 
-            shadow: game.add._default.shadow,
-            shadowColor: game.add._default.shadowColor,
-            shadowBlur: game.add._default.shadowBlur,
-            alpha: (alpha != undefined) ? alpha : game.add._default.alpha,
+            shadow: game.add.default.shadow,
+            shadowColor: game.add.default.shadowColor,
+            shadowBlur: game.add.default.shadowBlur,
+            alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-            scale: game.add._default.scale,
+            scale: game.add.default.scale,
 
             width: 0,
             height: 0,
 
-            lineColor: lineColor || game.add._default.lineColor,
+            lineColor: lineColor || game.add.default.lineColor,
             lineWidth: 0,
-            fillColor: fillColor || game.add._default.fillColor,
+            fillColor: fillColor || game.add.default.fillColor,
 
             anchor: function (xAnchor, yAnchor) {
               this.xAnchor = xAnchor;
@@ -379,50 +478,45 @@ const game = {
             get yWithAnchor() { return this.y - (this.height * this.scale * this.yAnchor); }
           };
           med.originalScale = med.scale;
-          if (width != 0) { med.width = width || game.add._default.width; }
-          if (height != 0) { med.height = height || width || game.add._default.height; }
-          if (lineWidth != 0) { med.lineWidth = lineWidth || game.add._default.lineWidth; }
+          if (width != 0) { med.width = width || game.add.default.width; }
+          if (height != 0) { med.height = height || width || game.add.default.height; }
+          if (lineWidth != 0) { med.lineWidth = lineWidth || game.add.default.lineWidth; }
           game.render.queue.push(med);
           return med;
         }
       },
       /**
-       * Adds circle to media queue <br><br>
+       * Adds circle to media queue.
        * 
-       * game.add.geom.circle(x, y, diameter) <br>
-       * game.add.geom.circle(x, y, diameter, lineColor) <br>
-       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth) <br>
-       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth, fillColor) <br>
-       * game.add.geom.circle(x, y, diameter, lineColor, lineWidth, fillColor, alpha)
+       * @param {number} x x coordinate for the circle center
+       * @param {number} y y coordinate for the circle center
+       * @param {number} diameter circle diameter (default = 50)
+       * @param {undefined|string} lineColor stroke color (default = black)
+       * @param {undefined|number} lineWidth stroke width (default = 1px)
+       * @param {undefined|string} fillColor fill color (default = no fill)
+       * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible)) (default = 1)
        * 
-       * @param {number} x default x coordinate for the circle center
-       * @param {number} y default y coordinate for the circle center
-       * @param {number} diameter circle diameter
-       * @param {string} lineColor stroke color
-       * @param {number} lineWidth stroke width
-       * @param {string} fillColor fill color
-       * @param {number} alpha level of transparency, from 0 (invisible) to 1 (completely visible))
-       * @returns {object}
+       * @returns {object} a reference to the created circle.
        */
       circle: function (x, y, diameter, lineColor, lineWidth, fillColor, alpha) {
-        if (x == undefined || y == undefined || diameter == undefined) console.error('Game error: missing parameters');
+        if (x == undefined || y == undefined || diameter == undefined) console.error('Game error: missing parameters.');
         else {
           const med = {
             typeOfMedia: 'arc',
 
-            x: x || game.add._default.x,
-            y: y || game.add._default.y,
-            _xWithAnchor: x || game.add._default._xWithAnchor,
-            _yWithAnchor: y || game.add._default._yWithAnchor,
-            xAnchor: game.add._default.xAnchor,
-            yAnchor: game.add._default.yAnchor,
+            x: x || game.add.default.x,
+            y: y || game.add.default.y,
+            _xWithAnchor: x || game.add.default._xWithAnchor,
+            _yWithAnchor: y || game.add.default._yWithAnchor,
+            xAnchor: game.add.default.xAnchor,
+            yAnchor: game.add.default.yAnchor,
 
-            shadow: game.add._default.shadow,
-            shadowColor: game.add._default.shadowColor,
-            shadowBlur: game.add._default.shadowBlur,
-            alpha: (alpha != undefined) ? alpha : game.add._default.alpha,
+            shadow: game.add.default.shadow,
+            shadowColor: game.add.default.shadowColor,
+            shadowBlur: game.add.default.shadowBlur,
+            alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-            scale: game.add._default.scale,
+            scale: game.add.default.scale,
 
             diameter: 0,
 
@@ -431,11 +525,11 @@ const game = {
 
             angleStart: 0,
             angleEnd: 2 * Math.PI,
-            anticlockwise: game.add._default.anticlockwise,
+            anticlockwise: game.add.default.anticlockwise,
 
-            lineColor: lineColor || game.add._default.lineColor,
+            lineColor: lineColor || game.add.default.lineColor,
             lineWidth: 0,
-            fillColor: fillColor || game.add._default.fillColor,
+            fillColor: fillColor || game.add.default.fillColor,
 
             anchor: function (xAnchor, yAnchor) {
               this.xAnchor = xAnchor;
@@ -446,57 +540,51 @@ const game = {
           };
           med.originalScale = med.scale;
           if (diameter != 0) {
-            med.diameter = diameter || game.add._default.diameter;
+            med.diameter = diameter || game.add.default.diameter;
             med.width = med.height = med.diameter;
           }
           if (lineWidth != 0) {
-            med.lineWidth = lineWidth || game.add._default.lineWidth;
+            med.lineWidth = lineWidth || game.add.default.lineWidth;
           }
           game.render.queue.push(med);
           return med;
         }
       },
       /**
-       * Adds arc to media queue <br><br>
+       * Adds arc to media queue.
        * 
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd) <br>
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise) <br>
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor) <br>
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth) <br>
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor) <br>
-       * game.add.geom.arc(x, y, diameter, angleStart, angleEnd, anticlockWise, lineColor, lineWidth, fillColor, alpha)
-       * 
-       * @param {number} x default x coordinate for the arc center
-       * @param {number} y default y coordinate for the arc center
+       * @param {number} x x coordinate for the arc center
+       * @param {number} y y coordinate for the arc center
        * @param {number} diameter arc diameter
        * @param {number} angleStart angle to start the arc
        * @param {number} angleEnd angle to end the arc
-       * @param {boolean} anticlockwise if true, arc is created anticlockwise [default=false]
-       * @param {string} lineColor stroke color
-       * @param {number} lineWidth stroke width
-       * @param {string} fillColor fill color
-       * @param {number} alpha level of transparency, from 0 (invisible) to 1 (completely visible))
-       * @returns {object}
+       * @param {undefined|boolean} anticlockwise if true, arc is created anticlockwise (default = false)
+       * @param {undefined|string} lineColor stroke color (default = black)
+       * @param {undefined|number} lineWidth stroke width (default = 1px)
+       * @param {undefined|string} fillColor fill color (default = no fill)
+       * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible)) (default = 1)
+       * 
+       * @returns {object} a reference to the created arc.
        */
       arc: function (x, y, diameter, angleStart, angleEnd, anticlockwise, lineColor, lineWidth, fillColor, alpha) {
-        if (x == undefined || y == undefined || diameter == undefined || angleStart == undefined || angleEnd == undefined) console.error('Game error: missing parameters');
+        if (x == undefined || y == undefined || diameter == undefined || angleStart == undefined || angleEnd == undefined) console.error('Game error: missing parameters.');
         else {
           const med = {
             typeOfMedia: 'arc',
 
-            x: x || game.add._default.x,
-            y: y || game.add._default.y,
-            _xWithAnchor: x || game.add._default._xWithAnchor,
-            _yWithAnchor: y || game.add._default._yWithAnchor,
-            xAnchor: game.add._default.xAnchor,
-            yAnchor: game.add._default.yAnchor,
+            x: x || game.add.default.x,
+            y: y || game.add.default.y,
+            _xWithAnchor: x || game.add.default._xWithAnchor,
+            _yWithAnchor: y || game.add.default._yWithAnchor,
+            xAnchor: game.add.default.xAnchor,
+            yAnchor: game.add.default.yAnchor,
 
-            shadow: game.add._default.shadow,
-            shadowColor: game.add._default.shadowColor,
-            shadowBlur: game.add._default.shadowBlur,
-            alpha: (alpha != undefined) ? alpha : game.add._default.alpha,
+            shadow: game.add.default.shadow,
+            shadowColor: game.add.default.shadowColor,
+            shadowBlur: game.add.default.shadowBlur,
+            alpha: (alpha != undefined) ? alpha : game.add.default.alpha,
 
-            scale: game.add._default.scale,
+            scale: game.add.default.scale,
 
             diameter: 0,
 
@@ -505,11 +593,11 @@ const game = {
 
             angleStart: angleStart || 0,
             angleEnd: angleEnd || 2 * Math.PI,
-            anticlockwise: anticlockwise || game.add._default.anticlockwise,
+            anticlockwise: anticlockwise || game.add.default.anticlockwise,
 
-            lineColor: lineColor || game.add._default.lineColor,
+            lineColor: lineColor || game.add.default.lineColor,
             lineWidth: 0,
-            fillColor: fillColor || game.add._default.fillColor,
+            fillColor: fillColor || game.add.default.fillColor,
 
             anchor: function (xAnchor, yAnchor) {
               this.xAnchor = xAnchor;
@@ -520,76 +608,76 @@ const game = {
           };
           med.originalScale = med.scale;
           if (diameter != 0) {
-            med.diameter = diameter || game.add._default.diameter;
+            med.diameter = diameter || game.add.default.diameter;
             med.width = med.height = med.diameter;
           }
-          if (lineWidth != 0) { med.lineWidth = lineWidth || game.add._default.lineWidth; }
+          if (lineWidth != 0) { med.lineWidth = lineWidth || game.add.default.lineWidth; }
           game.render.queue.push(med);
           return med;
         }
       }
     },
-    // [Not directly used]
-    _default: {
-      // All media
+    /**
+     * [Not directly used] Default values for the media properties.
+     */
+    default: {
+      // Used in: all types of media.
       x: 0,
       y: 0,
       _xWithAnchor: 0,
       _yWithAnchor: 0,
       xAnchor: 0,
       yAnchor: 0,
-
       shadow: false,
       shadowColor: '#0075c5',
       shadowBlur: 20,
       alpha: 1,
-
-      // Image, sprite, square, circle
+      // Used in: image, sprite, square, circle.
       scale: 1,
-
-      // Text
+      // Used in: text.
       font: '14px Arial,sans-serif',
       fill: '#000',
       align: 'center',
-
-      // Square, circle (image and sprite have width and height, but do not have default values)
+      // Used in: square, circle (image and sprite have width and height, but do not have default values).
       width: 50,
       height: 50,
-
       lineColor: '#000',
       lineWidth: 1,
-      fillColor: 0, // Default no fill
-
-      // Circle 
+      fillColor: 0, // No fill
+      // Used in: circle.
       diameter: 50,
       anticlockwise: false,
     },
   },
 
   /**
-   * Renders media on current screen <br>
-   * Uses properties of html canvas to draw media on screen during game loop
+   * Renders media on current screen. <br<
+   * It uses properties of html canvas to draw media on screen during game loop.
    * 
    * @namespace
    */
   render: {
-    queue: [], // [Not directly used] Media queue to be rendered by the current state
-    /** [Not directly used] <br>
-     * Renders image on canvas
+    // [Not directly used] Media queue to be rendered on the current state.
+    queue: [],
+    /** [Not directly used] Renders image on canvas.
      * 
      * @param {object} cur current media in media queue
      */
-    _image: function (cur) {
+    image: function (cur) {
       const x = cur.xWithAnchor, y = cur.yWithAnchor;
+      // Rotation
       if (cur.rotate && cur.rotate != 0) {
         context.save();
         context.translate(cur.x, cur.y);
         context.rotate(cur.rotate * Math.PI / 180);
         context.translate(-cur.x, -cur.y);
       }
+      // Alpha
       context.globalAlpha = cur.alpha;
+      // Shadow
       context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
       context.shadowColor = cur.shadowColor;
+      // Image
       context.drawImage(
         game.image[cur.name],
         x,
@@ -597,26 +685,30 @@ const game = {
         cur.width * cur.scale,
         cur.height * cur.scale
       );
+      // End
       context.shadowBlur = 0;
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /** [Not directly used] <br>
-     * Renders spritesheet on canvas
+    /** [Not directly used] Renders spritesheet on canvas.
      * 
      * @param {object} cur current media in media queue
      */
-    _sprite: function (cur) {
+    sprite: function (cur) {
       const x = cur.xWithAnchor, y = cur.yWithAnchor;
+      // Rotation
       if (cur.rotate && cur.rotate != 0) {
         context.save();
         context.translate(cur.x, cur.y);
         context.rotate(cur.rotate * Math.PI / 180);
         context.translate(-cur.x, -cur.y);
       }
+      // Alpha
       context.globalAlpha = cur.alpha;
+      // Shadow
       context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
       context.shadowColor = cur.shadowColor;
+      // Image
       context.drawImage(
         game.sprite[cur.name],
         cur.width * cur.curFrame,
@@ -628,46 +720,51 @@ const game = {
         cur.width * cur.scale,
         cur.height * cur.scale
       );
+      // End
       context.shadowBlur = 0;
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /** [Not directly used] <br>
-     * Renders text on canvas
+    /** [Not directly used] Renders text on canvas.
      * 
      * @param {object} cur current media in media queue
      */
-    _text: function (cur) {
+    text: function (cur) {
       const x = cur.xWithAnchor, y = cur.yWithAnchor;
+      // Rotation
       if (cur.rotate && cur.rotate != 0) {
         context.save();
         context.translate(cur.x, cur.y);
         context.rotate(cur.rotate * Math.PI / 180);
         context.translate(-cur.x, -cur.y);
       }
+      // Alpha
       context.globalAlpha = cur.alpha;
+      // Shadow
       context.shadowBlur = (cur.shadow) ? cur.shadowBlur : 0;
       context.shadowColor = cur.shadowColor;
+      // Font style
       context.font = cur.font;
       context.textAlign = cur.align;
       context.fillStyle = cur.fill;
+      // Text
       context.fillText(cur.name, x, y);
+      // End
       context.shadowBlur = 0;
       context.globalAlpha = 1;
       if (cur.rotate && cur.rotate != 0) context.restore();
     },
-    /**[Not directly used] <br>
-     * Renders geometric shapes
+    /** [Not directly used] Renders geometric shapes on canvas.
      * 
      * @namespace
      */
-    _geom: {
+    geom: {
       /**
-       * Renders rectangle on canvas
+       * Renders rectangle on canvas.
        * 
        * @param {object} cur current media in media queue
        */
-      _rect: function (cur) {
+      rect: function (cur) {
         const x = cur.xWithAnchor, y = cur.yWithAnchor;
         // Rotation
         if (cur.rotate && cur.rotate != 0) {
@@ -698,11 +795,11 @@ const game = {
         if (cur.rotate && cur.rotate != 0) context.restore();
       },
       /**
-       * Renders arc on canvas (circle or incomplete arc) 
+       * Renders arc on canvas (arc or circle).
        * 
        * @param {object} cur current media in media queue
        */
-      _arc: function (cur) {
+      arc: function (cur) {
         const x = cur.xWithAnchor, y = cur.yWithAnchor;
         // Rotation
         if (cur.rotate && cur.rotate != 0) {
@@ -737,76 +834,80 @@ const game = {
       },
     },
     /**
-     * Renders all queued media on screen (called during game loop) <br><br>
+     * Renders all queued media on screen. Called repeatedly by the game loop.
      */
     all: function () {
       game.render.queue.forEach(cur => {
         switch (cur.typeOfMedia) {
-          case 'image': this._image(cur); break;
-          case 'sprite': this._sprite(cur); break;
-          case 'text': this._text(cur); break;
-          case 'rect': this._geom._rect(cur); break;
-          case 'arc': this._geom._arc(cur); break;
+          case 'image': this.image(cur); break;
+          case 'sprite': this.sprite(cur); break;
+          case 'text': this.text(cur); break;
+          case 'rect': this.geom.rect(cur); break;
+          case 'arc': this.geom.arc(cur); break;
         }
       });
     },
     /**
-     * Clears all queued media (used when changing states) <br><br>
+     * Clears media queue (used when changing states).
      */
     clear: function () {
       game.render.queue = [];
     }
   },
 
-  /**  
-   * Math functions
+  /**
+   * Math functions.
    * 
    * @namespace 
    */
   math: {
     /**
-     * Returns a random integer in a range
+     * Returns a random integer in a range (inclusive for min and max). 
      * 
-     * @param {number} min smaller number
-     * @param {number} max larger number
+     * @param {number} min smaller integer
+     * @param {number} max larger integer
+     * 
      * @returns {number} random integer in range
      */
     randomInRange: function (min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is also inclusive
+      return Math.floor(Math.random() * (max - min + 1) + min);
     },
     /**
-     * Returns a random divisor for a given number
+     * Returns a random divisor for a given number.
      * 
      * @param {number} number number
-     * @returns {number} random divisor for number
+     * 
+     * @returns {number} random divisor for that number
      */
     randomDivisor: function (number) {
-      const validDivisors = []; // Divisors found
+      const validDivisors = [];
+      // If 'number' can be divided by 'i', add to list of 'validDivisors'
       for (let i = 2; i < number; i++) {
-        // If 'number' can be divided by 'i', add to list of 'validDivisors'
         if (number % i == 0) validDivisors.push(i);
       }
       const randIndex = game.math.randomInRange(0, validDivisors.length - 1);
       return validDivisors[randIndex];
     },
     /**
-     * Converts degree to radian
+     * Converts degree to radian.
      * 
      * @param {number} degree number in degrees
+     * 
      * @returns {number} its radian equivalent
      */
     degreeToRad: function (degree) {
       return degree * Math.PI / 180;
     },
     /**
-     * Returns distance from center of an icon to pointer (radius)
+     * Returns distance from the center of an icon to mouse/pointer (radius).
      * 
-     * @param {number} xMouse contains the mouse x coordinate
-     * @param {number} xIcon contains the icon x coordinate
-     * @param {number} yMouse contains the mouse y coordinate
-     * @param {number} yIcon contains the icon y coordinate
+     * @param {number} xMouse mouse x coordinate
+     * @param {number} xIcon icon x coordinate
+     * @param {number} yMouse mouse y coordinate
+     * @param {number} yIcon icon y coordinate
+     * 
      * @returns {number} distance between the two icons
      */
     distanceToPointer: function (xMouse, xIcon, yMouse, yIcon) {
@@ -815,92 +916,127 @@ const game = {
       return Math.sqrt(a * a + b * b);
     },
     /**
-     * Checks if mouse is over icon (rectangle)
+     * Checks if pointer/mouse is over (rectangular) icon.
      * 
      * @param {number} xMouse contains the mouse x coordinate
      * @param {number} yMouse contains the mouse y coordinate
      * @param {object} icon icon
+     * 
      * @returns {boolean} true if cursor is over icon
      */
     isOverIcon: function (xMouse, yMouse, icon) {
       const x = xMouse, y = yMouse, cur = icon;
       return y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
         (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
+    },
+    /**
+     * Converts a given time in seconds (number) to the format HH:MM:SS (string)
+     * 
+     * @param {number} s time in seconds
+     * 
+     * @returns {string} time in the format HH:MM:SS
+     */
+    convertTime: function (s) {
+      let h = 0, m = 0;
+      if (s > 1200) {
+        h = s / 1200;
+        s = s % 1200;
+      }
+      if (s > 60) {
+        m = s / 60;
+        s = s % 60;
+      }
+      h = '' + h;
+      m = '' + m;
+      s = '' + s;
+      if (h.length < 2) h = '0' + h;
+      if (m.length < 2) m = '0' + m;
+      if (s.length < 2) s = '0' + s;
+      return h + ':' + m + ':' + s;
     }
   },
 
   /**
-   * Timer used to get the time spent to complete a game
+   * Timer used to get the time spent to complete a game.
    * 
    * @namespace
    */
   timer: {
-    _start: 0,	// [Not directly used] Start time
-    _end: 0,	// [Not directly used] End time
-    elapsed: 0, // [Not directly used] Elapsed time
+    // [Not directly used] Start time.
+    _start: 0,
+    // [Not directly used] End time.
+    end: 0,
+    // Elapsed time.
+    elapsed: 0,
     /**
-     * Start timer
+     * Reset values and start timer.
      */
     start: function () {
-      game.timer._start = game.timer._end = game.timer._elapsed = 0; // Clear
-      game.timer._start = new Date().getTime(); // Set start time
+      game.timer._start = game.timer.end = game.timer.elapsed = 0;
+      game.timer._start = new Date().getTime();
     },
     /**
-     * Stop timer
+     * Stop timer and set elapsed time.
      */
     stop: function () {
-      if (game.timer._start != 0 && game.timer._end == 0) { // If timer has started but not finished
-        game.timer._end = new Date().getTime(); // Set end time
-        game.timer._elapsed = Math.floor((game.timer._end - game.timer._start) / 1000); // Set elapsed time
+      if (game.timer._start != 0 && game.timer.end == 0) { // If timer has started but not finished
+        game.timer.end = new Date().getTime();
+        game.timer.elapsed = Math.floor((game.timer.end - game.timer._start) / 1000);
       }
     },
-    get elapsed() { return game.timer._elapsed; }
   },
 
   /**
-   * Handles (mouse) pointer events
+   * Handles pointer events. <br>
    * 
    * @namespace
    */
   event: {
-    _list: [], // [Not directly used] List of events in current state
+    // [Not directly used] List of events in current state.
+    list: [],
     /**
-     * Create events
+     * Adds new event to current state.
      * 
-     * @param {string} name name of event : 'click' or 'mousemove'
-     * @param {function} func function to be called by triggered event
+     * @param {string} name event name, can be: 'click' or 'mousemove'
+     * @param {function} func function to be called when event is triggered
      */
     add: function (name, func) {
       canvas.addEventListener(name, func);
-      game.event._list.push([name, func]);
+      game.event.list.push([name, func]);
     },
-    /** [Not directly used] <br>
-     * Clear list of events
+    /** [Not directly used] Clears list of events. Called before moving to new state.
      */
     clear: function () {
-      game.event._list.forEach(cur => {
+      game.event.list.forEach(cur => {
         canvas.removeEventListener(cur[0], cur[1]);
       });
-      game.event._list = [];
+      game.event.list = [];
     },
   },
 
-  /** [Not directly used] <br>
-   * Game loop - Handles repetition of function update() and sprite animation <br>
-   * After the media queue is filled in create(), the game loop starts <br>
-   * It calls update() iteratively and rerenders the screen
-   *
+  /** [Not directly used] Handles 'game loop'. <br>
+   * 
+   * After the media queue is filled in create(), the 'game loop' starts. 
+   * It calls update() iteratively, re-rendering the screen every time. <br>
+   * 
+   * The 'game loop' is stoped by leaving the current state.
+   * 
    * @namespace
    */
   loop: {
-    id: undefined, // [Not directly used] Holds animation event
-    curState: undefined, // [Not directly used] State that called the loop
-    status: 'off', // [Not directly used] Loop status can be : 'on', 'ending' or 'off'
-    waitingToStart: undefined, // [Not directly used]
-    startTime: 0, // [Not directly used]
-    duration: 1000 / 60, // [Not directly used] 1000: 1 second | 60: expected frames per second
-    /** [Not directly used] <br>
-     * Start game loop
+    // [Not directly used] Holds animation event.
+    id: undefined,
+    // [Not directly used] State that called the loop.
+    curState: undefined,
+    // [Not directly used] Loop status, can be: 'on', 'ending' or 'off'.
+    status: 'off',
+    // [Not directly used]
+    waitingToStart: undefined,
+    // [Not directly used]
+    startTime: 0,
+    // [Not directly used] 1000: 1 second | 60: expected frames per second.
+    duration: 1000 / 60,
+    /** [Not directly used] Starts game loop.
      * 
      * @param {object} state current state
      */
@@ -909,54 +1045,47 @@ const game = {
         game.loop.curState = state;
         game.loop.startTime = new Date().getTime();
         game.loop.status = 'on';
-        game.loop.id = requestAnimationFrame(game.loop._run);
+        game.loop.id = requestAnimationFrame(game.loop.run);
       } else { // If 'game.loop.status' is either 'on' or 'ending'
         game.loop.waitingToStart = state;
         if (game.loop.status == 'on') game.loop.stop();
       }
     },
     /**
-     * [Not directly used] <br>
-     * Stop game loop
+     * [Not directly used] Stops game loop.
      */
     stop: function () {
       if (game.loop.status == 'on') game.loop.status = 'ending';
     },
     /**
-     * [Not directly used] <br>
-     * Execute game loop
+     * [Not directly used] Executes game loop.
+     * 
+     * This code will run on each iteration of the game loop.
      */
-    _run: function () {
+    run: function () {
       if (game.loop.status != 'on') {
-        game.loop._clear();
+        game.loop.clear();
       } else {
         const timestamp = new Date().getTime();
         const runtime = timestamp - game.loop.startTime;
         if (runtime >= game.loop.duration) {
-          if (debugMode) {
-            let fps = runtime / 1000;
-            fps = Math.round(1 / fps);
-            displayFps.innerHTML = 'Fps: ' + fps; // Show fps
-          }
-          // Update state
+          // Calls state's update()
           game.loop.curState.update();
-          // Animate state
-          game.animation._run();
+          // Updates state's animation
+          game.animation.run();
         }
-        game.loop.id = requestAnimationFrame(game.loop._run);
+        game.loop.id = requestAnimationFrame(game.loop.run); // Loop
       }
     },
     /**
-     * [Not directly used] <br>
-     * Resets game loop values 
+     * [Not directly used] Resets game loop values.
      */
-    _clear: function () {
+    clear: function () {
       if (game.loop.id != undefined) {
         cancelAnimationFrame(game.loop.id);	// Cancel animation event
-        game.loop.id = undefined;		// Clear object that holds animation event
-        game.loop.curState = undefined;	// Clear object that holds current state
-        game.loop.status = 'off'; 	// Inform animation must end (read in _run())
-        displayFps.innerHTML = '';	// Stop showing fps
+        game.loop.id = undefined;		// Clears object that holds animation event
+        game.loop.curState = undefined;	// Clears object that holds current state
+        game.loop.status = 'off'; 	// Inform animation must end (read in game.loop.run())
       }
       if (game.loop.waitingToStart != undefined) {
         const temp = game.loop.waitingToStart;
@@ -967,39 +1096,41 @@ const game = {
   },
 
   /**
-   * Handles spritesheet animation <br>
-   * Called by game loop <br>
-   * Changes through frames in queued spritesheets 
+   * Handles spritesheet animation. <br>
+   * It iterates through the spritesheet frames inside the animation queue.
+   * Called by game loop. 
    * 
    * @namespace
    */
   animation: {
-    queue: [], // [Not directly used] Animation queue for current level
-    count: 0, // [Not directly used]
+    // [Not directly used] Animation queue for the current state.
+    queue: [],
+    // [Not directly used]
+    count: 0,
     /**
-     * Play animation
+     * Plays animation.
      * 
-     * @param {string} name animation name
+     * @param {string} name animation name (identifier)
      */
     play: function (name) {
       let newAnimation;
-      // Gets first object that has that animation name (name) in game.render.queue
+      // Gets first object in the 'render queue' with that animation name 
       for (let i in game.render.queue) {
         if (game.render.queue[i].animation != undefined && game.render.queue[i].animation[0] == name) {
           newAnimation = game.render.queue[i];
           break;
         }
       }
-      // If found, saves object in game.animation.queue
+      // If found, saves object in the 'animation queue'
       if (newAnimation != undefined) game.animation.queue.push(newAnimation);
     },
     /**
-     * Stop animation
+     * Stops animation.
      * 
      * @param {string} name animation name
      */
     stop: function (name) {
-      // Remove all with that name is game.animation.queue
+      // Removes all with that name from the 'animation queue'
       game.animation.queue.forEach(cur => {
         if (cur.animation[0] == name) {
           game.animation.queue.splice(cur, 1);
@@ -1007,15 +1138,14 @@ const game = {
       });
     },
     /**
-     * [Not directly used] <br>
-     * Executes animation
+     * [Not directly used] Executes animation.
      */
-    _run: function () {
+    run: function () {
       game.animation.queue.forEach(character => {
         if (!character.animation[2] || game.animation.count % character.animation[2] == 0) {
           const i = character.animation[1].indexOf(character.curFrame);
           if (i == -1) { // Frame not found
-            if (debugMode) console.error('Game error: animation frame not found');
+            if (debugMode) console.error('Game error: animation frame not found.');
           } else if (i < character.animation[1].length - 1) { // Go to next frame
             character.curFrame = character.animation[1][i + 1];
           } else {
@@ -1026,13 +1156,10 @@ const game = {
       game.animation.count++;
     },
     /**
-     * [Not directly used] <br>
-     * Clear animation queue <br><br>
-     * 
-     * game.animation.clear()
+     * [Not directly used] Clears animation queue.
      */
     clear: function () {
-      // Resets animation count
+      // Resets animation counter
       game.animation.count = 0;
       // Clears property 'animation' from objects in game.render.queue
       game.render.queue.forEach(cur => {
@@ -1040,62 +1167,9 @@ const game = {
           delete cur.animation;
         }
       });
-      // Clears game.animation.queue
+      // Clears animation queue
       game.animation.queue = [];
     },
-  },
-
-  /** 
-   * Handles game states <br>
-   * When an state is associated with an object, its preload(), create() and update() functions <br>
-   * will be executed acconrding to these rules: <br>
-   *	* preload() : first function to be called when state is called. Loads media. Runs only once.(optional) <br>
-   *  * create() : called right after preload(). Where the main code goes. Runs only once. <br>
-   *  * update() : called right after create(). Is iteratively called by game loop until end of the state. (optional)
-   *
-   * @namespace 
-   */
-  state: {
-    list: [], // [Not directly used]
-    name: undefined, // [Not directly used]
-    /**
-     * Create new state
-     * 
-     * @param {string} name state name
-     * @param {object} obj object that should be called when accessing the state
-     */
-    add: function (name, obj) {
-      game.state.list[name] = obj;
-    },
-    /**
-     * Start new state
-     * 
-     * @param {string} name state name
-     */
-    start: function (name) {
-      document.body.style.cursor = 'auto';
-      game.loop.stop();
-      game.event.clear();
-      game.animation.clear();
-      game.state.name = name;
-      self = game.state.list[name];
-      if (self.preload) self.preload();
-      else game.state._create();
-    },
-    /**
-     * [Not directly used] <br>
-     * Encapsulate create() function in the current state
-     */
-    _create: function () {
-      game.render.clear();
-      self.create();
-      game.render.all();
-      if (self.restart && self.restart == true) {
-        game.state.start(game.state.name);
-      } else {
-        if (self.update) game.loop.start(self);
-      }
-    },
-  },
+  }
 
 };

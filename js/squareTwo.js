@@ -1,25 +1,31 @@
-/**
- * LInE - Free Education, Private Data
- *
- * iFractions GAME STATE
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [GAME STATE]
  *  
- * Name of game state : 'squareTwo' 
- * Shape : square
+ * .squareTwo. = gameType
+ * .../...\...
+ * ..A.....B.. = gameMode
+ * ....\./....
+ * .....|.....
+ * ...Equals.. = gameOperation
+ * .....|.....
+ * .1,2,3,4,5. = gameDifficulty
+ * 
  * Character : kid
  * Theme : (not themed)
  * Concept : player select equivalent dividends for fractions with different divisors
- * Represent fractions as : subdivided blocks
+ * Represent fractions as : subdivided rectangles
  *
- * # of different difficulties : 5
- *
- * Game modes can be : 'A' or 'B' (in variable 'gameMode')
+ * Game modes can be :
  * 
  *   A : equivalence of fractions 
  *       top has more subdivisions
  *   B : equivalence of fractions
  *       bottom has more subdivisions
  * 
- * Operations : 'Equals' (in variable 'gameOperation')
+ * Operations :
  *
  *   Equals : Player selects equivalent fractions of both blocks 
  * 
@@ -74,12 +80,12 @@ const squareTwo = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         false, false, false, // Left buttons
         true, false,         // Right buttons
         false, false);
     } else {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         true, true, false, // Left buttons
         true, false,       // Right buttons
         'customMenu', false);
@@ -118,10 +124,9 @@ const squareTwo = {
     const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
     if (debugMode) {
-      console.log('----------');
-      console.log('Difficulty ' + gameDifficulty + ', ini ' + ((gameDifficulty - 1) * 2 + 1) + ', end ' + ((gameDifficulty - 1) * 2 + 3));
-      console.log('Rpoint ' + randomIndex + ', val ' + totalBlocksA);
-      console.log('total blocks A ' + totalBlocksA + ', total blocks B ');
+      console.log('Difficulty: ' + gameDifficulty +
+        '\ncur index: ' + randomIndex + ', (min index: ' + ((gameDifficulty - 1) * 2 + 1) + ', max index: ' + ((gameDifficulty - 1) * 2 + 3) + ')' +
+        '\ntotal blocks A: ' + totalBlocksA + ', total blocks B: ' + totalBlocksB);
     }
 
     // CREATING TOP FIGURE (A)
@@ -209,8 +214,8 @@ const squareTwo = {
 
     game.timer.start(); // Set a timer for the current level (used in postScore)
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+    game.event.add('click', this.onInputDown);
+    game.event.add('mousemove', this.onInputOver);
   },
 
   /**
@@ -252,7 +257,7 @@ const squareTwo = {
           mapMove = true; // Allow character to move to next level in map state
           completedLevels++;
 
-          if (debugMode) console.log('completedLevels = ' + completedLevels);
+          if (debugMode) console.log('Completed Levels: ' + completedLevels);
 
           // Fractions are not equivalent : INCORRECT
         } else {
@@ -281,80 +286,12 @@ const squareTwo = {
     game.render.all();
   },
 
-
-  /* EVENT HANDLER */
-
   /**
-   * Called by mouse click event
+   * Function called by self.onInputOver() when cursor is over a valid rectangle.
    * 
-   * @param {object} mouseEvent contains the mouse click coordinates
+   * @param {object} curBlock rectangle the cursor is over : can be self.A.blocks[i] or self.B.blocks[i]
    */
-  func_onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-
-    // Click block in A
-    self.A.blocks.forEach(cur => {
-      if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-    });
-
-    // Click block in B
-    self.B.blocks.forEach(cur => {
-      if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-    });
-
-    // Click navigation icons
-    navigationIcons.func_onInputDown(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   * 
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  func_onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    let flagA = false;
-    let flagB = false;
-
-    // Mouse over A : show fraction
-    self.A.blocks.forEach(cur => {
-      if (game.math.isOverIcon(x, y, cur)) {
-        flagA = true;
-        self.func_overSquare(cur);
-      }
-    });
-    if (!flagA) self.func_outSquare('A');
-
-    // Mouse over B : show fraction
-    self.B.blocks.forEach(cur => {
-      if (game.math.isOverIcon(x, y, cur)) {
-        flagB = true;
-        self.func_overSquare(cur);
-      }
-    });
-    if (!flagB) self.func_outSquare('B');
-
-    if (!flagA && !flagB) document.body.style.cursor = 'auto';
-
-    // Mouse over navigation icons : show name
-    navigationIcons.func_onInputOver(x, y);
-
-    game.render.all();
-  },
-
-
-  /* CALLED BY EVENT HANDLER */
-
-  /**
-   * Function called when cursor is over a valid rectangle
-   * 
-   * @param {object} curBlock rectangle the cursor is over
-   */
-  func_overSquare: function (curBlock) { // curBlock : self.A.blocks[i] || self.B.blocks[i]
+  overSquare: function (curBlock) {
     const curSet = curBlock.figure; // 'A' || 'B'
 
     if (!self[curSet].hasClicked) { // self.A.hasClicked || self.B.hasClicked 
@@ -365,7 +302,7 @@ const squareTwo = {
         self[curSet].warningText.name = game.lang.s2_error_msg;
         self[otherSet].warningText.name = '';
 
-        self.func_outSquare(curSet);
+        self.outSquare(curSet);
       } else {
         document.body.style.cursor = 'pointer';
 
@@ -391,11 +328,11 @@ const squareTwo = {
   },
 
   /**
-   * Function called when cursor is out of a valid rectangle
+   * Function called (by self.onInputOver() and self.overSquare()) when cursor is out of a valid rectangle.
    * 
-   * @param {object} curSet set of rectangles (top or bottom)
+   * @param {object} curSet set of rectangles : can be top (self.A) or bottom (self.B)
    */
-  func_outSquare: function (curSet) { // curSet : self.A || self.B
+  outSquare: function (curSet) {
     if (!self[curSet].hasClicked) {
       self[curSet].fractions[0].alpha = 0;
       self[curSet].fractions[1].alpha = 0;
@@ -408,11 +345,11 @@ const squareTwo = {
   },
 
   /**
-   * Function called when player clicked a valid rectangle
+   * Function called by self.onInputDown() when player clicked a valid rectangle.
    * 
-   * @param {object} curBlock clicked rectangle
+   * @param {object} curBlock clicked rectangle : can be self.A.blocks[i] or self.B.blocks[i]
    */
-  func_clickSquare: function (curBlock) { // curBlock : self.A.blocks[i] || self.B.blocks[i]
+  clickSquare: function (curBlock) {
     const curSet = curBlock.figure; // 'A' || 'B'
 
     if (!self[curSet].hasClicked && curBlock.index != self[curSet].blocks.length - 1) {
@@ -447,13 +384,73 @@ const squareTwo = {
     game.render.all();
   },
 
+  /**
+   * Called by mouse click event
+   * 
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
 
-  /* METADATA FOR GAME */
+    // Click block in A
+    self.A.blocks.forEach(cur => {
+      if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+    });
+
+    // Click block in B
+    self.B.blocks.forEach(cur => {
+      if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+    });
+
+    // Click navigation icons
+    navigationIcons.onInputDown(x, y);
+
+    game.render.all();
+  },
 
   /**
-   * Saves players data after level ends - to be sent to database <br>
+   * Called by mouse move event
+   * 
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+    let flagA = false;
+    let flagB = false;
+
+    // Mouse over A : show fraction
+    self.A.blocks.forEach(cur => {
+      if (game.math.isOverIcon(x, y, cur)) {
+        flagA = true;
+        self.overSquare(cur);
+      }
+    });
+    if (!flagA) self.outSquare('A');
+
+    // Mouse over B : show fraction
+    self.B.blocks.forEach(cur => {
+      if (game.math.isOverIcon(x, y, cur)) {
+        flagB = true;
+        self.overSquare(cur);
+      }
+    });
+    if (!flagB) self.outSquare('B');
+
+    if (!flagA && !flagB) document.body.style.cursor = 'auto';
+
+    // Mouse over navigation icons : show name
+    navigationIcons.onInputOver(x, y);
+
+    game.render.all();
+  },
+
+  /**
+   * Saves players data after level ends - to be sent to database. <br>
    *
-   * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
+   * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
+   * 
    * @see /php/save.php
    */
   postScore: function () {
@@ -472,8 +469,7 @@ const squareTwo = {
       + ', valueB: ' + self.B.selected;
 
     // FOR MOODLE
-    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
-    else sendToDB(data);
+    sendToDB(data);
   }
 
 };

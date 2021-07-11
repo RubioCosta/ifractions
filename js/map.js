@@ -1,5 +1,8 @@
-/**
- * MAP STATE: game map with game levels - shows how many levels the player have finished / current level he is in
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [MAP STATE] Screen that shows the 4 generated levels in a map (and the level where the player is currently in).
  * 
  * @namespace
  */
@@ -20,12 +23,12 @@ const mapState = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         false, false, false, // Left icons
         false, false,        // Right icons
         false, false);
     } else {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         true, true, false, // Left icons
         false, false,      // Right icons
         'customMenu', false);
@@ -34,12 +37,12 @@ const mapState = {
     // Progress bar
     const percentText = 4 * 25;
 
-    if (completedLevels == 4) game.add.geom.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
+    if (completedLevels >= 4) game.add.geom.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
     else game.add.geom.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
 
-    game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1);
-    game.add.text(820, 38, percentText + '%', textStyles.h2_blue, 'left');
-    game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
+    game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
+    game.add.text(820, 38, percentText + '%', textStyles.h2_blue).align = 'left';
+    game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue).align = 'right';
 
     // Map positions
     this.points = {
@@ -132,8 +135,8 @@ const mapState = {
     self.speedX = (xB - xA) / speed;
     self.speedY = (yA - yB) / speed;
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+    game.event.add('click', this.onInputDown);
+    game.event.add('mousemove', this.onInputOver);
 
   },
 
@@ -168,22 +171,30 @@ const mapState = {
 
     if (endUpdate) {
       game.animation.stop(self.character.animation[0]);
-      self.func_loadGame();
+      self.loadGame();
     }
 
   },
 
+  /**
+   * Calls game state
+   */
+  loadGame: function () {
 
+    if (audioStatus) game.audio.beepSound.play();
 
-  /* EVENT HANDLER */
+    if (mapPosition <= 4) game.state.start('' + gameTypeString);
+    else game.state.start('end');
+
+  },
 
   /**
    * Called by mouse click event
    * 
    * @param {object} mouseEvent contains the mouse click coordinates
    */
-  func_onInputDown: function (mouseEvent) {
-    navigationIcons.func_onInputDown(mouseEvent.offsetX, mouseEvent.offsetY);
+  onInputDown: function (mouseEvent) {
+    navigationIcons.onInputDown(mouseEvent.offsetX, mouseEvent.offsetY);
   },
 
   /**
@@ -191,30 +202,13 @@ const mapState = {
    * 
    * @param {object} mouseEvent contains the mouse move coordinates
    */
-  func_onInputOver: function (mouseEvent) {
-    navigationIcons.func_onInputOver(mouseEvent.offsetX, mouseEvent.offsetY);
-  },
-
-
-
-  /* GAME FUNCTIONS */
-
-  /**
-   * Calls game state
-   */
-  func_loadGame: function () {
-
-    if (audioStatus) game.audio.beepSound.play();
-
-    if (mapPosition <= 4) game.state.start('' + gameTypeString + '');
-    else game.state.start('end');
-
-  },
+  onInputOver: function (mouseEvent) {
+    navigationIcons.onInputOver(mouseEvent.offsetX, mouseEvent.offsetY);
+  }
 
 };
 
-/**
- * ENDING STATE: animation after a full game is completed (4 levels)
+/** [ENDING STATE] Ending screen shown when the player has completed all 4 levels and therefore completed the game.
  * 
  * @namespace
  */
@@ -245,8 +239,8 @@ const endState = {
     // Progress bar
     game.add.geom.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // Progress
     game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
-    game.add.text(820, 38, '100%', textStyles.h2_blue, 'left');
-    game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue, 'right');
+    game.add.text(820, 38, '100%', textStyles.h2_blue).align = 'left';
+    game.add.text(650, 38, game.lang.difficulty + ' ' + gameDifficulty, textStyles.h2_blue).align = 'right';
 
     game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
 
@@ -350,11 +344,13 @@ const endState = {
       } else {
 
         self.animate = false;
-        completedLevels = 0;
         game.animation.stop(self.character.animation[0]);
 
         // FOR MOODLE
-        if (!moodle) game.state.start('menu');
+        if (!moodle) {
+          completedLevels = 0;
+          game.state.start('menu');
+        }
 
       }
 
@@ -362,6 +358,6 @@ const endState = {
 
     game.render.all();
 
-  },
+  }
 
 };

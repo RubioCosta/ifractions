@@ -1,28 +1,36 @@
-/**
- * LInE - Free Education, Private Data
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [GAME STATE]
  * 
- * iFractions GAME STATE
+ * ..squareOne...	= gameType
+ * ..../...\..... 
+ * ...A.....B.... = gameMode
+ * .....\./......
+ * ......|.......
+ * ...../.\......
+ * .Plus...Minus. = gameOperation
+ * .....\./......
+ * ......|.......
+ * ....1,2,3..... = gameDifficulty
  *
- * Name of game state : squareOne 
- * Shape : square
  * Character : tractor
  * Theme : farm
  * Concept : Player associates 'blocks carried by the tractor' and 'floor spaces to be filled by them'
- * Represent fractions as : blocks
+ * Represent fractions as : blocks/rectangles
  *
- * # of different difficulties : 3
- *
- * Game modes can be : 'A' or 'B' (in variable 'gameMode')
+ * Game modes can be :
  *
  *   A : Player can select # of 'floor blocks' (hole in the ground)
  *       Selects size of hole to be made in the ground (to fill with the blocks in front of the truck)
  *   B : Player can select # of 'stacked blocks' (in front of the truck)
  *       Selects number of blocks in front of the truck (to fill the hole on the ground)
  *
- * Operations can be : 'Plus' or 'Minus' (in variable 'gameOperation')
+ * Operations can be :
  *
  *   Plus : addition of fractions
- *     Represented by : tractor going to the right (floor positions 0..8
+ *     Represented by : tractor going to the right (floor positions 0..8)
  *   Minus : subtraction of fractions
  *     Represented by: tractor going to the left (floor positions 8..0)
  *
@@ -70,16 +78,16 @@ const squareOne = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         false, false, false, // Left icons
         true, false,         // Right icons
         false, false
       );
     } else {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         true, true, true,   // Left icons
         true, false,        // Right icons
-        'customMenu', this.func_viewHelp
+        'customMenu', this.viewHelp
       );
     }
 
@@ -126,10 +134,10 @@ const squareOne = {
     };
 
     // CREATING STACKED BLOCKS
-    this.restart = this.func_createStckBlocks();
+    this.restart = this.createStckBlocks();
 
     // CREATING FLOOR BLOCKS
-    this.func_createFloorBlocks();
+    this.createFloorBlocks();
 
     // SELECTION ARROW
 
@@ -146,8 +154,8 @@ const squareOne = {
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
-      game.event.add('click', this.func_onInputDown);
-      game.event.add('mousemove', this.func_onInputOver);
+      game.event.add('click', this.onInputDown);
+      game.event.add('mousemove', this.onInputOver);
     }
   },
 
@@ -249,7 +257,7 @@ const squareOne = {
         if (audioStatus) game.audio.okSound.play();
 
         completedLevels++; // Increases number os finished levels
-        if (debugMode) console.log('completedLevels = ' + completedLevels);
+        if (debugMode) console.log('Completed Levels: ' + completedLevels);
       } else { // Incorrect answer
         // Displays feedback image and sound
         game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
@@ -284,87 +292,12 @@ const squareOne = {
     game.render.all();
   },
 
-
-  /* EVENT HANDLER */
-
   /**
-   * Called by mouse click event
-   * 
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  func_onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-
-    if (gameMode == 'A') {
-      self.floor.blocks.forEach(cur => {
-        if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-      });
-    } else {
-      self.stck.blocks.forEach(cur => {
-        if (game.math.isOverIcon(x, y, cur)) self.func_clickSquare(cur);
-      });
-    }
-
-    navigationIcons.func_onInputDown(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   * 
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  func_onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    let flagA = false;
-    let flagB = false;
-
-    if (gameMode == 'A') {
-      // Make arrow follow mouse
-      if (!self.hasClicked && !self.animateEnding) {
-        if (game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8) {
-          self.arrow.x = (x < 250) ? 250 : x; // Limits the arrow left position to 250
-        }
-      }
-
-      self.floor.blocks.forEach(cur => {
-        if (game.math.isOverIcon(x, y, cur)) {
-          flagA = true;
-          self.func_overSquare(cur);
-        }
-      });
-
-      if (!flagA) self.func_outSquare('A');
-    }
-
-    if (gameMode == 'B') {
-      self.stck.blocks.forEach(cur => {
-        if (game.math.isOverIcon(x, y, cur)) {
-          flagB = true;
-          self.func_overSquare(cur);
-        }
-      });
-
-      if (!flagB) self.func_outSquare('B');
-    }
-
-    navigationIcons.func_onInputOver(x, y);
-
-    game.render.all();
-  },
-
-
-  /* CALLED BY EVENT HANDLER */
-
-  /**
-   * Function called when cursor is over a valid rectangle
+   * Function called by self.onInputOver() when cursor is over a valid rectangle
    * 
    * @param {object} cur rectangle the cursor is over
    */
-  func_overSquare: function (cur) {
+  overSquare: function (cur) {
     if (!self.hasClicked) {
       document.body.style.cursor = 'pointer';
 
@@ -390,9 +323,9 @@ const squareOne = {
   },
 
   /**
-   * Function called when cursos is out of a valid rectangle
+   * Function called by self.onInputOver() when cursos is out of a valid rectangle
    */
-  func_outSquare: function () {
+  outSquare: function () {
     if (!self.hasClicked) {
       document.body.style.cursor = 'auto';
 
@@ -415,9 +348,9 @@ const squareOne = {
   },
 
   /**
-   * Function called when player clicks on a valid rectangle
+   * Function called by self.onInputDown() when player clicks on a valid rectangle.
    */
-  func_clickSquare: function () {
+  clickSquare: function () {
     if (!self.hasClicked && !self.animateEnding) {
       document.body.style.cursor = 'auto';
 
@@ -468,14 +401,12 @@ const squareOne = {
     }
   },
 
-
-  /* GAME FUNCTIONS */
-
   /**
-   * Create stacked blocks for the level (called in create())
+   * Create stacked blocks for the level in create()
+   * 
    * @returns {boolean}
    */
-  func_createStckBlocks: function () {
+  createStckBlocks: function () {
     let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
     const max = (gameMode == 'B') ? 10 : mapPosition + 4; // Maximum number of stacked blocks for the level
 
@@ -556,9 +487,9 @@ const squareOne = {
   },
 
   /**
-   * Create floor blocks for the level (called in create())
+   * Create floor blocks for the level in create()
    */
-  func_createFloorBlocks: function () { // For each floor block
+  createFloorBlocks: function () { // For each floor block
     const divisor = (gameDifficulty == 3) ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
     let total = 8 * divisor; // Number of floor blocks
@@ -633,7 +564,7 @@ const squareOne = {
   /**
    * Display correct answer
    */
-  func_viewHelp: function () {
+  viewHelp: function () {
     if (!self.hasClicked) {
       // On gameMode A
       if (gameMode == 'A') {
@@ -651,14 +582,80 @@ const squareOne = {
     }
   },
 
+  /**
+   * Called by mouse click event
+   * 
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
 
+    if (gameMode == 'A') {
+      self.floor.blocks.forEach(cur => {
+        if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+      });
+    } else {
+      self.stck.blocks.forEach(cur => {
+        if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+      });
+    }
 
-  /* METADATA FOR GAME */
+    navigationIcons.onInputDown(x, y);
+
+    game.render.all();
+  },
+
+  /**
+   * Called by mouse move event
+   * 
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+    let flagA = false;
+    let flagB = false;
+
+    if (gameMode == 'A') {
+      // Make arrow follow mouse
+      if (!self.hasClicked && !self.animateEnding) {
+        if (game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8) {
+          self.arrow.x = (x < 250) ? 250 : x; // Limits the arrow left position to 250
+        }
+      }
+
+      self.floor.blocks.forEach(cur => {
+        if (game.math.isOverIcon(x, y, cur)) {
+          flagA = true;
+          self.overSquare(cur);
+        }
+      });
+
+      if (!flagA) self.outSquare('A');
+    }
+
+    if (gameMode == 'B') {
+      self.stck.blocks.forEach(cur => {
+        if (game.math.isOverIcon(x, y, cur)) {
+          flagB = true;
+          self.overSquare(cur);
+        }
+      });
+
+      if (!flagB) self.outSquare('B');
+    }
+
+    navigationIcons.onInputOver(x, y);
+
+    game.render.all();
+  },
 
   /**
    * Saves players data after level ends - to be sent to database <br>
    *
-   * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
+   * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
+   * 
    * @see /php/save.php
    */
   postScore: function () {
@@ -677,8 +674,7 @@ const squareOne = {
       + ', floorIndex: ' + self.floor.index;
 
     // FOR MOODLE  
-    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
-    else sendToDB(data);
-  },
+    sendToDB(data);
+  }
 
 };

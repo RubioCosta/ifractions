@@ -1,80 +1,67 @@
-// FOR MOODLE 
+/************************************************************************************
+ * This code is used EXCLUSIVELY when iFractions is runnign inside Moodle via iAssign 
+ * as an iLM (interactive learning module) and the global variable moodle=true.
+ * 
+ * This file holds game states. 
+ ************************************************************************************/
 
-/**
- * To be show on moodle
+/** 
+ * [STUDENT REPORT STATE] Screen that shows the stats of a previously played game (exclusive to moodle).
+ * 
+ * FOR MOODLE
+ * 
+ * @namespace
  */
 const studentReport = {
 
+  /** FOR MOODLE
+   * Main code
+   */
   create: function () {
 
     const offsetW = defaultWidth / 4;
     let x = offsetW / 2;
     let y = defaultHeight / 2 - 50;
 
+    // Background
     game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
     game.add.image(300, 100, 'cloud');
     game.add.image(660, 80, 'cloud');
     game.add.image(110, 85, 'cloud', 0.8);
-
     for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
 
+    // Title
     game.add.text(defaultWidth / 2, 80, game.lang.results, textStyles.h1_green);
     game.add.image(x - 40, y - 70, info[gameTypeString].gameTypeUrl, 0.8);
 
+    // Game info
     text = game.lang[gameShape].charAt(0).toUpperCase() + game.lang[gameShape].slice(1);
     text = game.lang.game + ': ' + text + ((gameTypeString.slice(-3) == 'One') ? ' I' : ' II');
-
     game.add.text(190, y - 50, text, textStyles.h4_brown).align = 'left';
     game.add.text(190, y - 25, game.lang.game_mode + ': ' + gameMode, textStyles.h4_brown).align = 'left';
     game.add.text(190, y, game.lang.operation + ': ' + gameOperation, textStyles.h4_brown).align = 'left';
     game.add.text(190, y + 25, game.lang.difficulty + ': ' + gameDifficulty, textStyles.h4_brown).align = 'left';
 
+    // Student info
     y = defaultHeight - 200;
-
     for (let i = 0; i < 4; i++, x += offsetW) {
-
+      // If level wasnt completed, show broken sign
       if (moodleVar.hits[i] == 0) {
         const sign = game.add.image(x, defaultHeight - 100, 'broken_sign', 0.7);
         sign.anchor(0.5, 0.5);
-        continue;
+      } else {
+        // If level was completed shows sign with level number and student report
+        const sign = game.add.image(x, defaultHeight - 100, 'sign', 0.7);
+        sign.anchor(0.5, 0.5);
+        game.add.text(x, defaultHeight - 100, '' + (i + 1), textStyles.h2_white);
+
+        game.add.geom.rect(x - 55, y - 40, 5, 135, undefined, 0, colors.blueMenuLine);
+        game.add.text(x - 40, y - 25, game.lang.time + ': ' + game.math.convertTime(moodleVar.time[i]), textStyles.h4_brown).align = 'left';
+        game.add.text(x - 40, y, game.lang.hits + ': ' + moodleVar.hits[i], textStyles.h4_brown).align = 'left';
+        game.add.text(x - 40, y + 25, game.lang.errors + ': ' + moodleVar.errors[i], textStyles.h4_brown).align = 'left';
       }
-
-      const sign = game.add.image(x, defaultHeight - 100, 'sign', 0.7);
-      sign.anchor(0.5, 0.5);
-      game.add.text(x, defaultHeight - 100, '' + (i + 1), textStyles.h2_white);
-
-      game.add.geom.rect(x - 55, y - 40, 5, 135, undefined, 0, colors.blueMenuLine);
-      game.add.text(x - 40, y - 25, game.lang.time + ': ' + convertTime(moodleVar.time[i]), textStyles.h4_brown).align = 'left';
-      game.add.text(x - 40, y, game.lang.hits + ': ' + moodleVar.hits[i], textStyles.h4_brown).align = 'left';
-      game.add.text(x - 40, y + 25, game.lang.errors + ': ' + moodleVar.errors[i], textStyles.h4_brown).align = 'left';
     }
-
-  },
-
-  convertTime: function (s) {
-
-    let h = 0, m = 0;
-
-    if (s > 1200) {
-      h = s / 1200;
-      s = s % 1200;
-    }
-
-    if (s > 60) {
-      m = s / 60;
-      s = s % 60;
-    }
-
-    h = '' + h;
-    m = '' + m;
-    s = '' + s;
-
-    if (h.length < 2) h = '0' + h;
-    if (m.length < 2) m = '0' + m;
-    if (s.length < 2) s = '0' + s;
-
-    return h + ':' + m + ':' + s;
 
   }
 
-}
+};

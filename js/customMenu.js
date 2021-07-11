@@ -1,5 +1,8 @@
-/**
- * SECUNDARY MENU STATE: player can select game mode, math operation and overall game difficulty
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [CUSTOM MENU STATE] Screen where the user can customise the selected game - game mode, math operation, level of difficulty.
  * 
  * @namespace
  */
@@ -22,8 +25,10 @@ const customMenuState = {
   create: function () {
 
     // FOR MOODLE
-    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') { // Student role
+
       game.state.start('map');
+
     } else {
 
       const iconScale = 0.7;
@@ -41,7 +46,7 @@ const customMenuState = {
       game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
 
       // Loads navigation icons
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         true, false, false,
         true, true,
         'menu', false);
@@ -122,7 +127,7 @@ const customMenuState = {
 
       x = 150 + offsetW;
       y = baseY;
-      offsetH = this.func_getOffset(height, info[gameTypeString].gameMode.length);
+      offsetH = this.getOffset(height, info[gameTypeString].gameMode.length);
 
       for (let i = 0; i < info[gameTypeString].gameModeUrl.length; i++, y += offsetH) {
         const icon = game.add.sprite(x, y, info[gameTypeString].gameModeUrl[i], 0, iconScale, 1);
@@ -142,7 +147,7 @@ const customMenuState = {
 
       x += 2 * offsetW;
       y = baseY;
-      offsetH = this.func_getOffset(height, info[gameTypeString].gameOperation.length);
+      offsetH = this.getOffset(height, info[gameTypeString].gameOperation.length);
 
       let icon;
       let aux = [];
@@ -324,8 +329,8 @@ const customMenuState = {
 
       // ------------- EVENTS
 
-      game.event.add('click', this.func_onInputDown);
-      game.event.add('mousemove', this.func_onInputOver);
+      game.event.add('click', this.onInputDown);
+      game.event.add('mousemove', this.onInputOver);
 
     }
 
@@ -334,25 +339,24 @@ const customMenuState = {
   /**
    * Displays game menu information boxes.
    */
-  func_showInfoBox: function (icon) {
+  showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
     const element = (icon.id == 'gameOperation') ? self.infoBoxContent[icon.id] : self.infoBoxContent[icon.id][gameTypeString];
 
     let msg = '<h3>' + element.title + '</h3>'
-      + '<p>' + element.body + '</p>'
+      + '<p align=justify>' + element.body + '</p>'
       + element.img;
 
     document.getElementById('infobox-content').innerHTML = msg;
   },
-
 
   /**
    * Saves information selected by the player 
    * 
    * @param {object} icon selected icon
    */
-  func_load: function (icon) {
+  load: function (icon) {
 
     if (audioStatus) game.audio.beepSound.play();
 
@@ -361,7 +365,7 @@ const customMenuState = {
       case 'gameMode': gameMode = icon.gameMode; break;
       case 'gameOperation': gameOperation = icon.gameOperation; break;
       case 'difficulty': gameDifficulty = icon.difficulty; break;
-      case 'infoIcon': self.func_showInfoBox(icon); break;
+      case 'infoIcon': self.showInfoBox(icon); break;
       case 'selectionBox':
         if (icon.curFrame == 0) {
           icon.curFrame = 1;
@@ -373,9 +377,14 @@ const customMenuState = {
         game.render.all();
         break;
       case 'enter':
-        if (debugMode) console.log('Game State: ' + gameTypeString + ', ' + gameMode);
-        mapPosition = 0;      // Map position
-        mapMove = true;       // Move no next point
+        if (debugMode) {
+          console.log('------------------------------'+
+          '\nGame State: ' + gameTypeString +
+          '\nGame Mode: ' + gameMode + 
+          '\n------------------------------');
+        }
+        mapPosition = 0;  // Map position
+        mapMove = true; // Move no next point
         completedLevels = 0;  // Reset the game progress when entering a new level
         game.state.start('map');
         break;
@@ -388,9 +397,10 @@ const customMenuState = {
    * 
    * @param {number} width width of the available part of the screen
    * @param {number} numberOfIcons number or icons to be put on the screen
-   * @returns {number}
+   * 
+   * @returns {number} correct spacing between icons
    */
-  func_getOffset: function (width, numberOfIcons) {
+  getOffset: function (width, numberOfIcons) {
     return width / (numberOfIcons + 1);
   },
 
@@ -399,7 +409,7 @@ const customMenuState = {
    * 
    * @param {object} mouseEvent contains the mouse click coordinates
    */
-  func_onInputDown: function (mouseEvent) {
+  onInputDown: function (mouseEvent) {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
     let overIcon;
 
@@ -412,11 +422,11 @@ const customMenuState = {
     }
 
     // Update gui
-    if (overIcon) { // if has clicked on an icon
+    if (overIcon) { // If has clicked on an icon
       document.body.style.cursor = 'pointer';
       self.menuIcons.forEach(cur => {
-        if (cur.iconType == self.menuIcons[overIcon].iconType) { // if its in the same icon category
-          if (cur == self.menuIcons[overIcon]) { // if its the clicked icon
+        if (cur.iconType == self.menuIcons[overIcon].iconType) { // If its in the same icon category
+          if (cur == self.menuIcons[overIcon]) { // If its the clicked icon
             if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation') cur.curFrame = 1;
             else if (cur.iconType == 'difficulty') cur.fillColor = colors.blue;
           } else {
@@ -426,11 +436,11 @@ const customMenuState = {
         }
       });
 
-      self.func_load(self.menuIcons[overIcon]);
+      self.load(self.menuIcons[overIcon]);
 
     } else document.body.style.cursor = 'auto';
 
-    navigationIcons.func_onInputDown(x, y);
+    navigationIcons.onInputDown(x, y);
 
     game.render.all();
 
@@ -441,7 +451,7 @@ const customMenuState = {
    * 
    * @param {object} mouseEvent contains the mouse move coordinates
    */
-  func_onInputOver: function (mouseEvent) {
+  onInputOver: function (mouseEvent) {
     const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
     let overIcon;
 
@@ -454,11 +464,11 @@ const customMenuState = {
     }
 
     // Update gui
-    if (overIcon) { // if pointer is over icon
+    if (overIcon) { // If pointer is over icon
       document.body.style.cursor = 'pointer';
       self.menuIcons.forEach(cur => {
-        if (cur.iconType == self.menuIcons[overIcon].iconType) { // if its in the same icon category
-          if (cur == self.menuIcons[overIcon]) { // if its the icon the pointer is over 
+        if (cur.iconType == self.menuIcons[overIcon].iconType) { // If its in the same icon category
+          if (cur == self.menuIcons[overIcon]) { // If its the icon the pointer is over 
             if (cur.iconType == 'enter') self.enterText.style = textStyles.h3__white;
             cur.scale = cur.originalScale * 1.1;
           } else {
@@ -466,17 +476,17 @@ const customMenuState = {
           }
         }
       });
-    } else { // if pointer is not over icon
-      self.enterText.style = textStyles.h4_white;
+    } else { // If pointer is not over icon
+      if (self.enterText) self.enterText.style = textStyles.h4_white;
       self.menuIcons.forEach(cur => { cur.scale = cur.originalScale; });
       document.body.style.cursor = 'auto';
     }
 
     // Check navigation icons
-    navigationIcons.func_onInputOver(x, y);
+    navigationIcons.onInputOver(x, y);
 
     game.render.all();
 
-  },
+  }
 
 }

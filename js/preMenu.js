@@ -1,5 +1,9 @@
-/**
- * BOOT STATE: First state called. Loads main media
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [BOOT STATE] First state called. Loads media. <br>
+ * 
  * @namespace
  */
 const bootState = {
@@ -38,10 +42,10 @@ const bootState = {
       game.state.start('lang');
     }
   }
+
 };
 
-/**
- * LANGUAGE STATE: the player can choose a preferred language for the text to be displayed in the game
+/** [LANGUAGE STATE] Screen that asks the user to select the language for the game text.
  * 
  * @namespace
  */
@@ -68,7 +72,7 @@ const langState = {
     // Create elements on screen  
     for (let i in this.langs.flag) {
       // Add text for language names
-      game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.h2_green, 'right');
+      game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.h2_green).align = 'right';
 
       // Add icons for flags
       const flag = game.add.image(defaultWidth / 2 + this.langs.x[i] + 100, defaultHeight / 2 + this.langs.y[i], this.langs.flag[i]);
@@ -77,19 +81,28 @@ const langState = {
       this.listOfFlags.push(flag);
     }
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+    game.event.add('click', this.onInputDown);
+    game.event.add('mousemove', this.onInputOver);
   },
 
-
-  /* EVENT HANDLER*/
+  /**
+   * Calls state that loads selected language
+   * 
+   * @param {string} selectedLang language selected by player
+   */
+  setLang: function (selectedLang) {
+    // Saves language name e.g 'pt_BR'
+    langString = selectedLang;
+    // Calls loading screen
+    game.state.start('loadLang');
+  },
 
   /**
-   * Called by mouse click event
-   * 
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  func_onInputDown: function (mouseEvent) {
+ * Called by mouse click event
+ * 
+ * @param {object} mouseEvent contains the mouse click coordinates
+ */
+  onInputDown: function (mouseEvent) {
     const x = mouseEvent.offsetX;
     const y = mouseEvent.offsetY;
 
@@ -97,7 +110,7 @@ const langState = {
       if (game.math.isOverIcon(x, y, cur)) {
         for (let i in self.langs.flag) {
           if (self.langs.flag[i] == cur.name) {
-            self.func_setLang(self.langs.lang[i]);
+            self.setLang(self.langs.lang[i]);
             break;
           }
         }
@@ -110,7 +123,7 @@ const langState = {
    * 
    * @param {object} mouseEvent contains the mouse move coordinates
    */
-  func_onInputOver: function (mouseEvent) {
+  onInputOver: function (mouseEvent) {
     const x = mouseEvent.offsetX;
     const y = mouseEvent.offsetY;
     let flag = false;
@@ -128,27 +141,11 @@ const langState = {
     else document.body.style.cursor = 'auto';
 
     game.render.all();
-  },
-
-
-
-  /* GAME FUNCTIONS */
-
-  /**
-   * Calls state that loads selected language
-   * 
-   * @param {string} selectedLang language selected by player
-   */
-  func_setLang: function (selectedLang) {
-    // Saves language name e.g 'pt_BR'
-    langString = selectedLang;
-    // Calls loading screen
-    game.state.start('loadLang');
   }
+
 };
 
-/**
- * LOADING LANGUAGE STATE: Loads selected language to be able to translate the game text 
+/** [LOADING LANGUAGE STATE] Loads the selected language.
  * 
  *  @namespace
  */
@@ -176,10 +173,10 @@ const loadLangState = {
       game.state.start('menu'); // If changing language during the game ('language' >> >> 'menu')         
     }
   }
+
 };
 
-/**
- * NAME STATE: asks for player's name
+/** [NAME STATE] Screen that asks for the user's name.
  * 
  * @namespace
  */
@@ -212,67 +209,22 @@ const nameState = {
     document.getElementById('textbox-content').addEventListener('keypress', function (e) {
       const keycode = e.key || e.code;
       if (keycode == 'Enter') {
-        if (self.func_checkEmptyName()) self.func_saveName();
+        if (self.checkEmptyName()) self.saveName();
         game.render.all(); // Can show empty name
       }
     });
 
-    game.event.add('click', this.func_onInputDown);
-    game.event.add('mousemove', this.func_onInputOver);
+    game.event.add('click', this.onInputDown);
+    game.event.add('mousemove', this.onInputOver);
 
   },
-
-
-  /* EVENT HANDLER*/
-
-  /**
-   * Called by mouse click event
-   * 
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  func_onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    const cur = self.okBtn;
-
-    if (game.math.isOverIcon(x, y, cur)) {
-      if (self.func_checkEmptyName()) {
-        self.func_saveName();
-      }
-    }
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   * 
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  func_onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    const cur = self.okBtn;
-
-    if (game.math.isOverIcon(x, y, cur)) {
-      document.body.style.cursor = 'pointer';
-      cur.alpha = 0.4;
-    } else {
-      document.body.style.cursor = 'auto';
-      cur.alpha = 0.6;
-    }
-
-    game.render.all();
-  },
-
-
-  /* GAME FUNCTIONS */
 
   /**
    * Checks if player entered name in text box
    * 
-   * @returns {boolean}
+   * @returns {boolean} false is textBox is emptys
    */
-  func_checkEmptyName: function () {
+  checkEmptyName: function () {
     // If text field is empty displays error message
     if (document.getElementById('textbox-content').value == '') {
       self.warningEmptyName.name = game.lang.empty_name;
@@ -284,7 +236,7 @@ const nameState = {
   /**
    * Saves player name and calls next state
    */
-  func_saveName: function () {
+  saveName: function () {
     // Saves player's input in global variable 'playerName'
     playerName = document.getElementById('textbox-content').value;
 
@@ -298,6 +250,45 @@ const nameState = {
     // FOR MOODLE
     // Calls 'menu' state
     if (!moodle) game.state.start('menu');
+  },
+
+  /**
+   * Called by mouse click event
+   * 
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+    const cur = self.okBtn;
+
+    if (game.math.isOverIcon(x, y, cur)) {
+      if (self.checkEmptyName()) {
+        self.saveName();
+      }
+    }
+    game.render.all();
+  },
+
+  /**
+   * Called by mouse move event
+   * 
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+    const cur = self.okBtn;
+
+    if (game.math.isOverIcon(x, y, cur)) {
+      document.body.style.cursor = 'pointer';
+      cur.alpha = 0.4;
+    } else {
+      document.body.style.cursor = 'auto';
+      cur.alpha = 0.6;
+    }
+
+    game.render.all();
   }
 
 };

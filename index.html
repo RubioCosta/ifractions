@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-LInE - Free Education, Private Data.
-www.usp.br/line
--->
+<!-- LInE - Free Education, Private Data - http://www.usp.br/line -->
 
 <html>
 
@@ -12,7 +9,7 @@ www.usp.br/line
   <meta name="description" content="Educational game for teaching fractions" />
   <meta name="keywords" content="ifractions, fraction, game, private data" />
   <link rel="shortcut icon" href="assets/img/scene/flag.png">
-  <title> iFractions by LInE-IME-USP</title>
+  <title> iFractions by LInE</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
 
   <style>
@@ -95,8 +92,7 @@ www.usp.br/line
       font-weight: bold;
     }
 
-    .close:hover,
-    .close:focus {
+    .close:hover, .close:focus {
       color: #000;
       text-decoration: none;
       cursor: pointer;
@@ -118,19 +114,13 @@ www.usp.br/line
 
       <div class="panel-body">
 
-        <!-- iFractions game -->
-        <canvas id="iFractions-canvas"></canvas>
-
-        <!-- Textbox to get player name -->
+        <canvas id="iFractions-canvas"></canvas> <!-- iFractions game -->
+        
         <div id="textbox" onsubmit="return false">
-          <input type="text" id="textbox-content" value="" size="13" maxlength="36">
+          <input type="text" id="textbox-content" value="" size="13" maxlength="36"> <!-- Textbox to get player name -->
         </div>
-
-        <!-- Display fps in debugmode -->
-        <div id="display-fps"></div>
-
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
+               
+        <div id="myModal" class="modal">  <!-- Modal -->
           <div class="modal-content">
             <span class="close">&times;</span>
             <div id='infobox-content'></div> <!-- Modal content -->
@@ -155,7 +145,9 @@ www.usp.br/line
     <script src="js/globals.js"></script>
     
     <script>
-      const displayFps = document.getElementById("display-fps");
+
+      const defaultWidth = 900; // Default width for the Canvas
+      const defaultHeight = 600; // Default height for the Canvas
 
       canvas = document.getElementById("iFractions-canvas");
       canvas.width = defaultWidth;
@@ -181,8 +173,7 @@ www.usp.br/line
       game.state.add('circleOne', circleOne);
       game.state.add('squareTwo', squareTwo);
 
-      // FOR MOODLE
-      game.state.add('studentReport', studentReport);
+      game.state.add('studentReport', studentReport); // FOR MOODLE
 
       // CALLING FIRST GAME STATE
       game.state.start('boot');

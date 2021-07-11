@@ -1,25 +1,33 @@
-/**
- * LInE - Free Education, Private Data
+/******************************
+ * This file holds game states.
+ ******************************/
+
+/** [GAME STATE]
  *
- * iFractions GAME STATE
- *
- * Name of game state : 'circleOne'
- * Shape : circle
+ * .....circleOne.... = gameType
+ * ....../....\......
+ * .....A......B..... = gameMode
+ * .......\./........
+ * ........|.........
+ * ....../.|.\.......
+ * .Plus.Minus.Mixed. = gameOperation
+ * ......\.|./.......
+ * ........|.........
+ * ....1,2,3,4,5..... = gameDifficulty
+ * 
  * Character : kid/balloon
  * Theme : flying in a balloon
  * Concept : 'How much the kid has to walk to get to the balloon?'
- * Represent fractions as : circles
+ * Represent fractions as : circles/arcs
  *
- * # of different difficulties : 5
- *
- * Game modes can be : 'A' or 'B' (in variable 'gameMode')
+ * Game modes can be :
  *
  *   A : Player can place balloon position
  *       Place balloon in position (so the kid can get to it)
  *   B : Player can select # of circles
  *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
- * Operations can be : 'Plus', 'Minus' or 'Mixed' (in variable 'gameOperation')
+ * Operations can be :
  *
  *   Plus : addition of fractions
  *     Represented by : kid going to the right (floor positions 0..5)
@@ -83,16 +91,16 @@ const circleOne = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         false, false, false, // Left buttons
         true, false,         // Right buttons
         false, false
       );
     } else {
-      navigationIcons.func_addIcons(
+      navigationIcons.add(
         true, true, true, // Left buttons
         true, false,      // Right buttons
-        'customMenu', this.func_viewHelp
+        'customMenu', this.viewHelp
       );
     }
 
@@ -262,8 +270,8 @@ const circleOne = {
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
-      game.event.add('click', this.func_onInputDown);
-      game.event.add('mousemove', this.func_onInputOver);
+      game.event.add('click', this.onInputDown);
+      game.event.add('mousemove', this.onInputOver);
     }
   },
 
@@ -351,13 +359,13 @@ const circleOne = {
 
       game.animation.stop(self.kid.animation[0]);
 
-      if (self.func_checkOverlap(self.basket, self.kid)) {
+      if (self.checkOverlap(self.basket, self.kid)) {
         self.result = true; // Answer is correct
         self.kid.curFrame = (self.kid.curFrame < 12) ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
         completedLevels++;
-        if (debugMode) console.log('completedLevels = ' + completedLevels);
+        if (debugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
@@ -390,86 +398,12 @@ const circleOne = {
     game.render.all();
   },
 
-
-  /* EVENT HANDLER */
-
   /**
-   * Called by mouse click event
-   *
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  func_onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-
-    // GAME MODE A : click road
-    if (gameMode == 'A') {
-      const cur = self.road;
-
-      const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-      if (valid) self.func_clicked(x);
-    }
-
-    // GAME MODE B : click circle
-    if (gameMode == 'B') {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
-        if (valid) self.func_clicked(cur);
-      });
-    }
-
-    navigationIcons.func_onInputDown(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   *
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  func_onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    let flag = false;
-
-    // GAME MODE A : balloon follow mouse
-    if (gameMode == 'A' && !self.hasClicked) {
-      if (game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8) {
-        self.balloon.x = x;
-        self.basket.x = x;
-      }
-
-      document.body.style.cursor = 'auto';
-    }
-
-    // GAME MODE B : hover circle
-    if (gameMode == 'B' && !self.hasClicked) {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
-        if (valid) {
-          self.func_overCircle(cur);
-          flag = true;
-        }
-      });
-      if (!flag) self.func_outCircle();
-    }
-
-    navigationIcons.func_onInputOver(x, y);
-
-    game.render.all();
-  },
-
-  /* CALLED BY EVENT HANDLER */
-
-  /**
-   * (in gameMode 'B') <br>
-   * 
-   * Function called when cursor is over a valid circle
+   * (in gameMode 'B') Function called when cursor is over a valid circle
    * 
    * @param {object} cur circle the cursor is over
    */
-  func_overCircle: function (cur) {
+  overCircle: function (cur) {
     if (!self.hasClicked) {
       document.body.style.cursor = 'pointer';
       for (let i in self.circles.all) {
@@ -479,11 +413,9 @@ const circleOne = {
   },
 
   /**
-   * (in gameMode 'B') <br>
-   * 
-   * Function called when cursor is out of a valid circle
+   * (in gameMode 'B') Function called when cursor is out of a valid circle
    */
-  func_outCircle: function () {
+  outCircle: function () {
     if (!self.hasClicked) {
       document.body.style.cursor = 'auto';
       self.circles.all.forEach(cur => {
@@ -493,13 +425,11 @@ const circleOne = {
   },
 
   /**
-   * (in gameMode 'B') <br>
-   * 
-   * Function called when player clicked over a valid circle
+   * (in gameMode 'B') Function called when player clicked over a valid circle
    * 
    * @param {number|object} cur clicked circle
    */
-  func_clicked: function (cur) {
+  clicked: function (cur) {
     if (!self.hasClicked) {
 
       // On gameMode A
@@ -517,7 +447,7 @@ const circleOne = {
             self.circles.all[i].alpha = 1; // Keep selected circle
             self.fractionIndex = cur.index;
           } else {
-            self.circles.all[i].alpha = 0;   // Hide unselected circle
+            self.circles.all[i].alpha = 0;  // Hide unselected circle
             self.kid.y += self.circles.diameter;  // Lower kid to selected circle
           }
         }
@@ -545,16 +475,15 @@ const circleOne = {
     }
   },
 
-  /* GAME FUNCTIONS */
-
   /**
    * Checks if 2 images overlap
    * 
    * @param {object} spriteA image 1
    * @param {object} spriteB image 2
-   * @returns {boolean}
+   * 
+   * @returns {boolean} true if there is overlap
    */
-  func_checkOverlap: function (spriteA, spriteB) {
+  checkOverlap: function (spriteA, spriteB) {
     const xA = spriteA.x;
     const xB = spriteB.x;
 
@@ -566,7 +495,7 @@ const circleOne = {
   /**
    * Display correct answer
    */
-  func_viewHelp: function () {
+  viewHelp: function () {
     if (!self.hasClicked) {
       // On gameMode A
       if (gameMode == 'A') {
@@ -581,12 +510,78 @@ const circleOne = {
     }
   },
 
-  /* METADATA FOR GAME */
+  /**
+   * Called by mouse click event
+   *
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+
+    // GAME MODE A : click road
+    if (gameMode == 'A') {
+      const cur = self.road;
+
+      const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
+      if (valid) self.clicked(x);
+    }
+
+    // GAME MODE B : click circle
+    if (gameMode == 'B') {
+      self.circles.all.forEach(cur => {
+        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
+        if (valid) self.clicked(cur);
+      });
+    }
+
+    navigationIcons.onInputDown(x, y);
+
+    game.render.all();
+  },
+
+  /**
+   * Called by mouse move event
+   *
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    const x = mouseEvent.offsetX;
+    const y = mouseEvent.offsetY;
+    let flag = false;
+
+    // GAME MODE A : balloon follow mouse
+    if (gameMode == 'A' && !self.hasClicked) {
+      if (game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8) {
+        self.balloon.x = x;
+        self.basket.x = x;
+      }
+
+      document.body.style.cursor = 'auto';
+    }
+
+    // GAME MODE B : hover circle
+    if (gameMode == 'B' && !self.hasClicked) {
+      self.circles.all.forEach(cur => {
+        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
+        if (valid) {
+          self.overCircle(cur);
+          flag = true;
+        }
+      });
+      if (!flag) self.outCircle();
+    }
+
+    navigationIcons.onInputOver(x, y);
+
+    game.render.all();
+  },
 
   /**
    * Saves players data after level ends - to be sent to database <br>
    * 
-   * Attention: the "line_" prefix data table must be compatible to data table fields (MySQL server)
+   * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
+   * 
    * @see /php/squareOne.js
    */
   postScore: function () {
@@ -605,7 +600,7 @@ const circleOne = {
       + ', selIndex: ' + self.fractionIndex;
 
     // FOR MOODLE
-    if (moodle) sendToDB(data, self.result, game.timer.elapsed);
-    else sendToDB(data);
+    sendToDB(data);
   }
+
 };

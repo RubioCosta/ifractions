@@ -1,66 +1,64 @@
-// LInE - Free Education, Private Data.
-
-/*
-
-Generating game levels in menu:
-
-..................................................... 
-...............square....................circle...... }				        	} (gameShape)
-.........../...........\....................|........ } game (gameType)
-........One.............Two................One....... }
-......./...\.........../...\............./....\...... 
-......A.....B.........A.....B...........A......B..... } game mode (gameMode)
-.(floor)..(stack)..(top)..(bottom)..(floor)..(stack).
-.......\./.............\./................\./........ 
-........|...............|..................|......... 
-......./.\..............|................/.|.\....... 
-...Plus...Minus.......Equals........Plus.Minus.Mixed. } game math operation (gameOperation)
-.......\./..............|................\.|./....... 
-........|...............|..................|......... 
-......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... } difficulty level (gameDifficulty)
-..................................................... 
-
-About levels in map:
-
-..................(game.levels)......................
-......................__|__..........................
-.....................|.|.|.|.........................
-...................0,1,2,3,4,5....................... } mapPositions (mapPosition)
-...................|.........|.......................
-................(start)....(end).....................
-*/
+/**************************************************************
+ * LInE - Free Education, Private Data - http://www.usp.br/line
+ * 
+ * This file holds all global elements to the game.
+ * 
+ * Generating game levels in menu:
+ * ..................................................... 
+ * ...............square....................circle...... }                   = gameShape
+ * .........../...........\....................|........ } = gameType (game)
+ * ........One.............Two................One....... }
+ * ......./...\.........../...\............./....\...... 
+ * ......A.....B.........A.....B...........A......B..... = gameMode (game mode)
+ * .(floor)..(stack)..(top)..(bottom)..(floor)..(stack).
+ * .......\./.............\./................\./........ 
+ * ........|...............|..................|......... 
+ * ......./.\..............|................/.|.\....... 
+ * ...Plus...Minus.......Equals........Plus.Minus.Mixed. = gameOperation (game math operation)
+ * .......\./..............|................\.|./....... 
+ * ........|...............|..................|......... 
+ * ......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... = gameDifficulty (difficulty level)
+ * ..................................................... 
+ * 
+ * About levels in map:
+ * 
+ * ..................(game.levels)......................
+ * ......................__|__..........................
+ * .....................|.|.|.|.........................
+ * ...................0,1,2,3,4,5....................... = mapPosition (map positions)
+ * ...................|.........|.......................
+ * ................(start)....(end).....................
+ **************************************************************/
 
 /**
  * Turns console messages ON/OFF (for debug purposes only)
  * @type {boolean}
  */
 const debugMode = false;
-// FOR MOODLE
-/**
- * defines if the game is suposed to run online or on moodle <br>
+
+/** FOR MOODLE <br>
+ * 
+ * iFractions can run on a server or inside moodle through iAssign. <br>
+ * This variable should be set according to where it is suposed to run: <br>
  * - if true, on moodle <br>
- * - if false, online
+ * - if false, on a server
  */
 const moodle = false;
 
-const medSrc = 'assets/img/'; // Base directory for media
-const defaultWidth = 900; // Default width for the Canvas
-const defaultHeight = 600; // Default height for the Canvas
-
 /**
  * HTMLCanvasElement : Canvas where all the game elements are rendered.
- * 
  * @type {object}
  */
 let canvas;
 
 /**
- * Selected game object.<br>
+ * Selected game.<br>
  * Can be the objects: squareOne, squareTwo or circleOne.
  * 
  * @type {object}
  */
 let gameType;
+
 /**
  * Name of the selected game.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
@@ -68,6 +66,7 @@ let gameType;
  * @type {string}
  */
 let gameTypeString;
+
 /**
  * Used for text and game information.<br>
  * Shape that makes the name of the game - e.g in 'squareOne' it is 'square'.<br>
@@ -76,6 +75,7 @@ let gameTypeString;
  * @type {string}
  */
 let gameShape;
+
 /**
  * Holds selected game mode.<br>
  * In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures).<br>
@@ -84,15 +84,17 @@ let gameShape;
  * @type {string}
  */
 let gameMode;
+
 /**
  * Holds game math operation.<br>
- * In squareOne     can be: 'Plus' (green tractor goes right) or 'Minus' (red tractor goes left).<br>
- * In circleOne     can be: 'Plus' (green tractor goes right), 'Minus' (red tractor goes left) or 'Mixed' (green tractor goes both sides).<br>
- * In squareTwo     can be: 'Equals' (compares two rectangle subdivisions).
+ * In squareOne   can be: 'Plus' (green tractor goes right) or 'Minus' (red tractor goes left).<br>
+ * In circleOne   can be: 'Plus' (green tractor goes right), 'Minus' (red tractor goes left) or 'Mixed' (green tractor goes both sides).<br>
+ * In squareTwo   can be: 'Equals' (compares two rectangle subdivisions).
  * 
  * @type {string}
  */
 let gameOperation;
+
 /**
  * Holds game overall difficulty. 1 (easier) -> n (harder).<br> 
  * In squareOne             can be: 1..3.<br>
@@ -101,21 +103,25 @@ let gameOperation;
  * @type {number}
  */
 let gameDifficulty;
+
 /**
  * Turns displaying the fraction labels on levels ON/OFF
  * @type {boolean}
  */
 let fractionLabel = true;
-/**
- * Character position on the map, aka game levels (1..4: valid; 5: end)
- * @type {number}
- */
-let mapPosition;
+
 /**
  * When true, the character can move to next position in the map
  * @type {boolean}
  */
 let mapMove;
+
+/**
+ * Character position on the map, aka game levels (1..4: valid; 5: end)
+ * @type {number}
+ */
+let mapPosition;
+
 /**
  * Number of finished levels in the map
  * @type {number}
@@ -127,23 +133,28 @@ let completedLevels;
  * @type {boolean}
  */
 let audioStatus = false;
+
 /**
  * Player's name
  * @type {string}
  */
 let playerName;
+
 /**
  * String that contains the selected language.<br>
  * It is the name of the language file.
  * @type {string}
  */
-let langstring;
+let langString;
+
 /**
  * Holds the current state.<br>
  * Is used as if it was a 'this' inside state functions.
  * @type {object}
  */
 let self;
+
+const medSrc = 'assets/img/'; // Base directory for media
 
 /**
  * Metadata for all games
@@ -189,41 +200,33 @@ const info = {
   gameOperation: [],
   gameDifficulty: [],
 
-  /**
-   * Load values
-   */
+  // When game starts, update values
   start: function () {
-
     info.gameShape = [
       info.squareOne.gameShape,
       info.circleOne.gameShape,
       info.squareTwo.gameShape
     ];
-
     info.gameType = [
       info.squareOne.gameType,
       info.circleOne.gameType,
       info.squareTwo.gameType
     ];
-
     info.gameTypeUrl = [
       info.squareOne.gameTypeUrl,
       info.circleOne.gameTypeUrl,
       info.squareTwo.gameTypeUrl
     ];
-
-    info.gameMode = info.squareOne.gameMode.concat(info.circleOne.gameMode, info.squareTwo.gameMode);
-
-    info.gameModeUrl = info.squareOne.gameModeUrl.concat(info.circleOne.gameModeUrl, info.squareTwo.gameModeUrl);
-
-    info.gameOperation = info.squareOne.gameOperation.concat(info.circleOne.gameOperation, info.squareTwo.gameOperation);
-
     info.gameDifficulty = [
       info.squareOne.gameDifficulty,
       info.circleOne.gameDifficulty,
       info.squareTwo.gameDifficulty
     ];
+    info.gameMode = info.squareOne.gameMode.concat(info.circleOne.gameMode, info.squareTwo.gameMode);
+    info.gameModeUrl = info.squareOne.gameModeUrl.concat(info.circleOne.gameModeUrl, info.squareTwo.gameModeUrl);
+    info.gameOperation = info.squareOne.gameOperation.concat(info.circleOne.gameOperation, info.squareTwo.gameOperation);
   }
+
 };
 
 /**
@@ -289,6 +292,7 @@ const textStyles = {
  * @type {object}
  */
 const url = {
+  //src: 'assets/img/', // Base directory for media
   boot: {
     image: [
       // Scene
@@ -429,7 +433,7 @@ const url = {
       ['kid_run', medSrc + 'character/kid/run.png', 12]
     ],
     audio: []
-  },
+  }
 };
 
 /**
@@ -443,60 +447,68 @@ const navigationIcons = {
    *  * The icons on the left are ordered from left to right. <br>
    *  * The icons on the right are ordered from right to left.
    * 
-   * @param {boolean} leftIcon0 1st left icon 
-   * @param {boolean} leftIcon1 2nd left icon
-   * @param {boolean} leftIcon2 3rd left icon
-   * @param {boolean} rightIcon0 1st right icon
-   * @param {boolean} rightIcon1 2nd right icon
-   * @param {string} state state to be called by the 'back' button
-   * @param {function} help function in the current game state that display correct answer
+   * @param {boolean} leftIcon0 1st left icon (back)
+   * @param {boolean} leftIcon1 2nd left icon (main menu)
+   * @param {boolean} leftIcon2 3rd left icon (solve game)
+   * @param {boolean} rightIcon0 1st right icon (audio)
+   * @param {boolean} rightIcon1 2nd right icon (lang)
+   * @param {undefined|string} state state to be called by the 'back' button (must exist if param 'leftIcon0' is true)
+   * @param {undefined|function} help function in the current game state that display correct answer
    */
-  func_addIcons: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, state, help) {
-    this.state = state;
-    this.help = help;
+  add: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, state, help) {
 
     let left_x = 10;
     let right_x = defaultWidth - 50 - 10;
-
     this.iconsList = [];
 
     // 'Descriptive labels' for the navigation icons
-    this.left_text = game.add.text(left_x, 73, '', textStyles.h4_brown, 'left');
-    this.right_text = game.add.text(right_x + 50, 73, '', textStyles.h4_brown, 'right');
+    this.left_text = game.add.text(left_x, 73, '', textStyles.h4_brown);
+    this.left_text.align = 'left';
 
-    // 'Icons' on the LEFT side of the page
-    if (leftIcon0) { // Return to select difficulty screen
-      const icon_back = game.add.image(left_x, 10, 'back');
-      this.iconsList.push(icon_back);
-      left_x += 50; // Offsets value of x for next icon
+    this.right_text = game.add.text(right_x + 50, 73, '', textStyles.h4_brown);
+    this.right_text.align = 'right';
+
+    // Left icons
+
+    if (leftIcon0) { // Return to previous screen
+      if (!state) {
+        console.error('Game error: You tried to add a \'back\' icon without the \'state\' parameter.');
+      } else {
+        this.state = state;
+        this.iconsList.push(game.add.image(left_x, 10, 'back'));
+        left_x += 50;
+      }
     }
 
     if (leftIcon1) { // Return to main menu screen
-      const icon_list = game.add.image(left_x, 10, 'menu');
-      this.iconsList.push(icon_list);
-      left_x += 50; // Offsets value of x for next icon
+      this.iconsList.push(game.add.image(left_x, 10, 'menu'));
+      left_x += 50;
     }
 
-    if (leftIcon2) { // In some levels, shows solution to the game
-      const icon_help = game.add.image(left_x, 10, 'help');
-      this.iconsList.push(icon_help);
-      left_x += 50; // Offsets value of x for next icon
+    if (leftIcon2) { // Shows solution to the game
+      if (!help) {
+        console.error('Game error: You tried to add a \'game solution\' icon without the \'help\' parameter.');
+      } else {
+        this.help = help;
+        this.iconsList.push(game.add.image(left_x, 10, 'help'));
+        left_x += 50;
+      }
     }
 
-    // 'Icons' on the RIGHT side of the page
+    // Right icons
 
     if (rightIcon0) { // Turns game audio on/off
-      this.icon_audio = game.add.sprite(right_x, 10, 'audio', 1);
-      audioStatus ? this.icon_audio.curFrame = 0 : this.icon_audio.curFrame = 1;
-      this.iconsList.push(this.icon_audio);
-      right_x -= 50; // Offsets value of x for next icon
+      this.audioIcon = game.add.sprite(right_x, 10, 'audio', 1);
+      this.audioIcon.curFrame = audioStatus ? 0 : 1;
+      this.iconsList.push(this.audioIcon);
+      right_x -= 50;
     }
 
     if (rightIcon1) { // Return to select language screen
-      icon_world = game.add.image(right_x, 10, 'language');
-      this.iconsList.push(icon_world);
-      right_x -= 50; // Offsets value of x for next icon
+      this.iconsList.push(game.add.image(right_x, 10, 'language'));
+      right_x -= 50;
     }
+
   },
 
   /**
@@ -504,7 +516,7 @@ const navigationIcons = {
    * 
    * @param {string} state name of the next state
    */
-  func_CallState: function (state) {
+  callState: function (state) {
     if (audioStatus) game.audio.beepSound.play();
 
     game.event.clear(self);
@@ -517,28 +529,28 @@ const navigationIcons = {
    * @param {number} x contains the mouse x coordinate
    * @param {number} y contains the mouse y coordinate
    */
-  func_onInputDown: function (x, y) {
+  onInputDown: function (x, y) {
 
     navigationIcons.iconsList.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) {
         const name = cur.name;
         switch (name) {
-          case 'back': navigationIcons.func_CallState(navigationIcons.state); break;
-          case 'menu': navigationIcons.func_CallState('menu'); break;
+          case 'back': navigationIcons.callState(navigationIcons.state); break;
+          case 'menu': navigationIcons.callState('menu'); break;
           case 'help': navigationIcons.help(); break;
-          case 'language': navigationIcons.func_CallState('lang'); break;
+          case 'language': navigationIcons.callState('lang'); break;
           case 'audio':
             if (audioStatus) {
               audioStatus = false;
-              navigationIcons.icon_audio.curFrame = 1;
+              navigationIcons.audioIcon.curFrame = 1;
             } else {
               audioStatus = true;
               if (audioStatus) game.audio.beepSound.play();
-              navigationIcons.icon_audio.curFrame = 0;
+              navigationIcons.audioIcon.curFrame = 0;
             }
             game.render.all();
             break;
-          default: console.log('Game error: error in navigation icon');
+          default: console.error('Game error: error in navigation icon');
         }
       }
     });
@@ -550,20 +562,21 @@ const navigationIcons = {
    * @param {number} x contains the mouse x coordinate
    * @param {number} y contains the mouse y coordinate
    */
-  func_onInputOver: function (x, y) {
+  onInputOver: function (x, y) {
 
     let flag = false;
 
     navigationIcons.iconsList.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) {
         flag = true;
-
-        if (cur.name == 'back') navigationIcons.left_text.name = game.lang.nav_back;
-        else if (cur.name == 'menu') navigationIcons.left_text.name = game.lang.nav_menu;
-        else if (cur.name == 'help') navigationIcons.left_text.name = game.lang.nav_help;
-
-        else if (cur.name == 'language') navigationIcons.right_text.name = game.lang.nav_lang;
-        else if (cur.name == 'audio') navigationIcons.right_text.name = game.lang.audio;
+        let name = cur.name;
+        switch (name) {
+          case 'back': navigationIcons.left_text.name = game.lang.nav_back; break;
+          case 'menu': navigationIcons.left_text.name = game.lang.nav_menu; break;
+          case 'help': navigationIcons.left_text.name = game.lang.nav_help; break;
+          case 'language': navigationIcons.right_text.name = game.lang.nav_lang; break;
+          case 'audio': navigationIcons.right_text.name = game.lang.audio; break;
+        }
       }
     });
 
@@ -574,6 +587,7 @@ const navigationIcons = {
       document.body.style.cursor = 'pointer';
     }
   }
+
 };
 
 /**
@@ -598,30 +612,24 @@ const sendToDB = function (extraData) {
     // @see php/save.php
     const data = 'line_ip=143.107.45.11' // INSERT database server IP
       + '&line_name=' + playerName
-      + '&line_lang=' + langstring
+      + '&line_lang=' + langString
       + extraData;
 
     const url = 'php/save.php';
 
-    const xhr = new XMLHttpRequest();
-
-    xhr.open('POST', url, true);
-
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-    xhr.onreadystatechange = function () {
-      if (debugMode) console.log(xhr);
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        if (debugMode) console.log(xhr.responseText);
-      }
-    }
-
-    xhr.send(data); // Actually execute the request
-
-    if (debugMode) {
-      console.log('processing...');
-      console.log(data);
-    }
-
+    const init = { method: 'POST', body: data, headers: { 'Content-type': 'application/x-www-form-urlencoded' } };
+    fetch(url, init)
+      .then(response => {
+        if (response.ok) {
+          if (debugMode) console.log("Processing...");
+          response.text().then(text => { if (debugMode) { console.log(text); } })
+        } else {
+          console.error("Game error: Network response was not ok.");
+        }
+      })
+      .catch(error => {
+        console.error('Game error: problem with fetch operation - ' + error.message + '.');
+      });
   }
+
 };
