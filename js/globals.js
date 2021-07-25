@@ -287,13 +287,26 @@ const textStyles = {
 };
 
 /**
- * List of URL for all media in the game.<br>
- * Divided: 1st by the state that loads the media / 2nd by the media type.
+ * List of URL for all media in the game
+ * divided 1st by the 'state' that loads the media 
+ * and 2nd by the 'media type' for that state.
+ * 
  * @type {object}
  */
 const url = {
-  //src: 'assets/img/', // Base directory for media
+  /** 
+   * url.<state> 
+   * where <state> can be: boot, menu, squareOne, squareTwo, circleOne. 
+  */
   boot: {
+    /**
+     * url.<state>.<media type> 
+     * where <media type> can be: image, sprite, audio <br><br>
+     * 
+     * image: [ [name, source], ... ] <br>
+     * sprite: [ [name, source, number of frames], ... ] <br>
+     * audio: [ [name, [source, alternative source] ], ... ]
+     */
     image: [
       // Scene
       ['bgimage', medSrc + 'scene/bg.jpg'],

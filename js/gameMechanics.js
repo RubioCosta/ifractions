@@ -115,7 +115,8 @@ const game = {
    */
   load: {
     /**
-     * Loads language dictionary into the object game.lang using Fetch API.
+     * Loads language file to cache using Fetch API and 
+     * saves its content as dictionary on game.lang.
      * 
      * @param {string} url url for the selected language
      */
@@ -141,7 +142,8 @@ const game = {
         });
     },
     /**
-     * Caches audio files using Fetch API.
+     * Loads audio files to cache using Fetch API
+     * saves references in game.audio.
      * 
      * @param {string[]} urls audio urls for the current state
      */
@@ -165,7 +167,8 @@ const game = {
       }
     },
     /**
-     * Caches image files using HTMLImageElement.
+     * Loads image files to cache using HTMLImageElement
+     * saves references in game.image.
      * 
      * @param {string[]} urls image urls for the current state
      */
@@ -188,7 +191,8 @@ const game = {
       }
     },
     /**
-     * Caches spritesheets using HTMLImageElement.
+     * Loads image files that contains spritesheets to cache using HTMLImageElement
+     * saves references in game.sprite.
      * 
      * @param {string[]} urls spritesheet urls for the current state
      */
