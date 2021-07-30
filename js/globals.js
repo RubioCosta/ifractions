@@ -343,29 +343,11 @@ const url = {
       ['help_pointer', medSrc + 'interac_icon/pointer.png'],
       ['info', medSrc + 'interac_icon/info.png'],
       ['ok', medSrc + 'interac_icon/ok.png'],
-    ],
-    sprite: [
-      // Game Sprites
-      ['kid_walk', medSrc + 'character/kid/walk.png', 26],
-      // Navigation icons on the top of the page
-      ['audio', medSrc + 'navig_icon/audio.png', 2],
-      // Interactive icons
-      ['select', medSrc + 'interac_icon/selectionBox.png', 2]
-    ],
-    audio: [
-      // Sound effects
-      ['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
-      ['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
-      ['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
-    ]
-  },
-  menu: {
-    image: [
-      // Game
+      // Menu icons - Games
       ['game0', medSrc + 'levels/squareOne.png'], // Square I
       ['game1', medSrc + 'levels/circleOne.png'], // Circle I
       ['game2', medSrc + 'levels/squareTwo.png'], // Square II
-      // Info box icons
+      // Menu icons - Info box
       ['c1-A', medSrc + 'info_box/c1-A.png'],
       ['c1-A-h', medSrc + 'info_box/c1-A-h.png'],
       ['c1-B-h', medSrc + 'info_box/c1-B-h.png'],
@@ -392,20 +374,31 @@ const url = {
       ['operation_equals', medSrc + 'info_box/operation_equals.png'],
     ],
     sprite: [
-      // Game modes
+      // Game Sprites
+      ['kid_walk', medSrc + 'character/kid/walk.png', 26],
+      // Navigation icons on the top of the page
+      ['audio', medSrc + 'navig_icon/audio.png', 2],
+      // Interactive icons
+      ['select', medSrc + 'interac_icon/selectionBox.png', 2],
+      // Menu icons - Game modes
       ['mode0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
       ['mode1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B
       ['mode2', medSrc + 'levels/circleOne_1.png', 2], // Circle I : A
       ['mode3', medSrc + 'levels/circleOne_2.png', 2], // Circle I : B
       ['mode4', medSrc + 'levels/squareTwo_1.png', 2], // Square II : A
       ['mode5', medSrc + 'levels/squareTwo_2.png', 2], // Square II : B
-      // Math operations
+      // Menu icons - Math operations
       ['operation_plus', medSrc + 'levels/operation_plus.png', 2], // Square/circle I : right
       ['operation_minus', medSrc + 'levels/operation_minus.png', 2], // Square/circle I : left
       ['operation_mixed', medSrc + 'levels/operation_mixed.png', 2], // Circle I : mixed 
       ['operation_equals', medSrc + 'levels/operation_equals.png', 2], // Square II : equals
     ],
-    audio: []
+    audio: [
+      // Sound effects
+      ['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
+      ['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
+      ['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
+    ]
   },
   squareOne: {
     image: [

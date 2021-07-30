@@ -12,6 +12,19 @@ const bootState = {
    * Preloads media for current state
    */
   preload: function () {
+    if (moodle) {
+      loadLangState.firstTime = false;
+      const moodleLang = iLMparameters.lang;
+      switch (moodleLang) {
+        case 'en': langString = 'en_US'; break;
+        case 'pt': langString = 'pt_BR'; break;
+        case 'fr': langString = 'fr_FR'; break;
+        case 'es': langString = 'es_PE'; break;
+        case 'it': langString = 'it_IT'; break;
+        default: langString = 'en_US';
+      }
+      game.load.lang('assets/lang/' + langString);
+    }
     // LOADING MEDIA
     game.load.audio(url.boot.audio);
     game.load.image(url.boot.image);
@@ -27,17 +40,7 @@ const bootState = {
 
     // FOR MOODLE
     if (moodle) {
-      loadLangState.firstTime = false;
-      const moodleLang = iLMparameters.lang;
-      switch (moodleLang) {
-        case 'en': langString = 'en_US'; break;
-        case 'pt': langString = 'pt_BR'; break;
-        case 'fr': langString = 'fr_FR'; break;
-        case 'es': langString = 'es_PE'; break;
-        case 'it': langString = 'it_IT'; break;
-        default: langString = 'en_US';
-      }
-      game.state.start('loadLang');
+      game.state.start('menu');
     } else {
       game.state.start('lang');
     }

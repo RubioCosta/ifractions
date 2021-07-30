@@ -7,18 +7,7 @@
  * @namespace
  */
 const menuState = {
-
-  /**
-   * Preloads media for current state
-   */
-  preload: function () {
-
-    // LOADING MEDIA
-    game.load.image(url.menu.image);
-    game.load.sprite(url.menu.sprite);
-
-  },
-
+  
   /**
    * Main code
    */
