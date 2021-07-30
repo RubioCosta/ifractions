@@ -35,7 +35,7 @@ const mapState = {
     }
 
     // Progress bar
-    const percentText = 4 * 25;
+    const percentText = completedLevels * 25;
 
     if (completedLevels >= 4) game.add.geom.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5);
     else game.add.geom.rect(660, 10, completedLevels * 37.5, 35, undefined, 0, colors.yellow, 0.9);
