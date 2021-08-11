@@ -50,7 +50,7 @@ const mapState = {
       y: [486, 422, 358, 294, 230, 166]
     };
 
-    if (gameTypeString == 'squareOne') {
+    if (gameType == 'squareOne') {
       // Garage
       game.add.image(this.points.x[0], this.points.y[0], 'garage', 0.4).anchor(0.5, 1);
       // Farm
@@ -103,7 +103,7 @@ const mapState = {
     }
 
     // Game Character 
-    if (gameTypeString == 'squareOne') {
+    if (gameType == 'squareOne') {
 
       if (gameOperation == 'Plus') {
         this.character = game.add.sprite(this.points.x[mapPosition], this.points.y[mapPosition], 'tractor', 0, 0.5);
@@ -183,7 +183,7 @@ const mapState = {
 
     if (audioStatus) game.audio.beepSound.play();
 
-    if (mapPosition <= 4) game.state.start('' + gameTypeString);
+    if (mapPosition <= 4) game.state.start('' + gameType);
     else game.state.start('end');
 
   },
@@ -245,7 +245,7 @@ const endState = {
     game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
 
     // Level character
-    switch (gameTypeString) {
+    switch (gameType) {
 
       case 'circleOne':
 

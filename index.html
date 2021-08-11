@@ -136,9 +136,9 @@
     <script src="js/menu.js"></script>
     <script src="js/customMenu.js"></script>
     <script src="js/map.js"></script>
-    <script src="js/circleOne.js"></script>
-    <script src="js/squareOne.js"></script>
-    <script src="js/squareTwo.js"></script>
+    <script src="js/games/circleOne.js"></script>
+    <script src="js/games/squareOne.js"></script>
+    <script src="js/games/squareTwo.js"></script>
     <script src="js/studentReport.js"></script> <!-- FOR MOODLE -->
     <script src="js/integrationFunctions.js"></script> <!-- FOR MOODLE -->
     <script src="js/gameMechanics.js"></script>
@@ -154,8 +154,6 @@
       canvas.height = defaultHeight;
 
       const context = canvas.getContext("2d");
-
-      info.start();
 
       // CREATING GAME STATES
       game.state.add('boot', bootState);

@@ -52,20 +52,12 @@ const moodle = false;
 let canvas;
 
 /**
- * Selected game.<br>
- * Can be the objects: squareOne, squareTwo or circleOne.
- * 
- * @type {object}
- */
-let gameType;
-
-/**
  * Name of the selected game.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
  * 
  * @type {string}
  */
-let gameTypeString;
+let gameType;
 
 /**
  * Used for text and game information.<br>
@@ -162,72 +154,66 @@ const medSrc = 'assets/img/'; // Base directory for media
  */
 const info = {
 
-  squareOne: {
-    gameShape: 'square',
-    gameType: 'squareOne',
-    gameTypeUrl: 'game0',
-    gameMode: ['A', 'B'],
-    gameModeUrl: ['mode0', 'mode1'],
-    gameOperation: ['Plus', 'Minus'],
-    gameDifficulty: 3
-  },
+  all: {
 
-  circleOne: {
-    gameShape: 'circle',
-    gameType: 'circleOne',
-    gameTypeUrl: 'game1',
-    gameMode: ['A', 'B'],
-    gameModeUrl: ['mode2', 'mode3'],
-    gameOperation: ['Plus', 'Minus', 'Mixed'],
-    gameDifficulty: 5
-  },
+    squareOne: {
+      gameShape: 'square',
+      gameType: 'squareOne',
+      gameTypeUrl: 'game0',
+      gameMode: ['A', 'B'],
+      gameModeUrl: ['mode0', 'mode1'],
+      gameOperation: ['Plus', 'Minus'],
+      gameOperationUrl: ['operation_plus', 'operation_minus'],
+      gameDifficulty: 3
+    },
 
-  squareTwo: {
-    gameShape: 'square',
-    gameType: 'squareTwo',
-    gameTypeUrl: 'game2',
-    gameMode: ['A', 'B'],
-    gameModeUrl: ['mode4', 'mode5'],
-    gameOperation: ['Equals'],
-    gameDifficulty: 5
-  },
+    circleOne: {
+      gameShape: 'circle',
+      gameType: 'circleOne',
+      gameTypeUrl: 'game1',
+      gameMode: ['A', 'B'],
+      gameModeUrl: ['mode2', 'mode3'],
+      gameOperation: ['Plus', 'Minus', 'Mixed'],
+      gameOperationUrl: ['operation_plus', 'operation_minus', 'operation_mixed'],
+      gameDifficulty: 5
+    },
 
+    squareTwo: {
+      gameShape: 'square',
+      gameType: 'squareTwo',
+      gameTypeUrl: 'game2',
+      gameMode: ['A', 'B'],
+      gameModeUrl: ['mode4', 'mode5'],
+      gameOperation: ['Equals'],
+      gameOperationUrl: ['operation_equals'],
+      gameDifficulty: 5
+    },
+
+  },
   gameShape: [],
   gameType: [],
   gameTypeUrl: [],
   gameMode: [],
   gameModeUrl: [],
   gameOperation: [],
+  gameOperationUrl: [],
   gameDifficulty: [],
 
-  // When game starts, update values
-  start: function () {
-    info.gameShape = [
-      info.squareOne.gameShape,
-      info.circleOne.gameShape,
-      info.squareTwo.gameShape
-    ];
-    info.gameType = [
-      info.squareOne.gameType,
-      info.circleOne.gameType,
-      info.squareTwo.gameType
-    ];
-    info.gameTypeUrl = [
-      info.squareOne.gameTypeUrl,
-      info.circleOne.gameTypeUrl,
-      info.squareTwo.gameTypeUrl
-    ];
-    info.gameDifficulty = [
-      info.squareOne.gameDifficulty,
-      info.circleOne.gameDifficulty,
-      info.squareTwo.gameDifficulty
-    ];
-    info.gameMode = info.squareOne.gameMode.concat(info.circleOne.gameMode, info.squareTwo.gameMode);
-    info.gameModeUrl = info.squareOne.gameModeUrl.concat(info.circleOne.gameModeUrl, info.squareTwo.gameModeUrl);
-    info.gameOperation = info.squareOne.gameOperation.concat(info.circleOne.gameOperation, info.squareTwo.gameOperation);
-  }
-
 };
+
+// Called once when the game starts
+(function () {
+  for (key in info.all) {
+    info.gameShape.push(info.all[key].gameShape);
+    info.gameType.push(info.all[key].gameType);
+    info.gameTypeUrl.push(info.all[key].gameTypeUrl);
+    info.gameMode.push(info.all[key].gameMode);
+    info.gameModeUrl.push(info.all[key].gameMode);
+    info.gameOperation.push(info.all[key].gameOperation);
+    info.gameOperationUrl.push(info.all[key].gameOperationUrl);
+    info.gameDifficulty.push(info.all[key].gameDifficulty);
+  }
+})()
 
 /**
  * Preset colors for graphic elements.
@@ -402,7 +388,7 @@ const url = {
   },
   squareOne: {
     image: [
-      // Scene
+      // Map buildings
       ['farm', medSrc + 'scene/farm.png'],
       ['garage', medSrc + 'scene/garage.png']
     ],
@@ -414,7 +400,7 @@ const url = {
   },
   squareTwo: {
     image: [
-      // Scene
+      // Map buildings
       ['house', medSrc + 'scene/house.png'],
       ['school', medSrc + 'scene/school.png']
     ],
@@ -427,7 +413,7 @@ const url = {
   },
   circleOne: {
     image: [
-      // Scene
+      // Map buildings
       ['house', medSrc + 'scene/house.png'],
       ['school', medSrc + 'scene/school.png'],
       // Game images
@@ -439,7 +425,7 @@ const url = {
       ['kid_run', medSrc + 'character/kid/run.png', 12]
     ],
     audio: []
-  }
+  },
 };
 
 /**

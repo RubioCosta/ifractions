@@ -38,7 +38,7 @@ function getParameterByName(name) {
 function getAnswer() {
   let str = '';
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // Student - sending results
-    str += 'gameTypeString:' + gameTypeString
+    str += 'gameType:' + gameType
       + '\ngameShape:' + gameShape
       + '\ngameMode:' + gameMode
       + '\ngameOperation:' + gameOperation
@@ -60,7 +60,7 @@ function getAnswer() {
     moodleVar.hits = [0, 0, 0, 0];
     moodleVar.errors = [0, 0, 0, 0];
     moodleVar.time = [0, 0, 0, 0];
-    str += 'gameTypeString:' + gameTypeString
+    str += 'gameType:' + gameType
       + '\ngameShape:' + gameShape
       + '\ngameMode:' + gameMode
       + '\ngameOperation:' + gameOperation
@@ -203,14 +203,14 @@ const breakString = function (text) {
  * @param {object} info game information
  * @param {undefined|object} infoResults student answer (if there is any)
  */
-const updateGlobalVariables = function (info, infoResults) {
+const updateGlobalVariables = function (infoGame, infoResults) {
   // Update game variables to content received from game file
-  gameTypeString = info['gameTypeString'];
-  gameShape = info['gameShape'];
-  gameMode = info['gameMode'];
-  gameOperation = info['gameOperation'];
-  gameDifficulty = parseInt(info['gameDifficulty']);
-  fractionLabel = info['fractionLabel'];
+  gameType = infoGame['gameType'];
+  gameShape = infoGame['gameShape'];
+  gameMode = infoGame['gameMode'];
+  gameOperation = infoGame['gameOperation'];
+  gameDifficulty = parseInt(infoGame['gameDifficulty']);
+  fractionLabel = infoGame['fractionLabel'];
   // Update default values
   mapPosition = 0;
   mapMove = true;

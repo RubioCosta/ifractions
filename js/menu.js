@@ -54,7 +54,7 @@ const menuState = {
       for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
 
         const icon = game.add.image(x, defaultHeight / 2 - 70, info.gameTypeUrl[i], 1);
-        icon.anchor(0.5, 0.5);
+        icon.anchor(0.5, 0.5); 
 
         icon.gameShape = info.gameShape[i];
         icon.gameType = info.gameType[i];
@@ -140,13 +140,8 @@ const menuState = {
       case 'infoIcon': self.showInfoBox(icon); break;
       case 'game':
         gameShape = icon.gameShape;
-        gameTypeString = icon.gameType;
-        switch (gameTypeString) {
-          case 'squareOne': gameType = squareOne; break;
-          case 'squareTwo': gameType = squareTwo; break;
-          case 'circleOne': gameType = circleOne; break;
-          default: console.error('Game error: the name of the game is not valid.');
-        }
+        gameType = icon.gameType;
+        if (!info.gameType.includes(gameType)) console.error('Game error: the name of the game is not valid.');
         self.menuIcons = self.lbl_game.name;
         game.state.start('customMenu');
         break;

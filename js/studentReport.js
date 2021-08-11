@@ -32,11 +32,11 @@ const studentReport = {
 
     // Title
     game.add.text(defaultWidth / 2, 80, game.lang.results, textStyles.h1_green);
-    game.add.image(x - 40, y - 70, info[gameTypeString].gameTypeUrl, 0.8);
+    game.add.image(x - 40, y - 70, info.all[gameType].gameTypeUrl, 0.8);
 
     // Game info
     text = game.lang[gameShape].charAt(0).toUpperCase() + game.lang[gameShape].slice(1);
-    text = game.lang.game + ': ' + text + ((gameTypeString.slice(-3) == 'One') ? ' I' : ' II');
+    text = game.lang.game + ': ' + text + ((gameType.slice(-3) == 'One') ? ' I' : ' II');
     game.add.text(190, y - 50, text, textStyles.h4_brown).align = 'left';
     game.add.text(190, y - 25, game.lang.game_mode + ': ' + gameMode, textStyles.h4_brown).align = 'left';
     game.add.text(190, y, game.lang.operation + ': ' + gameOperation, textStyles.h4_brown).align = 'left';

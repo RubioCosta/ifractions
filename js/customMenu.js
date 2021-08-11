@@ -14,8 +14,8 @@ const customMenuState = {
   preload: function () {
 
     // LOADING MEDIA
-    game.load.sprite(url[gameTypeString].sprite);
-    game.load.image(url[gameTypeString].image);
+    game.load.sprite(url[gameType].sprite);
+    game.load.image(url[gameType].image);
 
   },
 
@@ -51,6 +51,7 @@ const customMenuState = {
         true, true,
         'menu', false);
 
+      const curGame = info.all[gameType];
       let x = 150;
       let y = 200 - 40;
       let width = 5;
@@ -106,7 +107,7 @@ const customMenuState = {
       this.menuIcons.push(infoIcon);
 
       let auxText;
-      if (gameTypeString == 'squareTwo') {
+      if (gameType == 'squareTwo') {
         auxText = game.lang.aux_rectangle;
         game.add.text(x + 5 * offsetW + 10, y + 102 + 24, auxText, textStyles.h4_blue_2);
       } else {
@@ -127,13 +128,13 @@ const customMenuState = {
 
       x = 150 + offsetW;
       y = baseY;
-      offsetH = this.getOffset(height, info[gameTypeString].gameMode.length);
+      offsetH = this.getOffset(height, curGame.gameMode.length);
 
-      for (let i = 0; i < info[gameTypeString].gameModeUrl.length; i++, y += offsetH) {
-        const icon = game.add.sprite(x, y, info[gameTypeString].gameModeUrl[i], 0, iconScale, 1);
+      for (let i = 0; i < curGame.gameModeUrl.length; i++, y += offsetH) {
+        const icon = game.add.sprite(x, y, curGame.gameModeUrl[i], 0, iconScale, 1);
         icon.anchor(0.5, 0.5);
 
-        icon.gameMode = info[gameTypeString].gameMode[i];
+        icon.gameMode = curGame.gameMode[i];
         icon.iconType = 'gameMode';
         if (i == 0) {
           gameMode = icon.gameMode;
@@ -147,29 +148,16 @@ const customMenuState = {
 
       x += 2 * offsetW;
       y = baseY;
-      offsetH = this.getOffset(height, info[gameTypeString].gameOperation.length);
+      offsetH = this.getOffset(height, curGame.gameOperation.length);
 
       let icon;
-      let aux = [];
-      aux['squareOne'] = [
-        ['operation_plus', 'Plus'],
-        ['operation_minus', 'Minus']
-      ];
-      aux['circleOne'] = [
-        ['operation_plus', 'Plus'],
-        ['operation_minus', 'Minus'],
-        ['operation_mixed', 'Mixed']
-      ];
-      aux['squareTwo'] = [
-        ['operation_equals', 'Equals'],
-      ];
 
       // Placing math operation icons
-      for (let i = 0; i < aux[gameTypeString].length; i++, y += offsetH) {
-        icon = game.add.sprite(x, y, aux[gameTypeString][i][0], 0, iconScale, 1);
+      for (let i = 0; i < curGame.gameOperation.length; i++, y += offsetH) {
+        icon = game.add.sprite(x, y, curGame.gameOperationUrl[i], 0, iconScale, 1);
         icon.anchor(0.5, 0.5);
 
-        icon.gameOperation = aux[gameTypeString][i][1];
+        icon.gameOperation = curGame.gameOperation[i];
         icon.iconType = 'gameOperation';
 
         if (i == 0) {
@@ -182,10 +170,10 @@ const customMenuState = {
 
       // --------------------------- DIFFICULTY ICONS
 
-      x = (gameTypeString == 'squareOne') ? 625 : 585;
+      x = (gameType == 'squareOne') ? 625 : 585;
       y = baseY - 25;
 
-      for (let i = 0; i < info[gameTypeString].gameDifficulty; i++) {
+      for (let i = 0; i < curGame.gameDifficulty; i++) {
         // Parameters
         const curX = x + (30 + 10) * i;
 
@@ -342,7 +330,7 @@ const customMenuState = {
   showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
-    const element = (icon.id == 'gameOperation') ? self.infoBoxContent[icon.id] : self.infoBoxContent[icon.id][gameTypeString];
+    const element = (icon.id == 'gameOperation') ? self.infoBoxContent[icon.id] : self.infoBoxContent[icon.id][gameType];
 
     let msg = '<h3>' + element.title + '</h3>'
       + '<p align=justify>' + element.body + '</p>'
@@ -379,7 +367,7 @@ const customMenuState = {
       case 'enter':
         if (debugMode) {
           console.log('------------------------------'+
-          '\nGame State: ' + gameTypeString +
+          '\nGame State: ' + gameType +
           '\nGame Mode: ' + gameMode + 
           '\n------------------------------');
         }

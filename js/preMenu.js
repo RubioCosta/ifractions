@@ -12,6 +12,7 @@ const bootState = {
    * Preloads media for current state
    */
   preload: function () {
+    // FOR MOODLE
     if (moodle) {
       loadLangState.firstTime = false;
       const moodleLang = iLMparameters.lang;
