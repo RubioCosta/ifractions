@@ -350,6 +350,9 @@ const endState = {
         if (!moodle) {
           completedLevels = 0;
           game.state.start('menu');
+        } else {
+          // FOR MOODLE
+          parent.location.reload(true);
         }
 
       }

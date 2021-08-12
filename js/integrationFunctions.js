@@ -113,7 +113,6 @@ const iLMparameters = {
    * Gets current moodle language.
    */
   lang: getParameterByName("lang"),
-  iLM_PARAM_ServerToGetAnswerURL: getParameterByName("iLM_PARAM_ServerToGetAnswerURL"),
   iLM_PARAM_ServerToGetAnswerURL: getParameterByName("iLM_PARAM_ServerToGetAnswerURL")
 };
 

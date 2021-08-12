@@ -597,6 +597,10 @@ const sendToDB = function (extraData) {
 
     moodleVar.time[mapPosition - 1] += game.timer.elapsed;
 
+    getAnswer();
+    
+    getEvaluation();
+
   } else {
 
     // Create some variables we need to send to our PHP file
