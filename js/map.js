@@ -352,7 +352,7 @@ const endState = {
           game.state.start('menu');
         } else {
           // FOR MOODLE
-          parent.location.reload(true);
+          parent.location.reload(true);          
         }
 
       }

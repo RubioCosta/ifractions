@@ -67,7 +67,7 @@ function getAnswer() {
       + '\ngameDifficulty:' + gameDifficulty
       + '\nfractionLabel:' + fractionLabel;
   }
-
+  
   return str;
 };
 
@@ -79,7 +79,7 @@ function getAnswer() {
  *
  * @returns {number} student's grade for the current assignment : real number between 0.0 and 1.0
  */
-function getEvaluation() {
+ function getEvaluation() {
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') { // Student
     let i;
     for (i = 0; i < moodleVar.hits.length && moodleVar.hits[i] == 1; i++);
@@ -150,7 +150,6 @@ const getiLMContent = function () {
  * @param {string} text content of the .frc file
  */
 const breakString = function (text) {
-
   let gameInfo = {}, results;
   const lines = text.split('\n'); // Break by line
 

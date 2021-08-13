@@ -46,7 +46,7 @@ const studentReport = {
     y = defaultHeight - 200;
     for (let i = 0; i < 4; i++, x += offsetW) {
       // If level wasnt completed, show broken sign
-      if (moodleVar.hits[i] == 0) {
+      if (moodleVar.hits[i] == 0 && moodleVar.errors[i] == 0) {
         const sign = game.add.image(x, defaultHeight - 100, 'broken_sign', 0.7);
         sign.anchor(0.5, 0.5);
       } else {

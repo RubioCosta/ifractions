@@ -597,9 +597,26 @@ const sendToDB = function (extraData) {
 
     moodleVar.time[mapPosition - 1] += game.timer.elapsed;
 
-    getAnswer();
-    
-    getEvaluation();
+    const url = iLMparameters.iLM_PARAM_ServerToGetAnswerURL;
+    const grade = '' + getEvaluation();
+    const report = getAnswer();
+    const data = 'return_get_answer=1'+
+    '&iLM_PARAM_ActivityEvaluation='+encodeURIComponent(grade)+
+    '&iLM_PARAM_ArchiveContent='+encodeURIComponent(report);
+
+    const init = { method: 'POST', body: data, headers: { 'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8' } };
+
+    fetch(url, init)
+      .then(response => {
+        if (response.ok) {
+          if (debugMode) console.log("Processing...");
+        } else {
+          console.error("Game error: Network response was not ok.");
+        }
+      })
+      .catch(error => {
+        console.error('Game error: problem with fetch operation - ' + error.message + '.');
+      });
 
   } else {
 
