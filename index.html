@@ -6,6 +6,7 @@
 <head>
 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Educational game for teaching fractions" />
   <meta name="keywords" content="ifractions, fraction, game, private data" />
   <link rel="shortcut icon" href="assets/img/scene/flag.png">
@@ -13,11 +14,6 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
 
   <style>
-    /*
-    body, .panel-body {
-      background-color: #313857;
-    }
-    */
     #iFractions-canvas {
       padding: 0 auto 0 auto;
       margin-left: auto;
@@ -105,13 +101,8 @@
 
   <div class="container">
 
-    <div class="clearfix">
-    </div>
-
     <div class="panel panel-primary">
-
       <div class="panel-heading">iFractions game :: by LInE</div>
-
       <div class="panel-body">
 
         <canvas id="iFractions-canvas"></canvas> <!-- iFractions game -->
@@ -149,11 +140,9 @@
       const defaultWidth = 900; // Default width for the Canvas
       const defaultHeight = 600; // Default height for the Canvas
 
-      canvas = document.getElementById("iFractions-canvas");
-      canvas.width = defaultWidth;
-      canvas.height = defaultHeight;
-
-      const context = canvas.getContext("2d");
+      const context = document.getElementById("iFractions-canvas").getContext("2d");
+      context.canvas.width = defaultWidth;
+      context.canvas.height = defaultHeight;
 
       // CREATING GAME STATES
       game.state.add('boot', bootState);

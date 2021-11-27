@@ -46,12 +46,6 @@ const debugMode = false;
 const moodle = false;
 
 /**
- * HTMLCanvasElement : Canvas where all the game elements are rendered.
- * @type {object}
- */
-let canvas;
-
-/**
  * Name of the selected game.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
  * 

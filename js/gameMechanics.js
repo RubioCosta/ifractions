@@ -1005,14 +1005,14 @@ const game = {
      * @param {function} func function to be called when event is triggered
      */
     add: function (name, func) {
-      canvas.addEventListener(name, func);
+      context.canvas.addEventListener(name, func);
       game.event.list.push([name, func]);
     },
     /** [Not directly used] Clears list of events. Called before moving to new state.
      */
     clear: function () {
       game.event.list.forEach(cur => {
-        canvas.removeEventListener(cur[0], cur[1]);
+        context.canvas.removeEventListener(cur[0], cur[1]);
       });
       game.event.list = [];
     },
