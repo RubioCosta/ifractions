@@ -72,7 +72,7 @@ const squareOne = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
     // Calls function that loads navigation icons
 
@@ -253,14 +253,14 @@ const squareOne = {
         game.animation.play(self.tractor.animation[0]);
 
         // Displays feedback image and sound 
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
+        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'ok').anchor(0.5, 0.5);
         if (audioStatus) game.audio.okSound.play();
 
         completedLevels++; // Increases number os finished levels
         if (debugMode) console.log('Completed Levels: ' + completedLevels);
       } else { // Incorrect answer
         // Displays feedback image and sound
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
+        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'error').anchor(0.5, 0.5);
         if (audioStatus) game.audio.errorSound.play();
       }
 
@@ -588,8 +588,8 @@ const squareOne = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
 
     if (gameMode == 'A') {
       self.floor.blocks.forEach(cur => {
@@ -612,8 +612,8 @@ const squareOne = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let flagA = false;
     let flagB = false;
 

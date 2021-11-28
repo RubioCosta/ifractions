@@ -60,7 +60,7 @@ const langState = {
    */
   create: function () {
     // Background color
-    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, colors.white, 0, colors.blueBckg, 1);
 
     // Parameters for the elements on the screen
     this.listOfFlags = [];
@@ -76,10 +76,10 @@ const langState = {
     // Create elements on screen  
     for (let i in this.langs.flag) {
       // Add text for language names
-      game.add.text(defaultWidth / 2 + this.langs.x[i], defaultHeight / 2 + this.langs.y[i], this.langs.text[i], textStyles.h2_green).align = 'right';
+      game.add.text(context.canvas.width / 2 + this.langs.x[i], context.canvas.height / 2 + this.langs.y[i], this.langs.text[i], textStyles.h2_green).align = 'right';
 
       // Add icons for flags
-      const flag = game.add.image(defaultWidth / 2 + this.langs.x[i] + 100, defaultHeight / 2 + this.langs.y[i], this.langs.flag[i]);
+      const flag = game.add.image(context.canvas.width / 2 + this.langs.x[i] + 100, context.canvas.height / 2 + this.langs.y[i], this.langs.flag[i]);
       flag.anchor(0.5, 0.5);
 
       this.listOfFlags.push(flag);
@@ -107,9 +107,9 @@ const langState = {
  * @param {object} mouseEvent contains the mouse click coordinates
  */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+   
     self.listOfFlags.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) {
         for (let i in self.langs.flag) {
@@ -128,10 +128,10 @@ const langState = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let flag = false;
-
+    
     self.listOfFlags.forEach(cur => {
       if (game.math.isOverIcon(x, y, cur)) {
         flag = true;
@@ -192,19 +192,19 @@ const nameState = {
   create: function () {
 
     // Background color
-    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, colors.white, 0, colors.blueBckg, 1);
 
     // Set title and warning text
 
-    game.add.text(defaultWidth / 2, defaultHeight / 2 - 100, game.lang.insert_name, textStyles.h1_green);
+    game.add.text(context.canvas.width / 2, context.canvas.height / 2 - 100, game.lang.insert_name, textStyles.h1_green);
 
-    this.warningEmptyName = game.add.text(defaultWidth / 2, defaultHeight / 2 - 70, '', textStyles.h4_brown);
+    this.warningEmptyName = game.add.text(context.canvas.width / 2, context.canvas.height / 2 - 70, '', textStyles.h4_brown);
 
     // Set 'ok' button that gets player's information
-    this.okBtn = game.add.geom.rect(defaultWidth / 2 - 84, defaultHeight / 2 + 70, 168, 60, undefined, 0, colors.gray, 0.6);
+    this.okBtn = game.add.geom.rect(context.canvas.width / 2 - 84, context.canvas.height / 2 + 70, 168, 60, undefined, 0, colors.gray, 0.6);
 
     // Set button Text
-    game.add.text(defaultWidth / 2 + 1, defaultHeight / 2 + 112, game.lang.ready, textStyles.h1_white);
+    game.add.text(context.canvas.width / 2 + 1, context.canvas.height / 2 + 112, game.lang.ready, textStyles.h1_white);
 
     // Makes text field visible
     document.getElementById('textbox').style.visibility = 'visible';
@@ -262,8 +262,8 @@ const nameState = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     const cur = self.okBtn;
 
     if (game.math.isOverIcon(x, y, cur)) {
@@ -280,8 +280,8 @@ const nameState = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     const cur = self.okBtn;
 
     if (game.math.isOverIcon(x, y, cur)) {

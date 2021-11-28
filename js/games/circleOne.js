@@ -71,7 +71,7 @@ const circleOne = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
     // Road
     this.road = game.add.image(47, 515, 'road', 1.01, 0.94);
@@ -119,7 +119,7 @@ const circleOne = {
       direc: [],     // Can be : 1 or -1 : will be multiplied to values to easily change object direction when needed
     };
 
-    this.balloonPlace = defaultWidth / 2; // Balloon place
+    this.balloonPlace = context.canvas.width / 2; // Balloon place
 
     // Number of circles
     const max = (gameOperation == 'Mixed' || gameMode == 'B') ? 6 : mapPosition + 1;
@@ -363,13 +363,13 @@ const circleOne = {
         self.result = true; // Answer is correct
         self.kid.curFrame = (self.kid.curFrame < 12) ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
+        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'ok').anchor(0.5, 0.5);
         completedLevels++;
         if (debugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
+        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'error').anchor(0.5, 0.5);
       }
 
       self.postScore();
@@ -516,8 +516,8 @@ const circleOne = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
 
     // GAME MODE A : click road
     if (gameMode == 'A') {
@@ -546,8 +546,8 @@ const circleOne = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let flag = false;
 
     // GAME MODE A : balloon follow mouse

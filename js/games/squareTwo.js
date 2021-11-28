@@ -74,7 +74,7 @@ const squareTwo = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
     // Calls function that loads navigation icons
 
@@ -92,7 +92,7 @@ const squareTwo = {
     }
 
     // Add kid
-    this.kidAnimation = game.add.sprite(100, defaultHeight - 128, 'kid_standing', 5, 0.8);
+    this.kidAnimation = game.add.sprite(100, context.canvas.height - 128, 'kid_standing', 5, 0.8);
     this.kidAnimation.anchor(0.5, 0.7);
 
     // Width and Height of A and B
@@ -209,8 +209,8 @@ const squareTwo = {
     this.B.fractions[2].alpha = 0;
 
     // Invalid selection text
-    this.A.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 225, '', textStyles.h4_brown);
-    this.B.warningText = game.add.text(defaultWidth / 2, defaultHeight / 2 - 45, '', textStyles.h4_brown);
+    this.A.warningText = game.add.text(context.canvas.width / 2, context.canvas.height / 2 - 225, '', textStyles.h4_brown);
+    this.B.warningText = game.add.text(context.canvas.width / 2, context.canvas.height / 2 - 45, '', textStyles.h4_brown);
 
     game.timer.start(); // Set a timer for the current level (used in postScore)
 
@@ -253,7 +253,7 @@ const squareTwo = {
         if (self.result) {
           if (audioStatus) game.audio.okSound.play();
 
-          game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
+          game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'ok').anchor(0.5, 0.5);
           mapMove = true; // Allow character to move to next level in map state
           completedLevels++;
 
@@ -262,7 +262,7 @@ const squareTwo = {
           // Fractions are not equivalent : INCORRECT
         } else {
           if (audioStatus) game.audio.errorSound.play();
-          game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
+          game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'error').anchor(0.5, 0.5);
           mapMove = false; // Doesnt allow character to move to next level in map state
         }
 
@@ -390,8 +390,8 @@ const squareTwo = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
 
     // Click block in A
     self.A.blocks.forEach(cur => {
@@ -415,8 +415,8 @@ const squareTwo = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let flagA = false;
     let flagB = false;
 

@@ -25,16 +25,16 @@ const menuState = {
       if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') playerName = game.lang.professor;
 
       // Background color
-      game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
+      game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, undefined, 0, colors.blueBckg, 1);
       // Floor
-      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+      for (let i = 0; i < context.canvas.width / 100; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
       // Overtitle: Welcome, <player name>!
-      game.add.text(defaultWidth / 2, 40, game.lang.welcome + ', ' + playerName + '!', textStyles.h4_brown);
+      game.add.text(context.canvas.width / 2, 40, game.lang.welcome + ', ' + playerName + '!', textStyles.h4_brown);
       // Title : Select a game
-      game.add.text(defaultWidth / 2, 80, game.lang.menu_title, textStyles.h1_green);
+      game.add.text(context.canvas.width / 2, 80, game.lang.menu_title, textStyles.h1_green);
       // Subtitle : <game mode> 
-      this.lbl_game = game.add.text(defaultWidth / 2, 110, '', textStyles.h2_blue_2);
+      this.lbl_game = game.add.text(context.canvas.width / 2, 110, '', textStyles.h2_blue_2);
 
       // Loads navigation icons
       navigationIcons.add(
@@ -49,11 +49,11 @@ const menuState = {
 
       // --------------------------- GAME ICONS 
 
-      const offset = defaultWidth / (info.gameType.length + 1);
+      const offset = context.canvas.width / (info.gameType.length + 1);
 
       for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
 
-        const icon = game.add.image(x, defaultHeight / 2 - 70, info.gameTypeUrl[i], 1);
+        const icon = game.add.image(x, context.canvas.height / 2 - 70, info.gameTypeUrl[i], 1);
         icon.anchor(0.5, 0.5); 
 
         icon.gameShape = info.gameShape[i];
@@ -63,7 +63,7 @@ const menuState = {
         this.menuIcons.push(icon);
 
         // "more information" button
-        infoIcon = game.add.image(x + 70, defaultHeight / 2 - 70 - 80, 'info', 0.6, 0.4);
+        infoIcon = game.add.image(x + 70, context.canvas.height / 2 - 70 - 80, 'info', 0.6, 0.4);
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
         infoIcon.id = icon.gameType;
@@ -175,7 +175,8 @@ const menuState = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
 
     // Check menu icons
     for (let i in self.menuIcons) {
@@ -199,7 +200,8 @@ const menuState = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let overIcon;
 
     // Check menu icons

@@ -444,7 +444,7 @@ const navigationIcons = {
   add: function (leftIcon0, leftIcon1, leftIcon2, rightIcon0, rightIcon1, state, help) {
 
     let left_x = 10;
-    let right_x = defaultWidth - 50 - 10;
+    let right_x = context.canvas.width - 50 - 10;
     this.iconsList = [];
 
     // 'Descriptive labels' for the navigation icons

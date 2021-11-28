@@ -75,8 +75,8 @@ const game = {
       if (self.preload) {
         game.render.clear(); // Clears render queue
         // IF there's media to be loaded, creates progress bar
-        game.add.geom.rect(0, 0, defaultWidth, defaultHeight, colors.white, 0, colors.blueBckg, 1);
-        self.progressBar = game.add.geom.rect(defaultWidth / 2, defaultHeight / 2, 20, 20, undefined, 0, colors.white);
+        game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, colors.white, 0, colors.blueBckg, 1);
+        self.progressBar = game.add.geom.rect(context.canvas.width / 2, context.canvas.height / 2, 20, 20, undefined, 0, colors.white);
         self.progressBar.anchor(0.5, 0.5);
         // Calls state's preload() to load the state's media
         self.preload();
@@ -933,6 +933,21 @@ const game = {
       return y >= cur.yWithAnchor && y <= (cur.yWithAnchor + cur.height * cur.scale) &&
         (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
     },
+    /**
+     * Get mouse position coordinates
+     *  
+     * @param {object} mouseEvent 
+     * @returns {object} x and y mouse coordinates
+     */
+    getMouse: function (mouseEvent) {
+      const c = context.canvas.getBoundingClientRect()
+      const canvas_scale = context.canvas.width / parseFloat(c.width);
+      return { 
+        x: (mouseEvent.clientX - c.left) * canvas_scale, 
+        y: (mouseEvent.clientY - c.top) * canvas_scale 
+      }
+    },
+
     /**
      * Converts a given time in seconds (number) to the format HH:MM:SS (string)
      * 

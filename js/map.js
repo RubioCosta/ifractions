@@ -14,7 +14,7 @@ const mapState = {
   create: function () {
 
     // Background color
-    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, undefined, 0, colors.blueBckg, 1);
 
     // Map
     game.add.image(0, 40, 'bgmap');
@@ -194,7 +194,9 @@ const mapState = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    navigationIcons.onInputDown(mouseEvent.offsetX, mouseEvent.offsetY);
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+    navigationIcons.onInputDown(x, y);
   },
 
   /**
@@ -203,7 +205,9 @@ const mapState = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    navigationIcons.onInputOver(mouseEvent.offsetX, mouseEvent.offsetY);
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+    navigationIcons.onInputOver(x, y);
   }
 
 };
@@ -223,7 +227,7 @@ const endState = {
     self.animate = true;
 
     // Background color
-    game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
+    game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, undefined, 0, colors.blueBckg, 1);
 
     // Background
     game.add.image(0, 0, 'bgimage');
@@ -234,7 +238,7 @@ const endState = {
     game.add.image(110, 85, 'cloud', 0.8);
 
     // Floor
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+    for (let i = 0; i < 9; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
     // Progress bar
     game.add.geom.rect(660, 10, 4 * 37.5, 35, undefined, 0, colors.intenseGreen, 0.5); // Progress

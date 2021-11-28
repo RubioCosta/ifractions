@@ -36,14 +36,14 @@ const customMenuState = {
       this.menuIcons = [];
 
       // Background color
-      game.add.geom.rect(0, 0, defaultWidth, defaultHeight, undefined, 0, colors.blueBckg, 1);
+      game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, undefined, 0, colors.blueBckg, 1);
       // Floor
-      for (let i = 0; i < defaultWidth / 100; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
+      for (let i = 0; i < context.canvas.width / 100; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
 
       // Overtitle : Selected game
-      game.add.text(defaultWidth / 2, 40, game.lang.game.toUpperCase() + ": " + menuState.menuIcons, textStyles.h4_brown);
+      game.add.text(context.canvas.width / 2, 40, game.lang.game.toUpperCase() + ": " + menuState.menuIcons, textStyles.h4_brown);
       // Title : Customize the selected game
-      game.add.text(defaultWidth / 2, 80, game.lang.custom_game, textStyles.h1_green);
+      game.add.text(context.canvas.width / 2, 80, game.lang.custom_game, textStyles.h1_green);
 
       // Loads navigation icons
       navigationIcons.add(
@@ -198,8 +198,8 @@ const customMenuState = {
       // FOR MOODLE
       if (!moodle) {
 
-        x = defaultWidth - 100;
-        y = defaultHeight - 110;
+        x = context.canvas.width - 100;
+        y = context.canvas.height - 110;
 
         const enterIcon = game.add.image(x, y, 'bush');
         enterIcon.anchor(0.5, 0.5);
@@ -398,7 +398,8 @@ const customMenuState = {
    * @param {object} mouseEvent contains the mouse click coordinates
    */
   onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let overIcon;
 
     // Check if clicked on an icon
@@ -440,7 +441,8 @@ const customMenuState = {
    * @param {object} mouseEvent contains the mouse move coordinates
    */
   onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX, y = mouseEvent.offsetY;
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
     let overIcon;
 
     // Check if pointer is over an icon

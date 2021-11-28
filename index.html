@@ -6,7 +6,7 @@
 <head>
 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Educational game for teaching fractions" />
   <meta name="keywords" content="ifractions, fraction, game, private data" />
   <link rel="shortcut icon" href="assets/img/scene/flag.png">
@@ -15,17 +15,14 @@
 
   <style>
     #iFractions-canvas {
-      padding: 0 auto 0 auto;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
+      width: 100%;
     }
 
     #textbox {
       position: absolute;
       margin-left: auto;
       margin-right: auto;
-      top: 300px;
+      top: 360px;
       left: 0;
       right: 0;
       text-align: center;
@@ -88,7 +85,8 @@
       font-weight: bold;
     }
 
-    .close:hover, .close:focus {
+    .close:hover,
+    .close:focus {
       color: #000;
       text-decoration: none;
       cursor: pointer;
@@ -110,8 +108,9 @@
         <div id="textbox" onsubmit="return false">
           <input type="text" id="textbox-content" value="" size="13" maxlength="36"> <!-- Textbox to get player name -->
         </div>
-               
-        <div id="myModal" class="modal">  <!-- Modal -->
+
+        <div id="myModal" class="modal">
+          <!-- Modal -->
           <div class="modal-content">
             <span class="close">&times;</span>
             <div id='infobox-content'></div> <!-- Modal content -->
@@ -134,7 +133,7 @@
     <script src="js/integrationFunctions.js"></script> <!-- FOR MOODLE -->
     <script src="js/gameMechanics.js"></script>
     <script src="js/globals.js"></script>
-    
+
     <script>
 
       const defaultWidth = 900; // Default width for the Canvas
