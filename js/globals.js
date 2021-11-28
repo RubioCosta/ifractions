@@ -377,7 +377,8 @@ const url = {
       // Sound effects
       ['beepSound', ['assets/audio/beep.ogg', 'assets/audio/beep.mp3']],
       ['okSound', ['assets/audio/ok.ogg', 'assets/audio/ok.mp3']],
-      ['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']]
+      ['errorSound', ['assets/audio/error.ogg', 'assets/audio/error.mp3']],
+      ['popSound', ['','assets/audio/pop.wav']]
     ]
   },
   squareOne: {
@@ -503,7 +504,7 @@ const navigationIcons = {
    * @param {string} state name of the next state
    */
   callState: function (state) {
-    if (audioStatus) game.audio.beepSound.play();
+    if (audioStatus) game.audio.popSound.play();
 
     game.event.clear(self);
     game.state.start(state);
@@ -531,7 +532,7 @@ const navigationIcons = {
               navigationIcons.audioIcon.curFrame = 1;
             } else {
               audioStatus = true;
-              if (audioStatus) game.audio.beepSound.play();
+              if (audioStatus) game.audio.popSound.play();
               navigationIcons.audioIcon.curFrame = 0;
             }
             game.render.all();

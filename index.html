@@ -14,10 +14,12 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
 
   <style>
+    /* canvas */
     #iFractions-canvas {
       width: 100%;
     }
 
+    /* Text box */
     #textbox {
       position: absolute;
       margin-left: auto;
@@ -46,26 +48,26 @@
 
     /* The Modal (background) */
     .modal {
-      display: none;
       /* Hidden by default */
-      position: fixed;
+      display: none;
       /* Stay in place */
-      z-index: 1;
+      position: fixed;
       /* Sit on top */
-      padding-top: 155px;
+      z-index: 1;
       /* Location of the box */
+      padding-top: 155px;
       left: 0;
       top: 0;
-      width: 100%;
       /* Full width */
-      height: 100%;
+      width: 100%;
       /* Full height */
-      overflow: auto;
+      height: 100%;
       /* Enable scroll if needed */
-      background-color: rgb(0, 0, 0);
+      overflow: auto;
       /* Fallback color */
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: rgb(0, 0, 0);
       /* Black w/ opacity */
+      background-color: rgba(0, 0, 0, 0.4);
     }
 
     /* Modal Content */
@@ -75,6 +77,12 @@
       padding: 20px;
       border: 1px solid #888;
       width: 50%;
+    }
+
+    .modal-content img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* The Close Button */
@@ -109,11 +117,10 @@
           <input type="text" id="textbox-content" value="" size="13" maxlength="36"> <!-- Textbox to get player name -->
         </div>
 
-        <div id="myModal" class="modal">
-          <!-- Modal -->
-          <div class=" modal-content">
-            <span class="close">&times;</span>
-            <div id='infobox-content'></div> <!-- Modal content -->
+        <div id="my-modal" class="modal"> <!-- Modal black background-->
+          <div class="modal-content">
+            <span class="close">&times;</span> <!-- Modal close button -->
+            <div id='infobox-content'></div> <!-- Modal box -->
           </div>
         </div>
 

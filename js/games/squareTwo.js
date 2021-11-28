@@ -363,7 +363,7 @@ const squareTwo = {
       // Turn value label invisible
       self[curSet].label.alpha = 0;
 
-      if (audioStatus) game.audio.beepSound.play();
+      if (audioStatus) game.audio.popSound.play();
 
       // Save number of selected blocks
       self[curSet].selected = curBlock.index + 1;

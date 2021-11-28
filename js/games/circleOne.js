@@ -454,7 +454,7 @@ const circleOne = {
         }
       }
 
-      if (audioStatus) game.audio.beepSound.play();
+      if (audioStatus) game.audio.popSound.play();
 
       // Hide fractions
       if (fractionLabel) {

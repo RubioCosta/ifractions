@@ -97,6 +97,7 @@ const langState = {
   setLang: function (selectedLang) {
     // Saves language name e.g 'pt_BR'
     langString = selectedLang;
+    if (audioStatus) game.audio.popSound.play();
     // Calls loading screen
     game.state.start('loadLang');
   },
@@ -248,7 +249,7 @@ const nameState = {
     document.getElementById('textbox').style.visibility = 'hidden';
     document.getElementById('textbox-content').value = '';
 
-    if (audioStatus) game.audio.beepSound.play();
+    if (audioStatus) game.audio.popSound.play();
     if (debugMode) console.log('Username: ' + playerName);
 
     // FOR MOODLE

@@ -184,8 +184,6 @@ const mapState = {
    */
   loadGame: function () {
 
-    if (audioStatus) game.audio.beepSound.play();
-
     if (mapPosition <= 4) game.state.start('' + gameType);
     else game.state.start('end');
 

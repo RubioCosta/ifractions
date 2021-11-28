@@ -383,7 +383,7 @@ const squareOne = {
       }
 
       // Play beep sound
-      if (audioStatus) game.audio.beepSound.play();
+      if (audioStatus) game.audio.popSound.play();
 
       // Hide labels
       if (fractionLabel) {

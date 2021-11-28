@@ -73,7 +73,7 @@ const menuState = {
 
       // --------------------------- INFO BOX
 
-      this.infoBox = document.getElementById('myModal');
+      this.infoBox = document.getElementById('my-modal');
 
       // When the user clicks on the 'x', close the modal
       document.getElementsByClassName('close')[0].onclick = function () {
@@ -89,19 +89,19 @@ const menuState = {
 
       this.infoBoxContent = {
         squareOne: {
-          title: '<b>' + game.lang.game + ':</b> ' + game.lang.square + ' I',
+          title: '<strong>' + game.lang.game + ':</strong> ' + game.lang.square + ' I',
           body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
-          img: '<center> <img width=60% src="' + game.image['s1-A'].src + '"./assets/img/info_box/s1-A.png"> </center>'
+          img: '<img class="mx-auto" width=60% src="' + game.image['s1-A'].src + '">'
         },
         circleOne: {
-          title: '<b>' + game.lang.game + ':</b> ' + game.lang.circle + ' I',
+          title: '<strong>' + game.lang.game + ':</strong> ' + game.lang.circle + ' I',
           body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
-          img: '<center> <img width=80% src="' + game.image['c1-A'].src + '"> </center>',
+          img: '<img class="mx-auto" width=80% src="' + game.image['c1-A'].src + '">',
         },
         squareTwo: {
-          title: '<b>' + game.lang.game + ':</b> ' + game.lang.square + ' II',
+          title: '<strong>' + game.lang.game + ':</strong> ' + game.lang.square + ' II',
           body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
-          img: '<center> <img width=80% src="' + game.image['s2'].src + '"> </center>',
+          img: '<img class="mx-auto" width=80% src="' + game.image['s2'].src + '">',
         }
       };
 
@@ -134,7 +134,7 @@ const menuState = {
    */
   load: function (icon) {
 
-    if (audioStatus) game.audio.beepSound.play();
+    if (audioStatus) game.audio.popSound.play();
 
     switch (icon.iconType) {
       case 'infoIcon': self.showInfoBox(icon); break;
