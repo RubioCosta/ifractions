@@ -22,7 +22,7 @@
       position: absolute;
       margin-left: auto;
       margin-right: auto;
-      top: 360px;
+      top: 330px;
       left: 0;
       right: 0;
       text-align: center;
@@ -34,7 +34,7 @@
       padding: 15px 40px;
       box-sizing: border-box;
       border: 3px solid #ccc;
-      font-size: 44px;
+      font-size: 24px;
       font-family: Arial;
       color: #000;
       text-align: center;
@@ -104,14 +104,14 @@
       <div class="panel-body">
 
         <canvas id="iFractions-canvas"></canvas> <!-- iFractions game -->
-        
+
         <div id="textbox" onsubmit="return false">
           <input type="text" id="textbox-content" value="" size="13" maxlength="36"> <!-- Textbox to get player name -->
         </div>
 
         <div id="myModal" class="modal">
           <!-- Modal -->
-          <div class="modal-content">
+          <div class=" modal-content">
             <span class="close">&times;</span>
             <div id='infobox-content'></div> <!-- Modal content -->
           </div>
@@ -136,8 +136,8 @@
 
     <script>
 
-      const defaultWidth = 900; // Default width for the Canvas
-      const defaultHeight = 600; // Default height for the Canvas
+      const defaultWidth = 1920; // Default width for the Canvas
+      const defaultHeight = 1080; // Default height for the Canvas
 
       const context = document.getElementById("iFractions-canvas").getContext("2d");
       context.canvas.width = defaultWidth;
