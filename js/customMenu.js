@@ -3,49 +3,62 @@
  ******************************/
 
 /** [CUSTOM MENU STATE] Screen where the user can customise the selected game - game mode, math operation, level of difficulty.
- * 
+ *
  * @namespace
  */
 const customMenuState = {
-
   /**
    * Preloads media for current state
    */
   preload: function () {
-
     // LOADING MEDIA
     game.load.sprite(url[gameType].sprite);
     game.load.image(url[gameType].image);
-
   },
 
   /**
    * Main code
    */
   create: function () {
-
     // FOR MOODLE
-    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') { // Student role
+    if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+      // Student role
 
       game.state.start('map');
-
     } else {
-
       // Background color
-      game.add.geom.rect(0, 0, context.canvas.width, context.canvas.height, undefined, 0, colors.blueBckg, 1);
+      game.add.geom.rect(
+        0,
+        0,
+        context.canvas.width,
+        context.canvas.height,
+        undefined,
+        0,
+        colors.blueBg,
+        1
+      );
       // Floor
-      for (let i = 0; i < context.canvas.width / 100; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
+      for (let i = 0; i < context.canvas.width / 100; i++) {
+        game.add.image(i * 100, context.canvas.height - 100, 'floor');
+      }
 
       // Overtitle : Selected game
-      game.add.text(context.canvas.width / 2, 40, game.lang.game.toUpperCase() + ": " + menuState.menuIcons, textStyles.h4_brown);
+      game.add.text(
+        context.canvas.width / 2,
+        40,
+        game.lang.game.toUpperCase() + ': ' + menuState.menuIcons,
+        textStyles.h4_brown
+      );
       // Title : Customize the selected game
-      game.add.text(context.canvas.width / 2, 80, game.lang.custom_game, textStyles.h1_green);
+      game.add.text(
+        context.canvas.width / 2,
+        80,
+        game.lang.custom_game,
+        textStyles.h1_green
+      );
 
       // Loads navigation icons
-      navigationIcons.add(
-        true, false, false,
-        true, true,
-        'menu', false);
+      navigationIcons.add(true, false, false, true, true, 'menu', false);
 
       let infoIcon;
       const iconScale = 0.7;
@@ -56,12 +69,15 @@ const customMenuState = {
       let y = gameFrame().y;
 
       let offsetW = game.math.getOffset(gameFrame().width, 5);
-      let offsetH = game.math.getOffset(gameFrame().height, curGame.gameMode.length);
+      let offsetH = game.math.getOffset(
+        gameFrame().height,
+        curGame.gameMode.length
+      );
 
       const line_thickness = 5;
 
       // Label 'Game Modes'
-      game.add.text(x + offsetW, y, game.lang.game_modes, textStyles.h2_blue_2);
+      game.add.text(x + offsetW, y, game.lang.game_modes, textStyles.h2_blue);
 
       infoIcon = game.add.image(x + 2 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
@@ -70,7 +86,12 @@ const customMenuState = {
       this.menuIcons.push(infoIcon);
 
       // Label 'Operations'
-      game.add.text(x + 3 * offsetW, y, game.lang.operations, textStyles.h2_blue_2);
+      game.add.text(
+        x + 3 * offsetW,
+        y,
+        game.lang.operations,
+        textStyles.h2_blue
+      );
 
       infoIcon = game.add.image(x + 4 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
@@ -79,7 +100,12 @@ const customMenuState = {
       this.menuIcons.push(infoIcon);
 
       // Label 'Difficulties'
-      game.add.text(x + 5 * offsetW, y, game.lang.difficulties, textStyles.h2_blue_2);
+      game.add.text(
+        x + 5 * offsetW,
+        y,
+        game.lang.difficulties,
+        textStyles.h2_blue
+      );
 
       infoIcon = game.add.image(x + 6 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
       infoIcon.anchor(0.5, 0.5);
@@ -88,39 +114,106 @@ const customMenuState = {
       this.menuIcons.push(infoIcon);
 
       // Horizontal line
-      game.add.geom.rect(x - 25, y + 10, gameFrame().width, line_thickness, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
+      game.add.geom
+        .rect(
+          x - 25,
+          y + 10,
+          gameFrame().width,
+          line_thickness,
+          undefined,
+          0,
+          colors.blueMenuLine
+        )
+        .anchor(0, 0.5);
       // Vertical lines
-      game.add.geom.rect(x + 2 * offsetW, y - 25, line_thickness, gameFrame().height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
-      game.add.geom.rect(x + 4 * offsetW, y - 25, line_thickness, gameFrame().height, undefined, 0, colors.blueMenuLine).anchor(0.5, 0);
+      game.add.geom
+        .rect(
+          x + 2 * offsetW,
+          y - 25,
+          line_thickness,
+          gameFrame().height,
+          undefined,
+          0,
+          colors.blueMenuLine
+        )
+        .anchor(0.5, 0);
+      game.add.geom
+        .rect(
+          x + 4 * offsetW,
+          y - 25,
+          line_thickness,
+          gameFrame().height,
+          undefined,
+          0,
+          colors.blueMenuLine
+        )
+        .anchor(0.5, 0);
 
       // --------------------------- TURN ON/OFF FRACTION LABELS / RECTANGLE GUIDE
 
       // Horizontal line
-      game.add.geom.rect(x + 4 * offsetW, y + offsetH, gameFrame().width / 3 - 4 * line_thickness, line_thickness, undefined, 0, colors.blueMenuLine).anchor(0, 0.5);
+      game.add.geom
+        .rect(
+          x + 4 * offsetW,
+          y + offsetH,
+          gameFrame().width / 3 - 4 * line_thickness,
+          line_thickness,
+          undefined,
+          0,
+          colors.blueMenuLine
+        )
+        .anchor(0, 0.5);
 
-      infoIcon = game.add.image(x + 6 * offsetW - 30, y + offsetH - 20, 'info', 0.5, 0.4);
+      infoIcon = game.add.image(
+        x + 6 * offsetW - 30,
+        y + offsetH - 20,
+        'info',
+        0.5,
+        0.4
+      );
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameMisc';
       this.menuIcons.push(infoIcon);
 
       // Label 'Show Fractions / Auxiliar rectangles'
-      game.add.text(x + 5 * offsetW, y + offsetH - 48, game.lang.show, textStyles.h4_blue_2);
+      game.add.text(
+        x + 5 * offsetW,
+        y + offsetH - 48,
+        game.lang.show,
+        textStyles.h4_blue
+      );
 
       let auxText;
       if (gameType == 'squareTwo') {
         auxText = game.lang.aux_rectangle;
-        game.add.text(x + 5 * offsetW + 10, y + offsetH - 24, auxText, textStyles.h4_blue_2);
+        game.add.text(
+          x + 5 * offsetW + 10,
+          y + offsetH - 24,
+          auxText,
+          textStyles.h4_blue
+        );
       } else {
         auxText = game.lang.title;
-        game.add.text(x + 5 * offsetW, y + offsetH - 24, auxText, textStyles.h2_blue_2);
+        game.add.text(
+          x + 5 * offsetW,
+          y + offsetH - 24,
+          auxText,
+          textStyles.h2_blue
+        );
       }
 
       // Selection box
       y += 40;
-      const frame = (fractionLabel) ? 1 : 0;
+      const frame = fractionLabel ? 1 : 0;
 
-      const selectionBox = game.add.sprite(x + 5 * offsetW, y + offsetH, 'select', frame, 0.11);
+      const selectionBox = game.add.sprite(
+        x + 5 * offsetW,
+        y + offsetH,
+        'select',
+        frame,
+        0.11
+      );
       selectionBox.anchor(0.5, 0.5);
       selectionBox.iconType = 'selectionBox';
       this.menuIcons.push(selectionBox);
@@ -131,7 +224,14 @@ const customMenuState = {
       y = gameFrame().y + offsetH / 2;
 
       for (let i = 0; i < curGame.gameModeUrl.length; i++, y += offsetH) {
-        const icon = game.add.sprite(x, y, curGame.gameModeUrl[i], 0, iconScale, 1);
+        const icon = game.add.sprite(
+          x,
+          y,
+          curGame.gameModeUrl[i],
+          0,
+          iconScale,
+          1
+        );
         icon.anchor(0.5, 0.5);
 
         icon.gameMode = curGame.gameMode[i];
@@ -148,13 +248,23 @@ const customMenuState = {
 
       x += 2 * offsetW;
       y = gameFrame().y + offsetH / 2;
-      offsetH = game.math.getOffset(gameFrame().height, curGame.gameOperation.length);
+      offsetH = game.math.getOffset(
+        gameFrame().height,
+        curGame.gameOperation.length
+      );
 
       let icon;
 
       // Placing math operation icons
       for (let i = 0; i < curGame.gameOperation.length; i++, y += offsetH) {
-        icon = game.add.sprite(x, y, curGame.gameOperationUrl[i], 0, iconScale, 1);
+        icon = game.add.sprite(
+          x,
+          y,
+          curGame.gameOperationUrl[i],
+          0,
+          iconScale,
+          1
+        );
         icon.anchor(0.5, 0.5);
 
         icon.gameOperation = curGame.gameOperation[i];
@@ -169,9 +279,12 @@ const customMenuState = {
       }
 
       // --------------------------- DIFFICULTY ICONS
-      x = gameFrame().x - 50 + 5 * offsetW
+      x = gameFrame().x - 50 + 5 * offsetW;
 
-      offsetH = game.math.getOffset(gameFrame().height, curGame.gameMode.length);
+      offsetH = game.math.getOffset(
+        gameFrame().height,
+        curGame.gameMode.length
+      );
       y = gameFrame().y + offsetH / 3;
 
       if (gameType != 'squareOne') x -= 40;
@@ -181,7 +294,16 @@ const customMenuState = {
         const curX = x + (30 + 10) * i;
 
         // Difficulty menuIcons
-        const icon = game.add.geom.rect(curX, y, 30, 30, undefined, 0, colors.gray, 1);
+        const icon = game.add.geom.rect(
+          curX,
+          y,
+          30,
+          30,
+          undefined,
+          0,
+          colors.gray,
+          1
+        );
         icon.anchor(0.5, 0.5);
         icon.difficulty = i + 1;
         icon.iconType = 'difficulty';
@@ -200,7 +322,6 @@ const customMenuState = {
 
       // FOR MOODLE
       if (!moodle) {
-
         x = context.canvas.width - 100;
         y = context.canvas.height - 110;
 
@@ -210,8 +331,12 @@ const customMenuState = {
 
         this.menuIcons.push(enterIcon);
 
-        this.enterText = game.add.text(x, y, game.lang.continue, textStyles.h4_white);
-
+        this.enterText = game.add.text(
+          x,
+          y,
+          game.lang.continue,
+          textStyles.h4_white
+        );
       }
 
       // --------------------------- INFO BOX
@@ -221,42 +346,63 @@ const customMenuState = {
       // When the user clicks on the 'x', close the modal
       document.getElementsByClassName('close')[0].onclick = function () {
         self.infoBox.style.display = 'none';
-      }
+      };
 
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function (event) {
         if (event.target == self.infoBox) {
           self.infoBox.style.display = 'none';
         }
-      }
+      };
 
       this.infoBoxContent = {
-
         gameMode: {
           squareOne: {
             title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
-            img: '<table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s1_A +
-              ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s1_B +
-              ' </td> </tr> <tr> <td> <img width=100% src="' + game.image['s1-A-h'].src + '"> ' +
-              ' </td> <td> <img width=100% src="' + game.image['s1-B-h'].src + '"> </td> </tr> <table>'
+            img:
+              '<table> <tr> <td> <b>A)</b> ' +
+              game.lang.infoBox_mode_s1_A +
+              ' </td> <td> <b>B)</b> ' +
+              game.lang.infoBox_mode_s1_B +
+              ' </td> </tr> <tr> <td> <img width=100% src="' +
+              game.image['s1-A-h'].src +
+              '"> ' +
+              ' </td> <td> <img width=100% src="' +
+              game.image['s1-B-h'].src +
+              '"> </td> </tr> <table>',
           },
           circleOne: {
             title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
-            img: '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="' + game.image['c1-A-h'].src + '">' +
-              ' </td> <td> &nbsp; <b>A)</b> ' + game.lang.infoBox_mode_c1_A +
-              ' </td> </tr> </tr> <td> <img width=100% src="' + game.image['c1-B-h'].src + '"> ' +
-              ' </td> <td> &nbsp; <b>B)</b> ' + game.lang.infoBox_mode_c1_B + '</td> </tr> <table>'
+            img:
+              '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="' +
+              game.image['c1-A-h'].src +
+              '">' +
+              ' </td> <td> &nbsp; <b>A)</b> ' +
+              game.lang.infoBox_mode_c1_A +
+              ' </td> </tr> </tr> <td> <img width=100% src="' +
+              game.image['c1-B-h'].src +
+              '"> ' +
+              ' </td> <td> &nbsp; <b>B)</b> ' +
+              game.lang.infoBox_mode_c1_B +
+              '</td> </tr> <table>',
           },
           squareTwo: {
             title: '<b>' + game.lang.game_modes + '</b>',
             body: game.lang.infoBox_mode,
-            img: '<table> <tr> <td> <b>A)</b> ' + game.lang.infoBox_mode_s2_A +
-              ' </td> <td> <b>B)</b> ' + game.lang.infoBox_mode_s2_B +
-              ' </td> </tr> <tr> <td> <img width=98% src="' + game.image['s2-A-h'].src + '"> ' +
-              ' </td> <td> <img width=98% src="' + game.image['s2-B-h'].src + '"> </td> </tr> <table>'
-          }
+            img:
+              '<table> <tr> <td> <b>A)</b> ' +
+              game.lang.infoBox_mode_s2_A +
+              ' </td> <td> <b>B)</b> ' +
+              game.lang.infoBox_mode_s2_B +
+              ' </td> </tr> <tr> <td> <img width=98% src="' +
+              game.image['s2-A-h'].src +
+              '"> ' +
+              ' </td> <td> <img width=98% src="' +
+              game.image['s2-B-h'].src +
+              '"> </td> </tr> <table>',
+          },
         },
 
         gameOperation: {
@@ -265,220 +411,304 @@ const customMenuState = {
           img:
             '<table class="table">' +
             '<tr>' +
-            '<td> <img width=50 src="' + game.image['operation_plus'].src + '"> </td>' +
-            '<td> <img width=50 src="' + game.image['operation_mixed'].src + '"> </td>' +
-            '<td> <img width=50 src="' + game.image['operation_minus'].src + '"> </td>' +
-            '<td> <img width=50 src="' + game.image['operation_equals'].src + '"> </td>' +
+            '<td> <img width=50 src="' +
+            game.image['operation_plus'].src +
+            '"> </td>' +
+            '<td> <img width=50 src="' +
+            game.image['operation_mixed'].src +
+            '"> </td>' +
+            '<td> <img width=50 src="' +
+            game.image['operation_minus'].src +
+            '"> </td>' +
+            '<td> <img width=50 src="' +
+            game.image['operation_equals'].src +
+            '"> </td>' +
             '</tr> <tr>' +
-            '<td class="text-center">' + game.lang.plus + '</td>' +
-            '<td class="text-center">' + game.lang.mixed + '</td>' +
-            '<td class="text-center">' + game.lang.minus + '</td>' +
-            '<td class="text-center">' + game.lang.equals + '</td>' +
+            '<td class="text-center">' +
+            game.lang.plus +
+            '</td>' +
+            '<td class="text-center">' +
+            game.lang.mixed +
+            '</td>' +
+            '<td class="text-center">' +
+            game.lang.minus +
+            '</td>' +
+            '<td class="text-center">' +
+            game.lang.equals +
+            '</td>' +
             '</tr>' +
-            '</table>'
+            '</table>',
         },
 
-gameDifficulty: {
-  squareOne: {
-    title: '<b>' + game.lang.difficulties + '</b>',
-      body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
-        img: '<table> <tr> <td> <b>' + game.lang.difficulty + ':</b> 1' +
-          ' </td> <td> <b>' + game.lang.difficulty + ':</b> 3' +
-          ' </td> </tr> <tr> <td> <img width=100% src="' + game.image['s1-diff-1'].src + '"> ' +
-          ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' + game.image['s1-diff-3'].src + '"> </td> </tr> </table> <br>' +
-          game.lang.infoBox_diff_aux + '<center> <img width=50% src="' + game.image['map-s1'].src + '"> </center>'
-  },
-  circleOne: {
-    title: '<b>' + game.lang.difficulties + '</b>',
-      body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
-        img: '<table> <tr> <td style="border-right: 4px solid white"> <b>' + game.lang.difficulty + ':</b> 1' +
-          ' </td> <td> <b>' + game.lang.difficulty + ':</b> 5' +
-          ' </td> </tr> <tr> <td> <img width=100% src="' + game.image['c1-diff-1'].src + '"> ' +
-          ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' + game.image['c1-diff-5'].src + '"> </td> </tr> </table> <center> <br>' +
-          game.lang.infoBox_diff_aux + '<center> <img width=50% src="' + game.image['map-c1s2'].src + '"> </center>'
-  },
-  squareTwo: {
-    title: '<b>' + game.lang.difficulties + '</b>',
-      body: game.lang.infoBox_diff,
-        img: '<table> <tr> <td> <b>' + game.lang.difficulty + ':</b> 1' +
-          ' </td> <td> <b>' + game.lang.difficulty + ':</b> 5' +
-          ' </td> </tr> <tr> <td> <img width=100% src="' + game.image['s2-diff-1'].src + '"> ' +
-          ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' + game.image['s2-diff-5'].src + '"> </td> </tr> </table> <br>' +
-          game.lang.infoBox_diff_aux + '<center> <img width=50% src="' + game.image['map-c1s2'].src + '"> </center>'
-  },
-},
-
-gameMisc: {
-  squareOne: {
-    title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-      body: game.lang.infoBox_misc_label,
-        img: '<img class="mx-auto" width=80% src="' + game.image['s1-label'].src + '">',
+        gameDifficulty: {
+          squareOne: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
+            img:
+              '<table> <tr> <td> <b>' +
+              game.lang.difficulty +
+              ':</b> 1' +
+              ' </td> <td> <b>' +
+              game.lang.difficulty +
+              ':</b> 3' +
+              ' </td> </tr> <tr> <td> <img width=100% src="' +
+              game.image['s1-diff-1'].src +
+              '"> ' +
+              ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+              game.image['s1-diff-3'].src +
+              '"> </td> </tr> </table> <br>' +
+              game.lang.infoBox_diff_aux +
+              '<center> <img width=50% src="' +
+              game.image['map-s1'].src +
+              '"> </center>',
           },
-  circleOne: {
-    title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-      body: game.lang.infoBox_misc_label,
-        img: '<img class="mx-auto" width=60% src="' + game.image['c1-label'].src + '">',
+          circleOne: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
+            img:
+              '<table> <tr> <td style="border-right: 4px solid white"> <b>' +
+              game.lang.difficulty +
+              ':</b> 1' +
+              ' </td> <td> <b>' +
+              game.lang.difficulty +
+              ':</b> 5' +
+              ' </td> </tr> <tr> <td> <img width=100% src="' +
+              game.image['c1-diff-1'].src +
+              '"> ' +
+              ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+              game.image['c1-diff-5'].src +
+              '"> </td> </tr> </table> <center> <br>' +
+              game.lang.infoBox_diff_aux +
+              '<center> <img width=50% src="' +
+              game.image['map-c1s2'].src +
+              '"> </center>',
           },
-  squareTwo: {
-    title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-      body: game.lang.infoBox_misc_rect,
-        img: '<img class="mx-auto" width=100% src="' + game.image['s2-label'].src + '">',
-          }
-}
+          squareTwo: {
+            title: '<b>' + game.lang.difficulties + '</b>',
+            body: game.lang.infoBox_diff,
+            img:
+              '<table> <tr> <td> <b>' +
+              game.lang.difficulty +
+              ':</b> 1' +
+              ' </td> <td> <b>' +
+              game.lang.difficulty +
+              ':</b> 5' +
+              ' </td> </tr> <tr> <td> <img width=100% src="' +
+              game.image['s2-diff-1'].src +
+              '"> ' +
+              ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+              game.image['s2-diff-5'].src +
+              '"> </td> </tr> </table> <br>' +
+              game.lang.infoBox_diff_aux +
+              '<center> <img width=50% src="' +
+              game.image['map-c1s2'].src +
+              '"> </center>',
+          },
+        },
 
+        gameMisc: {
+          squareOne: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_label,
+            img:
+              '<img class="mx-auto" width=80% src="' +
+              game.image['s1-label'].src +
+              '">',
+          },
+          circleOne: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_label,
+            img:
+              '<img class="mx-auto" width=60% src="' +
+              game.image['c1-label'].src +
+              '">',
+          },
+          squareTwo: {
+            title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
+            body: game.lang.infoBox_misc_rect,
+            img:
+              '<img class="mx-auto" width=100% src="' +
+              game.image['s2-label'].src +
+              '">',
+          },
+        },
       };
 
-// ------------- EVENTS
+      // ------------- EVENTS
 
-game.event.add('click', this.onInputDown);
-game.event.add('mousemove', this.onInputOver);
-
+      game.event.add('click', this.onInputDown);
+      game.event.add('mousemove', this.onInputOver);
     }
-
   },
 
-/**
- * Displays game menu information boxes.
- */
-showInfoBox: function (icon) {
-  self.infoBox.style.display = 'block';
+  /**
+   * Displays game menu information boxes.
+   */
+  showInfoBox: function (icon) {
+    self.infoBox.style.display = 'block';
 
-  const element = (icon.id == 'gameOperation') ? self.infoBoxContent[icon.id] : self.infoBoxContent[icon.id][gameType];
+    const element =
+      icon.id == 'gameOperation'
+        ? self.infoBoxContent[icon.id]
+        : self.infoBoxContent[icon.id][gameType];
 
-  let msg = '<h3>' + element.title + '</h3>'
-    + '<p align=justify>' + element.body + '</p>'
-    + element.img;
+    let msg =
+      '<h3>' +
+      element.title +
+      '</h3>' +
+      '<p align=justify>' +
+      element.body +
+      '</p>' +
+      element.img;
 
-  document.getElementById('infobox-content').innerHTML = msg;
-},
+    document.getElementById('infobox-content').innerHTML = msg;
+  },
 
-/**
- * Saves information selected by the player 
- * 
- * @param {object} icon selected icon
- */
-load: function (icon) {
+  /**
+   * Saves information selected by the player
+   *
+   * @param {object} icon selected icon
+   */
+  load: function (icon) {
+    const type = icon.iconType;
 
-  const type = icon.iconType;
+    if (audioStatus) game.audio.popSound.play();
 
-  if (audioStatus) game.audio.popSound.play();
-
-  switch (type) {
-    case 'gameMode': gameMode = icon.gameMode; break;
-    case 'gameOperation': gameOperation = icon.gameOperation; break;
-    case 'difficulty': gameDifficulty = icon.difficulty; break;
-    case 'infoIcon': self.showInfoBox(icon); break;
-    case 'selectionBox':
-      if (icon.curFrame == 0) {
-        icon.curFrame = 1;
-        fractionLabel = true;
-      } else {
-        icon.curFrame = 0;
-        fractionLabel = false;
-      }
-      game.render.all();
-      break;
-    case 'enter':
-      if (debugMode) {
-        console.log('------------------------------' +
-          '\nGame State: ' + gameType +
-          '\nGame Mode: ' + gameMode +
-          '\n------------------------------');
-      }
-      mapPosition = 0;  // Map position
-      mapMove = true; // Move no next point
-      completedLevels = 0;  // Reset the game progress when entering a new level
-      game.state.start('map');
-      break;
-  }
-
-},
-
-/**
- * Called by mouse click event
- * 
- * @param {object} mouseEvent contains the mouse click coordinates
- */
-onInputDown: function (mouseEvent) {
-  const x = game.math.getMouse(mouseEvent).x;
-  const y = game.math.getMouse(mouseEvent).y;
-  let overIcon;
-
-  // Check if clicked on an icon
-  for (let i in self.menuIcons) {
-    if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
-      overIcon = i;
-      break;
-    }
-  }
-
-  // Update gui
-  if (overIcon) { // If has clicked on an icon
-    document.body.style.cursor = 'pointer';
-    self.menuIcons.forEach(cur => {
-      if (cur.iconType == self.menuIcons[overIcon].iconType) { // If its in the same icon category
-        if (cur == self.menuIcons[overIcon]) { // If its the clicked icon
-          if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation') cur.curFrame = 1;
-          else if (cur.iconType == 'difficulty') cur.fillColor = colors.blue;
+    switch (type) {
+      case 'gameMode':
+        gameMode = icon.gameMode;
+        break;
+      case 'gameOperation':
+        gameOperation = icon.gameOperation;
+        break;
+      case 'difficulty':
+        gameDifficulty = icon.difficulty;
+        break;
+      case 'infoIcon':
+        self.showInfoBox(icon);
+        break;
+      case 'selectionBox':
+        if (icon.curFrame == 0) {
+          icon.curFrame = 1;
+          fractionLabel = true;
         } else {
-          if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation') cur.curFrame = 0;
-          else if (cur.iconType == 'difficulty') cur.fillColor = colors.gray;
+          icon.curFrame = 0;
+          fractionLabel = false;
         }
-      }
-    });
-
-    self.load(self.menuIcons[overIcon]);
-
-  } else document.body.style.cursor = 'auto';
-
-  navigationIcons.onInputDown(x, y);
-
-  game.render.all();
-
-},
-
-/**
- * Called by mouse move event
- * 
- * @param {object} mouseEvent contains the mouse move coordinates
- */
-onInputOver: function (mouseEvent) {
-  const x = game.math.getMouse(mouseEvent).x;
-  const y = game.math.getMouse(mouseEvent).y;
-  let overIcon;
-
-  // Check if pointer is over an icon
-  for (let i in self.menuIcons) {
-    if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
-      overIcon = i;
-      break;
+        game.render.all();
+        break;
+      case 'enter':
+        if (debugMode) {
+          console.log(
+            '------------------------------' +
+              '\nGame State: ' +
+              gameType +
+              '\nGame Mode: ' +
+              gameMode +
+              '\n------------------------------'
+          );
+        }
+        mapPosition = 0; // Map position
+        mapMove = true; // Move no next point
+        completedLevels = 0; // Reset the game progress when entering a new level
+        game.state.start('map');
+        break;
     }
-  }
+  },
 
-  // Update gui
-  if (overIcon) { // If pointer is over icon
-    document.body.style.cursor = 'pointer';
-    self.menuIcons.forEach(cur => {
-      if (cur.iconType == self.menuIcons[overIcon].iconType) { // If its in the same icon category
-        if (cur == self.menuIcons[overIcon]) { // If its the icon the pointer is over 
-          if (cur.iconType == 'enter') self.enterText.style = textStyles.h3__white;
-          cur.scale = cur.originalScale * 1.1;
-        } else {
-          cur.scale = cur.originalScale;
-        }
+  /**
+   * Called by mouse click event
+   *
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+    let overIcon;
+
+    // Check if clicked on an icon
+    for (let i in self.menuIcons) {
+      if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
+        overIcon = i;
+        break;
       }
-    });
-  } else { // If pointer is not over icon
-    if (self.enterText) self.enterText.style = textStyles.h4_white;
-    self.menuIcons.forEach(cur => { cur.scale = cur.originalScale; });
-    document.body.style.cursor = 'auto';
-  }
+    }
 
-  // Check navigation icons
-  navigationIcons.onInputOver(x, y);
+    // Update gui
+    if (overIcon) {
+      // If has clicked on an icon
+      document.body.style.cursor = 'pointer';
+      self.menuIcons.forEach((cur) => {
+        if (cur.iconType == self.menuIcons[overIcon].iconType) {
+          // If its in the same icon category
+          if (cur == self.menuIcons[overIcon]) {
+            // If its the clicked icon
+            if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation')
+              cur.curFrame = 1;
+            else if (cur.iconType == 'difficulty') cur.fillColor = colors.blue;
+          } else {
+            if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation')
+              cur.curFrame = 0;
+            else if (cur.iconType == 'difficulty') cur.fillColor = colors.gray;
+          }
+        }
+      });
 
-  game.render.all();
+      self.load(self.menuIcons[overIcon]);
+    } else document.body.style.cursor = 'auto';
 
-}
+    navigationIcons.onInputDown(x, y);
 
-}
+    game.render.all();
+  },
+
+  /**
+   * Called by mouse move event
+   *
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+    let overIcon;
+
+    // Check if pointer is over an icon
+    for (let i in self.menuIcons) {
+      if (game.math.isOverIcon(x, y, self.menuIcons[i])) {
+        overIcon = i;
+        break;
+      }
+    }
+
+    // Update gui
+    if (overIcon) {
+      // If pointer is over icon
+      document.body.style.cursor = 'pointer';
+      self.menuIcons.forEach((cur) => {
+        if (cur.iconType == self.menuIcons[overIcon].iconType) {
+          // If its in the same icon category
+          if (cur == self.menuIcons[overIcon]) {
+            // If its the icon the pointer is over
+            if (cur.iconType == 'enter')
+              self.enterText.style = textStyles.h3__white;
+            cur.scale = cur.originalScale * 1.1;
+          } else {
+            cur.scale = cur.originalScale;
+          }
+        }
+      });
+    } else {
+      // If pointer is not over icon
+      if (self.enterText) self.enterText.style = textStyles.h4_white;
+      self.menuIcons.forEach((cur) => {
+        cur.scale = cur.originalScale;
+      });
+      document.body.style.cursor = 'auto';
+    }
+
+    // Check navigation icons
+    navigationIcons.onInputOver(x, y);
+
+    game.render.all();
+  },
+};

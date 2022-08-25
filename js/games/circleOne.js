@@ -14,7 +14,7 @@
  * ......\.|./.......
  * ........|.........
  * ....1,2,3,4,5..... = gameDifficulty
- * 
+ *
  * Character : kid/balloon
  * Theme : flying in a balloon
  * Concept : 'How much the kid has to walk to get to the balloon?'
@@ -39,7 +39,6 @@
  * @namespace
  */
 const circleOne = {
-
   /**
    * Main code
    */
@@ -58,8 +57,8 @@ const circleOne = {
 
     let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
 
-    const startY =  context.canvas.height - 75;
-    const startX = (gameOperation == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
+    const startY = context.canvas.height - 75;
+    const startX = gameOperation == 'Minus' ? 66 + 5 * 156 : 66; // Initial 'x' coordinate for the kid and the baloon
     this.correctX = startX; // Ending position, accumulative
 
     // BACKGROUND
@@ -72,7 +71,9 @@ const circleOne = {
     game.add.image(300, 85, 'cloud', 0.8);
 
     // Add floor of grass
-    for (let i = 0; i < context.canvas.width / 100; i++) { game.add.image(i * 100, context.canvas.height - 100, 'floor'); }
+    for (let i = 0; i < context.canvas.width / 100; i++) {
+      game.add.image(i * 100, context.canvas.height - 100, 'floor');
+    }
 
     // Road
     this.road = game.add.image(47, startY - 11, 'road', 1.01, 0.94);
@@ -81,8 +82,15 @@ const circleOne = {
     const distanceBetweenPoints = 156; // Distance between road points
 
     for (let i = 0; i <= 5; i++) {
-      game.add.image(66 + i * distanceBetweenPoints, startY, 'place_off', 0.3).anchor(0.5, 0.5);
-      game.add.text(66 + i * distanceBetweenPoints, startY + 34, i, textStyles.h2_blue);
+      game.add
+        .image(66 + i * distanceBetweenPoints, startY, 'place_off', 0.3)
+        .anchor(0.5, 0.5);
+      game.add.text(
+        66 + i * distanceBetweenPoints,
+        startY + 34,
+        i,
+        textStyles.h2_blueDark
+      );
     }
 
     this.trace = game.add.geom.rect(startX - 1, startY, 1, 1, undefined, 1);
@@ -93,38 +101,47 @@ const circleOne = {
     // FOR MOODLE
     if (moodle) {
       navigationIcons.add(
-        false, false, false, // Left buttons
-        true, false,         // Right buttons
-        false, false
+        false,
+        false,
+        false, // Left buttons
+        true,
+        false, // Right buttons
+        false,
+        false
       );
     } else {
       navigationIcons.add(
-        true, true, true, // Left buttons
-        true, false,      // Right buttons
-        'customMenu', this.viewHelp
+        true,
+        true,
+        true, // Left buttons
+        true,
+        false, // Right buttons
+        'customMenu',
+        this.viewHelp
       );
     }
 
     // CIRCLES AND FRACTIONS
     this.circles = {
-      all: [],       // Circles objects of current level
-      label: [],     // Fractions labels
+      all: [], // Circles objects of current level
+      label: [], // Fractions labels
 
-      diameter: 60,  // (Fixed) diameter for circles
-      cur: 0,        // Current circle index
+      diameter: 60, // (Fixed) diameter for circles
+      cur: 0, // Current circle index
       direction: [], // Circle direction : 'Right' (plus), 'Left' (minus)
-      distance: [],  // Fraction of distance between circles (used in walking animation)
-      angle: [],     // Angle in degrees : 90 / 180 / 270 / 360
+      distance: [], // Fraction of distance between circles (used in walking animation)
+      angle: [], // Angle in degrees : 90 / 180 / 270 / 360
       lineColor: [], // Circle line colors (also used for tracing on floor)
 
-      direc: [],     // Can be : 1 or -1 : will be multiplied to values to easily change object direction when needed
+      direc: [], // Can be : 1 or -1 : will be multiplied to values to easily change object direction when needed
     };
 
     this.balloonPlace = context.canvas.width / 2; // Balloon place
 
     // Number of circles
-    const max = (gameOperation == 'Mixed' || gameMode == 'B') ? 6 : mapPosition + 1;
-    const min = (gameOperation == 'Mixed' && mapPosition < 2) ? 2 : mapPosition; // Mixed level has at least 2 fractions
+    const max =
+      gameOperation == 'Mixed' || gameMode == 'B' ? 6 : mapPosition + 1;
+    const min = gameOperation == 'Mixed' && mapPosition < 2 ? 2 : mapPosition; // Mixed level has at least 2 fractions
     const total = game.math.randomInRange(min, max); // Total number of circles
 
     // gameMode 'B' exclusive variables
@@ -132,11 +149,10 @@ const circleOne = {
     this.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
 
     // CIRCLES
-    const levelDirection = (gameOperation == 'Minus') ? -1 : 1;
+    const levelDirection = gameOperation == 'Minus' ? -1 : 1;
     const x = startX + 65 * levelDirection;
 
     for (let i = 0; i < total; i++) {
-
       const divisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
 
       if (divisor == gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
@@ -147,8 +163,12 @@ const circleOne = {
       let direction;
 
       switch (gameOperation) {
-        case 'Plus': direction = 'Right'; break;
-        case 'Minus': direction = 'Left'; break;
+        case 'Plus':
+          direction = 'Right';
+          break;
+        case 'Minus':
+          direction = 'Left';
+          break;
         case 'Mixed':
           if (i < this.numberOfPlusFractions) direction = 'Right';
           else direction = 'Left';
@@ -160,7 +180,7 @@ const circleOne = {
       let lineColor, anticlockwise;
 
       if (direction == 'Right') {
-        lineColor = colors.darkBlue;
+        lineColor = colors.blueDark;
         this.circles.direc[i] = 1;
         anticlockwise = true;
       } else {
@@ -170,19 +190,32 @@ const circleOne = {
       }
       this.circles.lineColor[i] = lineColor;
 
-      // Draw circles 
-      let circle, label = [];
+      // Draw circles
+      let circle,
+        label = [];
 
       if (divisor == 1) {
-        circle = game.add.geom.circle(startX, startY - 36 - i * this.circles.diameter, this.circles.diameter,
-          lineColor, 2, colors.white, 1);
+        circle = game.add.geom.circle(
+          startX,
+          startY - 36 - i * this.circles.diameter,
+          this.circles.diameter,
+          lineColor,
+          2,
+          colors.white,
+          1
+        );
 
         circle.anticlockwise = anticlockwise;
 
         this.circles.angle.push(360);
 
         if (fractionLabel) {
-          label[0] = game.add.text(x, startY - 36 - i * this.circles.diameter, divisor, textStyles.h2_blue);
+          label[0] = game.add.text(
+            x,
+            startY - 36 - i * this.circles.diameter,
+            divisor,
+            textStyles.h2_blueDark
+          );
           this.circles.label.push(label);
         }
       } else {
@@ -190,16 +223,40 @@ const circleOne = {
 
         if (direction == 'Right') degree = 360 - degree; // Anticlockwise equivalent
 
-        circle = game.add.geom.arc(startX, startY - 36 - i * this.circles.diameter, this.circles.diameter,
-          0, game.math.degreeToRad(degree), anticlockwise,
-          lineColor, 2, colors.white, 1);
+        circle = game.add.geom.arc(
+          startX,
+          startY - 36 - i * this.circles.diameter,
+          this.circles.diameter,
+          0,
+          game.math.degreeToRad(degree),
+          anticlockwise,
+          lineColor,
+          2,
+          colors.white,
+          1
+        );
 
         this.circles.angle.push(degree);
 
         if (fractionLabel) {
-          label[0] = game.add.text(x, startY - 46 - i * this.circles.diameter + 32, divisor, textStyles.h4_blue);
-          label[1] = game.add.text(x, startY - 38 - i * this.circles.diameter, '1', textStyles.h4_blue);
-          label[2] = game.add.text(x, startY - 38 - i * this.circles.diameter, '___', textStyles.h4_blue);
+          label[0] = game.add.text(
+            x,
+            startY - 46 - i * this.circles.diameter + 32,
+            divisor,
+            textStyles.h4_blueDark
+          );
+          label[1] = game.add.text(
+            x,
+            startY - 38 - i * this.circles.diameter,
+            '1',
+            textStyles.h4_blueDark
+          );
+          label[2] = game.add.text(
+            x,
+            startY - 38 - i * this.circles.diameter,
+            '___',
+            textStyles.h4_blueDark
+          );
           this.circles.label.push(label);
         }
       }
@@ -214,7 +271,8 @@ const circleOne = {
       this.circles.distance.push(Math.floor(distanceBetweenPoints / divisor));
       this.circles.all.push(circle);
 
-      this.correctX += Math.floor(distanceBetweenPoints / divisor) * this.circles.direc[i];
+      this.correctX +=
+        Math.floor(distanceBetweenPoints / divisor) * this.circles.direc[i];
     }
 
     // Calculate next circle
@@ -224,30 +282,54 @@ const circleOne = {
     this.restart = false;
 
     // If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
-    if (this.correctX < 66 || this.correctX > 66 + 3 * 260 || !hasBaseDifficulty) {
+    if (
+      this.correctX < 66 ||
+      this.correctX > 66 + 3 * 260 ||
+      !hasBaseDifficulty
+    ) {
       this.restart = true;
     }
 
     // If game is type B, selectiong a random balloon place
     if (gameMode == 'B') {
       this.balloonPlace = startX;
-      this.endIndex = game.math.randomInRange(this.numberOfPlusFractions, this.circles.all.length);
+      this.endIndex = game.math.randomInRange(
+        this.numberOfPlusFractions,
+        this.circles.all.length
+      );
 
       for (let i = 0; i < this.endIndex; i++) {
         this.balloonPlace += this.circles.distance[i] * this.circles.direc[i];
       }
 
       // If balloon position is out of bounds, restart
-      if (this.balloonPlace < 66 || this.balloonPlace > 66 + 5 * distanceBetweenPoints) {
+      if (
+        this.balloonPlace < 66 ||
+        this.balloonPlace > 66 + 5 * distanceBetweenPoints
+      ) {
         this.restart = true;
       }
     }
 
     // KID
-    this.availableAnimations['Right'] = ['Right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 4];
-    this.availableAnimations['Left'] = ['Left', [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12], 4];
+    this.availableAnimations['Right'] = [
+      'Right',
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      4,
+    ];
+    this.availableAnimations['Left'] = [
+      'Left',
+      [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12],
+      4,
+    ];
 
-    this.kid = game.add.sprite(startX, startY - 31 - this.circles.all.length * this.circles.diameter, 'kid_walk', 0, 0.8);
+    this.kid = game.add.sprite(
+      startX,
+      startY - 31 - this.circles.all.length * this.circles.diameter,
+      'kid_walk',
+      0,
+      0.8
+    );
     this.kid.anchor(0.5, 0.8);
     if (gameOperation == 'Minus') {
       this.kid.animation = this.availableAnimations['Left'];
@@ -257,11 +339,21 @@ const circleOne = {
     }
 
     // BALLOON
-    this.balloon = game.add.image(this.balloonPlace, startY - 176, 'balloon', 1, 0.5);
+    this.balloon = game.add.image(
+      this.balloonPlace,
+      startY - 176,
+      'balloon',
+      1,
+      0.5
+    );
     this.balloon.alpha = 0.5;
     this.balloon.anchor(0.5, 0.5);
 
-    this.basket = game.add.image(this.balloonPlace, startY - 54, 'balloon_basket');
+    this.basket = game.add.image(
+      this.balloonPlace,
+      startY - 54,
+      'balloon_basket'
+    );
     this.basket.anchor(0.5, 0.5);
 
     // Help pointer
@@ -287,7 +379,8 @@ const circleOne = {
       let cur = self.circles.cur;
       let direc = self.circles.direc[cur];
 
-      if (self.count % 2 == 0) { // Lowers animation
+      if (self.count % 2 == 0) {
+        // Lowers animation
         // Move kid
         self.kid.x += 2 * direc;
 
@@ -302,19 +395,23 @@ const circleOne = {
 
         // Change angle of current arc
         self.circles.angle[cur] += 4.6 * direc;
-        self.circles.all[cur].angleEnd = game.math.degreeToRad(self.circles.angle[cur]);
+        self.circles.all[cur].angleEnd = game.math.degreeToRad(
+          self.circles.angle[cur]
+        );
 
         // When finish current circle
         let lowerCircles;
         if (self.circles.direction[cur] == 'Right') {
           lowerCircles = self.circles.all[cur].x >= self.nextX;
-        }
-        else if (self.circles.direction[cur] == 'Left') {
-
+        } else if (self.circles.direction[cur] == 'Left') {
           lowerCircles = self.circles.all[cur].x <= self.nextX;
 
           // If just changed from 'right' to 'left' inform to change direction of kid animation
-          if (self.changeAnimationFrames == undefined && cur > 0 && self.circles.direction[cur - 1] == 'Right') {
+          if (
+            self.changeAnimationFrames == undefined &&
+            cur > 0 &&
+            self.circles.direction[cur - 1] == 'Right'
+          ) {
             self.changeAnimationFrames = true;
           }
         }
@@ -333,7 +430,7 @@ const circleOne = {
 
         if (lowerCircles) {
           self.circles.all[cur].alpha = 0; // Cicle disappear
-          self.circles.all.forEach(cur => {
+          self.circles.all.forEach((cur) => {
             cur.y += self.circles.diameter; // Lower circles
           });
           self.kid.y += self.circles.diameter; // Lower kid
@@ -347,7 +444,10 @@ const circleOne = {
         }
 
         // When finish all circles (final position)
-        if (cur == self.circles.all.length || self.circles.all[cur].alpha == 0) {
+        if (
+          cur == self.circles.all.length ||
+          self.circles.all[cur].alpha == 0
+        ) {
           self.animate = false;
           self.checkAnswer = true;
         }
@@ -362,15 +462,19 @@ const circleOne = {
 
       if (self.checkOverlap(self.basket, self.kid)) {
         self.result = true; // Answer is correct
-        self.kid.curFrame = (self.kid.curFrame < 12) ? 24 : 25;
+        self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
-        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'ok').anchor(0.5, 0.5);
+        game.add
+          .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
+          .anchor(0.5, 0.5);
         completedLevels++;
         if (debugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
-        game.add.image(context.canvas.width / 2, context.canvas.height / 2, 'error').anchor(0.5, 0.5);
+        game.add
+          .image(context.canvas.width / 2, context.canvas.height / 2, 'error')
+          .anchor(0.5, 0.5);
       }
 
       self.postScore();
@@ -401,14 +505,14 @@ const circleOne = {
 
   /**
    * (in gameMode 'B') Function called when cursor is over a valid circle
-   * 
+   *
    * @param {object} cur circle the cursor is over
    */
   overCircle: function (cur) {
     if (!self.hasClicked) {
       document.body.style.cursor = 'pointer';
       for (let i in self.circles.all) {
-        self.circles.all[i].alpha = (i <= cur.index) ? 1 : 0.5;
+        self.circles.all[i].alpha = i <= cur.index ? 1 : 0.5;
       }
     }
   },
@@ -419,7 +523,7 @@ const circleOne = {
   outCircle: function () {
     if (!self.hasClicked) {
       document.body.style.cursor = 'auto';
-      self.circles.all.forEach(cur => {
+      self.circles.all.forEach((cur) => {
         cur.alpha = 0.5;
       });
     }
@@ -427,20 +531,17 @@ const circleOne = {
 
   /**
    * (in gameMode 'B') Function called when player clicked over a valid circle
-   * 
+   *
    * @param {number|object} cur clicked circle
    */
   clicked: function (cur) {
     if (!self.hasClicked) {
-
       // On gameMode A
       if (gameMode == 'A') {
         self.balloon.x = cur;
         self.basket.x = cur;
         // On gameMode B
-      }
-      else if (gameMode == 'B') {
-
+      } else if (gameMode == 'B') {
         document.body.style.cursor = 'auto';
 
         for (let i in self.circles.all) {
@@ -448,8 +549,8 @@ const circleOne = {
             self.circles.all[i].alpha = 1; // Keep selected circle
             self.fractionIndex = cur.index;
           } else {
-            self.circles.all[i].alpha = 0;  // Hide unselected circle
-            self.kid.y += self.circles.diameter;  // Lower kid to selected circle
+            self.circles.all[i].alpha = 0; // Hide unselected circle
+            self.kid.y += self.circles.diameter; // Lower kid to selected circle
           }
         }
       }
@@ -458,8 +559,10 @@ const circleOne = {
 
       // Hide fractions
       if (fractionLabel) {
-        self.circles.label.forEach(cur => {
-          cur.forEach(cur => { cur.alpha = 0; });
+        self.circles.label.forEach((cur) => {
+          cur.forEach((cur) => {
+            cur.alpha = 0;
+          });
         });
       }
 
@@ -478,10 +581,10 @@ const circleOne = {
 
   /**
    * Checks if 2 images overlap
-   * 
+   *
    * @param {object} spriteA image 1
    * @param {object} spriteB image 2
-   * 
+   *
    * @returns {boolean} true if there is overlap
    */
   checkOverlap: function (spriteA, spriteB) {
@@ -505,7 +608,8 @@ const circleOne = {
         // On gameMode B
       } else {
         self.help.x = self.circles.all[self.endIndex - 1].x;
-        self.help.y = self.circles.all[self.endIndex - 1].y - self.circles.diameter / 2;
+        self.help.y =
+          self.circles.all[self.endIndex - 1].y - self.circles.diameter / 2;
       }
       self.help.alpha = 0.7;
     }
@@ -524,14 +628,19 @@ const circleOne = {
     if (gameMode == 'A') {
       const cur = self.road;
 
-      const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
+      const valid =
+        y > 60 &&
+        x >= cur.xWithAnchor &&
+        x <= cur.xWithAnchor + cur.width * cur.scale;
       if (valid) self.clicked(x);
     }
 
     // GAME MODE B : click circle
     if (gameMode == 'B') {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
+      self.circles.all.forEach((cur) => {
+        const valid =
+          game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <=
+          (cur.diameter / 2) * cur.scale;
         if (valid) self.clicked(cur);
       });
     }
@@ -553,7 +662,9 @@ const circleOne = {
 
     // GAME MODE A : balloon follow mouse
     if (gameMode == 'A' && !self.hasClicked) {
-      if (game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8) {
+      if (
+        game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8
+      ) {
         self.balloon.x = x;
         self.basket.x = x;
       }
@@ -563,8 +674,10 @@ const circleOne = {
 
     // GAME MODE B : hover circle
     if (gameMode == 'B' && !self.hasClicked) {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
+      self.circles.all.forEach((cur) => {
+        const valid =
+          game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <=
+          (cur.diameter / 2) * cur.scale;
         if (valid) {
           self.overCircle(cur);
           flag = true;
@@ -580,28 +693,39 @@ const circleOne = {
 
   /**
    * Saves players data after level ends - to be sent to database <br>
-   * 
+   *
    * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
-   * 
+   *
    * @see /php/squareOne.js
    */
   postScore: function () {
     // Creates string that is going to be sent to db
-    const data = '&line_game=' + gameShape
-      + '&line_mode=' + gameMode
-      + '&line_oper=' + gameOperation
-      + '&line_leve=' + gameDifficulty
-      + '&line_posi=' + mapPosition
-      + '&line_resu=' + self.result
-      + '&line_time=' + game.timer.elapsed
-      + '&line_deta='
-      + 'numCircles:' + self.circles.all.length
-      + ', valCircles: ' + self.divisorsList
-      + ' balloonX: ' + self.basket.x
-      + ', selIndex: ' + self.fractionIndex;
+    const data =
+      '&line_game=' +
+      gameShape +
+      '&line_mode=' +
+      gameMode +
+      '&line_oper=' +
+      gameOperation +
+      '&line_leve=' +
+      gameDifficulty +
+      '&line_posi=' +
+      mapPosition +
+      '&line_resu=' +
+      self.result +
+      '&line_time=' +
+      game.timer.elapsed +
+      '&line_deta=' +
+      'numCircles:' +
+      self.circles.all.length +
+      ', valCircles: ' +
+      self.divisorsList +
+      ' balloonX: ' +
+      self.basket.x +
+      ', selIndex: ' +
+      self.fractionIndex;
 
     // FOR MOODLE
     sendToDB(data);
-  }
-
+  },
 };
