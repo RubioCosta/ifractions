@@ -84,14 +84,14 @@ const langState = {
     this.langs = {
       text: [
         'FRAÇÕES  ',
-        'FRAZIONI  ',
-        'FRACTIONS  ',
         'FRACCIONES  ',
         'FRACTIONS  ',
+        'FRACTIONS  ',
+        'FRAZIONI  ',
       ], // Language names
-      flag: ['flag_BR', 'flag_IT', 'flag_US', 'flag_PE', 'flag_FR'], // Icon names
-      lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
-      x: [-360, -360, -360, 160, 160],
+      flag: ['flag_BR', 'flag_PE', 'flag_FR', 'flag_US', 'flag_IT'], // Icon names
+      lang: ['pt_BR', 'es_PE', 'fr_FR', 'en_US', 'it_IT'], // Parameters sent for language object
+      x: [-350, -350, -350, 170, 170],
       y: [-220, 0, 220, -110, 110],
     };
 
@@ -108,7 +108,7 @@ const langState = {
       // Add icons for flags
       const flag = game.add.image(
         context.canvas.width / 2 + this.langs.x[i] + 100,
-        context.canvas.height / 2 + this.langs.y[i],
+        context.canvas.height / 2 + this.langs.y[i] - 13,
         this.langs.flag[i]
       );
       flag.anchor(0.5, 0.5);
