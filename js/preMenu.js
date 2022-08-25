@@ -78,8 +78,6 @@ const langState = {
       1
     );
 
-    if (debugMode) debugGrid();
-
     // Parameters for the elements on the screen
     this.listOfFlags = [];
 
@@ -93,8 +91,8 @@ const langState = {
       ], // Language names
       flag: ['flag_BR', 'flag_IT', 'flag_US', 'flag_PE', 'flag_FR'], // Icon names
       lang: ['pt_BR', 'it_IT', 'en_US', 'es_PE', 'fr_FR'], // Parameters sent for language object
-      x: [-280, -280, -280, 140, 140],
-      y: [-220, 0, 220, -120, 120],
+      x: [-360, -360, -360, 160, 160],
+      y: [-220, 0, 220, -110, 110],
     };
 
     // Create elements on screen

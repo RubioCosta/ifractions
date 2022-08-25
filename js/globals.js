@@ -774,10 +774,13 @@ let gameFrame = function () {
   return { x, y, width, height, rect, point };
 };
 
-// for debug
+// For debug
 const debugGrid = function () {
-  for (let i = 0; i < 12; i++) {
-    game.add.geom.rect(i * 160, 0, 80, 1080, colors.white, 0, colors.blue, 0.3);
-    game.add.geom.rect(0, i * 180, 1920, 90, colors.white, 0, colors.blue, 0.3);
+  const grid = 12;
+  const h = 1920 / (grid + 0.5);
+  const v = 1080 / (grid + 0.5);
+  for (let i = 0; i < grid; i++) {
+    game.add.geom.rect(h / 2 + i * h, 0, h / 2, 1080, '', 0, colors.blue, 0.3);
+    game.add.geom.rect(0, v / 2 + i * v, 1920, v / 2, '', 0, colors.blue, 0.3);
   }
 };
