@@ -63,17 +63,7 @@ const circleOne = {
 
     // BACKGROUND
 
-    // Add background image
-    game.add.image(0, 0, 'bgimage', 2.2);
-    // Add clouds
-    game.add.image(640, 100, 'cloud');
-    game.add.image(1280, 80, 'cloud');
-    game.add.image(300, 85, 'cloud', 0.8);
-
-    // Add floor of grass
-    for (let i = 0; i < context.canvas.width / 100; i++) {
-      game.add.image(i * 100, context.canvas.height - 100, 'floor');
-    }
+    renderBackground();
 
     // Road
     this.road = game.add.image(47, startY - 11, 'road', 1.01, 0.94);
@@ -726,6 +716,6 @@ const circleOne = {
       self.fractionIndex;
 
     // FOR MOODLE
-    sendToDB(data);
+    sendToDatabase(data);
   },
 };

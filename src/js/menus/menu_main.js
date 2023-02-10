@@ -22,21 +22,7 @@ const menuState = {
       if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true')
         playerName = game.lang.professor;
 
-      // Background color
-      game.add.geom.rect(
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height,
-        undefined,
-        0,
-        colors.blueBg,
-        1
-      );
-      // Floor
-      for (let i = 0; i < context.canvas.width / 100; i++) {
-        game.add.image(i * 150, context.canvas.height - 150, 'floor', 1.5);
-      }
+      renderBackground();
 
       // Overtitle: Welcome, <player name>!
       game.add.text(
@@ -50,7 +36,7 @@ const menuState = {
         context.canvas.width / 2,
         120,
         game.lang.menu_title,
-        textStyles.h0_green
+        textStyles.h1_green
       );
       // Subtitle : <game mode>
       this.lbl_game = game.add.text(
@@ -166,6 +152,9 @@ const menuState = {
 
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
+
+      //console.log('DEBUG');
+      //this.load(self.menuIcons[0]);
     }
   },
 

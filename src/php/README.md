@@ -51,7 +51,7 @@ You have to set values for the following variables in **/php/save.php** to match
 
 ## 3) /js/globals.js
 
-Inside **/js/globals.js** there's a global function called **sendToDB()**. When the player's information is collected after each game, the game file sends it as a parameter to **sendToDB()**. It makes an asynchronous call to **/php/save.php**, that executes the connection to the database.
+Inside **/js/globals.js** there's a global function called **sendToDatabase()**. When the player's information is collected after each game, the game file sends it as a parameter to **sendToDatabase()**. It makes an asynchronous call to **/php/save.php**, that executes the connection to the database.
 
 	const data = 'line_ip='// INSERT the IP of the machine where the MySQL was set up
 		+ '&line_name=' + // player's name
@@ -66,7 +66,7 @@ There is a function **postScore()** in every game file:
 * /js/squareTwo.js
 * /js/circleOne.js
 
-After each level is completed (with the player's answer being correct or not), before going back to the level map, the function **postScore()**, is called. It joins all the player's progress information into a string (as can be seen below), that is sent as a parameter to **sendToDB()**, from **/js/globals.js**, that sends it to the database.
+After each level is completed (with the player's answer being correct or not), before going back to the level map, the function **postScore()**, is called. It joins all the player's progress information into a string (as can be seen below), that is sent as a parameter to **sendToDatabase()**, from **/js/globals.js**, that sends it to the database.
 
 	const data = '&line_game=' + // collect game shape
 	+ '&line_mode=' + // collect game mode type

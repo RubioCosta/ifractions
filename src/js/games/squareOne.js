@@ -55,26 +55,13 @@ const squareOne = {
     this.animationSpeed = 2 * this.direc_level; // X distance in which the tractor moves in each iteration of the animation
 
     // GAME VARIABLES
-    this.defaultBlockWidth = 80; // Base block width
-    this.defaultBlockHeight = 40; // Base block height
+    this.defaultBlockWidth = 80 * 1.5; // Base block width
+    this.defaultBlockHeight = 40 * 1.5; // Base block height
 
     this.startX = gameOperation == 'Minus' ? 730 : 170; // Initial 'x' coordinate for the tractor and stacked blocks
-    this.startY = context.canvas.height - 157;
+    this.startY = context.canvas.height - 157 * 1.5;
 
-    // BACKGROUND
-
-    // Add background image
-    game.add.image(0, 0, 'bgimage', 2.2);
-
-    // Add clouds
-    game.add.image(640, 100, 'cloud');
-    game.add.image(1280, 80, 'cloud');
-    game.add.image(300, 85, 'cloud', 0.8);
-
-    // Add floor of grass
-    for (let i = 0; i < context.canvas.width / 100; i++) {
-      game.add.image(i * 100, context.canvas.height - 100, 'floor');
-    }
+    renderBackground();
 
     // Calls function that loads navigation icons
 
@@ -102,7 +89,7 @@ const squareOne = {
     }
 
     // TRACTOR
-    this.tractor = game.add.sprite(this.startX, this.startY, 'tractor', 0, 0.8);
+    this.tractor = game.add.sprite(this.startX, this.startY, 'tractor', 0, 1.2);
 
     if (gameOperation == 'Plus') {
       this.tractor.anchor(1, 0.5);
@@ -155,14 +142,15 @@ const squareOne = {
       this.arrow = game.add.image(
         this.startX + this.defaultBlockWidth * this.direc_level,
         this.startY + 35,
-        'arrow_down'
+        'arrow_down',
+        1.5
       );
       this.arrow.anchor(0.5, 0.5);
       this.arrow.alpha = 0.5;
     }
 
     // Help pointer
-    this.help = game.add.image(0, 0, 'help_pointer', 0.5);
+    this.help = game.add.image(0, 0, 'help_pointer', 0.75);
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 
@@ -650,7 +638,7 @@ const squareOne = {
       const x = self.startX + i * self.defaultBlockWidth * self.direc_level;
       game.add.text(
         x,
-        self.startY + self.defaultBlockHeight + 78,
+        self.startY + self.defaultBlockHeight + 78 * 1.5,
         i - 1,
         textStyles.h2_blueDark
       );
@@ -782,6 +770,6 @@ const squareOne = {
       self.floor.index;
 
     // FOR MOODLE
-    sendToDB(data);
+    sendToDatabase(data);
   },
 };

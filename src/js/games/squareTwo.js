@@ -65,17 +65,7 @@ const squareTwo = {
     };
 
     // BACKGROUND AND KID
-    // Add background image
-    game.add.image(0, 0, 'bgimage', 2.2);
-    // Add clouds
-    game.add.image(640, 100, 'cloud');
-    game.add.image(1280, 80, 'cloud');
-    game.add.image(300, 85, 'cloud', 0.8);
-
-    // Add floor of grass
-    for (let i = 0; i < context.canvas.width / 100; i++) {
-      game.add.image(i * 100, context.canvas.height - 100, 'floor');
-    }
+    renderBackground();
 
     // Calls function that loads navigation icons
 
@@ -618,6 +608,6 @@ const squareTwo = {
       self.B.selected;
 
     // FOR MOODLE
-    sendToDB(data);
+    sendToDatabase(data);
   },
 };

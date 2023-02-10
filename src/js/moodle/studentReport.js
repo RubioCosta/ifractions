@@ -21,23 +21,7 @@ const studentReport = {
     let x = offsetW / 2;
     let y = context.canvas.height / 2 - 50;
 
-    // Background
-    game.add.geom.rect(
-      0,
-      0,
-      context.canvas.width,
-      context.canvas.height,
-      undefined,
-      0,
-      colors.blueBg,
-      1
-    );
-    game.add.image(640, 100, 'cloud');
-    game.add.image(1280, 80, 'cloud');
-    game.add.image(300, 85, 'cloud', 0.8);
-    for (let i = 0; i < context.canvas.width / 100; i++) {
-      game.add.image(i * 100, context.canvas.height - 100, 'floor');
-    }
+    renderBackground();
 
     // Title
     game.add.text(

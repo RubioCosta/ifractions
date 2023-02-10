@@ -26,33 +26,19 @@ const customMenuState = {
 
       game.state.start('map');
     } else {
-      // Background color
-      game.add.geom.rect(
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height,
-        undefined,
-        0,
-        colors.blueBg,
-        1
-      );
-      // Floor
-      for (let i = 0; i < context.canvas.width / 100; i++) {
-        game.add.image(i * 100, context.canvas.height - 100, 'floor');
-      }
+      renderBackground();
 
       // Overtitle : Selected game
       game.add.text(
         context.canvas.width / 2,
-        40,
+        60,
         game.lang.game.toUpperCase() + ': ' + menuState.menuIcons,
-        textStyles.h4_brown
+        textStyles.h3_brown
       );
       // Title : Customize the selected game
       game.add.text(
         context.canvas.width / 2,
-        80,
+        100,
         game.lang.custom_game,
         textStyles.h1_green
       );
@@ -61,7 +47,7 @@ const customMenuState = {
       navigationIcons.add(true, false, false, true, true, 'menu', false);
 
       let infoIcon;
-      const iconScale = 0.7;
+      const iconScale = 1;
       const curGame = info.all[gameType];
       this.menuIcons = [];
 
@@ -79,7 +65,7 @@ const customMenuState = {
       // Label 'Game Modes'
       game.add.text(x + offsetW, y, game.lang.game_modes, textStyles.h2_blue);
 
-      infoIcon = game.add.image(x + 2 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
+      infoIcon = game.add.image(x + 2 * offsetW - 30, y - 20, 'info', 0.9, 1);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameMode';
@@ -93,7 +79,7 @@ const customMenuState = {
         textStyles.h2_blue
       );
 
-      infoIcon = game.add.image(x + 4 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
+      infoIcon = game.add.image(x + 4 * offsetW - 30, y - 20, 'info', 0.9, 1);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameOperation';
@@ -107,14 +93,14 @@ const customMenuState = {
         textStyles.h2_blue
       );
 
-      infoIcon = game.add.image(x + 6 * offsetW - 30, y - 20, 'info', 0.5, 0.4);
+      infoIcon = game.add.image(x + 6 * offsetW - 30, y - 20, 'info', 0.9, 1);
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameDifficulty';
       this.menuIcons.push(infoIcon);
 
       // Horizontal line
-      game.add.geom
+      /*game.add.geom
         .rect(
           x - 25,
           y + 10,
@@ -124,9 +110,9 @@ const customMenuState = {
           0,
           colors.blueMenuLine
         )
-        .anchor(0, 0.5);
+        .anchor(0, 0.5);*/
       // Vertical lines
-      game.add.geom
+      /*game.add.geom
         .rect(
           x + 2 * offsetW,
           y - 25,
@@ -147,12 +133,12 @@ const customMenuState = {
           0,
           colors.blueMenuLine
         )
-        .anchor(0.5, 0);
+        .anchor(0.5, 0);*/
 
       // --------------------------- TURN ON/OFF FRACTION LABELS / RECTANGLE GUIDE
 
       // Horizontal line
-      game.add.geom
+      /*game.add.geom
         .rect(
           x + 4 * offsetW,
           y + offsetH,
@@ -168,18 +154,18 @@ const customMenuState = {
         x + 6 * offsetW - 30,
         y + offsetH - 20,
         'info',
-        0.5,
-        0.4
+        0.0,
+        1
       );
       infoIcon.anchor(0.5, 0.5);
       infoIcon.iconType = 'infoIcon';
       infoIcon.id = 'gameMisc';
-      this.menuIcons.push(infoIcon);
+      this.menuIcons.push(infoIcon);*/
 
       // Label 'Show Fractions / Auxiliar rectangles'
       game.add.text(
         x + 5 * offsetW,
-        y + offsetH - 48,
+        y + offsetH + 50,
         game.lang.show,
         textStyles.h4_blue
       );
@@ -189,7 +175,7 @@ const customMenuState = {
         auxText = game.lang.aux_rectangle;
         game.add.text(
           x + 5 * offsetW + 10,
-          y + offsetH - 24,
+          y + offsetH + 80,
           auxText,
           textStyles.h4_blue
         );
@@ -197,7 +183,7 @@ const customMenuState = {
         auxText = game.lang.title;
         game.add.text(
           x + 5 * offsetW,
-          y + offsetH - 24,
+          y + offsetH + 80,
           auxText,
           textStyles.h2_blue
         );
@@ -209,10 +195,10 @@ const customMenuState = {
 
       const selectionBox = game.add.sprite(
         x + 5 * offsetW,
-        y + offsetH,
+        y + offsetH + 90,
         'select',
         frame,
-        0.11
+        0.18
       );
       selectionBox.anchor(0.5, 0.5);
       selectionBox.iconType = 'selectionBox';
@@ -291,14 +277,14 @@ const customMenuState = {
 
       for (let i = 0; i < curGame.gameDifficulty; i++) {
         // Parameters
-        const curX = x + (30 + 10) * i;
+        const curX = x + (50 + 10) * i;
 
         // Difficulty menuIcons
         const icon = game.add.geom.rect(
           curX,
-          y,
-          30,
-          30,
+          y - 5,
+          50,
+          50,
           undefined,
           0,
           colors.gray,
@@ -322,10 +308,10 @@ const customMenuState = {
 
       // FOR MOODLE
       if (!moodle) {
-        x = context.canvas.width - 100;
-        y = context.canvas.height - 110;
+        x = context.canvas.width - 150;
+        y = context.canvas.height - 150;
 
-        const enterIcon = game.add.image(x, y, 'bush');
+        const enterIcon = game.add.image(x, y, 'bush', 1.5);
         enterIcon.anchor(0.5, 0.5);
         enterIcon.iconType = 'enter';
 
@@ -538,6 +524,10 @@ const customMenuState = {
 
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
+
+      console.log('DEBUG');
+      //self.load(this.menuIcons[11]);
+      //console.log(this.menuIcons);
     }
   },
 

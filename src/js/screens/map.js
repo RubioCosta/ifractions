@@ -48,22 +48,88 @@ const mapState = {
       );
     }
 
+    console.log('DEBUG');
+    const xAdjust = 0;
+    const yAdjust = 200;
+
+    let xInitial = 90 + 40;
+    let yInitial = 486 + 20;
+    let xOffset = 114 * 1.5;
+    let yOffset = -64 * 1.5;
     this.points = {
-      x: [90, 204, 318, 432, 546, 660],
-      y: [486, 422, 358, 294, 230, 166],
+      x: [
+        xInitial + xOffset * 0 + xAdjust,
+        xInitial + xOffset * 1 + xAdjust,
+        xInitial + xOffset * 2 + xAdjust * 2,
+        xInitial + xOffset * 3 + xAdjust * 3,
+        xInitial + xOffset * 4 + xAdjust * 4,
+        xInitial + xOffset * 5 + xAdjust * 5,
+      ],
+      y: [
+        yInitial + yOffset * 0 + yAdjust,
+        yInitial + yOffset * 1 + yAdjust,
+        yInitial + yOffset * 2 + yAdjust,
+        yInitial + yOffset * 3 + yAdjust,
+        yInitial + yOffset * 4 + yAdjust,
+        yInitial + yOffset * 5 + yAdjust,
+      ], // origem, placa 1, placa 2, placa 3, destino
     };
+
+    xOffset = 60;
+    yOffset = 100;
     const rocks = {
-      x: [156, 275, 276, 441, 452, 590, 712],
-      y: [309, 543, 259, 156, 419, 136, 316],
-      type: [1, 1, 2, 1, 2, 2, 2],
+      x: [
+        156 + xOffset,
+        276 + xOffset * 2,
+        441 + xOffset * 4,
+        590 + xOffset * 3,
+        275 + xOffset,
+        452 + xOffset * 3,
+        712 + xOffset * 4.5,
+      ],
+      y: [
+        309 + yOffset,
+        259 + yOffset,
+        156 + yOffset - 50,
+        136 + yOffset - 75,
+        543 + yOffset * 2.5,
+        419 + yOffset * 2,
+        316 + yOffset * 1.8,
+      ],
+      type: [
+        1, 2, 1, 2,
+
+        1, 2, 2,
+      ],
     };
+
+    yOffset = 100;
     const trees = {
-      x: [105, 214, 354, 364, 570, 600, 740, 779],
-      y: [341, 219, 180, 520, 550, 392, 488, 286],
+      x: [
+        105 + 50,
+        214 + 100,
+        354 + 200,
+        364 + 150,
+        570 + 200,
+        600 + 200,
+        740 + 310,
+        779 + 300,
+      ],
+      y: [
+        341 + yOffset,
+        219 + yOffset - 40,
+        180 + yOffset - 50,
+        520 + yOffset * 2.5,
+        550 + yOffset * 2.5,
+        392 + yOffset * 2,
+        488 + yOffset * -1,
+        286 + yOffset * 4,
+      ],
       type: [2, 4, 3, 4, 1, 2, 4, 4],
     };
-    const offsetH = gameFrame().y;
-    const offsetW = gameFrame().x * 2.5;
+
+    const offsetH = gameFrame().y - 200;
+    const offsetW = gameFrame().x;
     for (let i = 0, cur = this.points; i < cur.x.length; i++) {
       cur.x[i] += offsetW;
       cur.y[i] += offsetH;
@@ -78,7 +144,7 @@ const mapState = {
     }
 
     // Map
-    game.add.image(offsetW, offsetH + 40, 'bgmap');
+    game.add.image(offsetW, offsetH + 40, 'bgmap', 1.5);
 
     // Progress bar
     const percentText = completedLevels * 25;
@@ -133,36 +199,36 @@ const mapState = {
     if (gameType == 'squareOne') {
       // Garage
       game.add
-        .image(this.points.x[0], this.points.y[0], 'garage', 0.4)
+        .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
         .anchor(0.5, 1);
       // Farm
       game.add
-        .image(this.points.x[5], this.points.y[5], 'farm', 0.6)
-        .anchor(0.1, 0.7);
+        .image(this.points.x[5], this.points.y[5], 'farm', 0.9)
+        .anchor(0.4, 0.7);
     } else {
       // House
       game.add
-        .image(this.points.x[0], this.points.y[0], 'house', 0.7)
-        .anchor(0.7, 0.8);
+        .image(this.points.x[0], this.points.y[0], 'house', 1.05)
+        .anchor(0.5, 0.8);
       // School
       game.add
-        .image(this.points.x[5], this.points.y[5], 'school', 0.35)
+        .image(this.points.x[5], this.points.y[5], 'school', 0.525)
         .anchor(0.2, 0.7);
     }
 
     // Rocks and bushes
     for (let i in rocks.type) {
       if (rocks.type[i] == 1) {
-        game.add.image(rocks.x[i], rocks.y[i], 'rock', 0.32).anchor(0.5, 0.95);
+        game.add.image(rocks.x[i], rocks.y[i], 'rock', 0.6).anchor(0.5, 0.95);
       } else {
-        game.add.image(rocks.x[i], rocks.y[i], 'bush', 0.4).anchor(0.5, 0.95);
+        game.add.image(rocks.x[i], rocks.y[i], 'bush', 0.7).anchor(0.5, 0.95);
       }
     }
 
     // Trees
     for (let i in trees.type) {
       game.add
-        .image(trees.x[i], trees.y[i], 'tree' + trees.type[i], 0.6)
+        .image(trees.x[i], trees.y[i], 'tree' + trees.type[i], 0.9)
         .anchor(0.5, 0.95);
     }
 
@@ -175,16 +241,16 @@ const mapState = {
 
       // Map road positions - game levels
       game.add
-        .image(this.points.x[i], this.points.y[i], aux, 0.3)
+        .image(this.points.x[i], this.points.y[i], aux, 0.45)
         .anchor(0.5, 0.5);
 
       // Map road signs - game level number
       game.add
-        .image(this.points.x[i] - 20, this.points.y[i] - 60, 'sign', 0.4)
+        .image(this.points.x[i] - 20, this.points.y[i] - 100, 'sign', 0.6)
         .anchor(0.5, 1);
       game.add.text(
         this.points.x[i] - 20,
-        this.points.y[i] - 79,
+        this.points.y[i] - 125,
         i,
         textStyles.h2_white
       );
@@ -198,7 +264,7 @@ const mapState = {
           this.points.y[mapPosition],
           'tractor',
           0,
-          0.5
+          0.75
         );
         this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
       } else {
@@ -207,7 +273,7 @@ const mapState = {
           this.points.y[mapPosition],
           'tractor',
           10,
-          0.5
+          0.75
         );
         this.character.animation = ['red_tractor', [10, 11, 12, 13, 14], 3];
       }
@@ -219,7 +285,7 @@ const mapState = {
         this.points.y[mapPosition],
         'kid_run',
         0,
-        0.4
+        0.6
       );
       this.character.animation = ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
     }
@@ -245,6 +311,9 @@ const mapState = {
    * Game loop
    */
   update: function () {
+    //console.log('DEBUG');
+    //self.loadGame();
+
     let endUpdate = false;
 
     self.count++;
@@ -272,6 +341,7 @@ const mapState = {
 
     if (endUpdate) {
       game.animation.stop(self.character.animation[0]);
+      //console.log('DEBUG');
       self.loadGame();
     }
   },
@@ -304,172 +374,5 @@ const mapState = {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
     navigationIcons.onInputOver(x, y);
-  },
-};
-
-/** [ENDING STATE] Ending screen shown when the player has completed all 4 levels and therefore completed the game.
- *
- * @namespace
- */
-const endState = {
-  /**
-   * Main code
-   */
-  create: function () {
-    self.preAnimate = false;
-    self.animate = true;
-
-    // Background color
-    game.add.geom.rect(
-      0,
-      0,
-      context.canvas.width,
-      context.canvas.height,
-      undefined,
-      0,
-      colors.blueBg,
-      1
-    );
-
-    // Background
-    game.add.image(0, 0, 'bgimage', 2.2);
-
-    // Clouds
-    game.add.image(640, 100, 'cloud');
-    game.add.image(1280, 80, 'cloud');
-    game.add.image(300, 85, 'cloud', 0.8);
-
-    // Floor
-    for (let i = 0; i < context.canvas.width / 100; i++) {
-      game.add.image(i * 100, context.canvas.height - 100, 'floor');
-    }
-
-    // Progress bar
-    game.add.geom.rect(
-      660,
-      10,
-      4 * 37.5,
-      35,
-      undefined,
-      0,
-      colors.greenNeon,
-      0.5
-    ); // Progress
-    game.add.geom.rect(661, 11, 149, 34, colors.blue, 3, undefined, 1); // Box
-    game.add.text(820, 38, '100%', textStyles.h2_blueDark).align = 'left';
-    game.add.text(
-      650,
-      38,
-      game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_blueDark
-    ).align = 'right';
-
-    game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
-
-    // Level character
-    switch (gameType) {
-      case 'circleOne':
-        this.preAnimate = true;
-        this.animate = false;
-
-        // School
-        game.add.image(600, 222, 'school', 0.7);
-
-        // Kid
-        this.character = game.add.sprite(0, -152, 'kid_run', 0, 0.7);
-        this.character.anchor(0.5, 0.5);
-        this.character.animation = [
-          'move',
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-          3,
-        ];
-
-        // Balloon
-        this.balloon = game.add.image(0, -260, 'balloon');
-        this.balloon.anchor(0.5, 0.5);
-
-        this.basket = game.add.image(0, -150, 'balloon_basket');
-        this.basket.anchor(0.5, 0.5);
-
-        break;
-
-      case 'squareTwo':
-        // School
-        game.add.image(600, 222, 'school', 0.7);
-
-        // Kid
-        this.character = game.add.sprite(0, 460, 'kid_run', 6, 0.7);
-        this.character.anchor(0.5, 0.5);
-        this.character.animation = [
-          'move',
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-          3,
-        ];
-
-        break;
-
-      case 'squareOne':
-        // Farm
-        game.add.image(650, 260, 'farm', 1.1);
-
-        // Tractor
-        this.character = game.add.sprite(0, 490, 'tractor', 0, 0.7);
-        this.character.anchor(0.5, 0.5);
-        if (gameOperation == 'Plus') {
-          this.character.animation = ['move', [0, 1, 2, 3, 4], 4];
-        } else {
-          this.character.curFrame = 10;
-          this.character.animation = ['move', [10, 11, 12, 13, 14], 4];
-        }
-
-        break;
-    }
-
-    if (this.animate) game.animation.play(this.character.animation[0]);
-
-    game.add.image(30, 585, 'tree4', 0.85).anchor(0, 1);
-  },
-
-  /**
-   * Game loop
-   */
-  update: function () {
-    // Balloon falling
-    if (self.preAnimate) {
-      if (self.character.y < 460) {
-        self.balloon.y += 2;
-        self.basket.y += 2;
-        self.character.y += 2;
-
-        self.balloon.x++;
-        self.basket.x++;
-        self.character.x++;
-      } else {
-        self.preAnimate = false;
-        self.animate = true;
-        game.animation.play(self.character.animation[0]);
-      }
-    }
-
-    // Character running
-    if (self.animate) {
-      if (self.character.x <= 700) {
-        self.character.x += 2;
-      } else {
-        self.animate = false;
-        game.animation.stop(self.character.animation[0]);
-
-        // FOR MOODLE
-        if (!moodle) {
-          completedLevels = 0;
-          game.state.start('menu');
-        } else {
-          // FOR MOODLE
-          parent.location.reload(true);
-        }
-      }
-    }
-
-    game.render.all();
   },
 };
