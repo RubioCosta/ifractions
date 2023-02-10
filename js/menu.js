@@ -35,27 +35,27 @@ const menuState = {
       );
       // Floor
       for (let i = 0; i < context.canvas.width / 100; i++) {
-        game.add.image(i * 100, context.canvas.height - 100, 'floor');
+        game.add.image(i * 150, context.canvas.height - 150, 'floor', 1.5);
       }
 
       // Overtitle: Welcome, <player name>!
       game.add.text(
         context.canvas.width / 2,
-        40,
+        60,
         game.lang.welcome + ', ' + playerName + '!',
-        textStyles.h4_brown
+        textStyles.h2_brown
       );
       // Title : Select a game
       game.add.text(
         context.canvas.width / 2,
-        80,
+        120,
         game.lang.menu_title,
-        textStyles.h1_green
+        textStyles.h0_green
       );
       // Subtitle : <game mode>
       this.lbl_game = game.add.text(
         context.canvas.width / 2,
-        110,
+        160,
         '',
         textStyles.h2_blue
       );
@@ -80,7 +80,7 @@ const menuState = {
           x,
           context.canvas.height / 2 - 70,
           info.gameTypeUrl[i],
-          1
+          1.5
         );
         icon.anchor(0.5, 0.5);
 
@@ -92,11 +92,11 @@ const menuState = {
 
         // "more information" button
         infoIcon = game.add.image(
-          x + 70,
-          context.canvas.height / 2 - 70 - 80,
+          x + 110,
+          context.canvas.height / 2 - 100 - 80,
           'info',
-          0.6,
-          0.4
+          1.2,
+          1
         );
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';

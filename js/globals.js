@@ -242,88 +242,106 @@ const colors = {
   yellow: '#ffef1f',
 };
 
+const fontSizes = {
+  h0: '56px',
+  h1: '40px',
+  h2: '32px',
+  h3: '30px',
+  h4: '28px',
+  p: '22px',
+  h1_old: '32px',
+  h2_old: '26px',
+  h3_old: '22px',
+  h4_old: '20px',
+  p_old: '14px',
+};
 /**
  * Preset text styles for game text.<br>
  * Contains: font, size, text color and text align.
  * @type {object}
  */
 const textStyles = {
+  h0_green: {
+    font: fontSizes.h0 + ' Arial,sans-serif',
+    fill: colors.green,
+    align: 'center',
+  }, // menu title
   h1_green: {
-    font: '32px Arial,sans-serif',
+    font: fontSizes.h1 + ' Arial,sans-serif',
     fill: colors.green,
     align: 'center',
   }, // Menu title
   h2_green: {
-    font: '26px Arial,sans-serif',
+    font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.green,
     align: 'center',
   }, // Flag labels (langState)
 
   h1_white: {
-    font: '32px Arial,sans-serif',
+    font: fontSizes.h1 + ' Arial,sans-serif',
     fill: colors.white,
     align: 'center',
   }, // Ok button (nameState)
   h2_white: {
-    font: '26px Arial,sans-serif',
+    font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.white,
     align: 'center',
   }, // Difficulty buttons (menuState)
   h3__white: {
-    font: '23px Arial,sans-serif',
+    font: fontSizes.h3 + ' Arial,sans-serif',
     fill: colors.white,
     align: 'center',
   }, // Difficulty numbers (menuState)
   h4_white: {
-    font: '20px Arial,sans-serif',
+    font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.white,
     align: 'center',
   }, // Difficulty numbers (menuState)
   p_white: {
-    font: '14px Arial,sans-serif',
+    font: fontSizes.p + ' Arial,sans-serif',
     fill: colors.white,
     align: 'center',
   }, // Enter button (menuState)
 
   h2_brown: {
-    font: '26px Arial,sans-serif',
+    font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.redDark,
     align: 'center',
   }, // Map difficulty label
   h4_brown: {
-    font: '20px Arial,sans-serif',
+    font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.redDark,
     align: 'center',
   }, // Menu overtitle
   p_brown: {
-    font: '14px Arial,sans-serif',
+    font: fontSizes.p + ' Arial,sans-serif',
     fill: colors.redDark,
     align: 'center',
   }, // Map difficulty label
 
   h2_blue: {
-    font: '26px Arial,sans-serif',
+    font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.blue,
     align: 'center',
   }, // Menu subtitle
   h4_blue: {
-    font: '20px Arial,sans-serif',
+    font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.blue,
     align: 'center',
   }, // Menu subtitle
 
   h2_blueDark: {
-    font: '26px Arial,sans-serif',
+    font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.blueDark,
     align: 'center',
   }, // Fractions
   h4_blueDark: {
-    font: '20px Arial,sans-serif',
+    font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.blueDark,
     align: 'center',
   }, // Fractions
   p_blueDark: {
-    font: '14px Arial,sans-serif',
+    font: fontSizes.p + ' Arial,sans-serif',
     fill: colors.blueDark,
     align: 'center',
   }, // Fractions

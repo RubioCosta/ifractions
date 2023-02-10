@@ -102,7 +102,7 @@ const langState = {
         context.canvas.width / 2 + this.langs.x[i],
         context.canvas.height / 2 + this.langs.y[i],
         this.langs.text[i],
-        textStyles.h2_green
+        textStyles.h1_green
       ).align = 'right';
 
       // Add icons for flags
@@ -117,6 +117,9 @@ const langState = {
 
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
+
+    console.log('DEBUG');
+    this.setLang('pt_BR');
   },
 
   /**
@@ -247,10 +250,10 @@ const nameState = {
 
     // Set 'ok' button that gets player's information
     this.okBtn = game.add.geom.rect(
-      context.canvas.width / 2 - 84,
-      context.canvas.height / 2 + 70,
-      168,
-      60,
+      context.canvas.width / 2 - 104,
+      context.canvas.height / 2 + 62,
+      208, //168,
+      72, //60,
       undefined,
       0,
       colors.gray,
@@ -281,6 +284,10 @@ const nameState = {
 
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
+
+    console.log('DEBUG');
+    document.getElementById('textbox-content').value = 'Laira';
+    this.saveName();
   },
 
   /**
