@@ -11,17 +11,7 @@ const mapState = {
    * Main code
    */
   create: function () {
-    // Background color
-    game.add.geom.rect(
-      0,
-      0,
-      context.canvas.width,
-      context.canvas.height,
-      undefined,
-      0,
-      colors.blueBg,
-      1
-    );
+    renderBackground('plain');
 
     // Calls function that loads navigation icons
 
@@ -96,11 +86,7 @@ const mapState = {
         419 + yOffset * 2,
         316 + yOffset * 1.8,
       ],
-      type: [
-        1, 2, 1, 2,
-
-        1, 2, 2,
-      ],
+      type: [1, 2, 1, 2, 1, 2, 2],
     };
 
     yOffset = 100;
@@ -128,31 +114,33 @@ const mapState = {
       type: [2, 4, 3, 4, 1, 2, 4, 4],
     };
 
-    const offsetH = gameFrame().y - 200;
-    const offsetW = gameFrame().x;
+    const hOffset = gameFrame().y - 200;
+    const wOffset = gameFrame().x;
     for (let i = 0, cur = this.points; i < cur.x.length; i++) {
-      cur.x[i] += offsetW;
-      cur.y[i] += offsetH;
+      cur.x[i] += wOffset;
+      cur.y[i] += hOffset;
     }
     for (let i = 0, cur = rocks; i < cur.x.length; i++) {
-      cur.x[i] += offsetW;
-      cur.y[i] += offsetH;
+      cur.x[i] += wOffset;
+      cur.y[i] += hOffset;
     }
     for (let i = 0, cur = trees; i < cur.x.length; i++) {
-      cur.x[i] += offsetW;
-      cur.y[i] += offsetH;
+      cur.x[i] += wOffset;
+      cur.y[i] += hOffset;
     }
 
     // Map
-    game.add.image(offsetW, offsetH + 40, 'bgmap', 1.5);
+    game.add.image(wOffset, hOffset + 40, 'bgmap', 1.5);
 
     // Progress bar
     const percentText = completedLevels * 25;
 
+    let y = 20;
+
     if (completedLevels >= 4)
       game.add.geom.rect(
         context.canvas.width - 240,
-        10,
+        y,
         4 * 37.5,
         35,
         undefined,
@@ -163,7 +151,7 @@ const mapState = {
     else
       game.add.geom.rect(
         context.canvas.width - 240,
-        10,
+        y,
         completedLevels * 37.5,
         35,
         undefined,
@@ -174,23 +162,25 @@ const mapState = {
 
     game.add.geom.rect(
       context.canvas.width - 240 + 1,
-      11,
+      y + 1,
       149,
       34,
       colors.blue,
       3,
       undefined,
       1
-    ); // Box
+    );
+    // Status Box
     game.add.text(
       context.canvas.width - 240 + 160,
-      38,
+      y + 33,
       percentText + '%',
       textStyles.h2_blueDark
     ).align = 'left';
+
     game.add.text(
       context.canvas.width - 240 - 10,
-      38,
+      y + 33,
       game.lang.difficulty + ' ' + gameDifficulty,
       textStyles.h2_blueDark
     ).align = 'right';
@@ -311,8 +301,8 @@ const mapState = {
    * Game loop
    */
   update: function () {
-    //console.log('DEBUG');
-    //self.loadGame();
+    console.log('DEBUG');
+    self.loadGame();
 
     let endUpdate = false;
 
@@ -341,8 +331,8 @@ const mapState = {
 
     if (endUpdate) {
       game.animation.stop(self.character.animation[0]);
-      //console.log('DEBUG');
-      self.loadGame();
+      console.log('DEBUG');
+      //self.loadGame();
     }
   },
 

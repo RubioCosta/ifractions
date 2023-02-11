@@ -72,10 +72,13 @@ const customMenuState = {
       game.event.add('mousemove', this.onInputOver);
 
       console.log('DEBUG');
-      gameFrame().rect();
-      gameFrame().point(offsetW, offsetH);
-      //self.load(this.menuIcons[11]);
-      //console.log(this.menuIcons);
+      //gameFrame().rect();
+      //gameFrame().point(offsetW, offsetH);
+      const s1 = 11;
+      const c1 = 14;
+      const s2 = 12;
+      self.load(this.menuIcons[s1]);
+      console.log(this.menuIcons);
     }
   },
 
@@ -360,6 +363,7 @@ const customMenuState = {
     x = gameFrame().x - 50 + 5 * offsetW;
 
     offsetH = game.math.getOffset(gameFrame().height, curGame.gameMode.length);
+
     y = gameFrame().y + offsetH / 3;
 
     if (gameType != 'squareOne') x -= 40;
