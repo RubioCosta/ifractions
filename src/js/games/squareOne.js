@@ -55,11 +55,12 @@ const squareOne = {
     this.animationSpeed = 2 * this.direc_level; // X distance in which the tractor moves in each iteration of the animation
 
     // GAME VARIABLES
-    this.defaultBlockWidth = 80 * 1.5; // Base block width
+    this.defaultBlockWidth = context.canvas.width / 11; // Base block width
     this.defaultBlockHeight = 40 * 1.5; // Base block height
 
-    this.startX = gameOperation == 'Minus' ? 730 : 170; // Initial 'x' coordinate for the tractor and stacked blocks
-    this.startY = context.canvas.height - 157 * 1.5;
+    this.startX =
+      gameOperation == 'Minus' ? context.canvas.width - 170 * 1.5 : 170 * 1.5; // Initial 'x' coordinate for the tractor and stacked blocks
+    this.startY = context.canvas.height - 157 * 1.5 + 10;
 
     renderBackground();
 
@@ -488,26 +489,26 @@ const squareOne = {
         if (divisor == 1) {
           label[0] = game.add.text(
             x,
-            self.startY + 43 - i * y,
+            self.startY - (i - 1) * y,
             divisor,
             textStyles.h2_blueDark
           );
         } else {
           label[0] = game.add.text(
             x,
-            self.startY + 34 - i * y + 16,
+            self.startY + 45 - i * y + 23,
             divisor,
             textStyles.p_blueDark
           );
           label[1] = game.add.text(
             x,
-            self.startY + 34 - i * y,
+            self.startY + 40 - i * y,
             '1',
             textStyles.p_blueDark
           );
           label[2] = game.add.text(
             x,
-            self.startY + 39 - i * y,
+            self.startY + 40 - i * y,
             '_',
             textStyles.p_blueDark
           );

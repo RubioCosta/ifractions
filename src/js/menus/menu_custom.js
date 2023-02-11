@@ -74,11 +74,11 @@ const customMenuState = {
       console.log('DEBUG');
       //gameFrame().rect();
       //gameFrame().point(offsetW, offsetH);
-      const s1 = 11;
-      const c1 = 14;
-      const s2 = 12;
-      self.load(this.menuIcons[s1]);
-      console.log(this.menuIcons);
+      //const s1 = 11;
+      //const c1 = 14;
+      //const s2 = 12;
+      //self.load(this.menuIcons[s1]);
+      //console.log(this.menuIcons);
     }
   },
 
