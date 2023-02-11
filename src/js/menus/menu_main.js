@@ -29,7 +29,7 @@ const menuState = {
         context.canvas.width / 2,
         60,
         game.lang.welcome + ', ' + playerName + '!',
-        textStyles.h2_brown
+        textStyles.h3_brown
       );
       // Title : Select a game
       game.add.text(
@@ -92,10 +92,10 @@ const menuState = {
 
       // --------------------------- INFO BOX
 
-      this.infoBox = document.getElementById('my-modal');
+      this.infoBox = document.querySelector('.ifr-modal');
 
       // When the user clicks on the 'x', close the modal
-      document.getElementsByClassName('close')[0].onclick = function () {
+      document.querySelector('.ifr-modal__closeButton').onclick = function () {
         self.infoBox.style.display = 'none';
       };
 
@@ -153,8 +153,11 @@ const menuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      //console.log('DEBUG');
-      //this.load(self.menuIcons[0]);
+      console.log('DEBUG');
+      const s1 = 0;
+      const c1 = 2;
+      const s2 = 4;
+      this.load(self.menuIcons[c1]);
     }
   },
 
@@ -173,7 +176,7 @@ const menuState = {
       '</p>' +
       self.infoBoxContent[icon.id].img;
 
-    document.getElementById('infobox-content').innerHTML = msg;
+    document.querySelector('.ifr-modal__infobox').innerHTML = msg;
   },
 
   /**

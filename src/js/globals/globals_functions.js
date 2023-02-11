@@ -32,10 +32,10 @@ const navigationIcons = {
     this.iconsList = [];
 
     // 'Descriptive labels' for the navigation icons
-    this.left_text = game.add.text(xLeft, 73, '', textStyles.h4_brown);
+    this.left_text = game.add.text(xLeft, 110, '', textStyles.p_brown);
     this.left_text.align = 'left';
 
-    this.right_text = game.add.text(xRight + 50, 73, '', textStyles.h4_brown);
+    this.right_text = game.add.text(xRight + 50, 110, '', textStyles.p_brown);
     this.right_text.align = 'right';
 
     // Left icons
@@ -308,7 +308,17 @@ const gameFrame = function () {
     for (let i = 0, y1 = y; i < 4; i++) {
       x1 = x;
       for (let j = 0; j < 7; j++) {
-        game.add.geom.rect(x1, y1, 20, 20, undefined, 0, colors.red, 1);
+        let sqr = game.add.geom.rect(
+          x1,
+          y1,
+          20,
+          20,
+          undefined,
+          0,
+          colors.red,
+          1
+        );
+        sqr.anchor(0.5, 0.5);
         x1 += offsetW;
       }
       y1 += offsetH;

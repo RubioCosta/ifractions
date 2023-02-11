@@ -106,11 +106,6 @@ const fontSizes = {
   h3: '38px',
   h4: '36px',
   p: '30px',
-  h1_old: '32px',
-  h2_old: '26px',
-  h3_old: '22px',
-  h4_old: '20px',
-  p_old: '14px',
 };
 /**
  * Preset text styles for game text.<br>
@@ -128,6 +123,21 @@ const textStyles = {
     fill: colors.green,
     align: 'center',
   }, // Flag labels (langState)
+  h3_green: {
+    font: fontSizes.h3 + ' Arial,sans-serif',
+    fill: colors.green,
+    align: 'center',
+  },
+  h4_green: {
+    font: fontSizes.h4 + ' Arial,sans-serif',
+    fill: colors.green,
+    align: 'center',
+  },
+  p_green: {
+    font: fontSizes.p + ' Arial,sans-serif',
+    fill: colors.green,
+    align: 'center',
+  },
 
   h1_white: {
     font: fontSizes.h1 + ' Arial,sans-serif',
@@ -155,6 +165,11 @@ const textStyles = {
     align: 'center',
   }, // Enter button (menuState)
 
+  h1_brown: {
+    font: fontSizes.h1 + ' Arial,sans-serif',
+    fill: colors.redDark,
+    align: 'center',
+  },
   h2_brown: {
     font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.redDark,
@@ -176,22 +191,47 @@ const textStyles = {
     align: 'center',
   }, // Map difficulty label
 
+  h1_blue: {
+    font: fontSizes.h1 + ' Arial,sans-serif',
+    fill: colors.blue,
+    align: 'center',
+  },
   h2_blue: {
     font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.blue,
     align: 'center',
   }, // Menu subtitle
+  h3_blue: {
+    font: fontSizes.h3 + ' Arial,sans-serif',
+    fill: colors.blue,
+    align: 'center',
+  },
   h4_blue: {
     font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.blue,
     align: 'center',
   }, // Menu subtitle
+  p_blue: {
+    font: fontSizes.p + ' Arial,sans-serif',
+    fill: colors.blue,
+    align: 'center',
+  },
 
+  h1_blueDark: {
+    font: fontSizes.h1 + ' Arial,sans-serif',
+    fill: colors.blueDark,
+    align: 'center',
+  },
   h2_blueDark: {
     font: fontSizes.h2 + ' Arial,sans-serif',
     fill: colors.blueDark,
     align: 'center',
   }, // Fractions
+  h3_blueDark: {
+    font: fontSizes.h3 + ' Arial,sans-serif',
+    fill: colors.blueDark,
+    align: 'center',
+  },
   h4_blueDark: {
     font: fontSizes.h4 + ' Arial,sans-serif',
     fill: colors.blueDark,

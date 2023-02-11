@@ -16,24 +16,24 @@ const nameState = {
     // Set title and warning text
     game.add.text(
       context.canvas.width / 2,
-      context.canvas.height / 2 - 100,
+      context.canvas.height / 2 - 150,
       game.lang.insert_name,
       textStyles.h1_green
     );
 
     this.warningEmptyName = game.add.text(
       context.canvas.width / 2,
-      context.canvas.height / 2 - 70,
+      context.canvas.height / 2 - 80,
       '',
       textStyles.h4_brown
     );
 
     // Set 'ok' button that gets player's information
     this.okBtn = game.add.geom.rect(
-      context.canvas.width / 2 - 104,
-      context.canvas.height / 2 + 62,
-      208, //168,
-      72, //60,
+      context.canvas.width / 2 - 124,
+      context.canvas.height / 2 + 93, //62,
+      248, //168,
+      82, //60,
       undefined,
       0,
       colors.gray,
@@ -42,18 +42,19 @@ const nameState = {
 
     // Set button Text
     game.add.text(
-      context.canvas.width / 2 + 1,
-      context.canvas.height / 2 + 112,
+      context.canvas.width / 2,
+      context.canvas.height / 2 + 152, //112,
       game.lang.ready,
       textStyles.h1_white
     );
 
     // Makes text field visible
-    document.getElementById('textbox').style.visibility = 'visible';
+    document.querySelector('.ifr-input__container').style.visibility =
+      'visible';
 
     // Does the same as the button click when the player presses 'enter'
     document
-      .getElementById('textbox-content')
+      .querySelector('.ifr-input')
       .addEventListener('keypress', function (e) {
         const keycode = e.key || e.code;
         if (keycode == 'Enter') {
@@ -65,9 +66,9 @@ const nameState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    //console.log('DEBUG');
-    //document.getElementById('textbox-content').value = 'Laira';
-    //this.saveName();
+    console.log('DEBUG');
+    document.querySelector('.ifr-input').value = 'Laira';
+    this.saveName();
   },
 
   /**
@@ -77,7 +78,7 @@ const nameState = {
    */
   checkEmptyName: function () {
     // If text field is empty displays error message
-    if (document.getElementById('textbox-content').value == '') {
+    if (document.querySelector('.ifr-input').value == '') {
       self.warningEmptyName.name = game.lang.empty_name;
       return false;
     }
@@ -89,11 +90,11 @@ const nameState = {
    */
   saveName: function () {
     // Saves player's input in global variable 'playerName'
-    playerName = document.getElementById('textbox-content').value;
+    playerName = document.querySelector('.ifr-input').value;
 
     // Hides and clears text field
-    document.getElementById('textbox').style.visibility = 'hidden';
-    document.getElementById('textbox-content').value = '';
+    document.querySelector('.ifr-input__container').style.visibility = 'hidden';
+    document.querySelector('.ifr-input').value = '';
 
     if (audioStatus) game.audio.popSound.play();
     if (debugMode) console.log('Username: ' + playerName);

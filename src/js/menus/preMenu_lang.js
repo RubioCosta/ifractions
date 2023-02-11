@@ -26,7 +26,7 @@ const langState = {
       ], // Language names
       flag: ['flag_BR', 'flag_PE', 'flag_FR', 'flag_US', 'flag_IT'], // Icon names
       lang: ['pt_BR', 'es_PE', 'fr_FR', 'en_US', 'it_IT'], // Parameters sent for language object
-      x: [-350, -350, -350, 170, 170],
+      x: [-350, -350, -350, 250, 250],
       y: [-220, 0, 220, -110, 110],
     };
 
@@ -53,8 +53,8 @@ const langState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    //console.log('DEBUG');
-    //this.setLang('pt_BR');
+    console.log('DEBUG');
+    this.setLang('pt_BR');
   },
 
   /**
