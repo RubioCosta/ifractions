@@ -77,7 +77,7 @@ const customMenuState = {
       const s1 = 11;
       const c1 = 14;
       const s2 = 12;
-      //self.load(this.menuIcons[s1]);
+      self.load(this.menuIcons[s1]);
     }
   },
 

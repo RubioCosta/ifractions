@@ -42,6 +42,17 @@ const info = {
       gameOperationUrl: ['operation_equals'],
       gameDifficulty: 5,
     },
+
+    scaleOne: {
+      gameShape: 'scale',
+      gameType: 'scaleOne',
+      gameTypeUrl: 'game0',
+      gameMode: ['A'],
+      gameModeUrl: ['mode0'],
+      gameOperation: ['Plus'],
+      gameOperationUrl: ['operation_plus'],
+      gameDifficulty: 5,
+    },
   },
   gameShape: [],
   gameType: [],
@@ -401,6 +412,18 @@ const url = {
     sprite: [
       // Game sprites
       ['kid_run', medSrc + 'character/kid/run.png', 12],
+    ],
+    audio: [],
+  },
+  scaleOne: {
+    image: [
+      // Map buildings
+      ['farm', medSrc + 'scene/farm.png'],
+      ['garage', medSrc + 'scene/garage.png'],
+    ],
+    sprite: [
+      // Game sprites
+      ['tractor', medSrc + 'character/tractor/tractor.png', 15],
     ],
     audio: [],
   },

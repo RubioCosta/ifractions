@@ -157,7 +157,8 @@ const menuState = {
       const s1 = 0;
       const c1 = 2;
       const s2 = 4;
-      this.load(self.menuIcons[s1]);
+      const sc1 = 6;
+      this.load(self.menuIcons[sc1]);
     }
   },
 

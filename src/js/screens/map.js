@@ -186,7 +186,7 @@ const mapState = {
     ).align = 'right';
 
     // Map positions
-    if (gameType == 'squareOne') {
+    if (gameType == 'squareOne' || gameType == 'scaleOne') {
       // Garage
       game.add
         .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
@@ -247,7 +247,7 @@ const mapState = {
     }
 
     // Game Character
-    if (gameType == 'squareOne') {
+    if (gameType == 'squareOne' || gameType == 'scaleOne') {
       if (gameOperation == 'Plus') {
         this.character = game.add.sprite(
           this.points.x[mapPosition],
