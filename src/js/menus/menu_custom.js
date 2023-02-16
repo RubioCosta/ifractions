@@ -74,11 +74,10 @@ const customMenuState = {
       console.log('DEBUG');
       //gameFrame().rect();
       //gameFrame().point(offsetW, offsetH);
-      //const s1 = 11;
-      //const c1 = 14;
-      //const s2 = 12;
+      const s1 = 11;
+      const c1 = 14;
+      const s2 = 12;
       //self.load(this.menuIcons[s1]);
-      //console.log(this.menuIcons);
     }
   },
 
@@ -163,11 +162,11 @@ const customMenuState = {
             // If its the clicked icon
             if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation')
               cur.curFrame = 1;
-            else if (cur.iconType == 'difficulty') cur.fillColor = colors.blue;
+            else if (cur.iconType == 'difficulty') cur.curFrame = 0;
           } else {
             if (cur.iconType == 'gameMode' || cur.iconType == 'gameOperation')
               cur.curFrame = 0;
-            else if (cur.iconType == 'difficulty') cur.fillColor = colors.gray;
+            else if (cur.iconType == 'difficulty') cur.curFrame = 1;
           }
         }
       });
@@ -305,7 +304,7 @@ const customMenuState = {
       y + offsetH + 90,
       'select',
       frame,
-      0.18
+      1.4
     );
     selectionBox.anchor(0.5, 0.5);
     selectionBox.iconType = 'selectionBox';
@@ -373,23 +372,24 @@ const customMenuState = {
       const curX = x + (50 + 10) * i;
 
       // Difficulty menuIcons
-      const icon = game.add.geom.rect(
-        curX,
-        y - 5,
-        50,
-        50,
-        undefined,
-        0,
-        colors.gray,
-        1
-      );
+      // const icon = game.add.geom.rect(
+      //   curX,
+      //   y - 5,
+      //   50,
+      //   50,
+      //   undefined,
+      //   0,
+      //   colors.gray,
+      //   1
+      // );
+      const icon = game.add.sprite(curX, y - 5, 'btn_square', 1, 0.8);
       icon.anchor(0.5, 0.5);
       icon.difficulty = i + 1;
       icon.iconType = 'difficulty';
 
       if (i == 0) {
         gameDifficulty = icon.difficulty;
-        icon.fillColor = colors.blue;
+        icon.curFrame = 0;
       }
       self.menuIcons.push(icon);
 

@@ -57,7 +57,7 @@ const circleOne = {
 
     let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
 
-    const startY = context.canvas.height - 75;
+    const startY = context.canvas.height - 75 * 1.6;
     const startX = gameOperation == 'Minus' ? 66 + 5 * 156 : 66; // Initial 'x' coordinate for the kid and the baloon
     this.correctX = startX; // Ending position, accumulative
 
@@ -66,18 +66,18 @@ const circleOne = {
     renderBackground();
 
     // Road
-    this.road = game.add.image(47, startY - 11, 'road', 1.01, 0.94);
+    this.road = game.add.image(47, startY - 11, 'road', 1.515, 0.94);
 
     // Road points
-    const distanceBetweenPoints = 156; // Distance between road points
+    const distanceBetweenPoints = 156 * 1.5; // Distance between road points
 
     for (let i = 0; i <= 5; i++) {
       game.add
-        .image(66 + i * distanceBetweenPoints, startY, 'place_off', 0.3)
+        .image(startX + i * distanceBetweenPoints, startY, 'place_off', 0.45)
         .anchor(0.5, 0.5);
       game.add.text(
-        66 + i * distanceBetweenPoints,
-        startY + 34,
+        startX + i * distanceBetweenPoints,
+        startY + 34 * 1.5,
         i,
         textStyles.h2_blueDark
       );
@@ -318,7 +318,7 @@ const circleOne = {
       startY - 31 - this.circles.all.length * this.circles.diameter,
       'kid_walk',
       0,
-      0.8
+      1.2
     );
     this.kid.anchor(0.5, 0.8);
     if (gameOperation == 'Minus') {
@@ -333,7 +333,7 @@ const circleOne = {
       this.balloonPlace,
       startY - 176,
       'balloon',
-      1,
+      1.5,
       0.5
     );
     this.balloon.alpha = 0.5;
@@ -342,7 +342,8 @@ const circleOne = {
     this.basket = game.add.image(
       this.balloonPlace,
       startY - 54,
-      'balloon_basket'
+      'balloon_basket',
+      1.5
     );
     this.basket.anchor(0.5, 0.5);
 

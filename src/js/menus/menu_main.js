@@ -79,9 +79,9 @@ const menuState = {
         // "more information" button
         infoIcon = game.add.image(
           x + 110,
-          context.canvas.height / 2 - 100 - 80,
+          context.canvas.height / 2 - 100 - 80 - 10,
           'info',
-          1.2,
+          1,
           1
         );
         infoIcon.anchor(0.5, 0.5);

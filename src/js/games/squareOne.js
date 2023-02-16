@@ -151,7 +151,7 @@ const squareOne = {
     }
 
     // Help pointer
-    this.help = game.add.image(0, 0, 'help_pointer', 0.75);
+    this.help = game.add.image(0, 0, 'help_pointer', 1.7);
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 

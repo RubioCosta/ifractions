@@ -337,7 +337,9 @@ const url = {
       // Navigation icons on the top of the page
       ['audio', medSrc + 'navig_icon/audio.png', 2],
       // Interactive icons
-      ['select', medSrc + 'interac_icon/selectionBox.png', 2],
+      ['select', medSrc + 'interac_icon/selection_box.png', 2],
+      ['button', medSrc + 'interac_icon/button.png', 2],
+      ['btn_square', medSrc + 'interac_icon/button_square.png', 2],
       // Menu icons - Game modes
       ['mode0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
       ['mode1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B

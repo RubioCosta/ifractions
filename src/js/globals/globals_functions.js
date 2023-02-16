@@ -35,7 +35,7 @@ const navigationIcons = {
     this.left_text = game.add.text(xLeft, 110, '', textStyles.p_brown);
     this.left_text.align = 'left';
 
-    this.right_text = game.add.text(xRight + 50, 110, '', textStyles.p_brown);
+    this.right_text = game.add.text(xRight + 60, 110, '', textStyles.p_brown);
     this.right_text.align = 'right';
 
     // Left icons
@@ -48,7 +48,7 @@ const navigationIcons = {
         );
       } else {
         this.state = state;
-        this.iconsList.push(game.add.image(xLeft, 10, 'back', 1.5));
+        this.iconsList.push(game.add.image(xLeft - 5, 10, 'back', 1.5));
         xLeft += iconSize;
       }
     }
@@ -76,8 +76,9 @@ const navigationIcons = {
 
     if (rightIcon0) {
       // Turns game audio on/off
-      this.audioIcon = game.add.sprite(xRight, 10, 'audio', 1, 1.5);
+      this.audioIcon = game.add.sprite(xRight, 10, 'audio', 1, 1.6);
       this.audioIcon.curFrame = audioStatus ? 0 : 1;
+      this.audioIcon.anchor(0.3, 0);
       this.iconsList.push(this.audioIcon);
       xRight -= iconSize;
     }
@@ -85,6 +86,7 @@ const navigationIcons = {
     if (rightIcon1) {
       // Return to select language screen
       this.iconsList.push(game.add.image(xRight, 10, 'language', 1.5));
+      this.audioIcon.anchor(0, 0);
       xRight -= iconSize;
     }
   },

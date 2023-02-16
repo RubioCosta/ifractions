@@ -95,16 +95,16 @@ const squareTwo = {
     // Add kid
     this.kidAnimation = game.add.sprite(
       100,
-      context.canvas.height - 128,
+      context.canvas.height - 128 * 1.5,
       'kid_standing',
       5,
-      0.8
+      1.2
     );
     this.kidAnimation.anchor(0.5, 0.7);
 
     // Width and Height of A and B
-    this.figureWidth = 400;
-    const figureHeight = 50;
+    this.figureWidth = 400 * 1.5;
+    const figureHeight = 50 * 1.5;
 
     // Coordinates for A and B
     let xA, xB, yA, yB;

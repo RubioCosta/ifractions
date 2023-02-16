@@ -28,17 +28,14 @@ const nameState = {
       textStyles.h4_brown
     );
 
-    // Set 'ok' button that gets player's information
-    this.okBtn = game.add.geom.rect(
-      context.canvas.width / 2 - 124,
-      context.canvas.height / 2 + 93, //62,
-      248, //168,
-      82, //60,
-      undefined,
+    this.okBtn = game.add.sprite(
+      context.canvas.width / 2,
+      context.canvas.height / 2 + 93 + 44,
+      'button',
       0,
-      colors.gray,
-      0.6
+      1.5
     );
+    this.okBtn.anchor(0.5, 0.5);
 
     // Set button Text
     game.add.text(
@@ -134,10 +131,10 @@ const nameState = {
 
     if (game.math.isOverIcon(x, y, cur)) {
       document.body.style.cursor = 'pointer';
-      cur.alpha = 0.4;
+      cur.alpha = 0.8;
     } else {
       document.body.style.cursor = 'auto';
-      cur.alpha = 0.6;
+      cur.alpha = 1;
     }
 
     game.render.all();
