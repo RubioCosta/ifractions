@@ -279,11 +279,16 @@ const url = {
     image: [
       // Scene
       ['bgimage', medSrc + 'scene/bg.jpg'],
+      ['bg_snow', medSrc + 'scene/bg_snow.png'],
       ['bgmap', medSrc + 'scene/bg_map.png'],
       ['broken_sign', medSrc + 'scene/broken_sign.png'],
       ['bush', medSrc + 'scene/bush.png'],
       ['cloud', medSrc + 'scene/cloud.png'],
       ['floor', medSrc + 'scene/floor.png'],
+      ['floor_stone', medSrc + 'scene/floor_stone.png'],
+      ['floor_stone_left', medSrc + 'scene/floor_stone_left.png'],
+      ['floor_stone_right', medSrc + 'scene/floor_stone_right.png'],
+      ['wood_shelf', medSrc + 'scene/wood_shelf.png'],
       ['place_off', medSrc + 'scene/place_off.png'],
       ['place_on', medSrc + 'scene/place_on.png'],
       ['rock', medSrc + 'scene/rock.png'],
@@ -312,6 +317,7 @@ const url = {
       ['help_pointer', medSrc + 'interac_icon/pointer.png'],
       ['info', medSrc + 'interac_icon/info.png'],
       ['ok', medSrc + 'interac_icon/ok.png'],
+      ['button', medSrc + 'interac_icon/button.png'],
       // Menu icons - Games
       ['game0', medSrc + 'levels/squareOne.png'], // Square I
       ['game1', medSrc + 'levels/circleOne.png'], // Circle I
@@ -349,7 +355,6 @@ const url = {
       ['audio', medSrc + 'navig_icon/audio.png', 2],
       // Interactive icons
       ['select', medSrc + 'interac_icon/selection_box.png', 2],
-      ['button', medSrc + 'interac_icon/button.png', 2],
       ['btn_square', medSrc + 'interac_icon/button_square.png', 2],
       // Menu icons - Game modes
       ['mode0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
@@ -420,10 +425,15 @@ const url = {
       // Map buildings
       ['farm', medSrc + 'scene/farm.png'],
       ['garage', medSrc + 'scene/garage.png'],
+
+      ['scale_base', medSrc + 'character/scale/scale_base.png'],
+      ['scale_top', medSrc + 'character/scale/scale_top.png'],
+      ['scale_plate', medSrc + 'character/scale/scale_plate.png'],
     ],
     sprite: [
       // Game sprites
       ['tractor', medSrc + 'character/tractor/tractor.png', 15],
+      ['floor_snow', medSrc + 'scene/floor_snow.png', 9],
     ],
     audio: [],
   },

@@ -283,6 +283,47 @@ const renderBackground = (type) => {
       colors.blueBg,
       1
     );
+  } else if (type === 'scale') {
+    // Add background image
+    game.add.image(0, 0, 'bg_snow', 1.8);
+
+    const floor = {
+      width: 128,
+      last: context.canvas.width / 128,
+      tiles: [3, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 4],
+    };
+
+    for (let i = 0; i < floor.tiles.length; i++) {
+      game.add
+        .sprite(i * floor.width, context.canvas.height, 'floor_snow', 0, 2)
+        .anchor(0, 1);
+      game.add
+        .sprite(
+          i * floor.width,
+          context.canvas.height - 65,
+          'floor_snow',
+          floor.tiles[i],
+          2
+        )
+        .anchor(0, 1);
+    }
+
+    game.add
+      .image(-2, context.canvas.height - 410, 'wood_shelf', 2)
+      .anchor(0, 1);
+    game.add
+      .image(-2, context.canvas.height - 650, 'wood_shelf', 2)
+      .anchor(0, 1);
+
+    game.add
+      .sprite(4 * floor.width, context.canvas.height - 65, 'floor_snow', 7, 2)
+      .anchor(0, 1);
+    game.add
+      .sprite(8 * floor.width, context.canvas.height - 65, 'floor_snow', 8, 2)
+      .anchor(0, 1);
+    game.add
+      .sprite(13 * floor.width, context.canvas.height - 65, 'floor_snow', 7, 2)
+      .anchor(0, 1);
   } else {
     // Add background image
     game.add.image(0, 0, 'bgimage', 2.2);
@@ -358,4 +399,11 @@ const debug = {
       );
     }
   },
+};
+
+const moveList = function (list, x, y) {
+  list.forEach((item) => {
+    item.x += x;
+    item.y += y;
+  });
 };

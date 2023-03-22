@@ -28,11 +28,10 @@ const nameState = {
       textStyles.h4_brown
     );
 
-    this.okBtn = game.add.sprite(
+    this.okBtn = game.add.image(
       context.canvas.width / 2,
       context.canvas.height / 2 + 93 + 44,
       'button',
-      0,
       1.5
     );
     this.okBtn.anchor(0.5, 0.5);
