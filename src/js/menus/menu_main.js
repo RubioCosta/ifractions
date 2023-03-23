@@ -191,9 +191,13 @@ const menuState = {
         gameId = icon.gameId;
         gameName = gameList[gameId].gameName;
         gameShape = gameList[gameId].gameShape;
+
         if (!gameList.find((game) => game.gameName === gameName))
           console.error('Game error: the name of the game is not valid.');
+        if (isDebugMode) console.log('Game Name: ' + gameName);
+
         self.menuIcons = self.lbl_game.name;
+
         game.state.start('customMenu');
         break;
     }

@@ -127,10 +127,14 @@ const customMenuState = {
         if (isDebugMode) {
           console.log(
             '------------------------------' +
-              '\nGame State: ' +
-              gameName +
               '\nGame Mode: ' +
               gameMode +
+              '\nGame Operation: ' +
+              gameOperation +
+              '\nGame Difficulty: ' +
+              gameDifficulty +
+              '\nDisplay Fraction Labels: ' +
+              fractionLabel +
               '\n------------------------------'
           );
         }
