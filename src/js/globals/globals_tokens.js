@@ -4,29 +4,35 @@ const baseUrl = 'src/assets/img/'; // Base directory for media
  * Metadata for all games
  * @type {object}
  */
-const info = {
+const metadata = {
   all: {
     squareOne: {
+      // game data
       gameName: 'squareOne',
       gameMode: ['A', 'B'],
       gameOperation: ['Plus', 'Minus'],
       gameDifficulty: 3,
 
+      // info
       gameShape: 'square',
 
+      // menu icons data
       gameNameIconName: 'game0',
       gameModeIconName: ['mode0', 'mode1'],
       gameOperationIconName: ['operation_plus', 'operation_minus'],
     },
 
     circleOne: {
+      // game data
       gameName: 'circleOne',
       gameMode: ['A', 'B'],
       gameOperation: ['Plus', 'Minus', 'Mixed'],
       gameDifficulty: 5,
 
+      // info
       gameShape: 'circle',
 
+      // menu icons data
       gameNameIconName: 'game1',
       gameModeIconName: ['mode2', 'mode3'],
       gameOperationIconName: [
@@ -37,51 +43,64 @@ const info = {
     },
 
     squareTwo: {
-      gameShape: 'square',
+      // game data
       gameName: 'squareTwo',
-      gameNameIconName: 'game2',
       gameMode: ['A', 'B'],
-      gameModeIconName: ['mode4', 'mode5'],
       gameOperation: ['Equals'],
-      gameOperationIconName: ['operation_equals'],
       gameDifficulty: 5,
+
+      // info
+      gameShape: 'square',
+
+      // menu icon data
+      gameOperationIconName: ['operation_equals'],
+      gameNameIconName: 'game2',
+      gameModeIconName: ['mode4', 'mode5'],
     },
 
     scaleOne: {
+      // game data
       gameName: 'scaleOne',
       gameMode: ['A'],
       gameOperation: ['Plus'],
       gameDifficulty: 5,
 
-      gameShape: 'scale',
+      // info
+      gameShape: 'noShape',
 
+      // menu icon data
       gameNameIconName: 'game0',
       gameModeIconName: ['mode0'],
       gameOperationIconName: ['operation_plus'],
     },
   },
-  gameShape: [],
-  gameName: [],
-  gameMode: [],
-  gameOperation: [],
-  gameDifficulty: [],
+  gameNames: [],
+  // gameModes: [],
+  // gameOperations: [],
+  // gameDifficulties: [],
 
-  gameNameIconName: [],
-  gameModeIconName: [],
-  gameOperationIconName: [],
+  gameShapes: [],
+
+  gameNameIconNames: [],
+  // gameModeIconNames: [],
+  // gameOperationIconNames: [],
 };
 
 // Called once when the game starts
 (function () {
-  for (key in info.all) {
-    info.gameShape.push(info.all[key].gameShape);
-    info.gameName.push(info.all[key].gameName);
-    info.gameNameIconName.push(info.all[key].gameNameIconName);
-    info.gameMode.push(info.all[key].gameMode);
-    info.gameModeIconName.push(info.all[key].gameMode);
-    info.gameOperation.push(info.all[key].gameOperation);
-    info.gameOperationIconName.push(info.all[key].gameOperationIconName);
-    info.gameDifficulty.push(info.all[key].gameDifficulty);
+  for (key in metadata.all) {
+    metadata.gameNames.push(metadata.all[key].gameName);
+    // metadata.gameModes.push(metadata.all[key].gameMode);
+    // metadata.gameOperations.push(metadata.all[key].gameOperation);
+    // metadata.gameDifficulties.push(metadata.all[key].gameDifficulty);
+
+    metadata.gameShapes.push(metadata.all[key].gameShape);
+
+    metadata.gameNameIconNames.push(metadata.all[key].gameNameIconName);
+    // metadata.gameModeIconNames.push(metadata.all[key].gameMode);
+    // metadata.gameOperationIconNames.push(
+    //   metadata.all[key].gameOperationIconName
+    // );
   }
 })();
 

@@ -45,7 +45,7 @@ const customMenuState = {
       // Loads navigation icons
       navigationIcons.add(true, false, false, true, true, 'menu', false);
 
-      const curGame = info.all[gameName];
+      const curGame = metadata.all[gameName];
 
       this.menuIcons = [];
 
