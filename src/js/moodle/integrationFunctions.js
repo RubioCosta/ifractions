@@ -155,7 +155,7 @@ const getiLMContent = function () {
     fetch(url, init)
       .then((response) => {
         if (response.ok) {
-          if (debugMode) console.log('Processing...');
+          if (isDebugMode) console.log('Processing...');
           response.text().then((text) => {
             breakString(text);
           }); // Sends text to be treated

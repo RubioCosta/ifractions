@@ -135,7 +135,7 @@ const squareTwo = {
     const totalBlocksA = points[randomIndex];
     const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
-    if (debugMode) {
+    if (isDebugMode) {
       console.log(
         'Difficulty: ' +
           gameDifficulty +
@@ -371,7 +371,7 @@ const squareTwo = {
           canGoToNextMapPosition = true; // Allow character to move to next level in map state
           completedLevels++;
 
-          if (debugMode) console.log('Completed Levels: ' + completedLevels);
+          if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
 
           // Fractions are not equivalent : INCORRECT
         } else {

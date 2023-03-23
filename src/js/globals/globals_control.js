@@ -30,12 +30,6 @@
  * ................(start)....(end).....................
  **************************************************************/
 
-/**
- * Turns console messages ON/OFF (for debug purposes only)
- * @type {boolean}
- */
-const debugMode = false;
-
 /** FOR MOODLE <br>
  *
  * iFractions can run on a server or inside moodle through iAssign. <br>
@@ -46,10 +40,9 @@ const debugMode = false;
 const moodle = false;
 
 /**
- * index of the current game in gameList
- * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
+ * Index of the current game in gameList array
  *
- * @type {string}
+ * @type {number}
  */
 let gameId;
 

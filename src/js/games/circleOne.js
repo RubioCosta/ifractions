@@ -460,7 +460,7 @@ const circleOne = {
           .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
           .anchor(0.5, 0.5);
         completedLevels++;
-        if (debugMode) console.log('Completed Levels: ' + completedLevels);
+        if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();

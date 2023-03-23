@@ -157,7 +157,7 @@ const game = {
               let msg = cur.split('=');
               game.lang[msg[0].trim()] = msg[1].trim();
             } catch (Error) {
-              if (debugMode) console.log('Sintax error fixed');
+              if (isDebugMode) console.log('Sintax error fixed');
             }
             game.load.finishedOneMediaElement(msg.length - 1, 'lang');
           });
@@ -1322,7 +1322,7 @@ const game = {
           const i = character.animation[1].indexOf(character.curFrame);
           if (i == -1) {
             // Frame not found
-            if (debugMode)
+            if (isDebugMode)
               console.error('Game error: animation frame not found.');
           } else if (i < character.animation[1].length - 1) {
             // Go to next frame

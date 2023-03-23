@@ -54,7 +54,7 @@ const endState = {
     gameList[gameId].assets.endBuilding();
 
     this.character = gameList[gameId].assets.endCharacter();
-    this.character.animation = gameList[gameId].assets.endCharacterAnimation();
+    this.character.animation = gameList[gameId].assets.endCharacterAnimation;
 
     if (gameName === 'circleOne') {
       this.preAnimate = true;
@@ -77,6 +77,12 @@ const endState = {
    * Game loop
    */
   update: function () {
+    if (isDebugMode && debugState.end.status) {
+      if (debugState.end.stop) {
+        self.animate = false;
+      }
+    }
+
     // Balloon falling
     if (self.preAnimate) {
       if (self.character.y < 460) {

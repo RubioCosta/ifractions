@@ -65,8 +65,6 @@ const menuState = {
         icon.anchor(0.5, 0.5);
 
         icon.gameId = i;
-        icon.gameName = gameList[i].gameName;
-        icon.gameShape = gameList[i].gameShape;
         icon.iconType = 'game';
 
         this.menuIcons.push(icon);
@@ -81,7 +79,7 @@ const menuState = {
         );
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
-        infoIcon.id = icon.gameName;
+        infoIcon.id = gameList[i].gameName;
         this.menuIcons.push(infoIcon);
       }
 
@@ -94,12 +92,16 @@ const menuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      // console.log('DEBUG');
-      // const s1 = 0;
-      // const c1 = 2;
-      // const s2 = 4;
-      // const sc1 = 6;
-      // this.load(self.menuIcons[sc1]);
+      if (isDebugMode && debugState.menu.status) {
+        // programmatically select a game
+        const id = debugState.menu.id;
+        gameId = id;
+        gameName = gameList[id].gameName;
+        gameShape = gameList[id].gameShape;
+        self.menuIcons =
+          game.lang[gameShape] + ' ' + gameName.slice(-3) == 'One' ? 'I' : 'II';
+        game.state.start('customMenu');
+      }
     }
   },
 
@@ -187,8 +189,8 @@ const menuState = {
         break;
       case 'game':
         gameId = icon.gameId;
-        gameName = icon.gameName;
-        gameShape = icon.gameShape;
+        gameName = gameList[gameId].gameName;
+        gameShape = gameList[gameId].gameShape;
         if (!gameList.find((game) => game.gameName === gameName))
           console.error('Game error: the name of the game is not valid.');
         self.menuIcons = self.lbl_game.name;
@@ -203,8 +205,9 @@ const menuState = {
    * @param {object} icon icon for the game
    */
   showTitle: function (icon) {
-    const number = icon.gameName.slice(-3) == 'One' ? 'I' : 'II';
-    const shape = icon.gameName.slice(0, -3);
+    const number =
+      gameList[icon.gameId].gameName.slice(-3) == 'One' ? 'I' : 'II';
+    const shape = gameList[icon.gameId].gameName.slice(0, -3);
     self.lbl_game.name = game.lang[shape] + ' ' + number;
   },
 

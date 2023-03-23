@@ -62,9 +62,12 @@ const nameState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    // console.log('DEBUG');
-    document.querySelector('.ifr-input').value = 'Laira';
-    this.saveName();
+    if (isDebugMode && debugState.name.status) {
+      // programmatically select a user name
+      document.querySelector('.ifr-input').value =
+        debugState.name.name || 'My User Name';
+      this.saveName();
+    }
   },
 
   /**
@@ -93,7 +96,7 @@ const nameState = {
     document.querySelector('.ifr-input').value = '';
 
     if (audioStatus) game.audio.popSound.play();
-    if (debugMode) console.log('Username: ' + playerName);
+    if (isDebugMode) console.log('Username: ' + playerName);
 
     // FOR MOODLE
     // Calls 'menu' state

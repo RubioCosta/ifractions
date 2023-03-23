@@ -72,13 +72,21 @@ const customMenuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      // console.log('DEBUG');
-      //gameFrame().rect();
-      //gameFrame().point(offsetW, offsetH);
-      // const s1 = 11;
-      // const c1 = 14;
-      // const s2 = 12;
-      // self.load(this.menuIcons[s1]);
+      if (isDebugMode && debugState.customMenu.status) {
+        // programmatically customize a game
+        const { mode, operation, difficulty, label } =
+          debugState.customMenu.getData();
+
+        gameMode = mode;
+        gameOperation = operation;
+        gameDifficulty = difficulty || 1;
+        fractionLabel = label || true;
+
+        curMapPosition = 0; // Map position
+        canGoToNextMapPosition = true; // Move no next point
+        completedLevels = 0; // Reset the game progress when entering a new level
+        game.state.start('map');
+      }
     }
   },
 
@@ -116,7 +124,7 @@ const customMenuState = {
         game.render.all();
         break;
       case 'enter':
-        if (debugMode) {
+        if (isDebugMode) {
           console.log(
             '------------------------------' +
               '\nGame State: ' +

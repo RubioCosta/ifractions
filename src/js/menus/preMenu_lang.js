@@ -53,8 +53,10 @@ const langState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    // console.log('DEBUG');
-    this.setLang('pt_BR');
+    if (isDebugMode && debugState.lang.status) {
+      // programmatically select a language
+      this.setLang(debugState.lang.lang || 'pt_BR');
+    }
   },
 
   /**
@@ -134,7 +136,7 @@ const loadLangState = {
    * Main code
    */
   create: function () {
-    if (debugMode) console.log('Language: ' + langString);
+    if (isDebugMode) console.log('Language: ' + langString);
 
     // Make sure to only ask for player name on the first time oppening the game
     if (this.firstTime == undefined) {

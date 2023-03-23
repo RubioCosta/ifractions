@@ -38,7 +38,7 @@ const mapState = {
       );
     }
 
-    // console.log('DEBUG');
+    // console.log('debugState');
     const xAdjust = 0;
     const yAdjust = 200;
 
@@ -237,7 +237,7 @@ const mapState = {
     //this.character.anchor(0.5, 1);
     game.animation.play(this.character.animation[0]);
 
-    this.count = 0;
+    this.moveCounter = 0;
 
     const speed = 60;
     const xA = this.points.x[curMapPosition];
@@ -255,14 +255,25 @@ const mapState = {
    * Game loop
    */
   update: function () {
-    // console.log('DEBUG');
-    // self.loadGame();
-
     let endUpdate = false;
 
-    self.count++;
+    self.moveCounter++;
 
-    if (self.count > 60) {
+    if (isDebugMode && debugState.end.status) {
+      curMapPosition = 4;
+    }
+
+    if (isDebugMode && debugState.map.status) {
+      // programmatically skip map
+      if (debugState.map.stop) {
+        self.moveCounter--;
+      } else {
+        curMapPosition++;
+        self.loadGame();
+      }
+    }
+
+    if (self.moveCounter > 60) {
       // Wait 1 second before moving or staring a game
 
       if (canGoToNextMapPosition) {
@@ -285,7 +296,7 @@ const mapState = {
 
     if (endUpdate) {
       game.animation.stop(self.character.animation[0]);
-      // console.log('DEBUG');
+
       self.loadGame();
     }
   },

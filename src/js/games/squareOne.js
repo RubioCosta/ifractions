@@ -281,7 +281,7 @@ const squareOne = {
         if (audioStatus) game.audio.okSound.play();
 
         completedLevels++; // Increases number os finished levels
-        if (debugMode) console.log('Completed Levels: ' + completedLevels);
+        if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         // Incorrect answer
         // Displays feedback image and sound
@@ -537,7 +537,7 @@ const squareOne = {
       restart = true; // If any error is found restart the level
     }
 
-    if (debugMode)
+    if (isDebugMode)
       console.log(
         'Stacked blocks: ' +
           total +
