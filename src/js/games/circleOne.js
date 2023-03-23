@@ -130,8 +130,9 @@ const circleOne = {
 
     // Number of circles
     const max =
-      gameOperation == 'Mixed' || gameMode == 'B' ? 6 : mapPosition + 1;
-    const min = gameOperation == 'Mixed' && mapPosition < 2 ? 2 : mapPosition; // Mixed level has at least 2 fractions
+      gameOperation == 'Mixed' || gameMode == 'B' ? 6 : curMapPosition + 1;
+    const min =
+      gameOperation == 'Mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
     const total = game.math.randomInRange(min, max); // Total number of circles
 
     // gameMode 'B' exclusive variables
@@ -484,8 +485,8 @@ const circleOne = {
       if (self.result) self.kid.y -= 2;
 
       if (self.count >= 140) {
-        if (self.result) mapMove = true;
-        else mapMove = false;
+        if (self.result) canGoToNextMapPosition = true;
+        else canGoToNextMapPosition = false;
 
         game.state.start('map');
       }
@@ -701,7 +702,7 @@ const circleOne = {
       '&line_leve=' +
       gameDifficulty +
       '&line_posi=' +
-      mapPosition +
+      curMapPosition +
       '&line_resu=' +
       self.result +
       '&line_time=' +

@@ -25,7 +25,7 @@
  * ..................(game.levels)......................
  * ......................__|__..........................
  * .....................|.|.|.|.........................
- * ...................0,1,2,3,4,5....................... = mapPosition (map positions)
+ * ...................0,1,2,3,4,5....................... = curMapPosition (map positions)
  * ...................|.........|.......................
  * ................(start)....(end).....................
  **************************************************************/
@@ -100,13 +100,13 @@ let fractionLabel = true;
  * When true, the character can move to next position in the map
  * @type {boolean}
  */
-let mapMove;
+let canGoToNextMapPosition;
 
 /**
  * Character position on the map, aka game levels (1..4: valid; 5: end)
  * @type {number}
  */
-let mapPosition;
+let curMapPosition;
 
 /**
  * Number of finished levels in the map

@@ -368,7 +368,7 @@ const squareTwo = {
           game.add
             .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
             .anchor(0.5, 0.5);
-          mapMove = true; // Allow character to move to next level in map state
+          canGoToNextMapPosition = true; // Allow character to move to next level in map state
           completedLevels++;
 
           if (debugMode) console.log('Completed Levels: ' + completedLevels);
@@ -379,7 +379,7 @@ const squareTwo = {
           game.add
             .image(context.canvas.width / 2, context.canvas.height / 2, 'error')
             .anchor(0.5, 0.5);
-          mapMove = false; // Doesnt allow character to move to next level in map state
+          canGoToNextMapPosition = false; // Doesnt allow character to move to next level in map state
         }
 
         self.postScore();
@@ -592,7 +592,7 @@ const squareTwo = {
       '&line_leve=' +
       gameDifficulty +
       '&line_posi=' +
-      mapPosition +
+      curMapPosition +
       '&line_resu=' +
       self.result +
       '&line_time=' +

@@ -225,10 +225,10 @@ const debug = {
 const sendToDatabase = function (extraData) {
   // FOR MOODLE
   if (moodle) {
-    if (self.result) moodleVar.hits[mapPosition - 1]++;
-    else moodleVar.errors[mapPosition - 1]++;
+    if (self.result) moodleVar.hits[curMapPosition - 1]++;
+    else moodleVar.errors[curMapPosition - 1]++;
 
-    moodleVar.time[mapPosition - 1] += game.timer.elapsed;
+    moodleVar.time[curMapPosition - 1] += game.timer.elapsed;
 
     const url = iLMparameters.iLM_PARAM_ServerToGetAnswerURL;
     const grade = '' + getEvaluation();

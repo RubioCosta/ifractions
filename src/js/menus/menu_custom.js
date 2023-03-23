@@ -125,8 +125,8 @@ const customMenuState = {
               '\n------------------------------'
           );
         }
-        mapPosition = 0; // Map position
-        mapMove = true; // Move no next point
+        curMapPosition = 0; // Map position
+        canGoToNextMapPosition = true; // Move no next point
         completedLevels = 0; // Reset the game progress when entering a new level
         game.state.start('map');
         break;

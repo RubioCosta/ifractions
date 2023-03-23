@@ -243,8 +243,8 @@ const updateGlobalVariables = function (infoGame, infoResults) {
   gameDifficulty = parseInt(infoGame['gameDifficulty']);
   fractionLabel = infoGame['fractionLabel'];
   // Update default values
-  mapPosition = 0;
-  mapMove = true;
+  curMapPosition = 0;
+  canGoToNextMapPosition = true;
   completedLevels = 0;
   // If the assignment WAS previously completed calls 'studentReport' after all is loaded.
   if (infoResults) {

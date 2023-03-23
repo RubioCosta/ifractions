@@ -310,8 +310,8 @@ const squareOne = {
       // WHEN REACHED END POSITION calls map state
       if (self.count >= 140) {
         // If CORRECT ANSWER, player goes to next level in map
-        if (self.result) mapMove = true;
-        else mapMove = false;
+        if (self.result) canGoToNextMapPosition = true;
+        else canGoToNextMapPosition = false;
 
         game.state.start('map');
       }
@@ -437,9 +437,9 @@ const squareOne = {
    */
   createStckBlocks: function () {
     let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
-    const max = gameMode == 'B' ? 10 : mapPosition + 4; // Maximum number of stacked blocks for the level
+    const max = gameMode == 'B' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
 
-    const total = game.math.randomInRange(mapPosition + 2, max); // Current number of stacked blocks for the level
+    const total = game.math.randomInRange(curMapPosition + 2, max); // Current number of stacked blocks for the level
 
     self.floor.correctXA =
       self.startX + self.defaultBlockWidth * self.direc_level;
@@ -542,7 +542,7 @@ const squareOne = {
         'Stacked blocks: ' +
           total +
           ' (min: ' +
-          (mapPosition + 2) +
+          (curMapPosition + 2) +
           ', max: ' +
           max +
           ')'
@@ -755,7 +755,7 @@ const squareOne = {
       '&line_leve=' +
       gameDifficulty +
       '&line_posi=' +
-      mapPosition +
+      curMapPosition +
       '&line_resu=' +
       self.result +
       '&line_time=' +

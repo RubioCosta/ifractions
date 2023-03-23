@@ -225,7 +225,7 @@ const mapState = {
     // Map positions
     for (let i = 1; i < this.points.x.length - 1; i++) {
       const aux =
-        i < mapPosition || (mapMove && i == mapPosition)
+        i < curMapPosition || (canGoToNextMapPosition && i == curMapPosition)
           ? 'place_on'
           : 'place_off';
 
@@ -250,8 +250,8 @@ const mapState = {
     if (gameName == 'squareOne' || gameName == 'scaleOne') {
       if (gameOperation == 'Plus') {
         this.character = game.add.sprite(
-          this.points.x[mapPosition],
-          this.points.y[mapPosition],
+          this.points.x[curMapPosition],
+          this.points.y[curMapPosition],
           'tractor',
           0,
           0.75
@@ -259,8 +259,8 @@ const mapState = {
         this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
       } else {
         this.character = game.add.sprite(
-          this.points.x[mapPosition],
-          this.points.y[mapPosition],
+          this.points.x[curMapPosition],
+          this.points.y[curMapPosition],
           'tractor',
           10,
           0.75
@@ -271,8 +271,8 @@ const mapState = {
       this.character.rotate = -30; // 25 anticlock
     } else {
       this.character = game.add.sprite(
-        this.points.x[mapPosition],
-        this.points.y[mapPosition],
+        this.points.x[curMapPosition],
+        this.points.y[curMapPosition],
         'kid_run',
         0,
         0.6
@@ -286,10 +286,10 @@ const mapState = {
     this.count = 0;
 
     const speed = 60;
-    const xA = this.points.x[mapPosition];
-    const yA = this.points.y[mapPosition];
-    const xB = this.points.x[mapPosition + 1];
-    const yB = this.points.y[mapPosition + 1];
+    const xA = this.points.x[curMapPosition];
+    const yA = this.points.y[curMapPosition];
+    const xB = this.points.x[curMapPosition + 1];
+    const yB = this.points.y[curMapPosition + 1];
     self.speedX = (xB - xA) / speed;
     self.speedY = (yA - yB) / speed;
 
@@ -311,18 +311,18 @@ const mapState = {
     if (self.count > 60) {
       // Wait 1 second before moving or staring a game
 
-      if (mapMove) {
+      if (canGoToNextMapPosition) {
         // Move character on screen for 1 second
         self.character.x += self.speedX;
         self.character.y -= self.speedY;
-        if (Math.ceil(self.character.x) >= self.points.x[mapPosition + 1]) {
+        if (Math.ceil(self.character.x) >= self.points.x[curMapPosition + 1]) {
           // Reached next map position
-          mapMove = false;
-          mapPosition++; // Set new next position
+          canGoToNextMapPosition = false;
+          curMapPosition++; // Set new next position
         }
       }
 
-      if (!mapMove) {
+      if (!canGoToNextMapPosition) {
         endUpdate = true;
       }
     }
@@ -340,7 +340,7 @@ const mapState = {
    * Calls game state
    */
   loadGame: function () {
-    if (mapPosition <= 4) game.state.start('' + gameName);
+    if (curMapPosition <= 4) game.state.start('' + gameName);
     else game.state.start('end');
   },
 
