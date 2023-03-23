@@ -58,20 +58,20 @@ const menuState = {
 
       const offset = game.math.getOffset(
         context.canvas.width,
-        info.gameType.length
+        info.gameName.length
       );
 
-      for (let i = 0, x = offset; i < info.gameType.length; i++, x += offset) {
+      for (let i = 0, x = offset; i < info.gameName.length; i++, x += offset) {
         const icon = game.add.image(
           x,
           context.canvas.height / 2 - 70,
-          info.gameTypeUrl[i],
+          info.gameNameIconName[i],
           1.5
         );
         icon.anchor(0.5, 0.5);
 
         icon.gameShape = info.gameShape[i];
-        icon.gameType = info.gameType[i];
+        icon.gameName = info.gameName[i];
         icon.iconType = 'game';
 
         this.menuIcons.push(icon);
@@ -86,7 +86,7 @@ const menuState = {
         );
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
-        infoIcon.id = icon.gameType;
+        infoIcon.id = icon.gameName;
         this.menuIcons.push(infoIcon);
       }
 
@@ -153,12 +153,12 @@ const menuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      console.log('DEBUG');
-      const s1 = 0;
-      const c1 = 2;
-      const s2 = 4;
-      const sc1 = 6;
-      this.load(self.menuIcons[sc1]);
+      // console.log('DEBUG');
+      // const s1 = 0;
+      // const c1 = 2;
+      // const s2 = 4;
+      // const sc1 = 6;
+      // this.load(self.menuIcons[sc1]);
     }
   },
 
@@ -194,8 +194,8 @@ const menuState = {
         break;
       case 'game':
         gameShape = icon.gameShape;
-        gameType = icon.gameType;
-        if (!info.gameType.includes(gameType))
+        gameName = icon.gameName;
+        if (!info.gameName.includes(gameName))
           console.error('Game error: the name of the game is not valid.');
         self.menuIcons = self.lbl_game.name;
         game.state.start('customMenu');
@@ -209,9 +209,9 @@ const menuState = {
    * @param {object} icon icon for the game
    */
   showTitle: function (icon) {
-    const number = icon.gameType.slice(-3) == 'One' ? 'I' : 'II';
-
-    self.lbl_game.name = game.lang[icon.gameShape] + ' ' + number;
+    const number = icon.gameName.slice(-3) == 'One' ? 'I' : 'II';
+    const shape = icon.gameName.slice(0, -3);
+    self.lbl_game.name = game.lang[shape] + ' ' + number;
   },
 
   /**

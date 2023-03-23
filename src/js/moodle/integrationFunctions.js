@@ -40,8 +40,8 @@ function getAnswer() {
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') {
     // Student - sending results
     str +=
-      'gameType:' +
-      gameType +
+      'gameName:' +
+      gameName +
       '\ngameShape:' +
       gameShape +
       '\ngameMode:' +
@@ -67,7 +67,7 @@ function getAnswer() {
     }
   } else {
     // Professor - creating new assignment
-    if (!gameType) {
+    if (!gameName) {
       alert(game.lang.error_must_select_game);
       return x;
     }
@@ -75,8 +75,8 @@ function getAnswer() {
     moodleVar.errors = [0, 0, 0, 0];
     moodleVar.time = [0, 0, 0, 0];
     str +=
-      'gameType:' +
-      gameType +
+      'gameName:' +
+      gameName +
       '\ngameShape:' +
       gameShape +
       '\ngameMode:' +
@@ -236,7 +236,7 @@ const breakString = function (text) {
  */
 const updateGlobalVariables = function (infoGame, infoResults) {
   // Update game variables to content received from game file
-  gameType = infoGame['gameType'];
+  gameName = infoGame['gameName'];
   gameShape = infoGame['gameShape'];
   gameMode = infoGame['gameMode'];
   gameOperation = infoGame['gameOperation'];

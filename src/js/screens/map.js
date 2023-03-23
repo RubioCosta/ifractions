@@ -38,7 +38,7 @@ const mapState = {
       );
     }
 
-    console.log('DEBUG');
+    // console.log('DEBUG');
     const xAdjust = 0;
     const yAdjust = 200;
 
@@ -186,7 +186,7 @@ const mapState = {
     ).align = 'right';
 
     // Map positions
-    if (gameType == 'squareOne' || gameType == 'scaleOne') {
+    if (gameName == 'squareOne' || gameName == 'scaleOne') {
       // Garage
       game.add
         .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
@@ -247,7 +247,7 @@ const mapState = {
     }
 
     // Game Character
-    if (gameType == 'squareOne' || gameType == 'scaleOne') {
+    if (gameName == 'squareOne' || gameName == 'scaleOne') {
       if (gameOperation == 'Plus') {
         this.character = game.add.sprite(
           this.points.x[mapPosition],
@@ -301,8 +301,8 @@ const mapState = {
    * Game loop
    */
   update: function () {
-    console.log('DEBUG');
-    self.loadGame();
+    // console.log('DEBUG');
+    // self.loadGame();
 
     let endUpdate = false;
 
@@ -331,8 +331,8 @@ const mapState = {
 
     if (endUpdate) {
       game.animation.stop(self.character.animation[0]);
-      console.log('DEBUG');
-      //self.loadGame();
+      // console.log('DEBUG');
+      self.loadGame();
     }
   },
 
@@ -340,7 +340,7 @@ const mapState = {
    * Calls game state
    */
   loadGame: function () {
-    if (mapPosition <= 4) game.state.start('' + gameType);
+    if (mapPosition <= 4) game.state.start('' + gameName);
     else game.state.start('end');
   },
 

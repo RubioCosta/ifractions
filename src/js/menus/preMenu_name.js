@@ -62,7 +62,7 @@ const nameState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    console.log('DEBUG');
+    // console.log('DEBUG');
     document.querySelector('.ifr-input').value = 'Laira';
     this.saveName();
   },

@@ -51,7 +51,7 @@ const endState = {
     game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
 
     // Level character
-    switch (gameType) {
+    switch (gameName) {
       case 'circleOne':
         this.preAnimate = true;
         this.animate = false;

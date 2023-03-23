@@ -4,7 +4,7 @@
 
 /** [GAME STATE]
  *
- * .squareTwo. = gameType
+ * .squareTwo. = gameName
  * .../...\...
  * ..A.....B.. = gameMode
  * ....\./....

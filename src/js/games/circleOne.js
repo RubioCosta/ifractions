@@ -4,7 +4,7 @@
 
 /** [GAME STATE]
  *
- * .....circleOne.... = gameType
+ * .....circleOne.... = gameName
  * ....../....\......
  * .....A......B..... = gameMode
  * .......\./........

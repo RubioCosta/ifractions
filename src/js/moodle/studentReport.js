@@ -30,7 +30,7 @@ const studentReport = {
       game.lang.results,
       textStyles.h1_green
     );
-    game.add.image(x - 40, y - 70, info.all[gameType].gameTypeUrl, 0.8);
+    game.add.image(x - 40, y - 70, info.all[gameName].gameNameIconName, 0.8);
 
     // Game info
     text =
@@ -40,7 +40,7 @@ const studentReport = {
       game.lang.game +
       ': ' +
       text +
-      (gameType.slice(-3) == 'One' ? ' I' : ' II');
+      (gameName.slice(-3) == 'One' ? ' I' : ' II');
     game.add.text(190, y - 50, text, textStyles.h4_brown).align = 'left';
     game.add.text(
       190,

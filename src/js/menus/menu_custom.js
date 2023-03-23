@@ -12,8 +12,8 @@ const customMenuState = {
    */
   preload: function () {
     // LOADING MEDIA
-    game.load.sprite(url[gameType].sprite);
-    game.load.image(url[gameType].image);
+    game.load.sprite(url[gameName].sprite);
+    game.load.image(url[gameName].image);
   },
 
   /**
@@ -45,7 +45,7 @@ const customMenuState = {
       // Loads navigation icons
       navigationIcons.add(true, false, false, true, true, 'menu', false);
 
-      const curGame = info.all[gameType];
+      const curGame = info.all[gameName];
 
       this.menuIcons = [];
 
@@ -71,13 +71,13 @@ const customMenuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      console.log('DEBUG');
+      // console.log('DEBUG');
       //gameFrame().rect();
       //gameFrame().point(offsetW, offsetH);
-      const s1 = 11;
-      const c1 = 14;
-      const s2 = 12;
-      self.load(this.menuIcons[s1]);
+      // const s1 = 11;
+      // const c1 = 14;
+      // const s2 = 12;
+      // self.load(this.menuIcons[s1]);
     }
   },
 
@@ -119,7 +119,7 @@ const customMenuState = {
           console.log(
             '------------------------------' +
               '\nGame State: ' +
-              gameType +
+              gameName +
               '\nGame Mode: ' +
               gameMode +
               '\n------------------------------'
@@ -274,7 +274,7 @@ const customMenuState = {
 
     let auxText;
 
-    if (gameType == 'squareTwo') {
+    if (gameName == 'squareTwo') {
       auxText = game.lang.aux_rectangle;
       game.add.text(
         x + 5 * offsetW + 10,
@@ -315,8 +315,8 @@ const customMenuState = {
     x = gameFrame().x + offsetW;
     y = gameFrame().y + offsetH / 2;
 
-    for (let i = 0; i < curGame.gameModeUrl.length; i++, y += offsetH) {
-      const icon = game.add.sprite(x, y, curGame.gameModeUrl[i], 0, 1, 1);
+    for (let i = 0; i < curGame.gameModeIconName.length; i++, y += offsetH) {
+      const icon = game.add.sprite(x, y, curGame.gameModeIconName[i], 0, 1, 1);
       icon.anchor(0.5, 0.5);
 
       icon.gameMode = curGame.gameMode[i];
@@ -343,7 +343,7 @@ const customMenuState = {
 
     // Placing math operation icons
     for (let i = 0; i < curGame.gameOperation.length; i++, y += offsetH) {
-      icon = game.add.sprite(x, y, curGame.gameOperationUrl[i], 0, 1, 1);
+      icon = game.add.sprite(x, y, curGame.gameOperationIconName[i], 0, 1, 1);
       icon.anchor(0.5, 0.5);
 
       icon.gameOperation = curGame.gameOperation[i];
@@ -365,7 +365,7 @@ const customMenuState = {
 
     y = gameFrame().y + offsetH / 3;
 
-    if (gameType != 'squareOne') x -= 40;
+    if (gameName != 'squareOne') x -= 40;
 
     for (let i = 0; i < curGame.gameDifficulty; i++) {
       // Parameters
@@ -625,7 +625,7 @@ const customMenuState = {
     const element =
       icon.id == 'gameOperation'
         ? self.infoBoxContent[icon.id]
-        : self.infoBoxContent[icon.id][gameType];
+        : self.infoBoxContent[icon.id][gameName];
 
     let msg =
       '<h3>' +

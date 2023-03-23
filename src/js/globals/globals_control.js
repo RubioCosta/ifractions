@@ -6,7 +6,7 @@
  * Generating game levels in menu:
  * .....................................................
  * ...............square....................circle...... }                   = gameShape
- * .........../...........\....................|........ } = gameType (game)
+ * .........../...........\....................|........ } = gameName (game)
  * ........One.............Two................One....... }
  * ......./...\.........../...\............./....\......
  * ......A.....B.........A.....B...........A......B..... = gameMode (game mode)
@@ -46,12 +46,12 @@ const debugMode = false;
 const moodle = false;
 
 /**
- * Name of the selected game.<br>
+ * Selected game name.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
  *
  * @type {string}
  */
-let gameType;
+let gameName;
 
 /**
  * Used for text and game information.<br>

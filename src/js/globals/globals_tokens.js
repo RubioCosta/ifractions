@@ -1,4 +1,4 @@
-const medSrc = 'src/assets/img/'; // Base directory for media
+const baseUrl = 'src/assets/img/'; // Base directory for media
 
 /**
  * Metadata for all games
@@ -7,73 +7,80 @@ const medSrc = 'src/assets/img/'; // Base directory for media
 const info = {
   all: {
     squareOne: {
-      gameShape: 'square',
-      gameType: 'squareOne',
-      gameTypeUrl: 'game0',
+      gameName: 'squareOne',
       gameMode: ['A', 'B'],
-      gameModeUrl: ['mode0', 'mode1'],
       gameOperation: ['Plus', 'Minus'],
-      gameOperationUrl: ['operation_plus', 'operation_minus'],
       gameDifficulty: 3,
+
+      gameShape: 'square',
+
+      gameNameIconName: 'game0',
+      gameModeIconName: ['mode0', 'mode1'],
+      gameOperationIconName: ['operation_plus', 'operation_minus'],
     },
 
     circleOne: {
-      gameShape: 'circle',
-      gameType: 'circleOne',
-      gameTypeUrl: 'game1',
+      gameName: 'circleOne',
       gameMode: ['A', 'B'],
-      gameModeUrl: ['mode2', 'mode3'],
       gameOperation: ['Plus', 'Minus', 'Mixed'],
-      gameOperationUrl: [
+      gameDifficulty: 5,
+
+      gameShape: 'circle',
+
+      gameNameIconName: 'game1',
+      gameModeIconName: ['mode2', 'mode3'],
+      gameOperationIconName: [
         'operation_plus',
         'operation_minus',
         'operation_mixed',
       ],
-      gameDifficulty: 5,
     },
 
     squareTwo: {
       gameShape: 'square',
-      gameType: 'squareTwo',
-      gameTypeUrl: 'game2',
+      gameName: 'squareTwo',
+      gameNameIconName: 'game2',
       gameMode: ['A', 'B'],
-      gameModeUrl: ['mode4', 'mode5'],
+      gameModeIconName: ['mode4', 'mode5'],
       gameOperation: ['Equals'],
-      gameOperationUrl: ['operation_equals'],
+      gameOperationIconName: ['operation_equals'],
       gameDifficulty: 5,
     },
 
     scaleOne: {
-      gameShape: 'scale',
-      gameType: 'scaleOne',
-      gameTypeUrl: 'game0',
+      gameName: 'scaleOne',
       gameMode: ['A'],
-      gameModeUrl: ['mode0'],
       gameOperation: ['Plus'],
-      gameOperationUrl: ['operation_plus'],
       gameDifficulty: 5,
+
+      gameShape: 'scale',
+
+      gameNameIconName: 'game0',
+      gameModeIconName: ['mode0'],
+      gameOperationIconName: ['operation_plus'],
     },
   },
   gameShape: [],
-  gameType: [],
-  gameTypeUrl: [],
+  gameName: [],
   gameMode: [],
-  gameModeUrl: [],
   gameOperation: [],
-  gameOperationUrl: [],
   gameDifficulty: [],
+
+  gameNameIconName: [],
+  gameModeIconName: [],
+  gameOperationIconName: [],
 };
 
 // Called once when the game starts
 (function () {
   for (key in info.all) {
     info.gameShape.push(info.all[key].gameShape);
-    info.gameType.push(info.all[key].gameType);
-    info.gameTypeUrl.push(info.all[key].gameTypeUrl);
+    info.gameName.push(info.all[key].gameName);
+    info.gameNameIconName.push(info.all[key].gameNameIconName);
     info.gameMode.push(info.all[key].gameMode);
-    info.gameModeUrl.push(info.all[key].gameMode);
+    info.gameModeIconName.push(info.all[key].gameMode);
     info.gameOperation.push(info.all[key].gameOperation);
-    info.gameOperationUrl.push(info.all[key].gameOperationUrl);
+    info.gameOperationIconName.push(info.all[key].gameOperationIconName);
     info.gameDifficulty.push(info.all[key].gameDifficulty);
   }
 })();
@@ -278,96 +285,96 @@ const url = {
      */
     image: [
       // Scene
-      ['bgimage', medSrc + 'scene/bg.jpg'],
-      ['bg_snow', medSrc + 'scene/bg_snow.png'],
-      ['bgmap', medSrc + 'scene/bg_map.png'],
-      ['broken_sign', medSrc + 'scene/broken_sign.png'],
-      ['bush', medSrc + 'scene/bush.png'],
-      ['cloud', medSrc + 'scene/cloud.png'],
-      ['floor', medSrc + 'scene/floor.png'],
-      ['floor_stone', medSrc + 'scene/floor_stone.png'],
-      ['floor_stone_left', medSrc + 'scene/floor_stone_left.png'],
-      ['floor_stone_right', medSrc + 'scene/floor_stone_right.png'],
-      ['wood_shelf', medSrc + 'scene/wood_shelf.png'],
-      ['place_off', medSrc + 'scene/place_off.png'],
-      ['place_on', medSrc + 'scene/place_on.png'],
-      ['rock', medSrc + 'scene/rock.png'],
-      ['road', medSrc + 'scene/road.png'],
-      ['sign', medSrc + 'scene/sign.png'],
-      ['tree1', medSrc + 'scene/tree.png'],
-      ['tree2', medSrc + 'scene/tree2.png'],
-      ['tree3', medSrc + 'scene/tree3.png'],
-      ['tree4', medSrc + 'scene/tree4.png'],
+      ['bgimage', baseUrl + 'scene/bg.jpg'],
+      ['bg_snow', baseUrl + 'scene/bg_snow.png'],
+      ['bgmap', baseUrl + 'scene/bg_map.png'],
+      ['broken_sign', baseUrl + 'scene/broken_sign.png'],
+      ['bush', baseUrl + 'scene/bush.png'],
+      ['cloud', baseUrl + 'scene/cloud.png'],
+      ['floor_stone_left', baseUrl + 'scene/floor_stone_left.png'],
+      ['floor_stone_right', baseUrl + 'scene/floor_stone_right.png'],
+      ['floor_stone', baseUrl + 'scene/floor_stone.png'],
+      ['floor', baseUrl + 'scene/floor.png'],
+      ['wood_shelf', baseUrl + 'scene/wood_shelf.png'],
+      ['place_off', baseUrl + 'scene/place_off.png'],
+      ['place_on', baseUrl + 'scene/place_on.png'],
+      ['rock', baseUrl + 'scene/rock.png'],
+      ['road', baseUrl + 'scene/road.png'],
+      ['sign', baseUrl + 'scene/sign.png'],
+      ['tree1', baseUrl + 'scene/tree.png'],
+      ['tree2', baseUrl + 'scene/tree2.png'],
+      ['tree3', baseUrl + 'scene/tree3.png'],
+      ['tree4', baseUrl + 'scene/tree4.png'],
       // Flags
-      ['flag_BR', medSrc + 'flag/br.png'],
-      ['flag_FR', medSrc + 'flag/fr.png'],
-      ['flag_IT', medSrc + 'flag/it.png'],
-      ['flag_PE', medSrc + 'flag/pe.png'],
-      ['flag_US', medSrc + 'flag/us.png'],
+      ['flag_BR', baseUrl + 'flag/br.png'],
+      ['flag_FR', baseUrl + 'flag/fr.png'],
+      ['flag_IT', baseUrl + 'flag/it.png'],
+      ['flag_PE', baseUrl + 'flag/pe.png'],
+      ['flag_US', baseUrl + 'flag/us.png'],
       // Navigation icons on the top of the page
-      ['back', medSrc + 'navig_icon/back.png'],
-      ['help', medSrc + 'navig_icon/help.png'],
-      ['home', medSrc + 'navig_icon/home.png'],
-      ['language', medSrc + 'navig_icon/language.png'],
-      ['menu', medSrc + 'navig_icon/menu.png'],
+      ['back', baseUrl + 'navig_icon/back.png'],
+      ['help', baseUrl + 'navig_icon/help.png'],
+      ['home', baseUrl + 'navig_icon/home.png'],
+      ['language', baseUrl + 'navig_icon/language.png'],
+      ['menu', baseUrl + 'navig_icon/menu.png'],
       // Interactive icons
-      ['arrow_down', medSrc + 'interac_icon/down.png'],
-      ['close', medSrc + 'interac_icon/close.png'],
-      ['error', medSrc + 'interac_icon/error.png'],
-      ['help_pointer', medSrc + 'interac_icon/pointer.png'],
-      ['info', medSrc + 'interac_icon/info.png'],
-      ['ok', medSrc + 'interac_icon/ok.png'],
-      ['button', medSrc + 'interac_icon/button.png'],
+      ['arrow_down', baseUrl + 'interac_icon/down.png'],
+      ['close', baseUrl + 'interac_icon/close.png'],
+      ['error', baseUrl + 'interac_icon/error.png'],
+      ['help_pointer', baseUrl + 'interac_icon/pointer.png'],
+      ['info', baseUrl + 'interac_icon/info.png'],
+      ['ok', baseUrl + 'interac_icon/ok.png'],
+      ['button', baseUrl + 'interac_icon/button.png'],
       // Menu icons - Games
-      ['game0', medSrc + 'levels/squareOne.png'], // Square I
-      ['game1', medSrc + 'levels/circleOne.png'], // Circle I
-      ['game2', medSrc + 'levels/squareTwo.png'], // Square II
+      ['game0', baseUrl + 'levels/squareOne.png'], // Square I
+      ['game1', baseUrl + 'levels/circleOne.png'], // Circle I
+      ['game2', baseUrl + 'levels/squareTwo.png'], // Square II
       // Menu icons - Info box
-      ['c1-A', medSrc + 'info_box/c1-A.png'],
-      ['c1-A-h', medSrc + 'info_box/c1-A-h.png'],
-      ['c1-B-h', medSrc + 'info_box/c1-B-h.png'],
-      ['c1-diff-1', medSrc + 'info_box/c1-diff-1.png'],
-      ['c1-diff-5', medSrc + 'info_box/c1-diff-5.png'],
-      ['c1-label', medSrc + 'info_box/c1-label.png'],
-      ['map-c1s2', medSrc + 'info_box/map-c1s2.png'],
-      ['map-s1', medSrc + 'info_box/map-s1.png'],
-      ['s1-A', medSrc + 'info_box/s1-A.png'],
-      ['s1-A-h', medSrc + 'info_box/s1-A-h.png'],
-      ['s1-B-h', medSrc + 'info_box/s1-B-h.png'],
-      ['s1-diff-1', medSrc + 'info_box/s1-diff-1.png'],
-      ['s1-diff-3', medSrc + 'info_box/s1-diff-3.png'],
-      ['s1-label', medSrc + 'info_box/s1-label.png'],
-      ['s2', medSrc + 'info_box/s2.png'],
-      ['s2-A-h', medSrc + 'info_box/s2-A-h.png'],
-      ['s2-B-h', medSrc + 'info_box/s2-B-h.png'],
-      ['s2-diff-1', medSrc + 'info_box/s2-diff-1.png'],
-      ['s2-diff-5', medSrc + 'info_box/s2-diff-5.png'],
-      ['s2-label', medSrc + 'info_box/s2-label.png'],
-      ['operation_plus', medSrc + 'info_box/operation_plus.png'],
-      ['operation_minus', medSrc + 'info_box/operation_minus.png'],
-      ['operation_mixed', medSrc + 'info_box/operation_mixed.png'],
-      ['operation_equals', medSrc + 'info_box/operation_equals.png'],
+      ['c1-A', baseUrl + 'info_box/c1-A.png'],
+      ['c1-A-h', baseUrl + 'info_box/c1-A-h.png'],
+      ['c1-B-h', baseUrl + 'info_box/c1-B-h.png'],
+      ['c1-diff-1', baseUrl + 'info_box/c1-diff-1.png'],
+      ['c1-diff-5', baseUrl + 'info_box/c1-diff-5.png'],
+      ['c1-label', baseUrl + 'info_box/c1-label.png'],
+      ['map-c1s2', baseUrl + 'info_box/map-c1s2.png'],
+      ['map-s1', baseUrl + 'info_box/map-s1.png'],
+      ['s1-A', baseUrl + 'info_box/s1-A.png'],
+      ['s1-A-h', baseUrl + 'info_box/s1-A-h.png'],
+      ['s1-B-h', baseUrl + 'info_box/s1-B-h.png'],
+      ['s1-diff-1', baseUrl + 'info_box/s1-diff-1.png'],
+      ['s1-diff-3', baseUrl + 'info_box/s1-diff-3.png'],
+      ['s1-label', baseUrl + 'info_box/s1-label.png'],
+      ['s2', baseUrl + 'info_box/s2.png'],
+      ['s2-A-h', baseUrl + 'info_box/s2-A-h.png'],
+      ['s2-B-h', baseUrl + 'info_box/s2-B-h.png'],
+      ['s2-diff-1', baseUrl + 'info_box/s2-diff-1.png'],
+      ['s2-diff-5', baseUrl + 'info_box/s2-diff-5.png'],
+      ['s2-label', baseUrl + 'info_box/s2-label.png'],
+      ['operation_plus', baseUrl + 'info_box/operation_plus.png'],
+      ['operation_minus', baseUrl + 'info_box/operation_minus.png'],
+      ['operation_mixed', baseUrl + 'info_box/operation_mixed.png'],
+      ['operation_equals', baseUrl + 'info_box/operation_equals.png'],
     ],
     sprite: [
       // Game Sprites
-      ['kid_walk', medSrc + 'character/kid/walk.png', 26],
+      ['kid_walk', baseUrl + 'character/kid/walk.png', 26],
       // Navigation icons on the top of the page
-      ['audio', medSrc + 'navig_icon/audio.png', 2],
+      ['audio', baseUrl + 'navig_icon/audio.png', 2],
       // Interactive icons
-      ['select', medSrc + 'interac_icon/selection_box.png', 2],
-      ['btn_square', medSrc + 'interac_icon/button_square.png', 2],
+      ['select', baseUrl + 'interac_icon/selection_box.png', 2],
+      ['btn_square', baseUrl + 'interac_icon/button_square.png', 2],
       // Menu icons - Game modes
-      ['mode0', medSrc + 'levels/squareOne_1.png', 2], // Square I : A
-      ['mode1', medSrc + 'levels/squareOne_2.png', 2], // Square I : B
-      ['mode2', medSrc + 'levels/circleOne_1.png', 2], // Circle I : A
-      ['mode3', medSrc + 'levels/circleOne_2.png', 2], // Circle I : B
-      ['mode4', medSrc + 'levels/squareTwo_1.png', 2], // Square II : A
-      ['mode5', medSrc + 'levels/squareTwo_2.png', 2], // Square II : B
+      ['mode0', baseUrl + 'levels/squareOne_1.png', 2], // Square I : A
+      ['mode1', baseUrl + 'levels/squareOne_2.png', 2], // Square I : B
+      ['mode2', baseUrl + 'levels/circleOne_1.png', 2], // Circle I : A
+      ['mode3', baseUrl + 'levels/circleOne_2.png', 2], // Circle I : B
+      ['mode4', baseUrl + 'levels/squareTwo_1.png', 2], // Square II : A
+      ['mode5', baseUrl + 'levels/squareTwo_2.png', 2], // Square II : B
       // Menu icons - Math operations
-      ['operation_plus', medSrc + 'levels/operation_plus.png', 2], // Square/circle I : right
-      ['operation_minus', medSrc + 'levels/operation_minus.png', 2], // Square/circle I : left
-      ['operation_mixed', medSrc + 'levels/operation_mixed.png', 2], // Circle I : mixed
-      ['operation_equals', medSrc + 'levels/operation_equals.png', 2], // Square II : equals
+      ['operation_plus', baseUrl + 'levels/operation_plus.png', 2], // Square/circle I : right
+      ['operation_minus', baseUrl + 'levels/operation_minus.png', 2], // Square/circle I : left
+      ['operation_mixed', baseUrl + 'levels/operation_mixed.png', 2], // Circle I : mixed
+      ['operation_equals', baseUrl + 'levels/operation_equals.png', 2], // Square II : equals
     ],
     audio: [
       // Sound effects
@@ -383,57 +390,57 @@ const url = {
   squareOne: {
     image: [
       // Map buildings
-      ['farm', medSrc + 'scene/farm.png'],
-      ['garage', medSrc + 'scene/garage.png'],
+      ['farm', baseUrl + 'scene/farm.png'],
+      ['garage', baseUrl + 'scene/garage.png'],
     ],
     sprite: [
       // Game sprites
-      ['tractor', medSrc + 'character/tractor/tractor.png', 15],
+      ['tractor', baseUrl + 'character/tractor/tractor.png', 15],
     ],
     audio: [],
   },
   squareTwo: {
     image: [
       // Map buildings
-      ['house', medSrc + 'scene/house.png'],
-      ['school', medSrc + 'scene/school.png'],
+      ['house', baseUrl + 'scene/house.png'],
+      ['school', baseUrl + 'scene/school.png'],
     ],
     sprite: [
       // Game sprites
-      ['kid_standing', medSrc + 'character/kid/lost.png', 6],
-      ['kid_run', medSrc + 'character/kid/run.png', 12],
+      ['kid_standing', baseUrl + 'character/kid/lost.png', 6],
+      ['kid_run', baseUrl + 'character/kid/run.png', 12],
     ],
     audio: [],
   },
   circleOne: {
     image: [
       // Map buildings
-      ['house', medSrc + 'scene/house.png'],
-      ['school', medSrc + 'scene/school.png'],
+      ['house', baseUrl + 'scene/house.png'],
+      ['school', baseUrl + 'scene/school.png'],
       // Game images
-      ['balloon', medSrc + 'character/balloon/airballoon_upper.png'],
-      ['balloon_basket', medSrc + 'character/balloon/airballoon_base.png'],
+      ['balloon', baseUrl + 'character/balloon/airballoon_upper.png'],
+      ['balloon_basket', baseUrl + 'character/balloon/airballoon_base.png'],
     ],
     sprite: [
       // Game sprites
-      ['kid_run', medSrc + 'character/kid/run.png', 12],
+      ['kid_run', baseUrl + 'character/kid/run.png', 12],
     ],
     audio: [],
   },
   scaleOne: {
     image: [
       // Map buildings
-      ['farm', medSrc + 'scene/farm.png'],
-      ['garage', medSrc + 'scene/garage.png'],
+      ['farm', baseUrl + 'scene/farm.png'],
+      ['garage', baseUrl + 'scene/garage.png'],
 
-      ['scale_base', medSrc + 'character/scale/scale_base.png'],
-      ['scale_top', medSrc + 'character/scale/scale_top.png'],
-      ['scale_plate', medSrc + 'character/scale/scale_plate.png'],
+      ['scale_base', baseUrl + 'character/scale/scale_base.png'],
+      ['scale_top', baseUrl + 'character/scale/scale_top.png'],
+      ['scale_plate', baseUrl + 'character/scale/scale_plate.png'],
     ],
     sprite: [
       // Game sprites
-      ['tractor', medSrc + 'character/tractor/tractor.png', 15],
-      ['floor_snow', medSrc + 'scene/floor_snow.png', 9],
+      ['tractor', baseUrl + 'character/tractor/tractor.png', 15],
+      ['floor_snow', baseUrl + 'scene/floor_snow.png', 9],
     ],
     audio: [],
   },

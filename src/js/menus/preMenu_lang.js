@@ -53,7 +53,7 @@ const langState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    console.log('DEBUG');
+    // console.log('DEBUG');
     this.setLang('pt_BR');
   },
 
