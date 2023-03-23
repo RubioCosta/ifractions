@@ -63,14 +63,14 @@ const metadata = {
       gameName: 'scaleOne',
       gameMode: ['A'],
       gameOperation: ['Plus'],
-      gameDifficulty: 5,
+      gameDifficulty: 1,
 
       // info
       gameShape: 'noShape',
 
       // menu icon data
-      gameNameIconName: 'game0',
-      gameModeIconName: ['mode0'],
+      gameNameIconName: 'game3',
+      gameModeIconName: ['mode6'],
       gameOperationIconName: ['operation_plus'],
     },
   },
@@ -348,6 +348,7 @@ const url = {
       ['game0', baseUrl + 'levels/squareOne.png'], // Square I
       ['game1', baseUrl + 'levels/circleOne.png'], // Circle I
       ['game2', baseUrl + 'levels/squareTwo.png'], // Square II
+      ['game3', baseUrl + 'levels/scaleOne.png'], // Scale I
       // Menu icons - Info box
       ['c1-A', baseUrl + 'info_box/c1-A.png'],
       ['c1-A-h', baseUrl + 'info_box/c1-A-h.png'],
@@ -389,6 +390,7 @@ const url = {
       ['mode3', baseUrl + 'levels/circleOne_2.png', 2], // Circle I : B
       ['mode4', baseUrl + 'levels/squareTwo_1.png', 2], // Square II : A
       ['mode5', baseUrl + 'levels/squareTwo_2.png', 2], // Square II : B
+      ['mode6', baseUrl + 'levels/scaleOne_1.png', 2], // Scale I : A
       // Menu icons - Math operations
       ['operation_plus', baseUrl + 'levels/operation_plus.png', 2], // Square/circle I : right
       ['operation_minus', baseUrl + 'levels/operation_minus.png', 2], // Square/circle I : left
