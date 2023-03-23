@@ -56,10 +56,20 @@ const gameList = [
           .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
           .anchor(0.4, 0.7);
       },
+      endCharacterAnimation: () =>
+        animation === 'Plus'
+          ? ['move', [0, 1, 2, 3, 4], 4]
+          : ['move', [10, 11, 12, 13, 14], 4],
+      endCharacter: (operation) => {
+        const char = game.add.sprite(0, 490, 'tractor', 0, 0.7);
+        char.anchor(0.5, 0.5);
+        if (operation === 'Plus') char.curFrame = 10;
+        return char;
+      },
+      endBuilding: () => game.add.image(650, 260, 'farm', 1.1),
     },
   },
   {
-    // game data
     gameName: 'circleOne',
     gameMode: ['A', 'B'],
     gameOperation: ['Plus', 'Minus', 'Mixed'],
@@ -76,10 +86,10 @@ const gameList = [
         'operation_minus',
         'operation_mixed',
       ],
-      mapCharacterAnimation: (operation) => {
+      mapCharacterAnimation: () => {
         return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
-      mapCharacter: (operation) => {
+      mapCharacter: () => {
         return game.add.sprite(
           self.points.x[curMapPosition],
           self.points.y[curMapPosition],
@@ -98,6 +108,17 @@ const gameList = [
           .image(self.points.x[5], self.points.y[5], 'school', 0.525)
           .anchor(0.2, 0.7);
       },
+      endCharacterAnimation: [
+        'move',
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        3,
+      ],
+      endCharacter: () => {
+        const char = game.add.sprite(0, -152, 'kid_run', 0, 0.7);
+        char.anchor(0.5, 0.5);
+        return char;
+      },
+      endBuilding: () => game.add.image(600, 222, 'school', 0.7),
     },
   },
   {
@@ -135,6 +156,17 @@ const gameList = [
           .image(self.points.x[5], self.points.y[5], 'school', 0.525)
           .anchor(0.2, 0.7);
       },
+      endCharacterAnimation: [
+        'move',
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        3,
+      ],
+      endCharacter: () => {
+        const char = game.add.sprite(0, 460, 'kid_run', 6, 0.7);
+        char.anchor(0.5, 0.5);
+        return char;
+      },
+      endBuilding: () => game.add.image(600, 222, 'school', 0.7),
     },
   },
   {
