@@ -30,12 +30,7 @@ const studentReport = {
       game.lang.results,
       textStyles.h1_green
     );
-    game.add.image(
-      x - 40,
-      y - 70,
-      metadata.all[gameName].gameNameIconName,
-      0.8
-    );
+    game.add.image(x - 40, y - 70, gameList[gameId].assets.gameNameBtn, 0.8);
 
     // Game info
     text =

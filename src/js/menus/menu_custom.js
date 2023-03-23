@@ -45,7 +45,7 @@ const customMenuState = {
       // Loads navigation icons
       navigationIcons.add(true, false, false, true, true, 'menu', false);
 
-      const curGame = metadata.all[gameName];
+      const curGame = gameList.find((game) => game.gameName === gameName);
 
       this.menuIcons = [];
 
@@ -315,8 +315,15 @@ const customMenuState = {
     x = gameFrame().x + offsetW;
     y = gameFrame().y + offsetH / 2;
 
-    for (let i = 0; i < curGame.gameModeIconName.length; i++, y += offsetH) {
-      const icon = game.add.sprite(x, y, curGame.gameModeIconName[i], 0, 1, 1);
+    for (let i = 0; i < curGame.assets.gameModeBtn.length; i++, y += offsetH) {
+      const icon = game.add.sprite(
+        x,
+        y,
+        curGame.assets.gameModeBtn[i],
+        0,
+        1,
+        1
+      );
       icon.anchor(0.5, 0.5);
 
       icon.gameMode = curGame.gameMode[i];
@@ -343,7 +350,7 @@ const customMenuState = {
 
     // Placing math operation icons
     for (let i = 0; i < curGame.gameOperation.length; i++, y += offsetH) {
-      icon = game.add.sprite(x, y, curGame.gameOperationIconName[i], 0, 1, 1);
+      icon = game.add.sprite(x, y, curGame.assets.gameOperationBtn[i], 0, 1, 1);
       icon.anchor(0.5, 0.5);
 
       icon.gameOperation = curGame.gameOperation[i];

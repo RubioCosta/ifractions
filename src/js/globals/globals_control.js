@@ -46,6 +46,14 @@ const debugMode = false;
 const moodle = false;
 
 /**
+ * index of the current game in gameList
+ * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
+ *
+ * @type {string}
+ */
+let gameId;
+
+/**
  * Selected game name.<br>
  * Can be: 'squareOne', 'squareTwo' or 'circleOne'.
  *

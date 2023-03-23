@@ -186,25 +186,27 @@ const mapState = {
     ).align = 'right';
 
     // Map positions
-    if (gameName == 'squareOne' || gameName == 'scaleOne') {
-      // Garage
-      game.add
-        .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
-        .anchor(0.5, 1);
-      // Farm
-      game.add
-        .image(this.points.x[5], this.points.y[5], 'farm', 0.9)
-        .anchor(0.4, 0.7);
-    } else {
-      // House
-      game.add
-        .image(this.points.x[0], this.points.y[0], 'house', 1.05)
-        .anchor(0.5, 0.8);
-      // School
-      game.add
-        .image(this.points.x[5], this.points.y[5], 'school', 0.525)
-        .anchor(0.2, 0.7);
-    }
+    gameList[gameId].assets.mapStart();
+    gameList[gameId].assets.mapEnd();
+    // if (gameName == 'squareOne' || gameName == 'scaleOne') {
+    //   // Garage
+    //   game.add
+    //     .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
+    //     .anchor(0.5, 1);
+    //   // Farm
+    //   game.add
+    //     .image(this.points.x[5], this.points.y[5], 'farm', 0.9)
+    //     .anchor(0.4, 0.7);
+    // } else {
+    //   // House
+    //   game.add
+    //     .image(this.points.x[0], this.points.y[0], 'house', 1.05)
+    //     .anchor(0.5, 0.8);
+    //   // School
+    //   game.add
+    //     .image(this.points.x[5], this.points.y[5], 'school', 0.525)
+    //     .anchor(0.2, 0.7);
+    // }
 
     // Rocks and bushes
     for (let i in rocks.type) {
@@ -246,39 +248,9 @@ const mapState = {
       );
     }
 
-    // Game Character
-    if (gameName == 'squareOne' || gameName == 'scaleOne') {
-      if (gameOperation == 'Plus') {
-        this.character = game.add.sprite(
-          this.points.x[curMapPosition],
-          this.points.y[curMapPosition],
-          'tractor',
-          0,
-          0.75
-        );
-        this.character.animation = ['green_tractor', [0, 1, 2, 3, 4], 3];
-      } else {
-        this.character = game.add.sprite(
-          this.points.x[curMapPosition],
-          this.points.y[curMapPosition],
-          'tractor',
-          10,
-          0.75
-        );
-        this.character.animation = ['red_tractor', [10, 11, 12, 13, 14], 3];
-      }
-
-      this.character.rotate = -30; // 25 anticlock
-    } else {
-      this.character = game.add.sprite(
-        this.points.x[curMapPosition],
-        this.points.y[curMapPosition],
-        'kid_run',
-        0,
-        0.6
-      );
-      this.character.animation = ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
-    }
+    this.character = gameList[gameId].assets.mapCharacter(gameOperation);
+    this.character.animation =
+      gameList[gameId].assets.mapCharacterAnimation(gameOperation);
 
     this.character.anchor(0.5, 1);
     game.animation.play(this.character.animation[0]);

@@ -56,26 +56,25 @@ const menuState = {
 
       // --------------------------- GAME ICONS
 
+      const menuButtons = gameList.map((game) => game.assets.gameNameBtn);
+
       const offset = game.math.getOffset(
         context.canvas.width,
-        metadata.gameNames.length
+        menuButtons.length
       );
 
-      for (
-        let i = 0, x = offset;
-        i < metadata.gameNames.length;
-        i++, x += offset
-      ) {
+      for (let i = 0, x = offset; i < gameList.length; i++, x += offset) {
         const icon = game.add.image(
           x,
           context.canvas.height / 2 - 70,
-          metadata.gameNameIconNames[i],
+          menuButtons[i],
           1.5
         );
         icon.anchor(0.5, 0.5);
 
-        icon.gameShape = metadata.gameShapes[i];
-        icon.gameName = metadata.gameNames[i];
+        icon.gameId = i;
+        icon.gameShape = gameList[i].gameShape;
+        icon.gameName = gameList[i].gameName;
         icon.iconType = 'game';
 
         this.menuIcons.push(icon);
@@ -199,7 +198,8 @@ const menuState = {
       case 'game':
         gameShape = icon.gameShape;
         gameName = icon.gameName;
-        if (!metadata.gameNames.includes(gameName))
+        gameId = icon.gameId;
+        if (!gameList.find((game) => game.gameName === gameName))
           console.error('Game error: the name of the game is not valid.');
         self.menuIcons = self.lbl_game.name;
         game.state.start('customMenu');

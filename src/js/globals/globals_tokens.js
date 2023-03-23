@@ -1,108 +1,197 @@
 const baseUrl = 'src/assets/img/'; // Base directory for media
 
 /**
- * Metadata for all games
- * @type {object}
+ * Information for all the games
+ * @type {Array}
  */
-const metadata = {
-  all: {
-    squareOne: {
-      // game data
-      gameName: 'squareOne',
-      gameMode: ['A', 'B'],
-      gameOperation: ['Plus', 'Minus'],
-      gameDifficulty: 3,
+const gameList = [
+  {
+    gameName: 'squareOne',
+    gameMode: ['A', 'B'],
+    gameOperation: ['Plus', 'Minus'],
+    gameDifficulty: 3,
 
-      // info
-      gameShape: 'square',
+    // info
+    gameShape: 'square',
 
-      // menu icons data
-      gameNameIconName: 'game0',
-      gameModeIconName: ['mode0', 'mode1'],
-      gameOperationIconName: ['operation_plus', 'operation_minus'],
+    assets: {
+      gameNameBtn: 'game0',
+      gameModeBtn: ['mode0', 'mode1'],
+      gameOperationBtn: ['operation_plus', 'operation_minus'],
+      mapCharacterAnimation: (operation) => {
+        return operation === 'plus'
+          ? ['green_tractor', [0, 1, 2, 3, 4], 3]
+          : ['red_tractor', [10, 11, 12, 13, 14], 3];
+      },
+      mapCharacter: (operation) => {
+        let char;
+        if (operation == 'Plus') {
+          char = game.add.sprite(
+            self.points.x[curMapPosition],
+            self.points.y[curMapPosition],
+            'tractor',
+            0,
+            0.75
+          );
+        }
+        if (operation === 'Minus') {
+          char = game.add.sprite(
+            self.points.x[curMapPosition],
+            self.points.y[curMapPosition],
+            'tractor',
+            10,
+            0.75
+          );
+        }
+        char.rotate = -30; // 25 anticlock
+        return char;
+      },
+      mapStart: () => {
+        return game.add
+          .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
+          .anchor(0.5, 1);
+      },
+      mapEnd: () => {
+        return game.add
+          .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
+          .anchor(0.4, 0.7);
+      },
     },
+  },
+  {
+    // game data
+    gameName: 'circleOne',
+    gameMode: ['A', 'B'],
+    gameOperation: ['Plus', 'Minus', 'Mixed'],
+    gameDifficulty: 5,
 
-    circleOne: {
-      // game data
-      gameName: 'circleOne',
-      gameMode: ['A', 'B'],
-      gameOperation: ['Plus', 'Minus', 'Mixed'],
-      gameDifficulty: 5,
+    // info
+    gameShape: 'circle',
 
-      // info
-      gameShape: 'circle',
-
-      // menu icons data
-      gameNameIconName: 'game1',
-      gameModeIconName: ['mode2', 'mode3'],
-      gameOperationIconName: [
+    assets: {
+      gameNameBtn: 'game1',
+      gameModeBtn: ['mode2', 'mode3'],
+      gameOperationBtn: [
         'operation_plus',
         'operation_minus',
         'operation_mixed',
       ],
-    },
-
-    squareTwo: {
-      // game data
-      gameName: 'squareTwo',
-      gameMode: ['A', 'B'],
-      gameOperation: ['Equals'],
-      gameDifficulty: 5,
-
-      // info
-      gameShape: 'square',
-
-      // menu icon data
-      gameOperationIconName: ['operation_equals'],
-      gameNameIconName: 'game2',
-      gameModeIconName: ['mode4', 'mode5'],
-    },
-
-    scaleOne: {
-      // game data
-      gameName: 'scaleOne',
-      gameMode: ['A'],
-      gameOperation: ['Plus'],
-      gameDifficulty: 1,
-
-      // info
-      gameShape: 'noShape',
-
-      // menu icon data
-      gameNameIconName: 'game3',
-      gameModeIconName: ['mode6'],
-      gameOperationIconName: ['operation_plus'],
+      mapCharacterAnimation: () => {
+        ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
+      },
+      mapCharacter: () => {
+        return game.add.sprite(
+          self.points.x[curMapPosition],
+          self.points.y[curMapPosition],
+          'kid_run',
+          0,
+          0.6
+        );
+      },
+      mapStart: () => {
+        return game.add
+          .image(self.points.x[0], self.points.y[0], 'house', 1.05)
+          .anchor(0.5, 0.8);
+      },
+      mapEnd: () => {
+        return game.add
+          .image(self.points.x[5], self.points.y[5], 'school', 0.525)
+          .anchor(0.2, 0.7);
+      },
     },
   },
-  gameNames: [],
-  // gameModes: [],
-  // gameOperations: [],
-  // gameDifficulties: [],
+  {
+    // game data
+    gameName: 'squareTwo',
+    gameMode: ['A', 'B'],
+    gameOperation: ['Equals'],
+    gameDifficulty: 5,
 
-  gameShapes: [],
+    // info
+    gameShape: 'square',
+    assets: {
+      gameNameBtn: 'game2',
+      gameModeBtn: ['mode4', 'mode5'],
+      gameOperationBtn: ['operation_equals'],
+      mapCharacterAnimation: () => {
+        ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
+      },
+      mapCharacter: () => {
+        return game.add.sprite(
+          self.points.x[curMapPosition],
+          self.points.y[curMapPosition],
+          'kid_run',
+          0,
+          0.6
+        );
+      },
+      mapStart: () => {
+        return game.add
+          .image(this.points.x[0], this.points.y[0], 'house', 1.05)
+          .anchor(0.5, 0.8);
+      },
+      mapEnd: () => {
+        return game.add
+          .image(this.points.x[5], this.points.y[5], 'school', 0.525)
+          .anchor(0.2, 0.7);
+      },
+    },
+  },
+  {
+    // game data
+    gameName: 'scaleOne',
+    gameMode: ['A'],
+    gameOperation: ['Plus'],
+    gameDifficulty: 1,
 
-  gameNameIconNames: [],
-  // gameModeIconNames: [],
-  // gameOperationIconNames: [],
-};
+    // info
+    gameShape: 'noShape',
 
-// Called once when the game starts
-(function () {
-  for (key in metadata.all) {
-    metadata.gameNames.push(metadata.all[key].gameName);
-    // metadata.gameModes.push(metadata.all[key].gameMode);
-    // metadata.gameOperations.push(metadata.all[key].gameOperation);
-    // metadata.gameDifficulties.push(metadata.all[key].gameDifficulty);
-
-    metadata.gameShapes.push(metadata.all[key].gameShape);
-
-    metadata.gameNameIconNames.push(metadata.all[key].gameNameIconName);
-    // metadata.gameModeIconNames.push(metadata.all[key].gameMode);
-    // metadata.gameOperationIconNames.push(
-    //   metadata.all[key].gameOperationIconName
-    // );
-  }
-})();
+    assets: {
+      gameNameBtn: 'game3',
+      gameModeBtn: ['mode6'],
+      gameOperationBtn: ['operation_equals'],
+      mapCharacterAnimation: (operation) => {
+        return operation === 'plus'
+          ? ['green_tractor', [0, 1, 2, 3, 4], 3]
+          : ['red_tractor', [10, 11, 12, 13, 14], 3];
+      },
+      mapCharacter: (operation) => {
+        let char;
+        if (operation == 'Plus') {
+          char = game.add.sprite(
+            self.points.x[curMapPosition],
+            self.points.y[curMapPosition],
+            'tractor',
+            0,
+            0.75
+          );
+        }
+        if (operation === 'Minus') {
+          char = game.add.sprite(
+            self.points.x[curMapPosition],
+            self.points.y[curMapPosition],
+            'tractor',
+            10,
+            0.75
+          );
+        }
+        char.rotate = -30; // 25 anticlock
+        return char;
+      },
+      mapStart: () => {
+        return game.add
+          .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
+          .anchor(0.5, 1);
+      },
+      mapEnd: () => {
+        return game.add
+          .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
+          .anchor(0.4, 0.7);
+      },
+    },
+  },
+];
 
 /**
  * Preset colors for graphic elements.
