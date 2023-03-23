@@ -6,10 +6,10 @@
  *
  * .squareTwo. = gameName
  * .../...\...
- * ..A.....B.. = gameMode
+ * ..a.....b.. = gameMode
  * ....\./....
  * .....|.....
- * ...Equals.. = gameOperation
+ * ...minus.. = gameOperation
  * .....|.....
  * .1,2,3,4,5. = gameDifficulty
  *
@@ -20,14 +20,14 @@
  *
  * Game modes can be :
  *
- *   A : equivalence of fractions
+ *   a : equivalence of fractions
  *       top has more subdivisions
- *   B : equivalence of fractions
+ *   b : equivalence of fractions
  *       bottom has more subdivisions
  *
  * Operations :
  *
- *   Equals : Player selects equivalent fractions of both blocks
+ *   minus : Player selects equivalent fractions of both blocks
  *
  * @namespace
  */
@@ -42,18 +42,18 @@ const squareTwo = {
     this.delay = 0; // Counter for game dalays
     this.endLevel = false;
 
-    this.A = {
+    this.a = {
       blocks: [], // List of selection blocks
       auxBlocks: [], // List of shadow under selection blocks
       fractions: [], // Fraction numbers
-      selected: 0, // Number of selected blocks for A
-      hasClicked: false, // Check if player clicked blocks from A
-      animate: false, // Animate blocks from A
+      selected: 0, // Number of selected blocks for (a)
+      hasClicked: false, // Check if player clicked blocks from (a)
+      animate: false, // Animate blocks from (a)
       warningText: undefined,
       label: undefined,
     };
 
-    this.B = {
+    this.b = {
       blocks: [],
       auxBlocks: [],
       fractions: [],
@@ -102,27 +102,27 @@ const squareTwo = {
     );
     this.kidAnimation.anchor(0.5, 0.7);
 
-    // Width and Height of A and B
+    // Width and Height of (a) and (b)
     this.figureWidth = 400 * 1.5;
     const figureHeight = 50 * 1.5;
 
-    // Coordinates for A and B
+    // Coordinates for (a) and (b)
     let xA, xB, yA, yB;
-    if (gameMode != 'B') {
-      // More subdivisions on B
+    if (gameMode != 'b') {
+      // More subdivisions on (b)
       xA = context.canvas.width / 2 - this.figureWidth / 2;
       yA = gameFrame().y;
       xB = xA;
       yB = yA + 3 * figureHeight + 30;
     } else {
-      // More subdivisions on A
+      // More subdivisions on (a)
       xB = context.canvas.width / 2 - this.figureWidth / 2;
       yB = gameFrame().y;
       xA = xB;
       yA = yB + 3 * figureHeight + 30;
     }
 
-    // Possible points for A
+    // Possible points for (a)
     const points = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
 
     // Random index for 'points'
@@ -131,7 +131,7 @@ const squareTwo = {
       (gameDifficulty - 1) * 2 + 3
     );
 
-    // Number of subdivisions of A and B (blocks)
+    // Number of subdivisions of (a) and (b) (blocks)
     const totalBlocksA = points[randomIndex];
     const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
@@ -146,15 +146,15 @@ const squareTwo = {
           ', max index: ' +
           ((gameDifficulty - 1) * 2 + 3) +
           ')' +
-          '\ntotal blocks A: ' +
+          '\ntotal blocks a: ' +
           totalBlocksA +
-          ', total blocks B: ' +
+          ', total blocks b: ' +
           totalBlocksB
       );
     }
 
-    // CREATING TOP FIGURE (A)
-    let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in A
+    // CREATING TOP FIGURE (a)
+    let blockWidth = this.figureWidth / totalBlocksA; // Width of each block in (a)
     let lineColor = colors.redDark;
     let fillColor = colors.redLight;
 
@@ -173,15 +173,15 @@ const squareTwo = {
         fillColor,
         0.5
       );
-      block.figure = 'A';
+      block.figure = 'a';
       block.index = i;
       block.finalX = xA;
-      this.A.blocks.push(block);
+      this.a.blocks.push(block);
 
       // Auxiliar blocks
       const alpha = fractionLabel ? 0.1 : 0;
 
-      const yAux = yA + figureHeight + 10; // On the bottom of A
+      const yAux = yA + figureHeight + 10; // On the bottom of (a)
       const auxBlock = game.add.geom.rect(
         x,
         yAux,
@@ -192,47 +192,47 @@ const squareTwo = {
         fillColor,
         alpha
       );
-      this.A.auxBlocks.push(auxBlock);
+      this.a.auxBlocks.push(auxBlock);
     }
 
-    // 'total blocks' label for A : on the side of A
+    // 'total blocks' label for (a) : on the side of (a)
     let xLabel = xA + this.figureWidth + 30;
     let yLabel = yA + figureHeight / 2;
 
-    this.A.label = game.add.text(
+    this.a.label = game.add.text(
       xLabel,
       yLabel,
-      this.A.blocks.length,
+      this.a.blocks.length,
       textStyles.h4_blueDark
     );
 
-    // 'selected blocks/fraction' label for A : at the bottom of A
+    // 'selected blocks/fraction' label for (a) : at the bottom of (a)
     yLabel = yA + figureHeight + 34;
 
-    this.A.fractions[0] = game.add.text(
+    this.a.fractions[0] = game.add.text(
       xLabel,
       yLabel,
       '',
       textStyles.h4_blueDark
     );
-    this.A.fractions[1] = game.add.text(
+    this.a.fractions[1] = game.add.text(
       xLabel,
       yLabel + 21,
       '',
       textStyles.h4_blueDark
     );
-    this.A.fractions[2] = game.add.text(
+    this.a.fractions[2] = game.add.text(
       xLabel,
       yLabel,
       '___',
       textStyles.h4_blueDark
     );
-    this.A.fractions[0].alpha = 0;
-    this.A.fractions[1].alpha = 0;
-    this.A.fractions[2].alpha = 0;
+    this.a.fractions[0].alpha = 0;
+    this.a.fractions[1].alpha = 0;
+    this.a.fractions[2].alpha = 0;
 
-    // CREATING BOTTOM FIGURE (B)
-    blockWidth = this.figureWidth / totalBlocksB; // Width of each block in B
+    // CREATING BOTTOM FIGURE (b)
+    blockWidth = this.figureWidth / totalBlocksB; // Width of each block in (b)
     lineColor = colors.greenDark;
     fillColor = colors.greenLight;
 
@@ -251,14 +251,14 @@ const squareTwo = {
         fillColor,
         0.5
       );
-      block.figure = 'B';
+      block.figure = 'b';
       block.index = i;
       block.finalX = xB;
-      this.B.blocks.push(block);
+      this.b.blocks.push(block);
 
       // Auxiliar blocks
       const alpha = fractionLabel ? 0.1 : 0;
-      const yAux = yB + figureHeight + 10; // On the bottom of B
+      const yAux = yB + figureHeight + 10; // On the bottom of (b)
       const auxBlock = game.add.geom.rect(
         x,
         yAux,
@@ -269,53 +269,53 @@ const squareTwo = {
         fillColor,
         alpha
       );
-      this.B.auxBlocks.push(auxBlock);
+      this.b.auxBlocks.push(auxBlock);
     }
 
-    // Label block B
+    // Label block (b)
     xLabel = xB + this.figureWidth + 30;
     yLabel = yB + figureHeight / 2;
 
-    this.B.label = game.add.text(
+    this.b.label = game.add.text(
       xLabel,
       yLabel,
-      this.B.blocks.length,
+      this.b.blocks.length,
       textStyles.h4_blueDark
     );
 
     // Label fraction
     yLabel = yB + figureHeight + 34;
 
-    this.B.fractions[0] = game.add.text(
+    this.b.fractions[0] = game.add.text(
       xLabel,
       yLabel,
       '',
       textStyles.h4_blueDark
     );
-    this.B.fractions[1] = game.add.text(
+    this.b.fractions[1] = game.add.text(
       xLabel,
       yLabel + 21,
       '',
       textStyles.h4_blueDark
     );
-    this.B.fractions[2] = game.add.text(
+    this.b.fractions[2] = game.add.text(
       xLabel,
       yLabel,
       '___',
       textStyles.h4_blueDark
     );
-    this.B.fractions[0].alpha = 0;
-    this.B.fractions[1].alpha = 0;
-    this.B.fractions[2].alpha = 0;
+    this.b.fractions[0].alpha = 0;
+    this.b.fractions[1].alpha = 0;
+    this.b.fractions[2].alpha = 0;
 
     // Invalid selection text
-    this.A.warningText = game.add.text(
+    this.a.warningText = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 - 225,
       '',
       textStyles.h4_brown
     );
-    this.B.warningText = game.add.text(
+    this.b.warningText = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 - 45,
       '',
@@ -333,8 +333,8 @@ const squareTwo = {
    */
   update: function () {
     // Animate blocks
-    if (self.A.animate || self.B.animate) {
-      ['A', 'B'].forEach((cur) => {
+    if (self.a.animate || self.b.animate) {
+      ['a', 'b'].forEach((cur) => {
         if (self[cur].animate) {
           // Lower selected blocks
           for (let i = 0; i < self[cur].selected; i++) {
@@ -350,16 +350,16 @@ const squareTwo = {
       });
     }
 
-    // If A and B are already clicked
-    if (self.A.hasClicked && self.B.hasClicked && !self.endLevel) {
+    // If (a) and (b) are already clicked
+    if (self.a.hasClicked && self.b.hasClicked && !self.endLevel) {
       game.timer.stop();
       self.delay++;
 
       // After delay is over, check result
       if (self.delay > 50) {
         self.result =
-          self.A.selected / self.A.blocks.length ==
-          self.B.selected / self.B.blocks.length;
+          self.a.selected / self.a.blocks.length ==
+          self.b.selected / self.b.blocks.length;
 
         // Fractions are equivalent : CORRECT
         if (self.result) {
@@ -405,16 +405,16 @@ const squareTwo = {
   /**
    * Function called by self.onInputOver() when cursor is over a valid rectangle.
    *
-   * @param {object} curBlock rectangle the cursor is over : can be self.A.blocks[i] or self.B.blocks[i]
+   * @param {object} curBlock rectangle the cursor is over : can be self.a.blocks[i] or self.b.blocks[i]
    */
   overSquare: function (curBlock) {
-    const curSet = curBlock.figure; // 'A' || 'B'
+    const curSet = curBlock.figure; // 'a' || 'b'
 
     if (!self[curSet].hasClicked) {
-      // self.A.hasClicked || self.B.hasClicked
+      // self.a.hasClicked || self.b.hasClicked
       // If over fraction 'n/n' shows warning message not allowing it
       if (curBlock.index == self[curSet].blocks.length - 1) {
-        const otherSet = curSet == 'A' ? 'B' : 'A';
+        const otherSet = curSet == 'a' ? 'b' : 'a';
 
         self[curSet].warningText.name = game.lang.s2_error_msg;
         self[otherSet].warningText.name = '';
@@ -423,8 +423,8 @@ const squareTwo = {
       } else {
         document.body.style.cursor = 'pointer';
 
-        self.A.warningText.name = '';
-        self.B.warningText.name = '';
+        self.a.warningText.name = '';
+        self.b.warningText.name = '';
 
         // Selected blocks become fully visible
         for (let i in self[curSet].blocks) {
@@ -451,7 +451,7 @@ const squareTwo = {
   /**
    * Function called (by self.onInputOver() and self.overSquare()) when cursor is out of a valid rectangle.
    *
-   * @param {object} curSet set of rectangles : can be top (self.A) or bottom (self.B)
+   * @param {object} curSet set of rectangles : can be top (self.a) or bottom (self.b)
    */
   outSquare: function (curSet) {
     if (!self[curSet].hasClicked) {
@@ -468,10 +468,10 @@ const squareTwo = {
   /**
    * Function called by self.onInputDown() when player clicked a valid rectangle.
    *
-   * @param {object} curBlock clicked rectangle : can be self.A.blocks[i] or self.B.blocks[i]
+   * @param {object} curBlock clicked rectangle : can be self.a.blocks[i] or self.b.blocks[i]
    */
   clickSquare: function (curBlock) {
-    const curSet = curBlock.figure; // 'A' || 'B'
+    const curSet = curBlock.figure; // 'a' || 'b'
 
     if (
       !self[curSet].hasClicked &&
@@ -521,13 +521,13 @@ const squareTwo = {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
 
-    // Click block in A
-    self.A.blocks.forEach((cur) => {
+    // Click block in (a)
+    self.a.blocks.forEach((cur) => {
       if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
     });
 
-    // Click block in B
-    self.B.blocks.forEach((cur) => {
+    // Click block in (b)
+    self.b.blocks.forEach((cur) => {
       if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
     });
 
@@ -548,23 +548,23 @@ const squareTwo = {
     let flagA = false;
     let flagB = false;
 
-    // Mouse over A : show fraction
-    self.A.blocks.forEach((cur) => {
+    // Mouse over (a) : show fraction
+    self.a.blocks.forEach((cur) => {
       if (game.math.isOverIcon(x, y, cur)) {
         flagA = true;
         self.overSquare(cur);
       }
     });
-    if (!flagA) self.outSquare('A');
+    if (!flagA) self.outSquare('a');
 
-    // Mouse over B : show fraction
-    self.B.blocks.forEach((cur) => {
+    // Mouse over (b) : show fraction
+    self.b.blocks.forEach((cur) => {
       if (game.math.isOverIcon(x, y, cur)) {
         flagB = true;
         self.overSquare(cur);
       }
     });
-    if (!flagB) self.outSquare('B');
+    if (!flagB) self.outSquare('b');
 
     if (!flagA && !flagB) document.body.style.cursor = 'auto';
 
@@ -599,13 +599,13 @@ const squareTwo = {
       game.timer.elapsed +
       '&line_deta=' +
       'numBlocksA: ' +
-      self.A.blocks.length +
+      self.a.blocks.length +
       ', valueA: ' +
-      self.A.selected +
+      self.a.selected +
       ', numBlocksB: ' +
-      self.B.blocks.length +
+      self.b.blocks.length +
       ', valueB: ' +
-      self.B.selected;
+      self.b.selected;
 
     // FOR MOODLE
     sendToDatabase(data);

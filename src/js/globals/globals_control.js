@@ -9,12 +9,12 @@
  * .........../...........\....................|........ } = gameName (game)
  * ........One.............Two................One....... }
  * ......./...\.........../...\............./....\......
- * ......A.....B.........A.....B...........A......B..... = gameMode (game mode)
+ * ......a.....b.........a.....b...........a......b..... = gameMode (game mode)
  * .(floor)..(stack)..(top)..(bottom)..(floor)..(stack).
  * .......\./.............\./................\./........
  * ........|...............|..................|.........
  * ......./.\..............|................/.|.\.......
- * ...Plus...Minus.......Equals........Plus.Minus.Mixed. = gameOperation (game math operation)
+ * ...plus...minus.......minus........plus.minus.mixed. = gameOperation (game math operation)
  * .......\./..............|................\.|./.......
  * ........|...............|..................|.........
  * ......1,2,3.........1,2,3,4,5..........1,2,3,4,5..... = gameDifficulty (difficulty level)
@@ -65,8 +65,8 @@ let gameShape;
 
 /**
  * Holds selected game mode.<br>
- * In squareOne/circleOne   can be: 'A' (click on the floor) or 'B' (click on the amount to go/stacked figures).<br>
- * In squareTwo             can be: 'A' (more subdivisions on top) or 'B' (more subdivisions on bottom).
+ * In squareOne/circleOne   can be: 'a' (click on the floor) or 'b' (click on the amount to go/stacked figures).<br>
+ * In squareTwo             can be: 'a' (more subdivisions on top) or 'b' (more subdivisions on bottom).
  *
  * @type {string}
  */
@@ -74,9 +74,9 @@ let gameMode;
 
 /**
  * Holds game math operation.<br>
- * In squareOne   can be: 'Plus' (green tractor goes right) or 'Minus' (red tractor goes left).<br>
- * In circleOne   can be: 'Plus' (green tractor goes right), 'Minus' (red tractor goes left) or 'Mixed' (green tractor goes both sides).<br>
- * In squareTwo   can be: 'Equals' (compares two rectangle subdivisions).
+ * In squareOne   can be: 'plus' (green tractor goes right) or 'minus' (red tractor goes left).<br>
+ * In circleOne   can be: 'plus' (green tractor goes right), 'minus' (red tractor goes left) or 'mixed' (green tractor goes both sides).<br>
+ * In squareTwo   can be: 'minus' (compares two rectangle subdivisions).
  *
  * @type {string}
  */

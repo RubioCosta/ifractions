@@ -6,11 +6,11 @@
  *
  * .....circleOne.... = gameName
  * ....../....\......
- * .....A......B..... = gameMode
+ * .....a......a..... = gameMode
  * .......\./........
  * ........|.........
  * ....../.|.\.......
- * .Plus.Minus.Mixed. = gameOperation
+ * .plus.minus.mixed. = gameOperation
  * ......\.|./.......
  * ........|.........
  * ....1,2,3,4,5..... = gameDifficulty
@@ -22,18 +22,18 @@
  *
  * Game modes can be :
  *
- *   A : Player can place balloon position
+ *   a : Player can place balloon position
  *       Place balloon in position (so the kid can get to it)
- *   B : Player can select # of circles
+ *   b : Player can select # of circles
  *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
  * Operations can be :
  *
- *   Plus : addition of fractions
+ *   plus : addition of fractions
  *     Represented by : kid going to the right (floor positions 0..5)
- *   Minus : subtraction of fractions
+ *   minus : subtraction of fractions
  *     Represented by: kid going to the left (floor positions 5..0)
- *   Mixed : Mix addition and subtraction of fractions in same
+ *   mixed : Mix addition and subtraction of fractions in same
  *     Represented by: kid going to the left (floor positions 0..5)
  *
  * @namespace
@@ -58,7 +58,7 @@ const circleOne = {
     let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
 
     const startY = context.canvas.height - 75 * 1.6;
-    const startX = gameOperation == 'Minus' ? 66 + 5 * 156 : 66; // Initial 'x' coordinate for the kid and the baloon
+    const startX = gameOperation == 'minus' ? 66 + 5 * 156 : 66; // Initial 'x' coordinate for the kid and the baloon
     this.correctX = startX; // Ending position, accumulative
 
     // BACKGROUND
@@ -130,17 +130,17 @@ const circleOne = {
 
     // Number of circles
     const max =
-      gameOperation == 'Mixed' || gameMode == 'B' ? 6 : curMapPosition + 1;
+      gameOperation == 'mixed' || gameMode == 'b' ? 6 : curMapPosition + 1;
     const min =
-      gameOperation == 'Mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
+      gameOperation == 'mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
     const total = game.math.randomInRange(min, max); // Total number of circles
 
-    // gameMode 'B' exclusive variables
-    this.fractionIndex = -1; // Index of clicked circle (game B)
+    // gameMode 'b' exclusive variables
+    this.fractionIndex = -1; // Index of clicked circle (game (b))
     this.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
 
     // CIRCLES
-    const levelDirection = gameOperation == 'Minus' ? -1 : 1;
+    const levelDirection = gameOperation == 'minus' ? -1 : 1;
     const x = startX + 65 * levelDirection;
 
     for (let i = 0; i < total; i++) {
@@ -154,13 +154,13 @@ const circleOne = {
       let direction;
 
       switch (gameOperation) {
-        case 'Plus':
+        case 'plus':
           direction = 'Right';
           break;
-        case 'Minus':
+        case 'minus':
           direction = 'Left';
           break;
-        case 'Mixed':
+        case 'mixed':
           if (i < this.numberOfPlusFractions) direction = 'Right';
           else direction = 'Left';
           break;
@@ -254,8 +254,8 @@ const circleOne = {
 
       circle.rotate = 90;
 
-      // If game is type B (select fractions)
-      if (gameMode == 'B') {
+      // If game is type (b) (select fractions)
+      if (gameMode == 'b') {
         circle.alpha = 0.5;
         circle.index = i;
       }
@@ -281,8 +281,8 @@ const circleOne = {
       this.restart = true;
     }
 
-    // If game is type B, selectiong a random balloon place
-    if (gameMode == 'B') {
+    // If game is type (b), selectiong a random balloon place
+    if (gameMode == 'b') {
       this.balloonPlace = startX;
       this.endIndex = game.math.randomInRange(
         this.numberOfPlusFractions,
@@ -322,7 +322,7 @@ const circleOne = {
       1.2
     );
     this.kid.anchor(0.5, 0.8);
-    if (gameOperation == 'Minus') {
+    if (gameOperation == 'minus') {
       this.kid.animation = this.availableAnimations['Left'];
       this.kid.curFrame = 23;
     } else {
@@ -496,7 +496,7 @@ const circleOne = {
   },
 
   /**
-   * (in gameMode 'B') Function called when cursor is over a valid circle
+   * (in gameMode 'b') Function called when cursor is over a valid circle
    *
    * @param {object} cur circle the cursor is over
    */
@@ -510,7 +510,7 @@ const circleOne = {
   },
 
   /**
-   * (in gameMode 'B') Function called when cursor is out of a valid circle
+   * (in gameMode 'b') Function called when cursor is out of a valid circle
    */
   outCircle: function () {
     if (!self.hasClicked) {
@@ -522,18 +522,18 @@ const circleOne = {
   },
 
   /**
-   * (in gameMode 'B') Function called when player clicked over a valid circle
+   * (in gameMode 'b') Function called when player clicked over a valid circle
    *
    * @param {number|object} cur clicked circle
    */
   clicked: function (cur) {
     if (!self.hasClicked) {
-      // On gameMode A
-      if (gameMode == 'A') {
+      // On gameMode (a)
+      if (gameMode == 'a') {
         self.balloon.x = cur;
         self.basket.x = cur;
-        // On gameMode B
-      } else if (gameMode == 'B') {
+        // On gameMode (b)
+      } else if (gameMode == 'b') {
         document.body.style.cursor = 'auto';
 
         for (let i in self.circles.all) {
@@ -593,11 +593,11 @@ const circleOne = {
    */
   viewHelp: function () {
     if (!self.hasClicked) {
-      // On gameMode A
-      if (gameMode == 'A') {
+      // On gameMode (a)
+      if (gameMode == 'a') {
         self.help.x = self.correctX;
         self.help.y = 490;
-        // On gameMode B
+        // On gameMode (b)
       } else {
         self.help.x = self.circles.all[self.endIndex - 1].x;
         self.help.y =
@@ -617,7 +617,7 @@ const circleOne = {
     const y = game.math.getMouse(mouseEvent).y;
 
     // GAME MODE A : click road
-    if (gameMode == 'A') {
+    if (gameMode == 'a') {
       const cur = self.road;
 
       const valid =
@@ -628,7 +628,7 @@ const circleOne = {
     }
 
     // GAME MODE B : click circle
-    if (gameMode == 'B') {
+    if (gameMode == 'b') {
       self.circles.all.forEach((cur) => {
         const valid =
           game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <=
@@ -653,7 +653,7 @@ const circleOne = {
     let flag = false;
 
     // GAME MODE A : balloon follow mouse
-    if (gameMode == 'A' && !self.hasClicked) {
+    if (gameMode == 'a' && !self.hasClicked) {
       if (
         game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8
       ) {
@@ -665,7 +665,7 @@ const circleOne = {
     }
 
     // GAME MODE B : hover circle
-    if (gameMode == 'B' && !self.hasClicked) {
+    if (gameMode == 'b' && !self.hasClicked) {
       self.circles.all.forEach((cur) => {
         const valid =
           game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <=

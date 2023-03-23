@@ -50,7 +50,7 @@ if ($conn->connect_error) {
 $ip = clientIP();
 
 // /js/globals.js: data = line_ip=120.0.0.1&line_name=name&line_lang=pt_BR
-// /js/squareOne.js: data += &line_game=Square&line_mode=A&line_oper=Plus&line_leve=1&line_posi=1&line_resu=true&line_time=3&line_deta=numBlocks:3, valBlocks: 1,1,1, blockIndex: 2, floorIndex: 2;url=php/save.php
+// /js/squareOne.js: data += &line_game=Square&line_mode=a&line_oper=Plus&line_leve=1&line_posi=1&line_resu=true&line_time=3&line_deta=numBlocks:3, valBlocks: 1,1,1, blockIndex: 2, floorIndex: 2;url=php/save.php
 $name = $_REQUEST["line_name"];
 $date = date("Y-m-d H:i:s");
 $lang = $_REQUEST["line_lang"];

@@ -7,13 +7,11 @@ const baseUrl = 'src/assets/img/'; // Base directory for media
 const gameList = [
   {
     gameName: 'squareOne',
-    gameMode: ['A', 'B'],
-    gameOperation: ['Plus', 'Minus'],
+    gameMode: ['a', 'b'],
+    gameOperation: ['plus', 'minus'],
     gameDifficulty: 3,
-
     // info
     gameShape: 'square',
-
     assets: {
       gameNameBtn: 'game0',
       gameModeBtn: ['mode0', 'mode1'],
@@ -25,7 +23,7 @@ const gameList = [
       },
       mapCharacter: (operation) => {
         let char;
-        if (operation == 'Plus') {
+        if (operation == 'plus') {
           char = game.add.sprite(
             self.points.x[curMapPosition],
             self.points.y[curMapPosition],
@@ -34,7 +32,7 @@ const gameList = [
             0.75
           );
         }
-        if (operation === 'Minus') {
+        if (operation === 'minus') {
           char = game.add.sprite(
             self.points.x[curMapPosition],
             self.points.y[curMapPosition],
@@ -56,14 +54,14 @@ const gameList = [
           .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
           .anchor(0.4, 0.7);
       },
-      endCharacterAnimation: () =>
-        animation === 'Plus'
+      endCharacterAnimation: (animation) =>
+        animation === 'plus'
           ? ['move', [0, 1, 2, 3, 4], 4]
           : ['move', [10, 11, 12, 13, 14], 4],
       endCharacter: (operation) => {
         const char = game.add.sprite(0, 490, 'tractor', 0, 0.7);
         char.anchor(0.5, 0.5);
-        if (operation === 'Plus') char.curFrame = 10;
+        if (operation === 'plus') char.curFrame = 10;
         return char;
       },
       endBuilding: () => game.add.image(650, 260, 'farm', 1.1),
@@ -71,13 +69,11 @@ const gameList = [
   },
   {
     gameName: 'circleOne',
-    gameMode: ['A', 'B'],
-    gameOperation: ['Plus', 'Minus', 'Mixed'],
+    gameMode: ['a', 'b'],
+    gameOperation: ['plus', 'minus', 'mixed'],
     gameDifficulty: 5,
-
     // info
     gameShape: 'circle',
-
     assets: {
       gameNameBtn: 'game1',
       gameModeBtn: ['mode2', 'mode3'],
@@ -86,7 +82,7 @@ const gameList = [
         'operation_minus',
         'operation_mixed',
       ],
-      mapCharacterAnimation: () => {
+      mapCharacterAnimation: (operation) => {
         return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
       mapCharacter: () => {
@@ -122,12 +118,10 @@ const gameList = [
     },
   },
   {
-    // game data
     gameName: 'squareTwo',
-    gameMode: ['A', 'B'],
-    gameOperation: ['Equals'],
+    gameMode: ['a', 'b'],
+    gameOperation: ['minus'],
     gameDifficulty: 5,
-
     // info
     gameShape: 'square',
     assets: {
@@ -170,15 +164,12 @@ const gameList = [
     },
   },
   {
-    // game data
     gameName: 'scaleOne',
-    gameMode: ['A'],
-    gameOperation: ['Plus'],
+    gameMode: ['a'],
+    gameOperation: ['plus'],
     gameDifficulty: 1,
-
     // info
     gameShape: 'noShape',
-
     assets: {
       gameNameBtn: 'game3',
       gameModeBtn: ['mode6'],
@@ -190,7 +181,7 @@ const gameList = [
       },
       mapCharacter: (operation) => {
         let char;
-        if (operation == 'Plus') {
+        if (operation == 'plus') {
           char = game.add.sprite(
             self.points.x[curMapPosition],
             self.points.y[curMapPosition],
@@ -199,7 +190,7 @@ const gameList = [
             0.75
           );
         }
-        if (operation === 'Minus') {
+        if (operation === 'minus') {
           char = game.add.sprite(
             self.points.x[curMapPosition],
             self.points.y[curMapPosition],

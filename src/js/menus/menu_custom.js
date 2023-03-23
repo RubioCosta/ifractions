@@ -458,9 +458,9 @@ const customMenuState = {
           title: '<b>' + game.lang.game_modes + '</b>',
           body: game.lang.infoBox_mode,
           img:
-            '<table> <tr> <td> <b>A)</b> ' +
+            '<table> <tr> <td> <b>a)</b> ' +
             game.lang.infoBox_mode_s1_A +
-            ' </td> <td> <b>B)</b> ' +
+            ' </td> <td> <b>b)</b> ' +
             game.lang.infoBox_mode_s1_B +
             ' </td> </tr> <tr> <td> <img width=100% src="' +
             game.image['s1-A-h'].src +
@@ -476,12 +476,12 @@ const customMenuState = {
             '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="' +
             game.image['c1-A-h'].src +
             '">' +
-            ' </td> <td> &nbsp; <b>A)</b> ' +
+            ' </td> <td> &nbsp; <b>a)</b> ' +
             game.lang.infoBox_mode_c1_A +
             ' </td> </tr> </tr> <td> <img width=100% src="' +
             game.image['c1-B-h'].src +
             '"> ' +
-            ' </td> <td> &nbsp; <b>B)</b> ' +
+            ' </td> <td> &nbsp; <b>b)</b> ' +
             game.lang.infoBox_mode_c1_B +
             '</td> </tr> <table>',
         },
@@ -489,9 +489,9 @@ const customMenuState = {
           title: '<b>' + game.lang.game_modes + '</b>',
           body: game.lang.infoBox_mode,
           img:
-            '<table> <tr> <td> <b>A)</b> ' +
+            '<table> <tr> <td> <b>a)</b> ' +
             game.lang.infoBox_mode_s2_A +
-            ' </td> <td> <b>B)</b> ' +
+            ' </td> <td> <b>b)</b> ' +
             game.lang.infoBox_mode_s2_B +
             ' </td> </tr> <tr> <td> <img width=98% src="' +
             game.image['s2-A-h'].src +
