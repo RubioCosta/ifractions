@@ -188,25 +188,6 @@ const mapState = {
     // Map positions
     gameList[gameId].assets.mapStart();
     gameList[gameId].assets.mapEnd();
-    // if (gameName == 'squareOne' || gameName == 'scaleOne') {
-    //   // Garage
-    //   game.add
-    //     .image(this.points.x[0], this.points.y[0], 'garage', 0.6)
-    //     .anchor(0.5, 1);
-    //   // Farm
-    //   game.add
-    //     .image(this.points.x[5], this.points.y[5], 'farm', 0.9)
-    //     .anchor(0.4, 0.7);
-    // } else {
-    //   // House
-    //   game.add
-    //     .image(this.points.x[0], this.points.y[0], 'house', 1.05)
-    //     .anchor(0.5, 0.8);
-    //   // School
-    //   game.add
-    //     .image(this.points.x[5], this.points.y[5], 'school', 0.525)
-    //     .anchor(0.2, 0.7);
-    // }
 
     // Rocks and bushes
     for (let i in rocks.type) {
@@ -248,11 +229,12 @@ const mapState = {
       );
     }
 
+    // Character
     this.character = gameList[gameId].assets.mapCharacter(gameOperation);
     this.character.animation =
       gameList[gameId].assets.mapCharacterAnimation(gameOperation);
 
-    this.character.anchor(0.5, 1);
+    //this.character.anchor(0.5, 1);
     game.animation.play(this.character.animation[0]);
 
     this.count = 0;

@@ -45,7 +45,7 @@ const customMenuState = {
       // Loads navigation icons
       navigationIcons.add(true, false, false, true, true, 'menu', false);
 
-      const curGame = gameList.find((game) => game.gameName === gameName);
+      const curGame = gameList[gameId];
 
       this.menuIcons = [];
 
@@ -64,7 +64,8 @@ const customMenuState = {
       this.renderOperationSection(x, y, offsetW, offsetH, curGame);
       this.renderDifficultySection(x, y, offsetW, offsetH, curGame);
       this.renderEnterSection(x, y);
-      this.renderInfoBox(auxText);
+
+      this.setInfoBoxes(auxText);
 
       // ------------- EVENTS
 
@@ -426,7 +427,7 @@ const customMenuState = {
     }
   },
 
-  renderInfoBox: function (auxText) {
+  setInfoBoxes: function (auxText) {
     // --------------------------- INFO BOX
 
     self.infoBox = document.querySelector('.ifr-modal');

@@ -49,38 +49,30 @@ const menuState = {
       // Loads navigation icons
       navigationIcons.add(false, false, false, true, true, false, false);
 
-      // INFO ICONS
-
       this.menuIcons = [];
-      let infoIcon;
 
       // --------------------------- GAME ICONS
 
-      const menuButtons = gameList.map((game) => game.assets.gameNameBtn);
-
-      const offset = game.math.getOffset(
-        context.canvas.width,
-        menuButtons.length
-      );
+      const offset = game.math.getOffset(context.canvas.width, gameList.length);
 
       for (let i = 0, x = offset; i < gameList.length; i++, x += offset) {
         const icon = game.add.image(
           x,
           context.canvas.height / 2 - 70,
-          menuButtons[i],
+          gameList[i].assets.gameNameBtn,
           1.5
         );
         icon.anchor(0.5, 0.5);
 
         icon.gameId = i;
-        icon.gameShape = gameList[i].gameShape;
         icon.gameName = gameList[i].gameName;
+        icon.gameShape = gameList[i].gameShape;
         icon.iconType = 'game';
 
         this.menuIcons.push(icon);
 
         // "more information" button
-        infoIcon = game.add.image(
+        const infoIcon = game.add.image(
           x + 110,
           context.canvas.height / 2 - 100 - 80 - 10,
           'info',
@@ -95,61 +87,7 @@ const menuState = {
 
       // --------------------------- INFO BOX
 
-      this.infoBox = document.querySelector('.ifr-modal');
-
-      // When the user clicks on the 'x', close the modal
-      document.querySelector('.ifr-modal__closeButton').onclick = function () {
-        self.infoBox.style.display = 'none';
-      };
-
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function (event) {
-        if (event.target == self.infoBox) {
-          self.infoBox.style.display = 'none';
-        }
-      };
-
-      this.infoBoxContent = {
-        squareOne: {
-          title:
-            '<strong>' +
-            game.lang.game +
-            ':</strong> ' +
-            game.lang.square +
-            ' I',
-          body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
-          img:
-            '<img class="mx-auto" width=60% src="' +
-            game.image['s1-A'].src +
-            '">',
-        },
-        circleOne: {
-          title:
-            '<strong>' +
-            game.lang.game +
-            ':</strong> ' +
-            game.lang.circle +
-            ' I',
-          body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
-          img:
-            '<img class="mx-auto" width=80% src="' +
-            game.image['c1-A'].src +
-            '">',
-        },
-        squareTwo: {
-          title:
-            '<strong>' +
-            game.lang.game +
-            ':</strong> ' +
-            game.lang.square +
-            ' II',
-          body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
-          img:
-            '<img class="mx-auto" width=80% src="' +
-            game.image['s2'].src +
-            '">',
-        },
-      };
+      this.setInfoBoxes();
 
       // ------------- EVENTS
 
@@ -169,18 +107,70 @@ const menuState = {
    * Displays game menu information boxes.
    */
   showInfoBox: function (icon) {
-    self.infoBox.style.display = 'block';
+    if (self.infoBoxContent[icon.id]) {
+      self.infoBox.style.display = 'block';
 
-    let msg =
-      '<h3>' +
-      self.infoBoxContent[icon.id].title +
-      '</h3>' +
-      '<p>' +
-      self.infoBoxContent[icon.id].body +
-      '</p>' +
-      self.infoBoxContent[icon.id].img;
+      let msg =
+        '<h3>' +
+        self.infoBoxContent[icon.id].title +
+        '</h3>' +
+        '<p>' +
+        self.infoBoxContent[icon.id].body +
+        '</p>' +
+        self.infoBoxContent[icon.id].img;
 
-    document.querySelector('.ifr-modal__infobox').innerHTML = msg;
+      document.querySelector('.ifr-modal__infobox').innerHTML = msg;
+    } else {
+      console.error('Error: no info box was setup for this game.');
+    }
+  },
+
+  setInfoBoxes: function () {
+    self.infoBox = document.querySelector('.ifr-modal');
+
+    // When the user clicks on the 'x', close the modal
+    document.querySelector('.ifr-modal__closeButton').onclick = function () {
+      self.infoBox.style.display = 'none';
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+      if (event.target == self.infoBox) {
+        self.infoBox.style.display = 'none';
+      }
+    };
+
+    self.infoBoxContent = {
+      squareOne: {
+        title:
+          '<strong>' + game.lang.game + ':</strong> ' + game.lang.square + ' I',
+        body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
+        img:
+          '<img class="mx-auto" width=60% src="' +
+          game.image['s1-A'].src +
+          '">',
+      },
+      circleOne: {
+        title:
+          '<strong>' + game.lang.game + ':</strong> ' + game.lang.circle + ' I',
+        body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
+        img:
+          '<img class="mx-auto" width=80% src="' +
+          game.image['c1-A'].src +
+          '">',
+      },
+      squareTwo: {
+        title:
+          '<strong>' +
+          game.lang.game +
+          ':</strong> ' +
+          game.lang.square +
+          ' II',
+        body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
+        img:
+          '<img class="mx-auto" width=80% src="' + game.image['s2'].src + '">',
+      },
+    };
   },
 
   /**
@@ -196,9 +186,9 @@ const menuState = {
         self.showInfoBox(icon);
         break;
       case 'game':
-        gameShape = icon.gameShape;
-        gameName = icon.gameName;
         gameId = icon.gameId;
+        gameName = icon.gameName;
+        gameShape = icon.gameShape;
         if (!gameList.find((game) => game.gameName === gameName))
           console.error('Game error: the name of the game is not valid.');
         self.menuIcons = self.lbl_game.name;

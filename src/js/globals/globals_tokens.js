@@ -76,10 +76,10 @@ const gameList = [
         'operation_minus',
         'operation_mixed',
       ],
-      mapCharacterAnimation: () => {
-        ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
+      mapCharacterAnimation: (operation) => {
+        return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
-      mapCharacter: () => {
+      mapCharacter: (operation) => {
         return game.add.sprite(
           self.points.x[curMapPosition],
           self.points.y[curMapPosition],
@@ -113,10 +113,10 @@ const gameList = [
       gameNameBtn: 'game2',
       gameModeBtn: ['mode4', 'mode5'],
       gameOperationBtn: ['operation_equals'],
-      mapCharacterAnimation: () => {
-        ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
+      mapCharacterAnimation: (operation) => {
+        return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
-      mapCharacter: () => {
+      mapCharacter: (operation) => {
         return game.add.sprite(
           self.points.x[curMapPosition],
           self.points.y[curMapPosition],
@@ -127,12 +127,12 @@ const gameList = [
       },
       mapStart: () => {
         return game.add
-          .image(this.points.x[0], this.points.y[0], 'house', 1.05)
+          .image(self.points.x[0], self.points.y[0], 'house', 1.05)
           .anchor(0.5, 0.8);
       },
       mapEnd: () => {
         return game.add
-          .image(this.points.x[5], this.points.y[5], 'school', 0.525)
+          .image(self.points.x[5], self.points.y[5], 'school', 0.525)
           .anchor(0.2, 0.7);
       },
     },

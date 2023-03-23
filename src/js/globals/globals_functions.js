@@ -314,7 +314,10 @@ const renderBackground = (type) => {
       colors.blueBg,
       1
     );
-  } else if (type === 'scale') {
+    return;
+  }
+
+  if (type === 'scale') {
     // Add background image
     game.add.image(0, 0, 'bg_snow', 1.8);
 
@@ -355,19 +358,20 @@ const renderBackground = (type) => {
     game.add
       .sprite(13 * floor.width, context.canvas.height - 65, 'floor_snow', 7, 2)
       .anchor(0, 1);
-  } else {
-    // Add background image
-    game.add.image(0, 0, 'bgimage', 2.2);
+    return;
+  }
 
-    // Add clouds
-    game.add.image(640, 100, 'cloud', 1.5);
-    game.add.image(1280, 80, 'cloud', 1.5);
-    game.add.image(300, 85, 'cloud', 1.2);
+  // Add background image
+  game.add.image(0, 0, 'bgimage', 2.2);
 
-    // Add floor
-    for (let i = 0; i < context.canvas.width / 150; i++) {
-      game.add.image(i * 150, context.canvas.height - 150, 'floor', 1.5);
-    }
+  // Add clouds
+  game.add.image(640, 100, 'cloud', 1.5);
+  game.add.image(1280, 80, 'cloud', 1.5);
+  game.add.image(300, 85, 'cloud', 1.2);
+
+  // Add floor
+  for (let i = 0; i < context.canvas.width / 150; i++) {
+    game.add.image(i * 150, context.canvas.height - 150, 'floor', 1.5);
   }
 };
 
