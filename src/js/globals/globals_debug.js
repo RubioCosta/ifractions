@@ -1,8 +1,8 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { status: true, lang: 'pt_BR' },
-  name: { status: true, name: 'Username' },
+  lang: { status: false, lang: 'pt_BR' },
+  name: { status: false, name: 'Username' },
   menu: { status: false, id: 1 },
   customMenu: {
     status: false,

@@ -458,66 +458,66 @@ const gameList = [
       },
     },
   },
-  {
-    gameName: 'scaleOne',
-    gameMode: ['a'],
-    gameOperation: ['plus'],
-    gameDifficulty: 1,
-    // info
-    gameShape: 'noShape',
-    assets: {
-      menu: {
-        gameNameBtn: 'game_3',
-        // infoBox
-      },
-      customMenu: {
-        gameModeBtn: ['mode_6'],
-        gameOperationBtn: ['operation_equals'],
-        // infoBox
-      },
-      map: {
-        characterAnimation: (operation) => {
-          return operation === 'plus'
-            ? ['green_tractor', [0, 1, 2, 3, 4], 3]
-            : ['red_tractor', [10, 11, 12, 13, 14], 3];
-        },
-        character: (operation) => {
-          let char;
-          if (operation == 'plus') {
-            char = game.add.sprite(
-              self.points.x[curMapPosition],
-              self.points.y[curMapPosition],
-              'tractor',
-              0,
-              0.75
-            );
-          }
-          if (operation === 'minus') {
-            char = game.add.sprite(
-              self.points.x[curMapPosition],
-              self.points.y[curMapPosition],
-              'tractor',
-              10,
-              0.75
-            );
-          }
-          char.rotate = -30; // 25 anticlock
-          return char;
-        },
-        startBuilding: () => {
-          return game.add
-            .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
-            .anchor(0.5, 1);
-        },
-        endBuilding: () => {
-          return game.add
-            .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
-            .anchor(0.4, 0.7);
-        },
-      },
-      end: {
-        // TODO
-      },
-    },
-  },
+  // {
+  //   gameName: 'scaleOne',
+  //   gameMode: ['a'],
+  //   gameOperation: ['plus'],
+  //   gameDifficulty: 1,
+  //   // info
+  //   gameShape: 'noShape',
+  //   assets: {
+  //     menu: {
+  //       gameNameBtn: 'game_3',
+  //       // infoBox
+  //     },
+  //     customMenu: {
+  //       gameModeBtn: ['mode_6'],
+  //       gameOperationBtn: ['operation_equals'],
+  //       // infoBox
+  //     },
+  //     map: {
+  //       characterAnimation: (operation) => {
+  //         return operation === 'plus'
+  //           ? ['green_tractor', [0, 1, 2, 3, 4], 3]
+  //           : ['red_tractor', [10, 11, 12, 13, 14], 3];
+  //       },
+  //       character: (operation) => {
+  //         let char;
+  //         if (operation == 'plus') {
+  //           char = game.add.sprite(
+  //             self.points.x[curMapPosition],
+  //             self.points.y[curMapPosition],
+  //             'tractor',
+  //             0,
+  //             0.75
+  //           );
+  //         }
+  //         if (operation === 'minus') {
+  //           char = game.add.sprite(
+  //             self.points.x[curMapPosition],
+  //             self.points.y[curMapPosition],
+  //             'tractor',
+  //             10,
+  //             0.75
+  //           );
+  //         }
+  //         char.rotate = -30; // 25 anticlock
+  //         return char;
+  //       },
+  //       startBuilding: () => {
+  //         return game.add
+  //           .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
+  //           .anchor(0.5, 1);
+  //       },
+  //       endBuilding: () => {
+  //         return game.add
+  //           .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
+  //           .anchor(0.4, 0.7);
+  //       },
+  //     },
+  //     end: {
+  //       // TODO
+  //     },
+  //   },
+  // },
 ];
