@@ -13,8 +13,8 @@ const gameList = [
     // info
     gameShape: 'square',
     assets: {
-      gameNameBtn: 'game0',
-      gameModeBtn: ['mode0', 'mode1'],
+      gameNameBtn: 'game_0',
+      gameModeBtn: ['mode_0', 'mode_1'],
       gameOperationBtn: ['operation_plus', 'operation_minus'],
       mapCharacterAnimation: (operation) => {
         return operation === 'plus'
@@ -75,8 +75,8 @@ const gameList = [
     // info
     gameShape: 'circle',
     assets: {
-      gameNameBtn: 'game1',
-      gameModeBtn: ['mode2', 'mode3'],
+      gameNameBtn: 'game_1',
+      gameModeBtn: ['mode_2', 'mode_3'],
       gameOperationBtn: [
         'operation_plus',
         'operation_minus',
@@ -89,7 +89,7 @@ const gameList = [
         return game.add.sprite(
           self.points.x[curMapPosition],
           self.points.y[curMapPosition],
-          'kid_run',
+          'kid_running',
           0,
           0.6
         );
@@ -110,7 +110,7 @@ const gameList = [
         3,
       ],
       endCharacter: () => {
-        const char = game.add.sprite(0, -152, 'kid_run', 0, 0.7);
+        const char = game.add.sprite(0, -152, 'kid_running', 0, 0.7);
         char.anchor(0.5, 0.5);
         return char;
       },
@@ -125,8 +125,8 @@ const gameList = [
     // info
     gameShape: 'square',
     assets: {
-      gameNameBtn: 'game2',
-      gameModeBtn: ['mode4', 'mode5'],
+      gameNameBtn: 'game_2',
+      gameModeBtn: ['mode_4', 'mode_5'],
       gameOperationBtn: ['operation_equals'],
       mapCharacterAnimation: (operation) => {
         return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
@@ -135,7 +135,7 @@ const gameList = [
         return game.add.sprite(
           self.points.x[curMapPosition],
           self.points.y[curMapPosition],
-          'kid_run',
+          'kid_running',
           0,
           0.6
         );
@@ -156,7 +156,7 @@ const gameList = [
         3,
       ],
       endCharacter: () => {
-        const char = game.add.sprite(0, 460, 'kid_run', 6, 0.7);
+        const char = game.add.sprite(0, 460, 'kid_running', 6, 0.7);
         char.anchor(0.5, 0.5);
         return char;
       },
@@ -171,8 +171,8 @@ const gameList = [
     // info
     gameShape: 'noShape',
     assets: {
-      gameNameBtn: 'game3',
-      gameModeBtn: ['mode6'],
+      gameNameBtn: 'game_3',
+      gameModeBtn: ['mode_6'],
       gameOperationBtn: ['operation_equals'],
       mapCharacterAnimation: (operation) => {
         return operation === 'plus'
@@ -415,52 +415,53 @@ const url = {
      * audio: [ [name, [source, alternative source] ], ... ]
      */
     image: [
+      // scene new level
+      ['floor_stone_left', baseUrl + 'scene/new_level/floor_stone_left.png'],
+      ['floor_stone_right', baseUrl + 'scene/new_level/floor_stone_right.png'],
+      ['floor_stone', baseUrl + 'scene/new_level/floor_stone.png'],
+      ['wood_shelf', baseUrl + 'scene/new_level/wood_shelf.png'],
+      ['bg_snow', baseUrl + 'scene/new_level/bg_snow.png'],
       // Scene
-      ['bgimage', baseUrl + 'scene/bg.jpg'],
-      ['bg_snow', baseUrl + 'scene/bg_snow.png'],
-      ['bgmap', baseUrl + 'scene/bg_map.png'],
-      ['broken_sign', baseUrl + 'scene/broken_sign.png'],
+      ['bg_default', baseUrl + 'scene/bg_default.jpg'],
+      ['bg_map', baseUrl + 'scene/bg_map.png'],
       ['bush', baseUrl + 'scene/bush.png'],
       ['cloud', baseUrl + 'scene/cloud.png'],
-      ['floor_stone_left', baseUrl + 'scene/floor_stone_left.png'],
-      ['floor_stone_right', baseUrl + 'scene/floor_stone_right.png'],
-      ['floor_stone', baseUrl + 'scene/floor_stone.png'],
       ['floor', baseUrl + 'scene/floor.png'],
-      ['wood_shelf', baseUrl + 'scene/wood_shelf.png'],
       ['place_off', baseUrl + 'scene/place_off.png'],
       ['place_on', baseUrl + 'scene/place_on.png'],
       ['rock', baseUrl + 'scene/rock.png'],
       ['road', baseUrl + 'scene/road.png'],
       ['sign', baseUrl + 'scene/sign.png'],
-      ['tree1', baseUrl + 'scene/tree.png'],
-      ['tree2', baseUrl + 'scene/tree2.png'],
-      ['tree3', baseUrl + 'scene/tree3.png'],
-      ['tree4', baseUrl + 'scene/tree4.png'],
+      ['sign_broken', baseUrl + 'scene/sign_broken.png'],
+      ['tree_1', baseUrl + 'scene/tree_1.png'],
+      ['tree_2', baseUrl + 'scene/tree_2.png'],
+      ['tree_3', baseUrl + 'scene/tree_3.png'],
+      ['tree_4', baseUrl + 'scene/tree_4.png'],
       // Flags
-      ['flag_BR', baseUrl + 'flag/br.png'],
-      ['flag_FR', baseUrl + 'flag/fr.png'],
-      ['flag_IT', baseUrl + 'flag/it.png'],
-      ['flag_PE', baseUrl + 'flag/pe.png'],
-      ['flag_US', baseUrl + 'flag/us.png'],
+      ['flag_BR', baseUrl + 'flags/br.png'],
+      ['flag_FR', baseUrl + 'flags/fr.png'],
+      ['flag_IT', baseUrl + 'flags/it.png'],
+      ['flag_PE', baseUrl + 'flags/pe.png'],
+      ['flag_US', baseUrl + 'flags/us.png'],
       // Navigation icons on the top of the page
-      ['back', baseUrl + 'navig_icon/back.png'],
-      ['help', baseUrl + 'navig_icon/help.png'],
-      ['home', baseUrl + 'navig_icon/home.png'],
-      ['language', baseUrl + 'navig_icon/language.png'],
-      ['menu', baseUrl + 'navig_icon/menu.png'],
+      ['back', baseUrl + 'icons_navigation/back.png'],
+      ['show_solution', baseUrl + 'icons_navigation/show_solution.png'],
+      ['home', baseUrl + 'icons_navigation/home.png'],
+      ['language', baseUrl + 'icons_navigation/language.png'],
+      ['menu', baseUrl + 'icons_navigation/menu.png'],
       // Interactive icons
-      ['arrow_down', baseUrl + 'interac_icon/down.png'],
-      ['close', baseUrl + 'interac_icon/close.png'],
-      ['error', baseUrl + 'interac_icon/error.png'],
-      ['help_pointer', baseUrl + 'interac_icon/pointer.png'],
-      ['info', baseUrl + 'interac_icon/info.png'],
-      ['ok', baseUrl + 'interac_icon/ok.png'],
-      ['button', baseUrl + 'interac_icon/button.png'],
+      ['answer_correct', baseUrl + 'icons_interactive/answer_correct.png'],
+      ['answer_wrong', baseUrl + 'icons_interactive/answer_wrong.png'],
+      ['arrow_down', baseUrl + 'icons_interactive/arrow_down.png'],
+      ['btn', baseUrl + 'icons_interactive/btn.png'],
+      ['close', baseUrl + 'icons_interactive/close.png'],
+      ['info', baseUrl + 'icons_interactive/info.png'],
+      ['pointer', baseUrl + 'icons_interactive/pointer.png'],
       // Menu icons - Games
-      ['game0', baseUrl + 'levels/squareOne.png'], // Square I
-      ['game1', baseUrl + 'levels/circleOne.png'], // Circle I
-      ['game2', baseUrl + 'levels/squareTwo.png'], // Square II
-      ['game3', baseUrl + 'levels/scaleOne.png'], // Scale I
+      ['game_0', baseUrl + 'icons_menu/squareOne.png'], // Square I
+      ['game_1', baseUrl + 'icons_menu/circleOne.png'], // Circle I
+      ['game_2', baseUrl + 'icons_menu/squareTwo.png'], // Square II
+      ['game_3', baseUrl + 'icons_menu/scaleOne.png'], // Scale I
       // Menu icons - Info box
       ['c1-A', baseUrl + 'info_box/c1-A.png'],
       ['c1-A-h', baseUrl + 'info_box/c1-A-h.png'],
@@ -489,25 +490,25 @@ const url = {
     ],
     sprite: [
       // Game Sprites
-      ['kid_walk', baseUrl + 'character/kid/walk.png', 26],
+      ['kid_walking', baseUrl + 'characters/kid/walking.png', 26],
       // Navigation icons on the top of the page
-      ['audio', baseUrl + 'navig_icon/audio.png', 2],
+      ['audio', baseUrl + 'icons_navigation/audio.png', 2],
       // Interactive icons
-      ['select', baseUrl + 'interac_icon/selection_box.png', 2],
-      ['btn_square', baseUrl + 'interac_icon/button_square.png', 2],
+      ['select', baseUrl + 'icons_interactive/selection_box.png', 2],
+      ['btn_square', baseUrl + 'icons_interactive/btn_square.png', 2],
       // Menu icons - Game modes
-      ['mode0', baseUrl + 'levels/squareOne_1.png', 2], // Square I : A
-      ['mode1', baseUrl + 'levels/squareOne_2.png', 2], // Square I : B
-      ['mode2', baseUrl + 'levels/circleOne_1.png', 2], // Circle I : A
-      ['mode3', baseUrl + 'levels/circleOne_2.png', 2], // Circle I : B
-      ['mode4', baseUrl + 'levels/squareTwo_1.png', 2], // Square II : A
-      ['mode5', baseUrl + 'levels/squareTwo_2.png', 2], // Square II : B
-      ['mode6', baseUrl + 'levels/scaleOne_1.png', 2], // Scale I : A
+      ['mode_0', baseUrl + 'icons_menu/squareOne_1.png', 2], // Square I : A
+      ['mode_1', baseUrl + 'icons_menu/squareOne_2.png', 2], // Square I : B
+      ['mode_2', baseUrl + 'icons_menu/circleOne_1.png', 2], // Circle I : A
+      ['mode_3', baseUrl + 'icons_menu/circleOne_2.png', 2], // Circle I : B
+      ['mode_4', baseUrl + 'icons_menu/squareTwo_1.png', 2], // Square II : A
+      ['mode_5', baseUrl + 'icons_menu/squareTwo_2.png', 2], // Square II : B
+      ['mode_6', baseUrl + 'icons_menu/scaleOne_1.png', 2], // Scale I : A
       // Menu icons - Math operations
-      ['operation_plus', baseUrl + 'levels/operation_plus.png', 2], // Square/circle I : right
-      ['operation_minus', baseUrl + 'levels/operation_minus.png', 2], // Square/circle I : left
-      ['operation_mixed', baseUrl + 'levels/operation_mixed.png', 2], // Circle I : mixed
-      ['operation_equals', baseUrl + 'levels/operation_equals.png', 2], // Square II : equals
+      ['operation_plus', baseUrl + 'icons_menu/operation_plus.png', 2],
+      ['operation_minus', baseUrl + 'icons_menu/operation_minus.png', 2],
+      ['operation_mixed', baseUrl + 'icons_menu/operation_mixed.png', 2],
+      ['operation_equals', baseUrl + 'icons_menu/operation_equals.png', 2],
     ],
     audio: [
       // Sound effects
@@ -528,7 +529,7 @@ const url = {
     ],
     sprite: [
       // Game sprites
-      ['tractor', baseUrl + 'character/tractor/tractor.png', 15],
+      ['tractor', baseUrl + 'characters/tractor/tractor.png', 15],
     ],
     audio: [],
   },
@@ -540,8 +541,8 @@ const url = {
     ],
     sprite: [
       // Game sprites
-      ['kid_standing', baseUrl + 'character/kid/lost.png', 6],
-      ['kid_run', baseUrl + 'character/kid/run.png', 12],
+      ['kid_standing', baseUrl + 'characters/kid/lost.png', 6],
+      ['kid_running', baseUrl + 'characters/kid/running.png', 12],
     ],
     audio: [],
   },
@@ -551,12 +552,12 @@ const url = {
       ['house', baseUrl + 'scene/house.png'],
       ['school', baseUrl + 'scene/school.png'],
       // Game images
-      ['balloon', baseUrl + 'character/balloon/airballoon_upper.png'],
-      ['balloon_basket', baseUrl + 'character/balloon/airballoon_base.png'],
+      ['balloon', baseUrl + 'characters/balloon/balloon.png'],
+      ['balloon_basket', baseUrl + 'characters/balloon/balloon_basket.png'],
     ],
     sprite: [
       // Game sprites
-      ['kid_run', baseUrl + 'character/kid/run.png', 12],
+      ['kid_running', baseUrl + 'characters/kid/running.png', 12],
     ],
     audio: [],
   },
@@ -565,15 +566,15 @@ const url = {
       // Map buildings
       ['farm', baseUrl + 'scene/farm.png'],
       ['garage', baseUrl + 'scene/garage.png'],
-
-      ['scale_base', baseUrl + 'character/scale/scale_base.png'],
-      ['scale_top', baseUrl + 'character/scale/scale_top.png'],
-      ['scale_plate', baseUrl + 'character/scale/scale_plate.png'],
+      // Game images
+      ['scale_base', baseUrl + 'characters/scale/scale_base.png'],
+      ['scale_arm', baseUrl + 'characters/scale/scale_arm.png'],
+      ['scale_plate', baseUrl + 'characters/scale/scale_plate.png'],
     ],
     sprite: [
-      // Game sprites
-      ['tractor', baseUrl + 'character/tractor/tractor.png', 15],
-      ['floor_snow', baseUrl + 'scene/floor_snow.png', 9],
+      // Map buildings
+      ['tractor', baseUrl + 'characters/tractor/tractor.png', 15],
+      ['floor_snow', baseUrl + 'scene/new_level/floor_snow.png', 9],
     ],
     audio: [],
   },

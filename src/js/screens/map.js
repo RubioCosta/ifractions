@@ -130,7 +130,7 @@ const mapState = {
     }
 
     // Map
-    game.add.image(wOffset, hOffset + 40, 'bgmap', 1.5);
+    game.add.image(wOffset, hOffset + 40, 'bg_map', 1.5);
 
     // Progress bar
     const percentText = completedLevels * 25;
@@ -201,7 +201,7 @@ const mapState = {
     // Trees
     for (let i in trees.type) {
       game.add
-        .image(trees.x[i], trees.y[i], 'tree' + trees.type[i], 0.9)
+        .image(trees.x[i], trees.y[i], 'tree_' + trees.type[i], 0.9)
         .anchor(0.5, 0.95);
     }
 

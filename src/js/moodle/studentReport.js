@@ -69,7 +69,7 @@ const studentReport = {
         const sign = game.add.image(
           x,
           context.canvas.height - 100,
-          'broken_sign',
+          'sign_broken',
           0.7
         );
         sign.anchor(0.5, 0.5);

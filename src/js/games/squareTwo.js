@@ -366,7 +366,11 @@ const squareTwo = {
           if (audioStatus) game.audio.okSound.play();
 
           game.add
-            .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
+            .image(
+              context.canvas.width / 2,
+              context.canvas.height / 2,
+              'answer_correct'
+            )
             .anchor(0.5, 0.5);
           canGoToNextMapPosition = true; // Allow character to move to next level in map state
           completedLevels++;
@@ -377,7 +381,11 @@ const squareTwo = {
         } else {
           if (audioStatus) game.audio.errorSound.play();
           game.add
-            .image(context.canvas.width / 2, context.canvas.height / 2, 'error')
+            .image(
+              context.canvas.width / 2,
+              context.canvas.height / 2,
+              'answer_wrong'
+            )
             .anchor(0.5, 0.5);
           canGoToNextMapPosition = false; // Doesnt allow character to move to next level in map state
         }

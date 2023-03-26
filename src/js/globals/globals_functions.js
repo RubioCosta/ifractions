@@ -331,7 +331,7 @@ const renderBackground = (type) => {
   }
 
   // Add background image
-  game.add.image(0, 0, 'bgimage', 2.2);
+  game.add.image(0, 0, 'bg_default', 2.2);
 
   // Add clouds
   game.add.image(640, 100, 'cloud', 1.5);

@@ -151,7 +151,7 @@ const squareOne = {
     }
 
     // Help pointer
-    this.help = game.add.image(0, 0, 'help_pointer', 1.7);
+    this.help = game.add.image(0, 0, 'pointer', 1.7);
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 
@@ -276,7 +276,11 @@ const squareOne = {
 
         // Displays feedback image and sound
         game.add
-          .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
+          .image(
+            context.canvas.width / 2,
+            context.canvas.height / 2,
+            'answer_correct'
+          )
           .anchor(0.5, 0.5);
         if (audioStatus) game.audio.okSound.play();
 
@@ -286,7 +290,11 @@ const squareOne = {
         // Incorrect answer
         // Displays feedback image and sound
         game.add
-          .image(context.canvas.width / 2, context.canvas.height / 2, 'error')
+          .image(
+            context.canvas.width / 2,
+            context.canvas.height / 2,
+            'answer_wrong'
+          )
           .anchor(0.5, 0.5);
         if (audioStatus) game.audio.errorSound.play();
       }

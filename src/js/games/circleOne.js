@@ -317,7 +317,7 @@ const circleOne = {
     this.kid = game.add.sprite(
       startX,
       startY - 31 - this.circles.all.length * this.circles.diameter,
-      'kid_walk',
+      'kid_walking',
       0,
       1.2
     );
@@ -349,7 +349,7 @@ const circleOne = {
     this.basket.anchor(0.5, 0.5);
 
     // Help pointer
-    this.help = game.add.image(0, 0, 'help_pointer', 0.5);
+    this.help = game.add.image(0, 0, 'pointer', 0.5);
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 
@@ -457,7 +457,11 @@ const circleOne = {
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add
-          .image(context.canvas.width / 2, context.canvas.height / 2, 'ok')
+          .image(
+            context.canvas.width / 2,
+            context.canvas.height / 2,
+            'answer_correct'
+          )
           .anchor(0.5, 0.5);
         completedLevels++;
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
@@ -465,7 +469,11 @@ const circleOne = {
         self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
         game.add
-          .image(context.canvas.width / 2, context.canvas.height / 2, 'error')
+          .image(
+            context.canvas.width / 2,
+            context.canvas.height / 2,
+            'answer_wrong'
+          )
           .anchor(0.5, 0.5);
       }
 

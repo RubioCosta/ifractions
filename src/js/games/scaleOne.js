@@ -118,7 +118,7 @@ const scaleOne = {
       self.scale.top = game.add.image(
         self.control.scale.x0,
         self.control.scale.y0 - 170,
-        'scale_top',
+        'scale_arm',
         2
       );
       self.scale.top.rotate = self.control.scale.rotate;

@@ -31,7 +31,7 @@ const nameState = {
     this.okBtn = game.add.image(
       context.canvas.width / 2,
       context.canvas.height / 2 + 93 + 44,
-      'button',
+      'btn',
       1.5
     );
     this.okBtn.anchor(0.5, 0.5);
