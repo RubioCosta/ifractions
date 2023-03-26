@@ -16,6 +16,61 @@ const gameList = [
       gameNameBtn: 'game_0',
       gameModeBtn: ['mode_0', 'mode_1'],
       gameOperationBtn: ['operation_plus', 'operation_minus'],
+      menuInfoBox: () => ({
+        title:
+          '<strong>' + game.lang.game + ':</strong> ' + game.lang.square + ' I',
+        body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
+        img:
+          '<img class="mx-auto" width=60% src="' +
+          game.image['s1-A'].src +
+          '">',
+      }),
+      customMenuInfoBox: () => ({
+        gameMode: {
+          title: '<b>' + game.lang.game_modes + '</b>',
+          body: game.lang.infoBox_mode,
+          img:
+            '<table> <tr> <td> <b>a)</b> ' +
+            game.lang.infoBox_mode_s1_A +
+            ' </td> <td> <b>b)</b> ' +
+            game.lang.infoBox_mode_s1_B +
+            ' </td> </tr> <tr> <td> <img width=100% src="' +
+            game.image['s1-A-h'].src +
+            '"> ' +
+            ' </td> <td> <img width=100% src="' +
+            game.image['s1-B-h'].src +
+            '"> </td> </tr> <table>',
+        },
+        gameDifficulty: {
+          title: '<b>' + game.lang.difficulties + '</b>',
+          body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
+          img:
+            '<table> <tr> <td> <b>' +
+            game.lang.difficulty +
+            ':</b> 1' +
+            ' </td> <td> <b>' +
+            game.lang.difficulty +
+            ':</b> 3' +
+            ' </td> </tr> <tr> <td> <img width=100% src="' +
+            game.image['s1-diff-1'].src +
+            '"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+            game.image['s1-diff-3'].src +
+            '"> </td> </tr> </table> <br>' +
+            game.lang.infoBox_diff_aux +
+            '<center> <img width=50% src="' +
+            game.image['map-s1'].src +
+            '"> </center>',
+        },
+        gameMisc: {
+          title: '<b>' + game.lang.show + ' ' + self.auxText + '</b>',
+          body: game.lang.infoBox_misc_label,
+          img:
+            '<img class="mx-auto" width=80% src="' +
+            game.image['s1-label'].src +
+            '">',
+        },
+      }),
       mapCharacterAnimation: (operation) => {
         return operation === 'plus'
           ? ['green_tractor', [0, 1, 2, 3, 4], 3]
@@ -82,6 +137,62 @@ const gameList = [
         'operation_minus',
         'operation_mixed',
       ],
+      menuInfoBox: () => ({
+        title:
+          '<strong>' + game.lang.game + ':</strong> ' + game.lang.circle + ' I',
+        body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
+        img:
+          '<img class="mx-auto" width=80% src="' +
+          game.image['c1-A'].src +
+          '">',
+      }),
+      customMenuInfoBox: () => ({
+        gameMode: {
+          title: '<b>' + game.lang.game_modes + '</b>',
+          body: game.lang.infoBox_mode,
+          img:
+            '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="' +
+            game.image['c1-A-h'].src +
+            '">' +
+            ' </td> <td> &nbsp; <b>a)</b> ' +
+            game.lang.infoBox_mode_c1_A +
+            ' </td> </tr> </tr> <td> <img width=100% src="' +
+            game.image['c1-B-h'].src +
+            '"> ' +
+            ' </td> <td> &nbsp; <b>b)</b> ' +
+            game.lang.infoBox_mode_c1_B +
+            '</td> </tr> <table>',
+        },
+        gameDifficulty: {
+          title: '<b>' + game.lang.difficulties + '</b>',
+          body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
+          img:
+            '<table> <tr> <td style="border-right: 4px solid white"> <b>' +
+            game.lang.difficulty +
+            ':</b> 1' +
+            ' </td> <td> <b>' +
+            game.lang.difficulty +
+            ':</b> 5' +
+            ' </td> </tr> <tr> <td> <img width=100% src="' +
+            game.image['c1-diff-1'].src +
+            '"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+            game.image['c1-diff-5'].src +
+            '"> </td> </tr> </table> <center> <br>' +
+            game.lang.infoBox_diff_aux +
+            '<center> <img width=50% src="' +
+            game.image['map-c1s2'].src +
+            '"> </center>',
+        },
+        gameMisc: {
+          title: '<b>' + game.lang.show + ' ' + self.auxText + '</b>',
+          body: game.lang.infoBox_misc_label,
+          img:
+            '<img class="mx-auto" width=60% src="' +
+            game.image['c1-label'].src +
+            '">',
+        },
+      }),
       mapCharacterAnimation: (operation) => {
         return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
@@ -128,6 +239,63 @@ const gameList = [
       gameNameBtn: 'game_2',
       gameModeBtn: ['mode_4', 'mode_5'],
       gameOperationBtn: ['operation_equals'],
+      menuInfoBox: () => ({
+        title:
+          '<strong>' +
+          game.lang.game +
+          ':</strong> ' +
+          game.lang.square +
+          ' II',
+        body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
+        img:
+          '<img class="mx-auto" width=80% src="' + game.image['s2'].src + '">',
+      }),
+      customMenuInfoBox: () => ({
+        gameMode: {
+          title: '<b>' + game.lang.game_modes + '</b>',
+          body: game.lang.infoBox_mode,
+          img:
+            '<table> <tr> <td> <b>a)</b> ' +
+            game.lang.infoBox_mode_s2_A +
+            ' </td> <td> <b>b)</b> ' +
+            game.lang.infoBox_mode_s2_B +
+            ' </td> </tr> <tr> <td> <img width=98% src="' +
+            game.image['s2-A-h'].src +
+            '"> ' +
+            ' </td> <td> <img width=98% src="' +
+            game.image['s2-B-h'].src +
+            '"> </td> </tr> <table>',
+        },
+        gameDifficulty: {
+          title: '<b>' + game.lang.difficulties + '</b>',
+          body: game.lang.infoBox_diff,
+          img:
+            '<table> <tr> <td> <b>' +
+            game.lang.difficulty +
+            ':</b> 1' +
+            ' </td> <td> <b>' +
+            game.lang.difficulty +
+            ':</b> 5' +
+            ' </td> </tr> <tr> <td> <img width=100% src="' +
+            game.image['s2-diff-1'].src +
+            '"> ' +
+            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
+            game.image['s2-diff-5'].src +
+            '"> </td> </tr> </table> <br>' +
+            game.lang.infoBox_diff_aux +
+            '<center> <img width=50% src="' +
+            game.image['map-c1s2'].src +
+            '"> </center>',
+        },
+        gameMisc: {
+          title: '<b>' + game.lang.show + ' ' + self.auxText + '</b>',
+          body: game.lang.infoBox_misc_rect,
+          img:
+            '<img class="mx-auto" width=100% src="' +
+            game.image['s2-label'].src +
+            '">',
+        },
+      }),
       mapCharacterAnimation: (operation) => {
         return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
       },
@@ -174,6 +342,8 @@ const gameList = [
       gameNameBtn: 'game_3',
       gameModeBtn: ['mode_6'],
       gameOperationBtn: ['operation_equals'],
+      // menuInfoBox: ()=>({}),
+      // customMenuInfoBox: ()=>({ gameMode: {}, gameDifficulty: {}, gameMisc: {} }),
       mapCharacterAnimation: (operation) => {
         return operation === 'plus'
           ? ['green_tractor', [0, 1, 2, 3, 4], 3]
@@ -483,10 +653,10 @@ const url = {
       ['s2-diff-1', baseUrl + 'info_box/s2-diff-1.png'],
       ['s2-diff-5', baseUrl + 'info_box/s2-diff-5.png'],
       ['s2-label', baseUrl + 'info_box/s2-label.png'],
-      ['operation_plus', baseUrl + 'info_box/operation_plus.png'],
-      ['operation_minus', baseUrl + 'info_box/operation_minus.png'],
-      ['operation_mixed', baseUrl + 'info_box/operation_mixed.png'],
-      ['operation_equals', baseUrl + 'info_box/operation_equals.png'],
+      ['op_plus', baseUrl + 'info_box/op_plus.png'],
+      ['op_min', baseUrl + 'info_box/op_min.png'],
+      ['op_mix', baseUrl + 'info_box/op_mix.png'],
+      ['op_eq', baseUrl + 'info_box/op_eq.png'],
     ],
     sprite: [
       // Game Sprites
@@ -494,7 +664,7 @@ const url = {
       // Navigation icons on the top of the page
       ['audio', baseUrl + 'icons_navigation/audio.png', 2],
       // Interactive icons
-      ['select', baseUrl + 'icons_interactive/selection_box.png', 2],
+      ['select_input', baseUrl + 'icons_interactive/select_input.png', 2],
       ['btn_square', baseUrl + 'icons_interactive/btn_square.png', 2],
       // Menu icons - Game modes
       ['mode_0', baseUrl + 'icons_menu/squareOne_1.png', 2], // Square I : A

@@ -79,7 +79,7 @@ const menuState = {
         );
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
-        infoIcon.id = gameList[i].gameName;
+        infoIcon.id = i;
         this.menuIcons.push(infoIcon);
       }
 
@@ -105,28 +105,6 @@ const menuState = {
     }
   },
 
-  /**
-   * Displays game menu information boxes.
-   */
-  showInfoBox: function (icon) {
-    if (self.infoBoxContent[icon.id]) {
-      self.infoBox.style.display = 'block';
-
-      let msg =
-        '<h3>' +
-        self.infoBoxContent[icon.id].title +
-        '</h3>' +
-        '<p>' +
-        self.infoBoxContent[icon.id].body +
-        '</p>' +
-        self.infoBoxContent[icon.id].img;
-
-      document.querySelector('.ifr-modal__infobox').innerHTML = msg;
-    } else {
-      console.error('Error: no info box was setup for this game.');
-    }
-  },
-
   setInfoBoxes: function () {
     self.infoBox = document.querySelector('.ifr-modal');
 
@@ -141,38 +119,24 @@ const menuState = {
         self.infoBox.style.display = 'none';
       }
     };
+  },
 
-    self.infoBoxContent = {
-      squareOne: {
-        title:
-          '<strong>' + game.lang.game + ':</strong> ' + game.lang.square + ' I',
-        body: '<ul>' + game.lang.infoBox_squareOne + '</ul>',
-        img:
-          '<img class="mx-auto" width=60% src="' +
-          game.image['s1-A'].src +
-          '">',
-      },
-      circleOne: {
-        title:
-          '<strong>' + game.lang.game + ':</strong> ' + game.lang.circle + ' I',
-        body: '<ul>' + game.lang.infoBox_circleOne + '</ul>',
-        img:
-          '<img class="mx-auto" width=80% src="' +
-          game.image['c1-A'].src +
-          '">',
-      },
-      squareTwo: {
-        title:
-          '<strong>' +
-          game.lang.game +
-          ':</strong> ' +
-          game.lang.square +
-          ' II',
-        body: '<ul>' + game.lang.infoBox_squareTwo + '</ul>',
-        img:
-          '<img class="mx-auto" width=80% src="' + game.image['s2'].src + '">',
-      },
-    };
+  /**
+   * Displays game menu information boxes.
+   */
+  showInfoBox: function (icon) {
+    if (gameList?.[icon.id]?.assets?.menuInfoBox) {
+      const info = gameList[icon.id].assets.menuInfoBox();
+
+      self.infoBox.style.display = 'block';
+
+      let msg =
+        '<h3>' + info.title + '</h3>' + '<p>' + info.body + '</p>' + info.img;
+
+      document.querySelector('.ifr-modal__infobox').innerHTML = msg;
+    } else {
+      console.error('Error: no info box was setup for this game.');
+    }
   },
 
   /**

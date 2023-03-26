@@ -58,14 +58,14 @@ const customMenuState = {
       let x = gameFrame().x;
       let y = gameFrame().y;
 
-      const auxText = this.renderSectionTitles(x, y, offsetW, offsetH);
+      this.renderSectionTitles(x, y, offsetW, offsetH);
       this.renderCheckBox(x, y, offsetW, offsetH);
       this.renderModeSection(x, y, offsetW, offsetH, curGame);
       this.renderOperationSection(x, y, offsetW, offsetH, curGame);
       this.renderDifficultySection(x, y, offsetW, offsetH, curGame);
       this.renderEnterSection(x, y);
 
-      this.setInfoBoxes(auxText);
+      this.setInfoBoxes();
 
       // ------------- EVENTS
 
@@ -285,27 +285,25 @@ const customMenuState = {
       textStyles.h4_blue
     );
 
-    let auxText;
+    self.auxText;
 
     if (gameName == 'squareTwo') {
-      auxText = game.lang.aux_rectangle;
+      self.auxText = game.lang.aux_rectangle;
       game.add.text(
         x + 5 * offsetW + 10,
         y + offsetH + 80,
-        auxText,
+        self.auxText,
         textStyles.h4_blue
       );
     } else {
-      auxText = game.lang.title;
+      self.auxText = game.lang.title;
       game.add.text(
         x + 5 * offsetW,
         y + offsetH + 80,
-        auxText,
+        self.auxText,
         textStyles.h2_blue
       );
     }
-
-    return auxText;
   },
 
   renderCheckBox: function (x, y, offsetW, offsetH) {
@@ -315,7 +313,7 @@ const customMenuState = {
     const selectionBox = game.add.sprite(
       x + 5 * offsetW,
       y + offsetH + 90,
-      'select',
+      'select_input',
       frame,
       1.4
     );
@@ -439,7 +437,7 @@ const customMenuState = {
     }
   },
 
-  setInfoBoxes: function (auxText) {
+  setInfoBoxes: function () {
     // --------------------------- INFO BOX
 
     self.infoBox = document.querySelector('.ifr-modal');
@@ -456,183 +454,39 @@ const customMenuState = {
       }
     };
 
-    self.infoBoxContent = {
-      gameMode: {
-        squareOne: {
-          title: '<b>' + game.lang.game_modes + '</b>',
-          body: game.lang.infoBox_mode,
-          img:
-            '<table> <tr> <td> <b>a)</b> ' +
-            game.lang.infoBox_mode_s1_A +
-            ' </td> <td> <b>b)</b> ' +
-            game.lang.infoBox_mode_s1_B +
-            ' </td> </tr> <tr> <td> <img width=100% src="' +
-            game.image['s1-A-h'].src +
-            '"> ' +
-            ' </td> <td> <img width=100% src="' +
-            game.image['s1-B-h'].src +
-            '"> </td> </tr> <table>',
-        },
-        circleOne: {
-          title: '<b>' + game.lang.game_modes + '</b>',
-          body: game.lang.infoBox_mode,
-          img:
-            '<table> <tr style="border-bottom: 5px solid white"> <td width=70%> <img width=100% src="' +
-            game.image['c1-A-h'].src +
-            '">' +
-            ' </td> <td> &nbsp; <b>a)</b> ' +
-            game.lang.infoBox_mode_c1_A +
-            ' </td> </tr> </tr> <td> <img width=100% src="' +
-            game.image['c1-B-h'].src +
-            '"> ' +
-            ' </td> <td> &nbsp; <b>b)</b> ' +
-            game.lang.infoBox_mode_c1_B +
-            '</td> </tr> <table>',
-        },
-        squareTwo: {
-          title: '<b>' + game.lang.game_modes + '</b>',
-          body: game.lang.infoBox_mode,
-          img:
-            '<table> <tr> <td> <b>a)</b> ' +
-            game.lang.infoBox_mode_s2_A +
-            ' </td> <td> <b>b)</b> ' +
-            game.lang.infoBox_mode_s2_B +
-            ' </td> </tr> <tr> <td> <img width=98% src="' +
-            game.image['s2-A-h'].src +
-            '"> ' +
-            ' </td> <td> <img width=98% src="' +
-            game.image['s2-B-h'].src +
-            '"> </td> </tr> <table>',
-        },
-      },
-
-      gameOperation: {
-        title: '<b>' + game.lang.operation_math + '</b>',
-        body: game.lang.infoBox_oper,
-        img:
-          '<table class="table">' +
-          '<tr>' +
-          '<td> <img width=50 src="' +
-          game.image['operation_plus'].src +
-          '"> </td>' +
-          '<td> <img width=50 src="' +
-          game.image['operation_mixed'].src +
-          '"> </td>' +
-          '<td> <img width=50 src="' +
-          game.image['operation_minus'].src +
-          '"> </td>' +
-          '<td> <img width=50 src="' +
-          game.image['operation_equals'].src +
-          '"> </td>' +
-          '</tr> <tr>' +
-          '<td class="text-center">' +
-          game.lang.plus +
-          '</td>' +
-          '<td class="text-center">' +
-          game.lang.mixed +
-          '</td>' +
-          '<td class="text-center">' +
-          game.lang.minus +
-          '</td>' +
-          '<td class="text-center">' +
-          game.lang.equals +
-          '</td>' +
-          '</tr>' +
-          '</table>',
-      },
-
-      gameDifficulty: {
-        squareOne: {
-          title: '<b>' + game.lang.difficulties + '</b>',
-          body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
-          img:
-            '<table> <tr> <td> <b>' +
-            game.lang.difficulty +
-            ':</b> 1' +
-            ' </td> <td> <b>' +
-            game.lang.difficulty +
-            ':</b> 3' +
-            ' </td> </tr> <tr> <td> <img width=100% src="' +
-            game.image['s1-diff-1'].src +
-            '"> ' +
-            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
-            game.image['s1-diff-3'].src +
-            '"> </td> </tr> </table> <br>' +
-            game.lang.infoBox_diff_aux +
-            '<center> <img width=50% src="' +
-            game.image['map-s1'].src +
-            '"> </center>',
-        },
-        circleOne: {
-          title: '<b>' + game.lang.difficulties + '</b>',
-          body: game.lang.infoBox_diff + ' ' + game.lang.infoBox_diff_obs,
-          img:
-            '<table> <tr> <td style="border-right: 4px solid white"> <b>' +
-            game.lang.difficulty +
-            ':</b> 1' +
-            ' </td> <td> <b>' +
-            game.lang.difficulty +
-            ':</b> 5' +
-            ' </td> </tr> <tr> <td> <img width=100% src="' +
-            game.image['c1-diff-1'].src +
-            '"> ' +
-            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
-            game.image['c1-diff-5'].src +
-            '"> </td> </tr> </table> <center> <br>' +
-            game.lang.infoBox_diff_aux +
-            '<center> <img width=50% src="' +
-            game.image['map-c1s2'].src +
-            '"> </center>',
-        },
-        squareTwo: {
-          title: '<b>' + game.lang.difficulties + '</b>',
-          body: game.lang.infoBox_diff,
-          img:
-            '<table> <tr> <td> <b>' +
-            game.lang.difficulty +
-            ':</b> 1' +
-            ' </td> <td> <b>' +
-            game.lang.difficulty +
-            ':</b> 5' +
-            ' </td> </tr> <tr> <td> <img width=100% src="' +
-            game.image['s2-diff-1'].src +
-            '"> ' +
-            ' </td> <td style="border-left: 4px solid white"> <img width=100% src="' +
-            game.image['s2-diff-5'].src +
-            '"> </td> </tr> </table> <br>' +
-            game.lang.infoBox_diff_aux +
-            '<center> <img width=50% src="' +
-            game.image['map-c1s2'].src +
-            '"> </center>',
-        },
-      },
-
-      gameMisc: {
-        squareOne: {
-          title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-          body: game.lang.infoBox_misc_label,
-          img:
-            '<img class="mx-auto" width=80% src="' +
-            game.image['s1-label'].src +
-            '">',
-        },
-        circleOne: {
-          title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-          body: game.lang.infoBox_misc_label,
-          img:
-            '<img class="mx-auto" width=60% src="' +
-            game.image['c1-label'].src +
-            '">',
-        },
-        squareTwo: {
-          title: '<b>' + game.lang.show + ' ' + auxText + '</b>',
-          body: game.lang.infoBox_misc_rect,
-          img:
-            '<img class="mx-auto" width=100% src="' +
-            game.image['s2-label'].src +
-            '">',
-        },
-      },
+    self.gameOperationContent = {
+      title: '<b>' + game.lang.operation_math + '</b>',
+      body: game.lang.infoBox_oper,
+      img:
+        '<table class="table">' +
+        '<tr>' +
+        '<td> <img width=50 src="' +
+        game.image['op_plus'].src +
+        '"> </td>' +
+        '<td> <img width=50 src="' +
+        game.image['op_mix'].src +
+        '"> </td>' +
+        '<td> <img width=50 src="' +
+        game.image['op_min'].src +
+        '"> </td>' +
+        '<td> <img width=50 src="' +
+        game.image['op_eq'].src +
+        '"> </td>' +
+        '</tr> <tr>' +
+        '<td class="text-center">' +
+        game.lang.plus +
+        '</td>' +
+        '<td class="text-center">' +
+        game.lang.mixed +
+        '</td>' +
+        '<td class="text-center">' +
+        game.lang.minus +
+        '</td>' +
+        '<td class="text-center">' +
+        game.lang.equals +
+        '</td>' +
+        '</tr>' +
+        '</table>',
     };
   },
 
@@ -642,19 +496,19 @@ const customMenuState = {
   showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
-    const element =
+    const info =
       icon.id == 'gameOperation'
-        ? self.infoBoxContent[icon.id]
-        : self.infoBoxContent[icon.id][gameName];
+        ? self.gameOperationContent
+        : gameList[gameId].assets.customMenuInfoBox()[icon.id];
 
     let msg =
       '<h3>' +
-      element.title +
+      info.title +
       '</h3>' +
       '<p align=justify>' +
-      element.body +
+      info.body +
       '</p>' +
-      element.img;
+      info.img;
 
     document.querySelector('.ifr-modal__infobox').innerHTML = msg;
   },
