@@ -51,10 +51,10 @@ const endState = {
 
     game.add.image(360, 545, 'tree4', 0.7).anchor(0, 1);
 
-    gameList[gameId].assets.endBuilding();
+    gameList[gameId].assets.end.building();
 
-    this.character = gameList[gameId].assets.endCharacter();
-    this.character.animation = gameList[gameId].assets.endCharacterAnimation;
+    this.character = gameList[gameId].assets.end.character();
+    this.character.animation = gameList[gameId].assets.end.characterAnimation;
 
     if (gameName === 'circleOne') {
       this.preAnimate = true;

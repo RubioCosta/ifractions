@@ -59,7 +59,7 @@ const menuState = {
         const icon = game.add.image(
           x,
           context.canvas.height / 2 - 70,
-          gameList[i].assets.gameNameBtn,
+          gameList[i].assets.menu.gameNameBtn,
           1.5
         );
         icon.anchor(0.5, 0.5);
@@ -125,10 +125,10 @@ const menuState = {
    * Displays game menu information boxes.
    */
   showInfoBox: function (icon) {
-    if (gameList?.[icon.id]?.assets?.menuInfoBox) {
+    if (gameList?.[icon.id]?.assets?.menu?.infoBox) {
       self.infoBox.style.display = 'block';
 
-      const data = gameList[icon.id].assets.menuInfoBox();
+      const data = gameList[icon.id].assets.menu.infoBox();
 
       const content = `<h3>${data.title}</h3>
       <p>${data.body}</p>

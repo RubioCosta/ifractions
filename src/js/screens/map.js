@@ -186,8 +186,8 @@ const mapState = {
     ).align = 'right';
 
     // Map positions
-    gameList[gameId].assets.mapStart();
-    gameList[gameId].assets.mapEnd();
+    gameList[gameId].assets.map.startBuilding();
+    gameList[gameId].assets.map.endBuilding();
 
     // Rocks and bushes
     for (let i in rocks.type) {
@@ -230,9 +230,9 @@ const mapState = {
     }
 
     // Character
-    this.character = gameList[gameId].assets.mapCharacter(gameOperation);
+    this.character = gameList[gameId].assets.map.character(gameOperation);
     this.character.animation =
-      gameList[gameId].assets.mapCharacterAnimation(gameOperation);
+      gameList[gameId].assets.map.characterAnimation(gameOperation);
 
     //this.character.anchor(0.5, 1);
     game.animation.play(this.character.animation[0]);

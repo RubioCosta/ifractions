@@ -67,7 +67,7 @@ const navigationIcons = {
         );
       } else {
         this.help = help;
-        this.iconsList.push(game.add.image(xLeft, 10, 'help', 1.5));
+        this.iconsList.push(game.add.image(xLeft, 10, 'pointer', 1.5));
         xLeft += iconSize;
       }
     }
