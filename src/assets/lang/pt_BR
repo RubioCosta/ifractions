@@ -33,6 +33,7 @@ loading=CARREGANDO
 menu_title=SELECIONE UM JOGO
 minus=Subtração
 mixed=Soma e Subtração
+mode=Modo
 nav_back=VOLTAR
 nav_help=VER SOLUÇÃO
 nav_lang=SELECIONAR IDIOMA

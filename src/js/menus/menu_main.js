@@ -126,14 +126,15 @@ const menuState = {
    */
   showInfoBox: function (icon) {
     if (gameList?.[icon.id]?.assets?.menuInfoBox) {
-      const info = gameList[icon.id].assets.menuInfoBox();
-
       self.infoBox.style.display = 'block';
 
-      let msg =
-        '<h3>' + info.title + '</h3>' + '<p>' + info.body + '</p>' + info.img;
+      const data = gameList[icon.id].assets.menuInfoBox();
 
-      document.querySelector('.ifr-modal__infobox').innerHTML = msg;
+      const content = `<h3>${data.title}</h3>
+      <p>${data.body}</p>
+      ${data.img}`;
+
+      document.querySelector('.ifr-modal__infobox').innerHTML = content;
     } else {
       console.error('Error: no info box was setup for this game.');
     }

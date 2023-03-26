@@ -32,6 +32,7 @@ insert_name=ENTER YOUR NAME
 loading=LOADING
 menu_title=SELECT GAME
 minus=Subtraction
+mode=Mode
 mixed=Sum and Subtraction
 nav_back=GO BACK
 nav_help=SEE SOLUTION

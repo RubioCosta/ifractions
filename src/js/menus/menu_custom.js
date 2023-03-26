@@ -455,38 +455,22 @@ const customMenuState = {
     };
 
     self.gameOperationContent = {
-      title: '<b>' + game.lang.operation_math + '</b>',
+      title: game.lang.operation_math,
       body: game.lang.infoBox_oper,
-      img:
-        '<table class="table">' +
-        '<tr>' +
-        '<td> <img width=50 src="' +
-        game.image['op_plus'].src +
-        '"> </td>' +
-        '<td> <img width=50 src="' +
-        game.image['op_mix'].src +
-        '"> </td>' +
-        '<td> <img width=50 src="' +
-        game.image['op_min'].src +
-        '"> </td>' +
-        '<td> <img width=50 src="' +
-        game.image['op_eq'].src +
-        '"> </td>' +
-        '</tr> <tr>' +
-        '<td class="text-center">' +
-        game.lang.plus +
-        '</td>' +
-        '<td class="text-center">' +
-        game.lang.mixed +
-        '</td>' +
-        '<td class="text-center">' +
-        game.lang.minus +
-        '</td>' +
-        '<td class="text-center">' +
-        game.lang.equals +
-        '</td>' +
-        '</tr>' +
-        '</table>',
+      img: `<table class="table">
+        <tr>
+          <td><img width=50 src="${game.image['op_plus'].src}"></td>
+          <td><img width=50 src="${game.image['op_mix'].src}"></td>
+          <td><img width=50 src="${game.image['op_min'].src}"></td>
+          <td><img width=50 src="${game.image['op_eq'].src}"></td>
+        </tr>
+        <tr>
+          <td class="text-center">${game.lang.plus}</td>
+          <td class="text-center">${game.lang.mixed}</td>
+          <td class="text-center">${game.lang.minus}</td>
+          <td class="text-center">${game.lang.equals}</td>
+        </tr>
+      </table>`,
     };
   },
 
@@ -496,20 +480,15 @@ const customMenuState = {
   showInfoBox: function (icon) {
     self.infoBox.style.display = 'block';
 
-    const info =
+    const data =
       icon.id == 'gameOperation'
         ? self.gameOperationContent
         : gameList[gameId].assets.customMenuInfoBox()[icon.id];
 
-    let msg =
-      '<h3>' +
-      info.title +
-      '</h3>' +
-      '<p align=justify>' +
-      info.body +
-      '</p>' +
-      info.img;
+    const content = `<h2>${data.title}</h2>
+    <div>${data.body}</div>
+    ${data.img}`;
 
-    document.querySelector('.ifr-modal__infobox').innerHTML = msg;
+    document.querySelector('.ifr-modal__infobox').innerHTML = content;
   },
 };
