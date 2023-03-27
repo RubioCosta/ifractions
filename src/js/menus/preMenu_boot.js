@@ -37,6 +37,11 @@ const bootState = {
       game.load.lang('src/assets/lang/' + langString);
     }
     // LOADING MEDIA
+    if (isDebugMode) {
+      console.log(url.boot.audio.length + ' audio files to cache');
+      console.log(url.boot.image.length + ' images to cache');
+      console.log(url.boot.sprite.length + ' sprites to cache');
+    }
     game.load.audio(url.boot.audio);
     game.load.image(url.boot.image);
     game.load.sprite(url.boot.sprite);

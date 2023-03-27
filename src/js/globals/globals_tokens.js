@@ -1,4 +1,5 @@
 const baseUrl = 'src/assets/img/'; // Base directory for media
+const fallbackImgUrl = 'src/assets/img/fallback.png';
 
 /**
  * Preset colors for graphic elements.
@@ -199,6 +200,7 @@ const url = {
      * audio: [ [name, [source, alternative source] ], ... ]
      */
     image: [
+      ['fallback', fallbackImgUrl],
       // scene new level
       ['floor_stone_left', baseUrl + 'scene/new_level/floor_stone_left.png'],
       ['floor_stone_right', baseUrl + 'scene/new_level/floor_stone_right.png'],

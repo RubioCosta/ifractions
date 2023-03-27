@@ -28,11 +28,15 @@ const nameState = {
       textStyles.h4_brown
     );
 
-    this.okBtn = game.add.image(
+    this.okBtn = game.add.geom.rect(
       context.canvas.width / 2,
       context.canvas.height / 2 + 93 + 44,
-      'btn',
-      1.5
+      285,
+      93.5,
+      undefined,
+      undefined,
+      colors.blueDark,
+      1
     );
     this.okBtn.anchor(0.5, 0.5);
 

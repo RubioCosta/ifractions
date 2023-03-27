@@ -249,12 +249,24 @@ const gameList = [
             ? ['move', [0, 1, 2, 3, 4], 4]
             : ['move', [10, 11, 12, 13, 14], 4],
         character: (operation) => {
-          const char = game.add.sprite(0, 490, 'tractor', 0, 0.7);
+          const char = game.add.sprite(
+            0,
+            context.canvas.height - 170,
+            'tractor',
+            0,
+            1.05
+          );
           char.anchor(0.5, 0.5);
           if (operation === 'plus') char.curFrame = 10;
           return char;
         },
-        building: () => game.add.image(650, 260, 'farm', 1.1),
+        building: () =>
+          game.add.image(
+            context.canvas.width - 400,
+            context.canvas.height - 400,
+            'farm',
+            1.155
+          ),
       },
     },
   },
@@ -357,11 +369,11 @@ const gameList = [
       end: {
         characterAnimation: ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3],
         character: () => {
-          const char = game.add.sprite(0, -152, 'kid_running', 0, 0.7);
+          const char = game.add.sprite(0, -152, 'kid_running', 0, 1.05);
           char.anchor(0.5, 0.5);
           return char;
         },
-        building: () => game.add.image(600, 222, 'school', 0.7),
+        building: () => game.add.image(600, 222, 'school', 1.05),
       },
     },
   },
@@ -450,11 +462,11 @@ const gameList = [
       end: {
         characterAnimation: ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3],
         character: () => {
-          const char = game.add.sprite(0, 460, 'kid_running', 6, 0.7);
+          const char = game.add.sprite(0, 460, 'kid_running', 6, 1.05);
           char.anchor(0.5, 0.5);
           return char;
         },
-        building: () => game.add.image(600, 222, 'school', 0.7),
+        building: () => game.add.image(600, 222, 'school', 1.05),
       },
     },
   },

@@ -14,15 +14,6 @@ const game = {
   sprite: {}, // [Not directly used] Holds cached reference to media.
   audio: {}, // Holds cached reference to media - game.audio.<name>.play() plays that audio once.
   lang: {}, // Holds language dictionary in a key-value format - game.lang.<key> returns <value>.
-  loadedCur: 0, // [Not directly used] CURRENT number of cached media (on current state)
-  loadedMax: 0, // [Not directly used] EXPECTED number of cached media (on current state)
-  loadManager: {
-    // [Not directly used] <mediaCategory> : [ <isLoading?> , <#CurrentlyCached> ]
-    lang: [false, 0],
-    audio: [false, 0],
-    image: [false, 0],
-    sprite: [false, 0],
-  },
 
   /** 
    * Handles game states. <br>
@@ -43,6 +34,9 @@ const game = {
     list: [],
     // [Not directly used]
     name: undefined,
+    // progressBar
+    progressBar: undefined,
+    progressBarLabel: undefined,
     /**
      * Create new state. <br>
      *
@@ -85,16 +79,23 @@ const game = {
           colors.blueBg,
           1
         );
-        self.progressBar = game.add.geom.rect(
+        game.state.progressBar = game.add.geom.rect(
           context.canvas.width / 2,
           context.canvas.height / 2,
-          20,
-          20,
+          40,
+          40,
           undefined,
           0,
-          colors.white
+          colors.blueBgOff
         );
-        self.progressBar.anchor(0.5, 0.5);
+        game.state.progressBar.anchor(0.5, 0.5);
+
+        game.state.progressBarLabel = game.add.text(
+          context.canvas.width / 2,
+          context.canvas.height / 2 + 100,
+          '0/0',
+          textStyles.h2_blue
+        );
         // Calls state's preload() to load the state's media
         self.preload();
       } else {
@@ -123,6 +124,87 @@ const game = {
     },
   },
 
+  loadHandler: {
+    cur: 0, // [Not directly used] CURRENT number of cached media (on current state)
+    max: 0, // [Not directly used] EXPECTED number of cached media (on current state)
+    // [Not directly used] media type and status information
+    type: {
+      lang: { isLoading: false, cached: 0, length: 0 },
+      audio: { isLoading: false, cached: 0, length: 0 },
+      image: { isLoading: false, cached: 0, length: 0 },
+      sprite: { isLoading: false, cached: 0, length: 0 },
+    },
+    /** [Not directly used] Removes the urls that are already in the cache.
+     *
+     * @param {string[]} unfilteredUrls array of urls
+     * @param {object} mediaCategory media category
+     *
+     * @returns {string[]} array of uncached urls
+     */
+    getUncachedUrlsOnly: function (unfilteredUrls, mediaCategory) {
+      const uncachedUrls = [];
+      unfilteredUrls.forEach((url) => {
+        if (mediaCategory[url[0]] === undefined) uncachedUrls.push(url);
+      });
+      return uncachedUrls;
+    },
+    /** [Not directly used] Informs ONE media file was loaded to cache. <br>
+     *
+     * After ALL FILES of the SAME CATEGORY are cached, calls game.load.cachedAllInOneMediaType()
+     *
+     * @param {String} mediaType media category (to update the cached files from that category)
+     */
+    cachedOneFile: function (mediaType) {
+      const length = game.loadHandler.type[mediaType].length;
+
+      // Update progress bar on loading screen
+      if (length - 1 !== 0) {
+        // if (game.state..progressBarLabel?.name) {
+        //   game.state..progressBarLabel.name = `${game.loadHandler.cur + 1}/${
+        //     game.loadHandler.max
+        //   }`;
+        // }
+        game.state.progressBar.width =
+          (500 / game.loadHandler.max) * game.loadHandler.cur;
+        game.render.all();
+        game.loadHandler.cur++;
+        // console.log(game.loadHandler.cur, game.loadHandler.max);
+      }
+      // If reached last index of current media array
+      if (game.loadHandler.type[mediaType].cached >= length - 1) {
+        // Resets load manager
+        game.loadHandler.type[mediaType].isLoading = false;
+        game.loadHandler.type[mediaType].cached = 0;
+        game.loadHandler.type[mediaType].length = 0;
+        // Informs
+        game.loadHandler.cachedAllInOneMediaType();
+      } else {
+        // Updates
+        game.loadHandler.type[mediaType].cached++;
+      }
+    },
+    /** [Not directly used] Informs ALL MEDIA files from the SAME CATEGORY are cached. <br>
+     *
+     * After ALL CATEGORIES of media are cached, calls create() via game.state. <br>
+     * ATTENTION: Do not call create() directly.
+     */
+    cachedAllInOneMediaType: function () {
+      // Checks if finished loading ALL media categories
+      let endPreload = true;
+      for (let key in game.loadHandler.type) {
+        if (game.loadHandler.type[key].isLoading) {
+          endPreload = false;
+          break;
+        }
+      }
+      // If flag doesnt change, all media is cached
+      if (endPreload) {
+        game.loadHandler.cur = 0;
+        game.loadHandler.max = 0;
+        game.state.create();
+      }
+    },
+  },
   /**
    * Loads media files to cache. <br>
    *
@@ -141,26 +223,31 @@ const game = {
      * @param {string} url url for the selected language
      */
     lang: function (url) {
-      game.loadManager.lang[0] = true;
-      game.loadManager.lang[1] = 0;
+      game.loadHandler.type.lang.isLoading = true;
+      game.loadHandler.type.lang.cached = 0;
+
       game.lang = {}; // Clear previously loaded language
-      const init = { mode: 'same-origin' };
-      fetch(url, init)
-        .then((response) => {
-          return response.text();
-        })
+
+      fetch(url, { mode: 'same-origin' })
+        .then((response) => response.text())
         .then((text) => {
-          let msg = text.split('\n');
-          game.loadedMax += msg.length - 1;
-          msg.forEach((cur) => {
+          const lines = text.split('\n');
+          game.loadHandler.type.lang.length = lines.length;
+          game.loadHandler.max += lines.length;
+          lines.forEach((line) => {
             try {
-              let msg = cur.split('=');
+              const msg = line.split('=');
+              if (msg.length !== 2)
+                throw Error('Game error: sintax error in i18y file');
               game.lang[msg[0].trim()] = msg[1].trim();
-            } catch (Error) {
-              if (isDebugMode) console.log('Sintax error fixed');
+            } catch (error) {
+              console.error(error.message);
             }
-            game.load.finishedOneMediaElement(msg.length - 1, 'lang');
+            game.loadHandler.cachedOneFile('lang');
           });
+        })
+        .catch((error) => {
+          console.error(error);
         });
     },
     /**
@@ -170,20 +257,27 @@ const game = {
      * @param {string[]} urls audio urls for the current state
      */
     audio: function (urls) {
-      game.loadManager.audio[0] = true;
-      game.loadManager.audio[1] = 0;
-      urls = this.getUncachedUrls(urls, game.audio);
+      game.loadHandler.type.audio.isLoading = true;
+      game.loadHandler.type.audio.cached = 0;
+
+      urls = game.loadHandler.getUncachedUrlsOnly(urls, game.audio);
+
+      game.loadHandler.type.audio.length = urls.length;
+
       if (urls.length == 0) {
-        game.load.finishedOneMediaElement(0, 'audio');
+        game.loadHandler.cachedOneFile('audio');
       } else {
-        game.loadedMax += urls.length - 1;
-        const init = { mode: 'same-origin' };
-        urls.forEach((cur) => {
-          fetch(cur[1][1], init)
+        game.loadHandler.max += urls.length;
+
+        urls.forEach((url) => {
+          fetch(url[1][1], { mode: 'same-origin' })
             .then((response) => response.blob())
-            .then((myBlob) => {
-              game.audio[cur[0]] = new Audio(URL.createObjectURL(myBlob));
-              game.load.finishedOneMediaElement(urls.length - 1, 'audio');
+            .then((data) => {
+              game.audio[url[0]] = new Audio(URL.createObjectURL(data));
+              game.loadHandler.cachedOneFile('audio');
+            })
+            .catch((error) => {
+              console.error(error);
             });
         });
       }
@@ -195,20 +289,31 @@ const game = {
      * @param {string[]} urls image urls for the current state
      */
     image: function (urls) {
-      game.loadManager.image[0] = true;
-      game.loadManager.image[1] = 0;
-      urls = this.getUncachedUrls(urls, game.image);
+      game.loadHandler.type.image.isLoading = true;
+      game.loadHandler.type.image.cached = 0;
+
+      urls = game.loadHandler.getUncachedUrlsOnly(urls, game.image);
+
+      game.loadHandler.type.image.length = urls.length;
+
       if (urls.length == 0) {
-        game.load.finishedOneMediaElement(0, 'image');
+        game.loadHandler.cachedOneFile('image');
       } else {
-        game.loadedMax += urls.length - 1;
-        urls.forEach((cur) => {
+        game.loadHandler.max += urls.length;
+
+        urls.forEach((url) => {
           const img = new Image();
           img.onload = () => {
-            game.image[cur[0]] = img;
-            game.load.finishedOneMediaElement(urls.length - 1, 'image');
+            game.image[url[0]] = img;
+            game.loadHandler.cachedOneFile('image');
           };
-          img.src = cur[1];
+          img.onerror = () => {
+            console.error('Game error: image not found');
+            game.image[url[0]] = img;
+            img.src = fallbackImgUrl;
+            game.loadHandler.cachedOneFile('image');
+          };
+          img.src = url[1];
         });
       }
     },
@@ -219,81 +324,38 @@ const game = {
      * @param {string[]} urls spritesheet urls for the current state
      */
     sprite: function (urls) {
-      game.loadManager.sprite[0] = true;
-      game.loadManager.sprite[1] = 0;
-      urls = this.getUncachedUrls(urls, game.sprite);
+      game.loadHandler.type.sprite.isLoading = true;
+      game.loadHandler.type.sprite.cached = 0;
+
+      urls = game.loadHandler.getUncachedUrlsOnly(urls, game.sprite);
+
+      game.loadHandler.type.sprite.length = urls.length;
+
       if (urls.length == 0) {
-        game.load.finishedOneMediaElement(0, 'sprite');
+        game.loadHandler.cachedOneFile('sprite');
       } else {
-        game.loadedMax += urls.length - 1;
-        urls.forEach((cur) => {
-          const img = new Image();
-          img.onload = () => {
-            game.sprite[cur[0]] = img;
-            game.load.finishedOneMediaElement(urls.length - 1, 'sprite');
-          };
-          img.src = cur[1];
-          img.frames = cur[2];
+        game.loadHandler.max += urls.length;
+
+        urls.forEach((url) => {
+          try {
+            const img = new Image();
+            img.onload = () => {
+              game.sprite[url[0]] = img;
+              game.loadHandler.cachedOneFile('sprite');
+            };
+            img.onerror = () => {
+              console.error('Game error: sprite not found');
+              game.sprite[url[0]] = img;
+              img.src = fallbackImgUrl;
+              img.frames = 1;
+              game.loadHandler.cachedOneFile('sprite');
+            };
+            img.src = url[1];
+            img.frames = url[2];
+          } catch (error) {
+            console.error(error);
+          }
         });
-      }
-    },
-    /** [Not directly used] Removes the urls that are already in the cache.
-     *
-     * @param {string[]} urls array of urls
-     * @param {object} media media category
-     *
-     * @returns {string[]} array of uncached urls
-     */
-    getUncachedUrls: function (urls, media) {
-      const newUrls = [];
-      urls.forEach((cur) => {
-        if (media[cur[0]] == undefined) newUrls.push(cur);
-      });
-      return newUrls;
-    },
-    /** [Not directly used] Informs ONE media file was loaded to cache. <br>
-     *
-     * After ALL FILES of the SAME CATEGORY are cached, calls game.load.finishedOneMediaType()
-     *
-     * @param {number} lastIndex last index of the media array (to check if is finished)
-     * @param {String} mediaType media category (to update the cached files from that category)
-     */
-    finishedOneMediaElement: function (lastIndex, mediaType) {
-      // Updates progress bar
-      if (lastIndex != 0) {
-        self.progressBar.width = (200 / game.loadedMax) * game.loadedCur;
-        game.render.all();
-        game.loadedCur++;
-      }
-      // If reached last index of current media array
-      if (lastIndex == game.loadManager[mediaType][1]) {
-        // Resets load manager
-        game.loadManager[mediaType][0] = false;
-        game.loadManager[mediaType][1] = 0;
-        // Informs
-        game.load.finishedOneMediaType();
-      } else {
-        // Updates
-        game.loadManager[mediaType][1]++;
-      }
-    },
-    /** [Not directly used] Informs ALL MEDIA files from the SAME CATEGORY are cached. <br>
-     *
-     * After ALL CATEGORIES of media are cached, calls create() via game.state. <br>
-     * ATTENTION: Do not call create() directly.
-     */
-    finishedOneMediaType: function () {
-      // Checks if finished loading ALL media categories
-      let endPreload = true;
-      for (let key in game.loadManager) {
-        if (game.loadManager[key][0] == true) {
-          endPreload = false;
-          break;
-        }
-      }
-      // If flag doesnt change, all media is cached
-      if (endPreload) {
-        game.state.create();
       }
     },
   },
@@ -432,9 +494,9 @@ const game = {
         y == undefined ||
         text == undefined ||
         style == undefined
-      )
+      ) {
         console.error('Game error: missing parameters.');
-      else {
+      } else {
         const med = {
           typeOfMedia: 'text',
           name: text,
