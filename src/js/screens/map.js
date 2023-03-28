@@ -255,12 +255,8 @@ const mapState = {
 
     if (isDebugMode && debugState.map.status) {
       // programmatically skip map
-      if (debugState.map.stop) {
-        self.moveCounter--;
-      } else {
-        curMapPosition++;
-        self.loadGame();
-      }
+      curMapPosition++;
+      self.loadGame();
     }
 
     if (self.moveCounter > 60) {
