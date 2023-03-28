@@ -3,11 +3,11 @@ const isDebugMode = true;
 const debugState = {
   lang: { status: true, lang: 'en_US' },
   name: { status: true, name: 'Username' },
-  menu: { status: false, id: 2 },
+  menu: { status: true, id: 2 },
   customMenu: {
-    status: false,
+    status: true,
     getData: () => {
-      return { mode: 'a', operation: 'mixed', difficulty: 1, label: true };
+      return { mode: 'a', operation: 'plus', difficulty: 1, label: true };
     },
   },
   map: { status: false, stop: false },

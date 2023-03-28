@@ -11,11 +11,210 @@ const mapState = {
    * Main code
    */
   create: function () {
-    self.waitUserAction = false;
+    let x0 = 306;
+    let y0 = 161;
+    this.scene = {
+      rocks: {
+        x: [x0 + 172, x0 + 604, x0 + 353],
+        y: [y0 + 319, y0 + 88, y0 + 667, ,],
+      },
+      bushes: {
+        x: [x0 + 344, x0 + 822, x0 + 1006, x0 + 613],
+        y: [y0 + 224, y0 + 43, y0 + 310, y0 + 464],
+      },
+      trees: {
+        x: [
+          x0 + 26,
+          x0 + 776,
+          x0 + 401,
+          x0 + 1006,
+          x0 + 204,
+          x0 + 1065,
+          x0 + 435,
+          x0 + 728,
+        ],
+        y: [
+          y0 + 174,
+          y0 + 250,
+          y0 - 67,
+          y0 + 417,
+          y0 + 16,
+          y0 + 116,
+          y0 + 435,
+          y0 + 511,
+        ],
+        type: [2, 2, 3, 4, 4, 4, 4, 1],
+      },
+      roadPoints: {
+        x: [x0 + 78, x0 + 251, x0 + 424, x0 + 598, x0 + 770, x0 + 943],
+        y: [y0 + 629, y0 + 536, y0 + 443, y0 + 347, y0 + 252, y0 + 159],
+      },
+    };
+    this.waitUserAction = false;
 
     renderBackground('plain');
 
-    // Calls function that loads navigation icons
+    // Map
+    game.add.image(x0, y0, 'bg_map', 1.5);
+
+    // Buildings
+    gameList[gameId].assets.map.startBuilding();
+    gameList[gameId].assets.map.endBuilding();
+
+    // Rocks
+    for (let i in this.scene.rocks.x) {
+      game.add.image(
+        this.scene.rocks.x[i],
+        this.scene.rocks.y[i],
+        'rock',
+        0.48
+      );
+    }
+
+    // Bushes
+    for (let i in this.scene.bushes.x) {
+      game.add.image(
+        this.scene.bushes.x[i],
+        this.scene.bushes.y[i],
+        'bush',
+        0.59
+      );
+    }
+
+    // Trees
+    for (let i in this.scene.trees.x) {
+      game.add.image(
+        this.scene.trees.x[i],
+        this.scene.trees.y[i],
+        'tree_' + this.scene.trees.type[i],
+        0.9
+      );
+    }
+
+    //Road points
+    for (let i = 1; i < this.scene.roadPoints.x.length - 1; i++) {
+      const frame =
+        i < curMapPosition || (canGoToNextMapPosition && i == curMapPosition)
+          ? 1
+          : 0;
+      // Road points (game levels)
+      game.add.sprite(
+        this.scene.roadPoints.x[i],
+        this.scene.roadPoints.y[i],
+        'map_place',
+        frame,
+        0.45
+      );
+      // Road signs
+      game.add.image(
+        this.scene.roadPoints.x[i] - 40,
+        this.scene.roadPoints.y[i] - 154,
+        'sign',
+        0.7
+      );
+      game.add.text(
+        this.scene.roadPoints.x[i],
+        this.scene.roadPoints.y[i] - 104,
+        i,
+        {
+          ...textStyles.h2_,
+          fill: colors.white,
+        }
+      );
+    }
+
+    // Character
+    this.character = gameList[gameId].assets.map.character(gameOperation);
+
+    // Character animation
+    this.character.animation =
+      gameList[gameId].assets.map.characterAnimation(gameOperation);
+
+    game.animation.play(this.character.animation[0]);
+
+    this.moveCounter = 0;
+
+    const speed = 60;
+    const xA = this.scene.roadPoints.x[curMapPosition];
+    const yA = this.scene.roadPoints.y[curMapPosition];
+    const xB = this.scene.roadPoints.x[curMapPosition + 1];
+    const yB = this.scene.roadPoints.y[curMapPosition + 1];
+    self.speedX = (xB - xA) / speed;
+    self.speedY = (yA - yB) / speed;
+
+    // Progress bar
+    const percentText = completedLevels * 25;
+    x0 = 300;
+    y0 = 20;
+
+    game.add.geom.rect(
+      context.canvas.width - x0,
+      y0,
+      completedLevels * 37.5,
+      35,
+      undefined,
+      0,
+      completedLevels >= 4 ? colors.greenNeon : colors.yellow,
+      1
+    );
+
+    game.add.geom.rect(
+      context.canvas.width - x0 + 1,
+      y0 + 1,
+      149,
+      34,
+      colors.blue,
+      3,
+      undefined,
+      1
+    );
+    // Status Box
+    game.add.text(
+      context.canvas.width - x0 + 160,
+      y0 + 33,
+      percentText + '%',
+      textStyles.h2_
+    ).align = 'left';
+    game.add.text(
+      context.canvas.width - x0 - 10,
+      y0 + 33,
+      game.lang.difficulty + ' ' + gameDifficulty,
+      textStyles.h2_
+    ).align = 'right';
+
+    // feedback
+    this.modalBg = game.add.geom.rect(
+      0,
+      0,
+      context.canvas.width,
+      context.canvas.height,
+      undefined,
+      0,
+      colors.white,
+      0
+    );
+
+    this.continueButton = game.add.geom.rect(
+      context.canvas.width / 2,
+      context.canvas.height / 2,
+      300,
+      100,
+      undefined,
+      0,
+      colors.green,
+      0
+    );
+    this.continueButton.anchor(0.5, 0.5);
+
+    // continue
+    // try again?
+    this.continueText = game.add.text(
+      context.canvas.width / 2,
+      context.canvas.height / 2 + 16,
+      game.lang.continue,
+      { ...textStyles.h1_, fill: colors.white }
+    );
+    this.continueText.alpha = 0;
 
     // FOR MOODLE
     if (moodle) {
@@ -40,238 +239,6 @@ const mapState = {
       );
     }
 
-    // console.log('debugState');
-    const xAdjust = 0;
-    const yAdjust = 200;
-
-    let xInitial = 90 + 40;
-    let yInitial = 486 + 20;
-    let xOffset = 114 * 1.5;
-    let yOffset = -64 * 1.5;
-    this.points = {
-      x: [
-        xInitial + xOffset * 0 + xAdjust,
-        xInitial + xOffset * 1 + xAdjust,
-        xInitial + xOffset * 2 + xAdjust * 2,
-        xInitial + xOffset * 3 + xAdjust * 3,
-        xInitial + xOffset * 4 + xAdjust * 4,
-        xInitial + xOffset * 5 + xAdjust * 5,
-      ],
-      y: [
-        yInitial + yOffset * 0 + yAdjust,
-        yInitial + yOffset * 1 + yAdjust,
-        yInitial + yOffset * 2 + yAdjust,
-        yInitial + yOffset * 3 + yAdjust,
-        yInitial + yOffset * 4 + yAdjust,
-        yInitial + yOffset * 5 + yAdjust,
-      ], // origem, placa 1, placa 2, placa 3, destino
-    };
-
-    xOffset = 60;
-    yOffset = 100;
-    const rocks = {
-      x: [
-        156 + xOffset,
-        276 + xOffset * 2,
-        441 + xOffset * 4,
-        590 + xOffset * 3,
-        275 + xOffset,
-        452 + xOffset * 3,
-        712 + xOffset * 4.5,
-      ],
-      y: [
-        309 + yOffset,
-        259 + yOffset,
-        156 + yOffset - 50,
-        136 + yOffset - 75,
-        543 + yOffset * 2.5,
-        419 + yOffset * 2,
-        316 + yOffset * 1.8,
-      ],
-      type: [1, 2, 1, 2, 1, 2, 2],
-    };
-
-    yOffset = 100;
-    const trees = {
-      x: [
-        105 + 50,
-        214 + 100,
-        354 + 200,
-        364 + 150,
-        570 + 200,
-        600 + 200,
-        740 + 310,
-        779 + 300,
-      ],
-      y: [
-        341 + yOffset,
-        219 + yOffset - 40,
-        180 + yOffset - 50,
-        520 + yOffset * 2.5,
-        550 + yOffset * 2.5,
-        392 + yOffset * 2,
-        488 + yOffset * -1,
-        286 + yOffset * 4,
-      ],
-      type: [2, 4, 3, 4, 1, 2, 4, 4],
-    };
-
-    const hOffset = gameFrame().y - 200;
-    const wOffset = gameFrame().x;
-    for (let i = 0, cur = this.points; i < cur.x.length; i++) {
-      cur.x[i] += wOffset;
-      cur.y[i] += hOffset;
-    }
-    for (let i = 0, cur = rocks; i < cur.x.length; i++) {
-      cur.x[i] += wOffset;
-      cur.y[i] += hOffset;
-    }
-    for (let i = 0, cur = trees; i < cur.x.length; i++) {
-      cur.x[i] += wOffset;
-      cur.y[i] += hOffset;
-    }
-
-    // Map
-    game.add.image(wOffset, hOffset + 40, 'bg_map', 1.5);
-
-    // Progress bar
-    const percentText = completedLevels * 25;
-
-    let y = 20;
-
-    if (completedLevels >= 4)
-      game.add.geom.rect(
-        context.canvas.width - 240,
-        y,
-        4 * 37.5,
-        35,
-        undefined,
-        0,
-        colors.greenNeon,
-        0.5
-      );
-    else
-      game.add.geom.rect(
-        context.canvas.width - 240,
-        y,
-        completedLevels * 37.5,
-        35,
-        undefined,
-        0,
-        colors.yellow,
-        0.9
-      );
-
-    game.add.geom.rect(
-      context.canvas.width - 240 + 1,
-      y + 1,
-      149,
-      34,
-      colors.blue,
-      3,
-      undefined,
-      1
-    );
-    // Status Box
-    game.add.text(
-      context.canvas.width - 240 + 160,
-      y + 33,
-      percentText + '%',
-      textStyles.h2_
-    ).align = 'left';
-
-    game.add.text(
-      context.canvas.width - 240 - 10,
-      y + 33,
-      game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_
-    ).align = 'right';
-
-    // Map positions
-    gameList[gameId].assets.map.startBuilding();
-    gameList[gameId].assets.map.endBuilding();
-
-    // Rocks and bushes
-    for (let i in rocks.type) {
-      if (rocks.type[i] == 1) {
-        game.add.image(rocks.x[i], rocks.y[i], 'rock', 0.6).anchor(0.5, 0.95);
-      } else {
-        game.add.image(rocks.x[i], rocks.y[i], 'bush', 0.7).anchor(0.5, 0.95);
-      }
-    }
-
-    // Trees
-    for (let i in trees.type) {
-      game.add
-        .image(trees.x[i], trees.y[i], 'tree_' + trees.type[i], 0.9)
-        .anchor(0.5, 0.95);
-    }
-
-    // Map positions
-    for (let i = 1; i < this.points.x.length - 1; i++) {
-      const frame =
-        i < curMapPosition || (canGoToNextMapPosition && i == curMapPosition)
-          ? 1
-          : 0;
-
-      // Map road positions - game levels
-      game.add
-        .sprite(this.points.x[i], this.points.y[i], 'map_place', frame, 0.45)
-        .anchor(0.5, 0.5);
-
-      // Map road signs - game level number
-      game.add
-        .image(this.points.x[i] - 20, this.points.y[i] - 100, 'sign', 0.6)
-        .anchor(0.5, 1);
-      game.add.text(
-        this.points.x[i] - 20,
-        this.points.y[i] - 125,
-        i,
-        textStyles.h2_
-      );
-    }
-
-    // Character
-    this.character = gameList[gameId].assets.map.character(gameOperation);
-    this.character.anchor(0.5, 1);
-    this.character.animation =
-      gameList[gameId].assets.map.characterAnimation(gameOperation);
-
-    game.animation.play(this.character.animation[0]);
-
-    this.moveCounter = 0;
-
-    const speed = 60;
-    const xA = this.points.x[curMapPosition];
-    const yA = this.points.y[curMapPosition];
-    const xB = this.points.x[curMapPosition + 1];
-    const yB = this.points.y[curMapPosition + 1];
-    self.speedX = (xB - xA) / speed;
-    self.speedY = (yA - yB) / speed;
-
-    // feedback
-    this.continueButton = game.add.geom.rect(
-      context.canvas.width / 2,
-      context.canvas.height / 2,
-      300,
-      100,
-      undefined,
-      1,
-      colors.blueDark,
-      0
-    );
-    this.continueButton.anchor(0.5, 0.5);
-
-    // continue
-    // try again?
-    this.continueText = game.add.text(
-      context.canvas.width / 2,
-      context.canvas.height / 2 + 16,
-      game.lang.continue,
-      textStyles.h1_
-    );
-    this.continueText.alpha = 0;
-
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
   },
@@ -280,8 +247,6 @@ const mapState = {
    * Game loop
    */
   update: function () {
-    let endUpdate = false;
-
     self.moveCounter++;
 
     if (isDebugMode && debugState.end.status) {
@@ -305,7 +270,10 @@ const mapState = {
         // Move character on screen for 1 second
         self.character.x += self.speedX;
         self.character.y -= self.speedY;
-        if (Math.ceil(self.character.x) >= self.points.x[curMapPosition + 1]) {
+        if (
+          Math.ceil(self.character.x) >=
+          self.scene.roadPoints.x[curMapPosition + 1]
+        ) {
           // Reached next map position
           canGoToNextMapPosition = false;
           curMapPosition++; // Set new next position
@@ -314,6 +282,7 @@ const mapState = {
 
       if (!canGoToNextMapPosition) {
         self.waitUserAction = true;
+        self.modalBg.alpha = 0.25;
         self.continueText.alpha = 1;
         self.continueButton.alpha = 1;
         //endUpdate = true;
@@ -321,12 +290,6 @@ const mapState = {
     }
 
     game.render.all();
-
-    // if (endUpdate) {
-    //   game.animation.stop(self.character.animation[0]);
-
-    //   self.loadGame();
-    // }
   },
 
   /**

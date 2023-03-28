@@ -213,8 +213,8 @@ const gameList = [
           let char;
           if (operation == 'plus') {
             char = game.add.sprite(
-              self.points.x[curMapPosition],
-              self.points.y[curMapPosition],
+              self.scene.roadPoints.x[curMapPosition],
+              self.scene.roadPoints.y[curMapPosition],
               'tractor',
               0,
               0.75
@@ -222,25 +222,32 @@ const gameList = [
           }
           if (operation === 'minus') {
             char = game.add.sprite(
-              self.points.x[curMapPosition],
-              self.points.y[curMapPosition],
+              self.scene.roadPoints.x[curMapPosition],
+              self.scene.roadPoints.y[curMapPosition],
               'tractor',
               10,
               0.75
             );
           }
           char.rotate = -30; // 25 anticlock
+          char.anchor(0.25, 0.5);
           return char;
         },
         startBuilding: () => {
-          return game.add
-            .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
-            .anchor(0.5, 1);
+          return game.add.image(
+            self.scene.roadPoints.x[0] - 60,
+            self.scene.roadPoints.y[0] - 155,
+            'garage',
+            0.6
+          );
         },
         endBuilding: () => {
-          return game.add
-            .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
-            .anchor(0.4, 0.7);
+          return game.add.image(
+            self.scene.roadPoints.x[5] - 10,
+            self.scene.roadPoints.y[5] - 215,
+            'farm',
+            0.9
+          );
         },
       },
       end: {
@@ -346,24 +353,32 @@ const gameList = [
         characterAnimation: (operation) => {
           return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
         },
-        character: () => {
-          return game.add.sprite(
-            self.points.x[curMapPosition],
-            self.points.y[curMapPosition],
+        character: (operation) => {
+          const char = game.add.sprite(
+            self.scene.roadPoints.x[curMapPosition],
+            self.scene.roadPoints.y[curMapPosition],
             'kid_running',
             0,
-            0.6
+            0.57
           );
+          char.anchor(0, 0.85);
+          return char;
         },
         startBuilding: () => {
-          return game.add
-            .image(self.points.x[0], self.points.y[0], 'house', 1.05)
-            .anchor(0.5, 0.8);
+          return game.add.image(
+            self.scene.roadPoints.x[0] - 193,
+            self.scene.roadPoints.y[0] - 205,
+            'house',
+            1.03
+          );
         },
         endBuilding: () => {
-          return game.add
-            .image(self.points.x[5], self.points.y[5], 'school', 0.525)
-            .anchor(0.2, 0.7);
+          return game.add.image(
+            self.scene.roadPoints.x[5] - 28,
+            self.scene.roadPoints.y[5] - 215,
+            'school',
+            0.52
+          );
         },
       },
       end: {
@@ -440,23 +455,31 @@ const gameList = [
           return ['kid', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3];
         },
         character: (operation) => {
-          return game.add.sprite(
-            self.points.x[curMapPosition],
-            self.points.y[curMapPosition],
+          const char = game.add.sprite(
+            self.scene.roadPoints.x[curMapPosition],
+            self.scene.roadPoints.y[curMapPosition],
             'kid_running',
             0,
-            0.6
+            0.57
           );
+          char.anchor(0, 0.85);
+          return char;
         },
         startBuilding: () => {
-          return game.add
-            .image(self.points.x[0], self.points.y[0], 'house', 1.05)
-            .anchor(0.5, 0.8);
+          return game.add.image(
+            self.scene.roadPoints.x[0] - 193,
+            self.scene.roadPoints.y[0] - 205,
+            'house',
+            1.03
+          );
         },
         endBuilding: () => {
-          return game.add
-            .image(self.points.x[5], self.points.y[5], 'school', 0.525)
-            .anchor(0.2, 0.7);
+          return game.add.image(
+            self.scene.roadPoints.x[5] - 28,
+            self.scene.roadPoints.y[5] - 215,
+            'school',
+            0.52
+          );
         },
       },
       end: {
@@ -497,8 +520,8 @@ const gameList = [
   //         let char;
   //         if (operation == 'plus') {
   //           char = game.add.sprite(
-  //             self.points.x[curMapPosition],
-  //             self.points.y[curMapPosition],
+  //             self.scene.roadPoints.x[curMapPosition],
+  //             self.scene.roadPoints.y[curMapPosition],
   //             'tractor',
   //             0,
   //             0.75
@@ -506,8 +529,8 @@ const gameList = [
   //         }
   //         if (operation === 'minus') {
   //           char = game.add.sprite(
-  //             self.points.x[curMapPosition],
-  //             self.points.y[curMapPosition],
+  //             self.scene.roadPoints.x[curMapPosition],
+  //             self.scene.roadPoints.y[curMapPosition],
   //             'tractor',
   //             10,
   //             0.75
@@ -518,12 +541,12 @@ const gameList = [
   //       },
   //       startBuilding: () => {
   //         return game.add
-  //           .image(self.points.x[0], self.points.y[0], 'garage', 0.6)
+  //           .image(self.scene.roadPoints.x[0], self.scene.roadPoints.y[0], 'garage', 0.6)
   //           .anchor(0.5, 1);
   //       },
   //       endBuilding: () => {
   //         return game.add
-  //           .image(self.points.x[5], self.points.y[5], 'farm', 0.9)
+  //           .image(self.scene.roadPoints.x[5], self.scene.roadPoints.y[5], 'farm', 0.9)
   //           .anchor(0.4, 0.7);
   //       },
   //     },
