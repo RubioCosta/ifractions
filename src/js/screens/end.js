@@ -89,8 +89,8 @@ const endState = {
       500,
       100,
       undefined,
-      1,
-      colors.blueDark,
+      0,
+      colors.green,
       0
     );
     this.continueButton.anchor(0.5, 0.5);
@@ -104,8 +104,8 @@ const endState = {
     this.continueText = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 + 16,
-      'Go back to menu',
-      textStyles.h1_
+      'Go back to main menu',
+      textStyles.btn
     );
     this.continueText.alpha = 0;
 
@@ -206,10 +206,12 @@ const endState = {
       // If pointer is over icon
       document.body.style.cursor = 'pointer';
       self.continueButton.scale = self.continueButton.originalScale * 1.1;
+      self.continueText.style = textStyles.btnLg;
     } else {
       // If pointer is not over icon
       self.continueButton.scale = self.continueButton.originalScale * 1;
       document.body.style.cursor = 'auto';
+      self.continueText.style = textStyles.btn;
     }
   },
 };

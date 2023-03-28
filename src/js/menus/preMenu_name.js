@@ -32,20 +32,20 @@ const nameState = {
       context.canvas.width / 2,
       context.canvas.height / 2 + 93 + 44,
       300,
-      93.5,
+      100,
       undefined,
-      undefined,
+      0,
       colors.green,
       1
     );
     this.okBtn.anchor(0.5, 0.5);
 
     // Set button Text
-    game.add.text(
+    this.okBtnText = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 + 152, //112,
       game.lang.ready,
-      { ...textStyles.h2_, fill: colors.white }
+      textStyles.btn
     );
 
     // Makes text field visible
@@ -137,10 +137,12 @@ const nameState = {
 
     if (game.math.isOverIcon(x, y, cur)) {
       document.body.style.cursor = 'pointer';
-      cur.alpha = 0.8;
+      cur.scale = 1.1;
+      self.okBtnText.style = textStyles.btnLg;
     } else {
       document.body.style.cursor = 'auto';
-      cur.alpha = 1;
+      cur.scale = 1;
+      self.okBtnText.style = textStyles.btn;
     }
 
     game.render.all();

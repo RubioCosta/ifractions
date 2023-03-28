@@ -34,15 +34,10 @@ const colors = {
   yellow: '#ffef1f',
 };
 
-const fontSizes = {
-  h1: '48px',
-  h2: '42px',
-  h3: '38px',
-  h4: '36px',
-  p: '30px',
+const font = {
+  sizes: { h1: '48px', h2: '42px', h3: '38px', h4: '36px', p: '30px' },
+  families: { default: 'Arial, sans-serif', btn: "'Bangers', serif" },
 };
-
-const fontFamily = 'Arial, sans-serif';
 
 /**
  * Preset text styles for game text.<br>
@@ -51,29 +46,41 @@ const fontFamily = 'Arial, sans-serif';
  */
 const textStyles = {
   h1_: {
-    font: `${fontSizes.h1} ${fontFamily}`,
+    font: `${font.sizes.h1} ${font.families.default}`,
     align: 'center',
     fill: colors.blue,
   },
   h2_: {
-    font: `${fontSizes.h2} ${fontFamily}`,
+    font: `${font.sizes.h2} ${font.families.default}`,
     align: 'center',
     fill: colors.blue,
   },
   h3_: {
-    font: `${fontSizes.h3} ${fontFamily}`,
+    font: `${font.sizes.h3} ${font.families.default}`,
     align: 'center',
     fill: colors.blue,
   },
   h4_: {
-    font: `${fontSizes.h4} ${fontFamily}`,
+    font: `${font.sizes.h4} ${font.families.default}`,
     align: 'center',
     fill: colors.blue,
   },
   p_: {
-    font: `${fontSizes.p} ${fontFamily}`,
+    font: `${font.sizes.p} ${font.families.default}`,
     align: 'center',
     fill: colors.redDark,
+  },
+  btn: {
+    font: `${font.sizes.h2} ${font.families.btn}`,
+    align: 'center',
+    fill: colors.white,
+    increaseLetterSpacing: true,
+  },
+  btnLg: {
+    font: `${font.sizes.h1} ${font.families.btn}`,
+    align: 'center',
+    fill: colors.white,
+    increaseLetterSpacing: true,
   },
 };
 

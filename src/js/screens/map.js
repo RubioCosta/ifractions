@@ -212,7 +212,7 @@ const mapState = {
       context.canvas.width / 2,
       context.canvas.height / 2 + 16,
       game.lang.continue,
-      { ...textStyles.h1_, fill: colors.white }
+      textStyles.btn
     );
     this.continueText.alpha = 0;
 
@@ -331,9 +331,11 @@ const mapState = {
       // If pointer is over icon
       document.body.style.cursor = 'pointer';
       self.continueButton.scale = self.continueButton.originalScale * 1.1;
+      self.continueText.style = textStyles.btnLg;
     } else {
       // If pointer is not over icon
       self.continueButton.scale = self.continueButton.originalScale * 1;
+      self.continueText.style = textStyles.btn;
       document.body.style.cursor = 'auto';
     }
 

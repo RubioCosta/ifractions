@@ -499,7 +499,9 @@ const game = {
       } else {
         const med = {
           typeOfMedia: 'text',
-          name: text,
+          name: style?.increaseLetterSpacing
+            ? text.split('').join(String.fromCharCode(8202))
+            : text,
 
           x: x || game.add.default.x,
           y: y || game.add.default.y,

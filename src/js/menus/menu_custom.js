@@ -217,7 +217,8 @@ const customMenuState = {
           // If its in the same icon category
           if (cur == self.menuIcons[overIcon]) {
             // If its the icon the pointer is over
-            if (cur.iconType == 'enter') self.enterText.style = textStyles.h3_;
+            if (cur.iconType == 'enter')
+              self.enterText.style = textStyles.btnLg;
             cur.scale = cur.originalScale * 1.1;
           } else {
             cur.scale = cur.originalScale;
@@ -226,7 +227,7 @@ const customMenuState = {
       });
     } else {
       // If pointer is not over icon
-      if (self.enterText) self.enterText.style = textStyles.h4_;
+      if (self.enterText) self.enterText.style = textStyles.btn;
       self.menuIcons.forEach((cur) => {
         cur.scale = cur.originalScale;
       });
@@ -425,13 +426,13 @@ const customMenuState = {
       x = context.canvas.width - 150;
       y = context.canvas.height - 180;
 
-      const enterIcon = game.add.image(x, y, 'bush', 1.7);
+      const enterIcon = game.add.image(x, y, 'bush', 2);
       enterIcon.anchor(0.5, 0.5);
       enterIcon.iconType = 'enter';
 
       self.menuIcons.push(enterIcon);
 
-      self.enterText = game.add.text(x, y, game.lang.continue, textStyles.h4_);
+      self.enterText = game.add.text(x, y, game.lang.continue, textStyles.btn);
     }
   },
 
