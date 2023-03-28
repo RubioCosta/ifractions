@@ -37,7 +37,7 @@ const langState = {
         context.canvas.width / 2 + this.langs.x[i],
         context.canvas.height / 2 + this.langs.y[i],
         this.langs.text[i],
-        textStyles.h1_green
+        { ...textStyles.h2_, fill: colors.green }
       ).align = 'right';
 
       // Add icons for flags

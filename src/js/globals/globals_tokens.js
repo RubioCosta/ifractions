@@ -28,7 +28,7 @@ const colors = {
   greenNeon: '#00d600',
 
   // Basics
-  white: '#efeff5',
+  white: '#fff',
   gray: '#708090',
   black: '#000',
   yellow: '#ffef1f',
@@ -41,141 +41,40 @@ const fontSizes = {
   h4: '36px',
   p: '30px',
 };
+
+const fontFamily = 'Arial, sans-serif';
+
 /**
  * Preset text styles for game text.<br>
  * Contains: font, size, text color and text align.
  * @type {object}
  */
 const textStyles = {
-  h1_green: {
-    font: fontSizes.h1 + ' Arial,sans-serif',
-    fill: colors.green,
+  h1_: {
+    font: `${fontSizes.h1} ${fontFamily}`,
     align: 'center',
-  }, // Menu title
-  h2_green: {
-    font: fontSizes.h2 + ' Arial,sans-serif',
-    fill: colors.green,
-    align: 'center',
-  }, // Flag labels (langState)
-  h3_green: {
-    font: fontSizes.h3 + ' Arial,sans-serif',
-    fill: colors.green,
-    align: 'center',
-  },
-  h4_green: {
-    font: fontSizes.h4 + ' Arial,sans-serif',
-    fill: colors.green,
-    align: 'center',
-  },
-  p_green: {
-    font: fontSizes.p + ' Arial,sans-serif',
-    fill: colors.green,
-    align: 'center',
-  },
-
-  h1_white: {
-    font: fontSizes.h1 + ' Arial,sans-serif',
-    fill: colors.white,
-    align: 'center',
-  }, // Ok button (nameState)
-  h2_white: {
-    font: fontSizes.h2 + ' Arial,sans-serif',
-    fill: colors.white,
-    align: 'center',
-  }, // Difficulty buttons (menuState)
-  h3__white: {
-    font: fontSizes.h3 + ' Arial,sans-serif',
-    fill: colors.white,
-    align: 'center',
-  }, // Difficulty numbers (menuState)
-  h4_white: {
-    font: fontSizes.h4 + ' Arial,sans-serif',
-    fill: colors.white,
-    align: 'center',
-  }, // Difficulty numbers (menuState)
-  p_white: {
-    font: fontSizes.p + ' Arial,sans-serif',
-    fill: colors.white,
-    align: 'center',
-  }, // Enter button (menuState)
-
-  h1_brown: {
-    font: fontSizes.h1 + ' Arial,sans-serif',
-    fill: colors.redDark,
-    align: 'center',
-  },
-  h2_brown: {
-    font: fontSizes.h2 + ' Arial,sans-serif',
-    fill: colors.redDark,
-    align: 'center',
-  }, // Map difficulty label
-  h3_brown: {
-    font: fontSizes.h3 + ' Arial,sans-serif',
-    fill: colors.redDark,
-    align: 'center',
-  },
-  h4_brown: {
-    font: fontSizes.h4 + ' Arial,sans-serif',
-    fill: colors.redDark,
-    align: 'center',
-  }, // Menu overtitle
-  p_brown: {
-    font: fontSizes.p + ' Arial,sans-serif',
-    fill: colors.redDark,
-    align: 'center',
-  }, // Map difficulty label
-
-  h1_blue: {
-    font: fontSizes.h1 + ' Arial,sans-serif',
     fill: colors.blue,
-    align: 'center',
   },
-  h2_blue: {
-    font: fontSizes.h2 + ' Arial,sans-serif',
+  h2_: {
+    font: `${fontSizes.h2} ${fontFamily}`,
+    align: 'center',
     fill: colors.blue,
+  },
+  h3_: {
+    font: `${fontSizes.h3} ${fontFamily}`,
     align: 'center',
-  }, // Menu subtitle
-  h3_blue: {
-    font: fontSizes.h3 + ' Arial,sans-serif',
     fill: colors.blue,
-    align: 'center',
   },
-  h4_blue: {
-    font: fontSizes.h4 + ' Arial,sans-serif',
+  h4_: {
+    font: `${fontSizes.h4} ${fontFamily}`,
+    align: 'center',
     fill: colors.blue,
-    align: 'center',
-  }, // Menu subtitle
-  p_blue: {
-    font: fontSizes.p + ' Arial,sans-serif',
-    fill: colors.blue,
-    align: 'center',
   },
-
-  h1_blueDark: {
-    font: fontSizes.h1 + ' Arial,sans-serif',
-    fill: colors.blueDark,
+  p_: {
+    font: `${fontSizes.p} ${fontFamily}`,
     align: 'center',
+    fill: colors.redDark,
   },
-  h2_blueDark: {
-    font: fontSizes.h2 + ' Arial,sans-serif',
-    fill: colors.blueDark,
-    align: 'center',
-  }, // Fractions
-  h3_blueDark: {
-    font: fontSizes.h3 + ' Arial,sans-serif',
-    fill: colors.blueDark,
-    align: 'center',
-  },
-  h4_blueDark: {
-    font: fontSizes.h4 + ' Arial,sans-serif',
-    fill: colors.blueDark,
-    align: 'center',
-  }, // Fractions
-  p_blueDark: {
-    font: fontSizes.p + ' Arial,sans-serif',
-    fill: colors.blueDark,
-    align: 'center',
-  }, // Fractions
 };
 
 /**
@@ -213,8 +112,6 @@ const url = {
       ['bush', baseUrl + 'scene/bush.png'],
       ['cloud', baseUrl + 'scene/cloud.png'],
       ['floor', baseUrl + 'scene/floor.png'],
-      ['place_off', baseUrl + 'scene/place_off.png'],
-      ['place_on', baseUrl + 'scene/place_on.png'],
       ['rock', baseUrl + 'scene/rock.png'],
       ['road', baseUrl + 'scene/road.png'],
       ['sign', baseUrl + 'scene/sign.png'],
@@ -239,8 +136,7 @@ const url = {
       ['answer_correct', baseUrl + 'icons_interactive/answer_correct.png'],
       ['answer_wrong', baseUrl + 'icons_interactive/answer_wrong.png'],
       ['arrow_down', baseUrl + 'icons_interactive/arrow_down.png'],
-      ['btn', baseUrl + 'icons_interactive/btn.png'],
-      ['close', baseUrl + 'icons_interactive/close.png'],
+      // ['close', baseUrl + 'icons_interactive/close.png'],
       ['info', baseUrl + 'icons_interactive/info.png'],
       ['pointer', baseUrl + 'icons_interactive/pointer.png'],
       // Menu icons - Games
@@ -275,6 +171,8 @@ const url = {
       ['op_eq', baseUrl + 'info_box/op_eq.png'],
     ],
     sprite: [
+      // scene
+      ['map_place', baseUrl + 'scene/map_place.png', 2],
       // Game Sprites
       ['kid_walking', baseUrl + 'characters/kid/walking.png', 26],
       // Navigation icons on the top of the page
@@ -310,8 +208,8 @@ const url = {
   squareOne: {
     image: [
       // Map buildings
-      ['farm', baseUrl + 'scene/farm.png'],
-      ['garage', baseUrl + 'scene/garage.png'],
+      ['farm', baseUrl + 'scene/building_farm.png'],
+      ['garage', baseUrl + 'scene/building_garage.png'],
     ],
     sprite: [
       // Game sprites
@@ -322,8 +220,8 @@ const url = {
   squareTwo: {
     image: [
       // Map buildings
-      ['house', baseUrl + 'scene/house.png'],
-      ['school', baseUrl + 'scene/school.png'],
+      ['house', baseUrl + 'scene/building_house.png'],
+      ['school', baseUrl + 'scene/building_school.png'],
     ],
     sprite: [
       // Game sprites
@@ -335,8 +233,8 @@ const url = {
   circleOne: {
     image: [
       // Map buildings
-      ['house', baseUrl + 'scene/house.png'],
-      ['school', baseUrl + 'scene/school.png'],
+      ['house', baseUrl + 'scene/building_house.png'],
+      ['school', baseUrl + 'scene/building_school.png'],
       // Game images
       ['balloon', baseUrl + 'characters/balloon/balloon.png'],
       ['balloon_basket', baseUrl + 'characters/balloon/balloon_basket.png'],
@@ -350,8 +248,8 @@ const url = {
   scaleOne: {
     image: [
       // Map buildings
-      ['farm', baseUrl + 'scene/farm.png'],
-      ['garage', baseUrl + 'scene/garage.png'],
+      ['farm', baseUrl + 'scene/building_farm.png'],
+      ['garage', baseUrl + 'scene/building_garage.png'],
       // Game images
       ['scale_base', baseUrl + 'characters/scale/scale_base.png'],
       ['scale_arm', baseUrl + 'characters/scale/scale_arm.png'],

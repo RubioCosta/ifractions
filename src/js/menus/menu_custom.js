@@ -30,17 +30,15 @@ const customMenuState = {
       // Overtitle : Selected game
       game.add.text(
         context.canvas.width / 2,
-        50,
+        60,
         game.lang.game.toUpperCase() + ': ' + menuState.menuIcons,
-        textStyles.p_brown
+        { ...textStyles.h3_, fill: colors.redDark }
       );
       // Title : Customize the selected game
-      game.add.text(
-        context.canvas.width / 2,
-        100,
-        game.lang.custom_game,
-        textStyles.h1_green
-      );
+      game.add.text(context.canvas.width / 2, 120, game.lang.custom_game, {
+        ...textStyles.h1_,
+        fill: colors.green,
+      });
 
       // Loads navigation icons
       navigationIcons.add(true, false, false, true, true, 'menu', false);
@@ -219,8 +217,7 @@ const customMenuState = {
           // If its in the same icon category
           if (cur == self.menuIcons[overIcon]) {
             // If its the icon the pointer is over
-            if (cur.iconType == 'enter')
-              self.enterText.style = textStyles.h3__white;
+            if (cur.iconType == 'enter') self.enterText.style = textStyles.h3_;
             cur.scale = cur.originalScale * 1.1;
           } else {
             cur.scale = cur.originalScale;
@@ -229,7 +226,7 @@ const customMenuState = {
       });
     } else {
       // If pointer is not over icon
-      if (self.enterText) self.enterText.style = textStyles.h4_white;
+      if (self.enterText) self.enterText.style = textStyles.h4_;
       self.menuIcons.forEach((cur) => {
         cur.scale = cur.originalScale;
       });
@@ -246,32 +243,27 @@ const customMenuState = {
     let infoIcon;
 
     // Label 'Game Modes'
-    game.add.text(x + offsetW, y, game.lang.game_modes, textStyles.h2_blue);
+    game.add.text(x + offsetW, y, game.lang.game_modes, textStyles.h2_);
 
-    infoIcon = game.add.image(x + 2 * offsetW - 30, y - 20, 'info', 0.9, 1);
+    infoIcon = game.add.image(x + 2 * offsetW - 30, y - 20, 'info', 0.7, 0.8);
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameMode';
     self.menuIcons.push(infoIcon);
 
     // Label 'Operations'
-    game.add.text(x + 3 * offsetW, y, game.lang.operations, textStyles.h2_blue);
+    game.add.text(x + 3 * offsetW, y, game.lang.operations, textStyles.h2_);
 
-    infoIcon = game.add.image(x + 4 * offsetW - 30, y - 20, 'info', 0.9, 1);
+    infoIcon = game.add.image(x + 4 * offsetW - 30, y - 20, 'info', 0.7, 0.8);
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameOperation';
     self.menuIcons.push(infoIcon);
 
     // Label 'Difficulties'
-    game.add.text(
-      x + 5 * offsetW,
-      y,
-      game.lang.difficulties,
-      textStyles.h2_blue
-    );
+    game.add.text(x + 5 * offsetW, y, game.lang.difficulties, textStyles.h2_);
 
-    infoIcon = game.add.image(x + 6 * offsetW - 30, y - 20, 'info', 0.9, 1);
+    infoIcon = game.add.image(x + 6 * offsetW - 30, y - 20, 'info', 0.7, 0.8);
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameDifficulty';
@@ -282,7 +274,7 @@ const customMenuState = {
       x + 5 * offsetW,
       y + offsetH + 50,
       game.lang.show,
-      textStyles.h4_blue
+      textStyles.h4_
     );
 
     self.auxText;
@@ -293,7 +285,7 @@ const customMenuState = {
         x + 5 * offsetW + 10,
         y + offsetH + 80,
         self.auxText,
-        textStyles.h4_blue
+        textStyles.h4_
       );
     } else {
       self.auxText = game.lang.title;
@@ -301,7 +293,7 @@ const customMenuState = {
         x + 5 * offsetW,
         y + offsetH + 80,
         self.auxText,
-        textStyles.h2_blue
+        textStyles.h2_
       );
     }
   },
@@ -423,7 +415,7 @@ const customMenuState = {
       self.menuIcons.push(icon);
 
       // Difficulty numbers
-      game.add.text(curX, y + 7, i + 1, textStyles.h4_white);
+      game.add.text(curX, y + 7, i + 1, textStyles.h4_);
     }
   },
 
@@ -439,12 +431,7 @@ const customMenuState = {
 
       self.menuIcons.push(enterIcon);
 
-      self.enterText = game.add.text(
-        x,
-        y,
-        game.lang.continue,
-        textStyles.h4_white
-      );
+      self.enterText = game.add.text(x, y, game.lang.continue, textStyles.h4_);
     }
   },
 

@@ -28,7 +28,7 @@ const studentReport = {
       context.canvas.width / 2,
       80,
       game.lang.results,
-      textStyles.h1_green
+      textStyles.h1_
     );
     game.add.image(
       x - 40,
@@ -46,24 +46,24 @@ const studentReport = {
       ': ' +
       text +
       (gameName.slice(-3) == 'One' ? ' I' : ' II');
-    game.add.text(190, y - 50, text, textStyles.h4_brown).align = 'left';
+    game.add.text(190, y - 50, text, textStyles.h4_).align = 'left';
     game.add.text(
       190,
       y - 25,
       game.lang.game_mode + ': ' + gameMode,
-      textStyles.h4_brown
+      textStyles.h4_
     ).align = 'left';
     game.add.text(
       190,
       y,
       game.lang.operation + ': ' + gameOperation,
-      textStyles.h4_brown
+      textStyles.h4_
     ).align = 'left';
     game.add.text(
       190,
       y + 25,
       game.lang.difficulty + ': ' + gameDifficulty,
-      textStyles.h4_brown
+      textStyles.h4_
     ).align = 'left';
 
     // Student info
@@ -91,7 +91,7 @@ const studentReport = {
           x,
           context.canvas.height - 100,
           '' + (i + 1),
-          textStyles.h2_white
+          textStyles.h2_
         );
 
         game.add.geom.rect(
@@ -107,19 +107,19 @@ const studentReport = {
           x - 40,
           y - 25,
           game.lang.time + ': ' + game.math.convertTime(moodleVar.time[i]),
-          textStyles.h4_brown
+          textStyles.h4_
         ).align = 'left';
         game.add.text(
           x - 40,
           y,
           game.lang.hits + ': ' + moodleVar.hits[i],
-          textStyles.h4_brown
+          textStyles.h4_
         ).align = 'left';
         game.add.text(
           x - 40,
           y + 25,
           game.lang.errors + ': ' + moodleVar.errors[i],
-          textStyles.h4_brown
+          textStyles.h4_
         ).align = 'left';
       }
     }

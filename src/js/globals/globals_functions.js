@@ -32,10 +32,10 @@ const navigationIcons = {
     this.iconsList = [];
 
     // 'Descriptive labels' for the navigation icons
-    this.left_text = game.add.text(xLeft, 110, '', textStyles.p_brown);
+    this.left_text = game.add.text(xLeft, 110, '', textStyles.p_);
     this.left_text.align = 'left';
 
-    this.right_text = game.add.text(xRight + 60, 110, '', textStyles.p_brown);
+    this.right_text = game.add.text(xRight + 60, 110, '', textStyles.p_);
     this.right_text.align = 'right';
 
     // Left icons
@@ -67,7 +67,7 @@ const navigationIcons = {
         );
       } else {
         this.help = help;
-        this.iconsList.push(game.add.image(xLeft, 10, 'pointer', 1.5));
+        this.iconsList.push(game.add.image(xLeft, 10, 'show_solution', 1.5));
         xLeft += iconSize;
       }
     }

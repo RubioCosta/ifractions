@@ -18,24 +18,24 @@ const nameState = {
       context.canvas.width / 2,
       context.canvas.height / 2 - 150,
       game.lang.insert_name,
-      textStyles.h1_green
+      { ...textStyles.h1_, fill: colors.green }
     );
 
     this.warningEmptyName = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 - 80,
       '',
-      textStyles.h4_brown
+      { ...textStyles.p_, fill: colors.red }
     );
 
     this.okBtn = game.add.geom.rect(
       context.canvas.width / 2,
       context.canvas.height / 2 + 93 + 44,
-      285,
+      300,
       93.5,
       undefined,
       undefined,
-      colors.blueDark,
+      colors.green,
       1
     );
     this.okBtn.anchor(0.5, 0.5);
@@ -45,7 +45,7 @@ const nameState = {
       context.canvas.width / 2,
       context.canvas.height / 2 + 152, //112,
       game.lang.ready,
-      textStyles.h1_white
+      { ...textStyles.h2_, fill: colors.white }
     );
 
     // Makes text field visible

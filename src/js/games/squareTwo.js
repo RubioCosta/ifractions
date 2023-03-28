@@ -203,30 +203,20 @@ const squareTwo = {
       xLabel,
       yLabel,
       this.a.blocks.length,
-      textStyles.h4_blueDark
+      textStyles.h4_
     );
 
     // 'selected blocks/fraction' label for (a) : at the bottom of (a)
     yLabel = yA + figureHeight + 34;
 
-    this.a.fractions[0] = game.add.text(
-      xLabel,
-      yLabel,
-      '',
-      textStyles.h4_blueDark
-    );
+    this.a.fractions[0] = game.add.text(xLabel, yLabel, '', textStyles.h4_);
     this.a.fractions[1] = game.add.text(
       xLabel,
       yLabel + 21,
       '',
-      textStyles.h4_blueDark
+      textStyles.h4_
     );
-    this.a.fractions[2] = game.add.text(
-      xLabel,
-      yLabel,
-      '___',
-      textStyles.h4_blueDark
-    );
+    this.a.fractions[2] = game.add.text(xLabel, yLabel, '___', textStyles.h4_);
     this.a.fractions[0].alpha = 0;
     this.a.fractions[1].alpha = 0;
     this.a.fractions[2].alpha = 0;
@@ -280,30 +270,20 @@ const squareTwo = {
       xLabel,
       yLabel,
       this.b.blocks.length,
-      textStyles.h4_blueDark
+      textStyles.h4_
     );
 
     // Label fraction
     yLabel = yB + figureHeight + 34;
 
-    this.b.fractions[0] = game.add.text(
-      xLabel,
-      yLabel,
-      '',
-      textStyles.h4_blueDark
-    );
+    this.b.fractions[0] = game.add.text(xLabel, yLabel, '', textStyles.h4_);
     this.b.fractions[1] = game.add.text(
       xLabel,
       yLabel + 21,
       '',
-      textStyles.h4_blueDark
+      textStyles.h4_
     );
-    this.b.fractions[2] = game.add.text(
-      xLabel,
-      yLabel,
-      '___',
-      textStyles.h4_blueDark
-    );
+    this.b.fractions[2] = game.add.text(xLabel, yLabel, '___', textStyles.h4_);
     this.b.fractions[0].alpha = 0;
     this.b.fractions[1].alpha = 0;
     this.b.fractions[2].alpha = 0;
@@ -313,13 +293,13 @@ const squareTwo = {
       context.canvas.width / 2,
       context.canvas.height / 2 - 225,
       '',
-      textStyles.h4_brown
+      textStyles.h4_
     );
     this.b.warningText = game.add.text(
       context.canvas.width / 2,
       context.canvas.height / 2 - 45,
       '',
-      textStyles.h4_brown
+      textStyles.h4_
     );
 
     game.timer.start(); // Set a timer for the current level (used in postScore)

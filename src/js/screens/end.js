@@ -14,6 +14,9 @@ const endState = {
     self.preAnimate = false;
     self.animate = true;
 
+    self.waitUserAction = false;
+    self.endUpdate = false;
+
     renderBackground();
 
     // Progress bar
@@ -42,13 +45,13 @@ const endState = {
       context.canvas.width - 300 + 160,
       y + 33,
       '100%',
-      textStyles.h2_blueDark
+      textStyles.h2_
     ).align = 'left';
     game.add.text(
       context.canvas.width - 300 - 10,
       y + 33,
       game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_blueDark
+      textStyles.h2_
     ).align = 'right';
 
     game.add
@@ -74,9 +77,40 @@ const endState = {
 
     if (this.animate) game.animation.play(this.character.animation[0]);
 
+    //tree
     game.add
       .image(30 + 200, context.canvas.height - 20, 'tree_4', 1.275)
       .anchor(0, 1);
+
+    // feedback
+    this.continueButton = game.add.geom.rect(
+      context.canvas.width / 2,
+      context.canvas.height / 2,
+      500,
+      100,
+      undefined,
+      1,
+      colors.blueDark,
+      0
+    );
+    this.continueButton.anchor(0.5, 0.5);
+
+    game.add.text(
+      context.canvas.width / 2,
+      200,
+      'Congratulations!',
+      textStyles.h1_
+    );
+    this.continueText = game.add.text(
+      context.canvas.width / 2,
+      context.canvas.height / 2 + 16,
+      'Go back to menu',
+      textStyles.h1_
+    );
+    this.continueText.alpha = 0;
+
+    game.event.add('click', this.onInputDown);
+    game.event.add('mousemove', this.onInputOver);
   },
 
   /**
@@ -111,20 +145,71 @@ const endState = {
       if (self.character.x <= 700) {
         self.character.x += 2;
       } else {
-        self.animate = false;
-        game.animation.stop(self.character.animation[0]);
+        self.waitUserAction = true;
+        self.continueText.alpha = 1;
+        self.continueButton.alpha = 1;
+      }
+    }
 
+    if (self.endUpdate) {
+      self.animate = false;
+      game.animation.stop(self.character.animation[0]);
+
+      // FOR MOODLE
+      if (!moodle) {
+        completedLevels = 0;
+        game.state.start('menu');
+      } else {
         // FOR MOODLE
-        if (!moodle) {
-          completedLevels = 0;
-          game.state.start('menu');
-        } else {
-          // FOR MOODLE
-          parent.location.reload(true);
-        }
+        parent.location.reload(true);
       }
     }
 
     game.render.all();
+  },
+
+  /**
+   * Called by mouse click event
+   *
+   * @param {object} mouseEvent contains the mouse click coordinates
+   */
+  onInputDown: function (mouseEvent) {
+    console.log('clicked');
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+
+    if (game.math.isOverIcon(x, y, self.continueButton)) {
+      self.endUpdate = true;
+      //self.loadGame();
+    }
+  },
+
+  /**
+   * Called by mouse move event
+   *
+   * @param {object} mouseEvent contains the mouse move coordinates
+   */
+  onInputOver: function (mouseEvent) {
+    console.log('moved');
+
+    const x = game.math.getMouse(mouseEvent).x;
+    const y = game.math.getMouse(mouseEvent).y;
+    let overIcon;
+
+    if (game.math.isOverIcon(x, y, self.continueButton)) {
+      overIcon = true;
+      console.log('is over icon');
+    }
+
+    // Update gui
+    if (overIcon) {
+      // If pointer is over icon
+      document.body.style.cursor = 'pointer';
+      self.continueButton.scale = self.continueButton.originalScale * 1.1;
+    } else {
+      // If pointer is not over icon
+      self.continueButton.scale = self.continueButton.originalScale * 1;
+      document.body.style.cursor = 'auto';
+    }
   },
 };

@@ -499,26 +499,26 @@ const squareOne = {
             x,
             self.startY - (i - 1) * y,
             divisor,
-            textStyles.h2_blueDark
+            textStyles.h2_
           );
         } else {
           label[0] = game.add.text(
             x,
             self.startY + 45 - i * y + 23,
             divisor,
-            textStyles.p_blueDark
+            textStyles.p_
           );
           label[1] = game.add.text(
             x,
             self.startY + 40 - i * y,
             '1',
-            textStyles.p_blueDark
+            textStyles.p_
           );
           label[2] = game.add.text(
             x,
             self.startY + 40 - i * y,
             '_',
-            textStyles.p_blueDark
+            textStyles.p_
           );
         }
         // Add current label to group of labels
@@ -649,7 +649,7 @@ const squareOne = {
         x,
         self.startY + self.defaultBlockHeight + 78 * 1.5,
         i - 1,
-        textStyles.h2_blueDark
+        textStyles.h2_
       );
     }
   },

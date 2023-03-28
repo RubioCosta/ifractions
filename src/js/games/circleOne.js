@@ -73,13 +73,30 @@ const circleOne = {
 
     for (let i = 0; i <= 5; i++) {
       game.add
-        .image(startX + i * distanceBetweenPoints, startY, 'place_off', 0.45)
+        .sprite(
+          startX + i * distanceBetweenPoints,
+          startY,
+          'map_place',
+          0,
+          0.45
+        )
         .anchor(0.5, 0.5);
+      game.add.geom
+        .circle(
+          startX + i * distanceBetweenPoints,
+          startY + 34 * 1.5,
+          50,
+          undefined,
+          0,
+          colors.white,
+          0.5
+        )
+        .anchor(0, 0.25);
       game.add.text(
         startX + i * distanceBetweenPoints,
         startY + 34 * 1.5,
         i,
-        textStyles.h2_blueDark
+        textStyles.h2_
       );
     }
 
@@ -116,7 +133,7 @@ const circleOne = {
       all: [], // Circles objects of current level
       label: [], // Fractions labels
 
-      diameter: 60, // (Fixed) diameter for circles
+      diameter: 90, // (Fixed) diameter for circles
       cur: 0, // Current circle index
       direction: [], // Circle direction : 'Right' (plus), 'Left' (minus)
       distance: [], // Fraction of distance between circles (used in walking animation)
@@ -168,14 +185,16 @@ const circleOne = {
       this.circles.direction[i] = direction;
 
       // Set each circle color
-      let lineColor, anticlockwise;
+      let lineColor, textStyle, anticlockwise;
 
       if (direction == 'Right') {
-        lineColor = colors.blueDark;
+        lineColor = colors.green;
+        textStyle = textStyles.h2_;
         this.circles.direc[i] = 1;
         anticlockwise = true;
       } else {
         lineColor = colors.red;
+        textStyle = textStyles.h2_;
         this.circles.direc[i] = -1;
         anticlockwise = false;
       }
@@ -188,10 +207,10 @@ const circleOne = {
       if (divisor == 1) {
         circle = game.add.geom.circle(
           startX,
-          startY - 36 - i * this.circles.diameter,
+          startY - 54 - i * this.circles.diameter,
           this.circles.diameter,
           lineColor,
-          2,
+          3,
           colors.white,
           1
         );
@@ -203,9 +222,9 @@ const circleOne = {
         if (fractionLabel) {
           label[0] = game.add.text(
             x,
-            startY - 36 - i * this.circles.diameter,
+            startY - 54 - i * this.circles.diameter,
             divisor,
-            textStyles.h2_blueDark
+            textStyle
           );
           this.circles.label.push(label);
         }
@@ -216,13 +235,13 @@ const circleOne = {
 
         circle = game.add.geom.arc(
           startX,
-          startY - 36 - i * this.circles.diameter,
+          startY - 54 - i * this.circles.diameter,
           this.circles.diameter,
           0,
           game.math.degreeToRad(degree),
           anticlockwise,
           lineColor,
-          2,
+          3,
           colors.white,
           1
         );
@@ -234,19 +253,19 @@ const circleOne = {
             x,
             startY - 46 - i * this.circles.diameter + 32,
             divisor,
-            textStyles.h4_blueDark
+            textStyle
           );
           label[1] = game.add.text(
             x,
             startY - 38 - i * this.circles.diameter,
             '1',
-            textStyles.h4_blueDark
+            textStyle
           );
           label[2] = game.add.text(
             x,
             startY - 38 - i * this.circles.diameter,
             '___',
-            textStyles.h4_blueDark
+            textStyle
           );
           this.circles.label.push(label);
         }
@@ -352,6 +371,14 @@ const circleOne = {
     this.help = game.add.image(0, 0, 'pointer', 0.5);
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
+
+    // Text
+    game.add.text(
+      context.canvas.width / 2,
+      200,
+      'Onde o balão deve ficar para que o menino consiga chegar até ele?',
+      textStyles.h1_
+    );
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())

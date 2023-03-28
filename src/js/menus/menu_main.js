@@ -29,21 +29,19 @@ const menuState = {
         context.canvas.width / 2,
         60,
         game.lang.welcome + ', ' + playerName + '!',
-        textStyles.h3_brown
+        { ...textStyles.h3_, fill: colors.redDark }
       );
       // Title : Select a game
-      game.add.text(
-        context.canvas.width / 2,
-        120,
-        game.lang.menu_title,
-        textStyles.h1_green
-      );
+      game.add.text(context.canvas.width / 2, 120, game.lang.menu_title, {
+        ...textStyles.h1_,
+        fill: colors.green,
+      });
       // Subtitle : <game mode>
       this.lbl_game = game.add.text(
         context.canvas.width / 2,
-        160,
+        170,
         '',
-        textStyles.h2_blue
+        textStyles.h2_
       );
 
       // Loads navigation icons
@@ -74,8 +72,8 @@ const menuState = {
           x + 110,
           context.canvas.height / 2 - 100 - 80 - 10,
           'info',
-          1,
-          1
+          0.8,
+          0.6
         );
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';

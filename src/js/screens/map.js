@@ -11,6 +11,8 @@ const mapState = {
    * Main code
    */
   create: function () {
+    self.waitUserAction = false;
+
     renderBackground('plain');
 
     // Calls function that loads navigation icons
@@ -175,14 +177,14 @@ const mapState = {
       context.canvas.width - 240 + 160,
       y + 33,
       percentText + '%',
-      textStyles.h2_blueDark
+      textStyles.h2_
     ).align = 'left';
 
     game.add.text(
       context.canvas.width - 240 - 10,
       y + 33,
       game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_blueDark
+      textStyles.h2_
     ).align = 'right';
 
     // Map positions
@@ -207,14 +209,14 @@ const mapState = {
 
     // Map positions
     for (let i = 1; i < this.points.x.length - 1; i++) {
-      const aux =
+      const frame =
         i < curMapPosition || (canGoToNextMapPosition && i == curMapPosition)
-          ? 'place_on'
-          : 'place_off';
+          ? 1
+          : 0;
 
       // Map road positions - game levels
       game.add
-        .image(this.points.x[i], this.points.y[i], aux, 0.45)
+        .sprite(this.points.x[i], this.points.y[i], 'map_place', frame, 0.45)
         .anchor(0.5, 0.5);
 
       // Map road signs - game level number
@@ -225,16 +227,16 @@ const mapState = {
         this.points.x[i] - 20,
         this.points.y[i] - 125,
         i,
-        textStyles.h2_white
+        textStyles.h2_
       );
     }
 
     // Character
     this.character = gameList[gameId].assets.map.character(gameOperation);
+    this.character.anchor(0.5, 1);
     this.character.animation =
       gameList[gameId].assets.map.characterAnimation(gameOperation);
 
-    //this.character.anchor(0.5, 1);
     game.animation.play(this.character.animation[0]);
 
     this.moveCounter = 0;
@@ -246,6 +248,29 @@ const mapState = {
     const yB = this.points.y[curMapPosition + 1];
     self.speedX = (xB - xA) / speed;
     self.speedY = (yA - yB) / speed;
+
+    // feedback
+    this.continueButton = game.add.geom.rect(
+      context.canvas.width / 2,
+      context.canvas.height / 2,
+      300,
+      100,
+      undefined,
+      1,
+      colors.blueDark,
+      0
+    );
+    this.continueButton.anchor(0.5, 0.5);
+
+    // continue
+    // try again?
+    this.continueText = game.add.text(
+      context.canvas.width / 2,
+      context.canvas.height / 2 + 16,
+      game.lang.continue,
+      textStyles.h1_
+    );
+    this.continueText.alpha = 0;
 
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
@@ -288,17 +313,20 @@ const mapState = {
       }
 
       if (!canGoToNextMapPosition) {
-        endUpdate = true;
+        self.waitUserAction = true;
+        self.continueText.alpha = 1;
+        self.continueButton.alpha = 1;
+        //endUpdate = true;
       }
     }
 
     game.render.all();
 
-    if (endUpdate) {
-      game.animation.stop(self.character.animation[0]);
+    // if (endUpdate) {
+    //   game.animation.stop(self.character.animation[0]);
 
-      self.loadGame();
-    }
+    //   self.loadGame();
+    // }
   },
 
   /**
@@ -317,6 +345,11 @@ const mapState = {
   onInputDown: function (mouseEvent) {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
+
+    if (game.math.isOverIcon(x, y, self.continueButton)) {
+      self.loadGame();
+    }
+
     navigationIcons.onInputDown(x, y);
   },
 
@@ -328,6 +361,23 @@ const mapState = {
   onInputOver: function (mouseEvent) {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
+    let overIcon;
+
+    if (game.math.isOverIcon(x, y, self.continueButton)) {
+      overIcon = true;
+    }
+
+    // Update gui
+    if (overIcon) {
+      // If pointer is over icon
+      document.body.style.cursor = 'pointer';
+      self.continueButton.scale = self.continueButton.originalScale * 1.1;
+    } else {
+      // If pointer is not over icon
+      self.continueButton.scale = self.continueButton.originalScale * 1;
+      document.body.style.cursor = 'auto';
+    }
+
     navigationIcons.onInputOver(x, y);
   },
 };
