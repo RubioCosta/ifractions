@@ -21,16 +21,15 @@ const endState = {
 
     // Progress bar
     const y = 20;
-    game.add.geom.rect(
-      context.canvas.width - 300,
-      y,
-      4 * 37.5,
-      35,
-      undefined,
-      0,
-      colors.greenNeon,
-      0.5
-    );
+
+    for (let i = 0; i < 4; i++) {
+      game.add.image(
+        context.canvas.width - 300 + 37.5 * i,
+        y,
+        'progress_bar_tile'
+      );
+    }
+
     game.add.geom.rect(
       context.canvas.width - 300 + 1,
       y + 1,

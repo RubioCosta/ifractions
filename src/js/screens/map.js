@@ -11,8 +11,9 @@ const mapState = {
    * Main code
    */
   create: function () {
-    let x0 = 306;
-    let y0 = 161;
+    const x0 = 306;
+    const y0 = 161;
+    this.waitUserAction = false;
     this.scene = {
       rocks: {
         x: [x0 + 172, x0 + 604, x0 + 353],
@@ -50,7 +51,6 @@ const mapState = {
         y: [y0 + 629, y0 + 536, y0 + 443, y0 + 347, y0 + 252, y0 + 159],
       },
     };
-    this.waitUserAction = false;
 
     renderBackground('plain');
 
@@ -142,45 +142,7 @@ const mapState = {
     self.speedX = (xB - xA) / speed;
     self.speedY = (yA - yB) / speed;
 
-    // Progress bar
-    const percentText = completedLevels * 25;
-    x0 = 300;
-    y0 = 20;
-
-    game.add.geom.rect(
-      context.canvas.width - x0,
-      y0,
-      completedLevels * 37.5,
-      35,
-      undefined,
-      0,
-      completedLevels >= 4 ? colors.greenNeon : colors.yellow,
-      1
-    );
-
-    game.add.geom.rect(
-      context.canvas.width - x0 + 1,
-      y0 + 1,
-      149,
-      34,
-      colors.blue,
-      3,
-      undefined,
-      1
-    );
-    // Status Box
-    game.add.text(
-      context.canvas.width - x0 + 160,
-      y0 + 33,
-      percentText + '%',
-      textStyles.h2_
-    ).align = 'left';
-    game.add.text(
-      context.canvas.width - x0 - 10,
-      y0 + 33,
-      game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_
-    ).align = 'right';
+    self.renderProgressBar();
 
     // feedback
     this.modalBg = game.add.geom.rect(
@@ -340,5 +302,48 @@ const mapState = {
     }
 
     navigationIcons.onInputOver(x, y);
+  },
+
+  renderProgressBar: function () {
+    const percentText = completedLevels * 25;
+    const x0 = 300;
+    const y0 = 20;
+
+    // Bar content
+    for (let i = 0; i < completedLevels; i++) {
+      game.add.image(
+        context.canvas.width - x0 + 37.5 * i,
+        y0,
+        'progress_bar_tile'
+      );
+    }
+
+    // Bar wrapper
+    game.add.geom.rect(
+      context.canvas.width - x0 + 1,
+      y0 + 1,
+      150, //149,
+      35, //34,
+      colors.blue,
+      3,
+      undefined,
+      1
+    );
+
+    // percentage label
+    game.add.text(
+      context.canvas.width - x0 + 160,
+      y0 + 33,
+      percentText + '%',
+      textStyles.h2_
+    ).align = 'left';
+
+    // Difficulty label
+    game.add.text(
+      context.canvas.width - x0 - 10,
+      y0 + 33,
+      game.lang.difficulty + ' ' + gameDifficulty,
+      textStyles.h2_
+    ).align = 'right';
   },
 };

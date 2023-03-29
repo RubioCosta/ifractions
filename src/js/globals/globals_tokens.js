@@ -25,13 +25,11 @@ const colors = {
   green: '#00804d', // Title
   greenLight: '#83afaf', // squareTwo figures
   greenDark: '#1e2f2f', // squareTwo figures
-  greenNeon: '#00d600',
 
   // Basics
   white: '#fff',
   gray: '#708090',
   black: '#000',
-  yellow: '#ffef1f',
 };
 
 const font = {
@@ -121,6 +119,7 @@ const url = {
       ['floor', baseUrl + 'scene/floor.png'],
       ['rock', baseUrl + 'scene/rock.png'],
       ['road', baseUrl + 'scene/road.png'],
+      ['progress_bar_tile', baseUrl + 'scene/progress_bar_tile.png'],
       ['sign', baseUrl + 'scene/sign.png'],
       ['sign_broken', baseUrl + 'scene/sign_broken.png'],
       ['tree_1', baseUrl + 'scene/tree_1.png'],
