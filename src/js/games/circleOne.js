@@ -76,8 +76,15 @@ const circleOne = {
     const y0 = this.road.y + 20;
     const x0 =
       gameOperation == 'minus'
-        ? this.road.x - roadPointWidth / 2 + 5 * distanceBetweenPoints
+        ? this.road.x + this.road.width - roadPointWidth / 2
         : this.road.x + roadPointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
+
+    console.log(
+      'min: ' +
+        (this.road.x + roadPointWidth / 2) +
+        ' max: ' +
+        (this.road.x + this.road.width - roadPointWidth / 2)
+    );
 
     this.animation = {
       list: {
@@ -210,9 +217,10 @@ const circleOne = {
       }
 
       if (lowerCircles) {
-        currentCircle.alpha = 0; // Cicle disappear
+        // Hide current circle
+        currentCircle.alpha = 0;
 
-        // Lowers circles and kid
+        // Lowers kid and other circles
         self.circles.list.forEach((circle) => {
           circle.y += self.circles.diameter;
         });
@@ -421,13 +429,20 @@ const circleOne = {
   utils: {
     renderRoad: function (x0, y0, distanceBetweenPoints) {
       // Road points
+      const operationModifier = gameOperation === 'minus' ? -1 : 1;
       for (let i = 0; i <= 5; i++) {
         game.add
-          .sprite(x0 + i * distanceBetweenPoints, y0, 'map_place', 0, 0.45)
+          .sprite(
+            x0 + i * distanceBetweenPoints * operationModifier,
+            y0,
+            'map_place',
+            0,
+            0.45
+          )
           .anchor(0.5, 0.5);
         game.add.geom
           .circle(
-            x0 + i * distanceBetweenPoints,
+            x0 + i * distanceBetweenPoints * operationModifier,
             y0 + 55,
             50,
             undefined,
@@ -437,7 +452,7 @@ const circleOne = {
           )
           .anchor(0, 0.25);
         game.add.text(
-          x0 + i * distanceBetweenPoints,
+          x0 + i * distanceBetweenPoints * operationModifier,
           y0 + 55,
           i,
           textStyles.h2_
@@ -612,12 +627,22 @@ const circleOne = {
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
       // If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
-      if (
-        self.control.correctX < self.road.x ||
-        self.control.correctX > self.road.x + 3 * distanceBetweenPoints ||
-        !self.control.hasBaseDifficulty
-      ) {
-        console.log(self.control.correctX);
+      let isBeforeMin, isAfterMax;
+      if (gameOperation === 'minus') {
+        isBeforeMin = self.control.correctX > x0;
+        isAfterMax = self.control.correctX < x0 - 3 * distanceBetweenPoints;
+        console.log(
+          'minMax',
+          isBeforeMin,
+          isAfterMax,
+          self.control.correctX,
+          x0 + self.road.width - 3 * distanceBetweenPoints
+        );
+      } else {
+        isBeforeMin = self.control.correctX < x0;
+        isAfterMax = self.control.correctX > x0 + 3 * distanceBetweenPoints;
+      }
+      if (!self.control.hasBaseDifficulty || isBeforeMin || isAfterMax) {
         restart = true;
       }
 
@@ -636,10 +661,15 @@ const circleOne = {
         }
 
         // If balloon position is out of bounds, restart
-        if (
-          self.balloonX < self.road.x ||
-          self.balloonX > self.road.x + 5 * distanceBetweenPoints
-        ) {
+        if (gameOperation === 'minus') {
+          isBeforeMin = self.balloonX > x0;
+          isAfterMax = self.balloonX < x0 - 3 * distanceBetweenPoints;
+        } else {
+          isBeforeMin = self.balloonX < x0;
+          isAfterMax = self.balloonX > x0 + self.road.width;
+        }
+        if (isBeforeMin || isAfterMax) {
+          console.log('minMax balloon');
           restart = true;
         }
       }
