@@ -239,9 +239,9 @@ const menuState = {
           // If its in the same icon category
           if (cur == self.menuIcons[overIcon]) {
             // If its the icon the pointer is over
-            cur.scale = cur.originalScale * 1.1;
+            cur.scale = cur.initialScale * 1.1;
           } else {
-            cur.scale = cur.originalScale;
+            cur.scale = cur.initialScale;
           }
         }
       });
@@ -249,7 +249,7 @@ const menuState = {
       // If pointer is not over icon
       self.clearTitle();
       self.menuIcons.forEach((cur) => {
-        cur.scale = cur.originalScale;
+        cur.scale = cur.initialScale;
       });
       document.body.style.cursor = 'auto';
     }

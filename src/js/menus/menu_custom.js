@@ -219,9 +219,9 @@ const customMenuState = {
             // If its the icon the pointer is over
             if (cur.iconType == 'enter')
               self.enterText.style = textStyles.btnLg;
-            cur.scale = cur.originalScale * 1.1;
+            cur.scale = cur.initialScale * 1.1;
           } else {
-            cur.scale = cur.originalScale;
+            cur.scale = cur.initialScale;
           }
         }
       });
@@ -229,7 +229,7 @@ const customMenuState = {
       // If pointer is not over icon
       if (self.enterText) self.enterText.style = textStyles.btn;
       self.menuIcons.forEach((cur) => {
-        cur.scale = cur.originalScale;
+        cur.scale = cur.initialScale;
       });
       document.body.style.cursor = 'auto';
     }

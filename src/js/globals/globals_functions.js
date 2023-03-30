@@ -339,8 +339,33 @@ const renderBackground = (type) => {
   game.add.image(300, 85, 'cloud', 1.2);
 
   // Add floor
-  for (let i = 0; i < context.canvas.width / 150; i++) {
-    game.add.image(i * 150, context.canvas.height - 150, 'floor', 1.5);
+  const floorSize = 150;
+
+  if (type === 'farmRoad') {
+    game.add.image(0, context.canvas.height - floorSize, 'floor_grass', 1.5);
+    for (let i = 1; i < context.canvas.width / floorSize; i++) {
+      game.add.image(
+        i * floorSize,
+        context.canvas.height - floorSize,
+        'floor_road'
+      );
+    }
+    game.add.image(
+      context.canvas.width - floorSize,
+      context.canvas.height - floorSize,
+      'floor_grass',
+      1.5
+    );
+    return;
+  }
+
+  for (let i = 0; i < context.canvas.width / floorSize; i++) {
+    game.add.image(
+      i * floorSize,
+      context.canvas.height - floorSize,
+      'floor_grass',
+      1.5
+    );
   }
 };
 

@@ -86,7 +86,8 @@ const game = {
           40,
           undefined,
           0,
-          colors.blueBgOff
+          colors.blue,
+          0.4
         );
         game.state.progressBar.anchor(0.5, 0.5);
 
@@ -114,7 +115,7 @@ const game = {
       } else {
         self.create(); // Calls create()
         game.render.all(); // After create() ends, renders media on canvas
-        if (self.restart && self.restart == true) {
+        if (self?.restart) {
           // If needed, restart state
           game.state.start(game.state.name);
         } else {
@@ -308,7 +309,9 @@ const game = {
             game.loadHandler.cachedOneFile('image');
           };
           img.onerror = () => {
-            console.error('Game error: image not found');
+            console.error(
+              'Game error: image "' + url[0] + '" not found in sourse files.'
+            );
             game.image[url[0]] = img;
             img.src = fallbackImgUrl;
             game.loadHandler.cachedOneFile('image');
@@ -416,7 +419,7 @@ const game = {
             return this.y - this.height * this.scale * this.yAnchor;
           },
         };
-        med.originalScale = med.scale;
+        med.initialScale = med.scale;
         game.render.queue.push(med);
         return med;
       }
@@ -473,7 +476,7 @@ const game = {
             return this.y - this.height * this.scale * this.yAnchor;
           },
         };
-        med.originalScale = med.scale;
+        med.initialScale = med.scale;
         game.render.queue.push(med);
         return med;
       }
@@ -605,7 +608,7 @@ const game = {
               return this.y - this.height * this.scale * this.yAnchor;
             },
           };
-          med.originalScale = med.scale;
+          med.initialScale = med.scale;
           if (width != 0) {
             med.width = width || game.add.default.width;
           }
@@ -685,7 +688,7 @@ const game = {
               return this.y - this.height * this.scale * this.yAnchor;
             },
           };
-          med.originalScale = med.scale;
+          med.initialScale = med.scale;
           if (diameter != 0) {
             med.diameter = diameter || game.add.default.diameter;
             med.width = med.height = med.diameter;
@@ -775,7 +778,7 @@ const game = {
               return this.y - this.height * this.scale * this.yAnchor;
             },
           };
-          med.originalScale = med.scale;
+          med.initialScale = med.scale;
           if (diameter != 0) {
             med.diameter = diameter || game.add.default.diameter;
             med.width = med.height = med.diameter;

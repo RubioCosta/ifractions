@@ -68,7 +68,7 @@
 //         true,
 //         false, // Right icons
 //         'customMenu',
-//         this.viewHelp
+//         this.showAnswer
 //       );
 //     }
 
@@ -325,7 +325,7 @@
 //   /**
 //    * Display correct answer
 //    */
-//   viewHelp: function () {},
+//   showAnswer: function () {},
 
 //   /**
 //    * Saves players data after level ends - to be sent to database <br>

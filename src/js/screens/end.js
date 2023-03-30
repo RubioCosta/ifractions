@@ -204,11 +204,11 @@ const endState = {
     if (overIcon) {
       // If pointer is over icon
       document.body.style.cursor = 'pointer';
-      self.continueButton.scale = self.continueButton.originalScale * 1.1;
+      self.continueButton.scale = self.continueButton.initialScale * 1.1;
       self.continueText.style = textStyles.btnLg;
     } else {
       // If pointer is not over icon
-      self.continueButton.scale = self.continueButton.originalScale * 1;
+      self.continueButton.scale = self.continueButton.initialScale * 1;
       document.body.style.cursor = 'auto';
       self.continueText.style = textStyles.btn;
     }
