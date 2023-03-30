@@ -11,7 +11,6 @@ const colors = {
   blueDark: '#183780', // Line color that indicates right and fraction numbers
 
   blueBg: '#cce5ff', // Background color
-  blueBgOff: '#adc8e6',
   blueBgInsideLevel: '#a8c0e6', // Background color in squareOne (used for floor gap)
 
   blueMenuLine: '#b7cdf4',
@@ -116,9 +115,9 @@ const url = {
       ['bg_map', baseUrl + 'scene/bg_map.png'],
       ['bush', baseUrl + 'scene/bush.png'],
       ['cloud', baseUrl + 'scene/cloud.png'],
-      ['floor', baseUrl + 'scene/floor.png'],
+      ['floor_grass', baseUrl + 'scene/floor_grass.png'],
+      ['floor_road', baseUrl + 'scene/floor_road.png'],
       ['rock', baseUrl + 'scene/rock.png'],
-      ['road', baseUrl + 'scene/road.png'],
       ['progress_bar_tile', baseUrl + 'scene/progress_bar_tile.png'],
       ['sign', baseUrl + 'scene/sign.png'],
       ['sign_broken', baseUrl + 'scene/sign_broken.png'],

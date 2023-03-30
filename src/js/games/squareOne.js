@@ -85,7 +85,7 @@ const squareOne = {
         true,
         false, // Right icons
         'customMenu',
-        this.viewHelp
+        this.showAnswer
       );
     }
 
@@ -444,6 +444,7 @@ const squareOne = {
    * @returns {boolean}
    */
   createStckBlocks: function () {
+    let restart = false;
     let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
     const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
 
@@ -529,8 +530,6 @@ const squareOne = {
     // Will be used as a counter in update, adding in the width of each stacked block to check if the end matches the floor selected position
     self.stck.curBlockEnd =
       self.startX + self.stck.blocks[0].width * self.direc_level;
-
-    let restart = false;
 
     // Check for errors (level too easy for its difficulty or end position out of bounds)
     if (
@@ -657,7 +656,7 @@ const squareOne = {
   /**
    * Display correct answer
    */
-  viewHelp: function () {
+  showAnswer: function () {
     if (!self.hasClicked) {
       // On gameMode (a)
       if (gameMode == 'a') {
