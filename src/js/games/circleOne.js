@@ -461,6 +461,7 @@ const circleOne = {
           {
             ...textStyles.h2_,
             font: 'bold ' + textStyles.h2_.font,
+            fill: directionModifier == 1 ? colors.green : colors.red,
           }
         );
       }
@@ -478,13 +479,17 @@ const circleOne = {
 
     renderCircles: function (validPath) {
       // Balloon place
-      self.balloonX = context.canvas.width / 2;
-
       let restart = false;
+      const directionModifier = gameOperation == 'minus' ? -1 : 1;
+      const fractionX =
+        validPath.x0 +
+        self.circles.diameter * directionModifier -
+        15 * directionModifier;
       const font = {
         ...textStyles.h3_,
-        font: 'bold ' + textStyles.h3_.font,
+        font: 'bold ' + textStyles.h2_.font,
       };
+      self.balloonX = context.canvas.width / 2;
 
       // Number of circles
       const max =
@@ -497,10 +502,6 @@ const circleOne = {
         1,
         total - 1
       );
-
-      // CIRCLES
-      const directionModifier = gameOperation == 'minus' ? -1 : 1;
-      const x = validPath.x0 + 65 * directionModifier;
 
       for (let i = 0; i < total; i++) {
         let curDirection = undefined;
@@ -597,15 +598,15 @@ const circleOne = {
 
           curFractionItems = [
             {
-              y: curCircleY + self.circles.diameter / 2 - 5,
+              y: curCircleY + 34,
               text: curDivisor,
             },
             {
-              y: curCircleY + 5,
+              y: curCircleY - 2,
               text: '1',
             },
             {
-              y: curCircleY + 5,
+              y: curCircleY - 2,
               text: '__',
             },
           ];
@@ -615,7 +616,7 @@ const circleOne = {
           for (let item in curFractionItems) {
             curCircleInfo.label.push(
               game.add.text(
-                x,
+                fractionX,
                 curFractionItems[item].y,
                 curFractionItems[item].text,
                 font
