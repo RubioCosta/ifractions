@@ -445,19 +445,19 @@ const circleOne = {
           .circle(
             validPath.x0 +
               i * validPath.distanceBetweenPoints * directionModifier,
-            validPath.y0 + 55,
-            50,
+            validPath.y0 + 60,
+            60,
             undefined,
             0,
             colors.white,
-            0.7
+            0.5
           )
           .anchor(0, 0.25);
         game.add.text(
           validPath.x0 +
             i * validPath.distanceBetweenPoints * directionModifier,
           validPath.y0 + 55,
-          i,
+          i * directionModifier,
           {
             ...textStyles.h2_,
             font: 'bold ' + textStyles.h2_.font,
@@ -482,9 +482,7 @@ const circleOne = {
       let restart = false;
       const directionModifier = gameOperation == 'minus' ? -1 : 1;
       const fractionX =
-        validPath.x0 +
-        self.circles.diameter * directionModifier -
-        15 * directionModifier;
+        validPath.x0 + self.circles.diameter * directionModifier;
       const font = {
         ...textStyles.h3_,
         font: 'bold ' + textStyles.h2_.font,
@@ -574,8 +572,9 @@ const circleOne = {
 
           curFractionItems = [
             {
+              x: fractionX,
               y: curCircleY + 10,
-              text: '1',
+              text: curDirection === 'left' ? '-1' : '1',
             },
           ];
         } else {
@@ -598,27 +597,35 @@ const circleOne = {
 
           curFractionItems = [
             {
+              x: fractionX,
               y: curCircleY + 34,
               text: curDivisor,
             },
             {
+              x: fractionX,
               y: curCircleY - 2,
               text: '1',
             },
             {
+              x: fractionX,
               y: curCircleY - 2,
               text: '__',
+            },
+            {
+              x: fractionX - 35,
+              y: curCircleY + 15,
+              text: curDirection === 'left' ? '-' : '',
             },
           ];
         }
 
         if (fractionLabel) {
-          for (let item in curFractionItems) {
+          for (let cur in curFractionItems) {
             curCircleInfo.label.push(
               game.add.text(
-                fractionX,
-                curFractionItems[item].y,
-                curFractionItems[item].text,
+                curFractionItems[cur].x,
+                curFractionItems[cur].y,
+                curFractionItems[cur].text,
                 font
               )
             );
