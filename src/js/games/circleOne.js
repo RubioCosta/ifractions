@@ -55,36 +55,56 @@ const circleOne = {
   balloon: undefined,
   basket: undefined,
   help: undefined,
-  // b only
-  endIndex: undefined,
-  numberOfPlusFractions: undefined,
 
   create: function () {
     this.divisorsList = '';
-
-    const roadPointWidth = (game.sprite['map_place'].width / 2) * 0.45;
 
     this.road = {
       x: 150,
       y: context.canvas.height - game.image['floor_grass'].width * 1.5,
       width: 1620,
     };
+    const validPath = {
+      x0: undefined,
+      y0: undefined,
+      distanceBetweenPoints: undefined,
+    };
 
-    const distanceBetweenPoints =
-      (context.canvas.width - this.road.x * 2 - roadPointWidth) / 5; // Distance between road points
-
-    const y0 = this.road.y + 20;
-    const x0 =
+    const pointWidth = (game.sprite['map_place'].width / 2) * 0.45;
+    validPath.distanceBetweenPoints =
+      (context.canvas.width - this.road.x * 2 - pointWidth) / 5; // Distance between road points
+    validPath.y0 = this.road.y + 20;
+    validPath.x0 =
       gameOperation == 'minus'
-        ? this.road.x + this.road.width - roadPointWidth / 2
-        : this.road.x + roadPointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
+        ? this.road.x + 5 * validPath.distanceBetweenPoints - pointWidth / 2
+        : this.road.x + pointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
 
-    console.log(
-      'min: ' +
-        (this.road.x + roadPointWidth / 2) +
-        ' max: ' +
-        (this.road.x + this.road.width - roadPointWidth / 2)
-    );
+    const diameter =
+      game.math.getRadiusFromCircunference(validPath.distanceBetweenPoints) * 2; // (Fixed) diameter for circles
+    this.circles = {
+      diameter: diameter,
+      radius: diameter / 2,
+      cur: 0, // Current circle index
+      list: [], // Circles objects of current level
+    };
+
+    this.control = {
+      checkAnswer: false, // Check kid inside ballon's basket
+      hasClicked: false, // Air ballon positioned
+      result: false, // Game is correct
+      correctX: validPath.x0, // Ending position, is accumulative
+      nextX: undefined,
+      hasBaseDifficulty: false, // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
+      endIndex: null,
+      // mode 'b' exclusive
+      fractionIndex: -1, // Index of clicked circle (game (b))
+      numberOfPlusFractions: undefined,
+    };
+
+    const walkOffsetX = 2;
+    const walksPerDistanceBetweenPoints =
+      validPath.distanceBetweenPoints / walkOffsetX;
+    const angleOffset = 360 / walksPerDistanceBetweenPoints;
 
     this.animation = {
       list: {
@@ -95,28 +115,12 @@ const circleOne = {
       animateKid: false,
       animateBalloon: false,
       counter: undefined,
-    };
-
-    this.control = {
-      checkAnswer: false, // Check kid inside ballon's basket
-      hasClicked: false, // Air ballon positioned
-      result: false, // Game is correct
-      correctX: x0, // Ending position, is accumulative
-      nextX: undefined,
-      hasBaseDifficulty: false, // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
-      endIndex: null,
-    };
-
-    // CIRCLE RELATED INFO
-    this.circles = {
-      diameter: 60, // (Fixed) diameter for circles
-      cur: 0, // Current circle index
-      list: [], // Circles objects of current level
+      walkOffsetX: walkOffsetX,
+      angleOffset: angleOffset,
     };
 
     renderBackground('farmRoad');
-
-    this.utils.renderRoad(x0, y0, distanceBetweenPoints);
+    this.utils.renderRoad(validPath);
 
     // Calls function that loads navigation icons
     // FOR MOODLE
@@ -142,9 +146,8 @@ const circleOne = {
       );
     }
 
-    this.restart = this.utils.renderCircles(x0, y0, distanceBetweenPoints);
-
-    this.utils.renderCharacters(x0, y0);
+    this.restart = this.utils.renderCircles(validPath);
+    this.utils.renderCharacters(validPath);
 
     // Help pointer
     this.help = game.add.image(0, 0, 'pointer', 0.5);
@@ -172,30 +175,27 @@ const circleOne = {
   update: function () {
     // Start animation
     if (self.animation.animateKid) {
-      let currentCircle = self.circles.list[self.circles.cur];
-      let direc = currentCircle.info.direc;
+      let lowerCircles = undefined;
+      let curCircle = self.circles.list[self.circles.cur];
+      let curDirec = curCircle.info.direc;
 
       // Move
       self.circles.list.forEach((circle) => {
-        circle.x += 2 * direc;
+        circle.x += this.animation.walkOffsetX * curDirec;
       });
-      self.kid.x += 2 * direc;
-      self.walkedPath.width += 2 * direc;
-      self.walkedPath.lineColor = currentCircle.lineColor;
+      self.kid.x += this.animation.walkOffsetX * curDirec;
+      self.walkedPath.width += this.animation.walkOffsetX * curDirec;
+      self.walkedPath.lineColor = curCircle.lineColor;
 
-      // Change angle of current arc (animate circle)
-      currentCircle.info.angle += 2.3 * direc;
-      currentCircle.angleEnd = game.math.degreeToRad(currentCircle.info.angle);
+      // Update arc
+      curCircle.info.angleDegree += this.animation.angleOffset * curDirec;
+      curCircle.angleEnd = game.math.degreeToRad(curCircle.info.angleDegree);
 
       // When finish current circle
-      let lowerCircles;
-
-      if (currentCircle.info.direction === 'right') {
-        lowerCircles = currentCircle.x >= self.control.nextX;
-      }
-
-      if (currentCircle.info.direction === 'left') {
-        lowerCircles = currentCircle.x <= self.control.nextX;
+      if (curCircle.info.direction === 'right') {
+        lowerCircles = curCircle.x >= self.control.nextX;
+      } else if (curCircle.info.direction === 'left') {
+        lowerCircles = curCircle.x <= self.control.nextX;
         // If just changed from 'right' to 'left' inform to change direction of kid animation
         if (
           self.animation.invertDirection === undefined &&
@@ -218,7 +218,7 @@ const circleOne = {
 
       if (lowerCircles) {
         // Hide current circle
-        currentCircle.alpha = 0;
+        curCircle.alpha = 0;
 
         // Lowers kid and other circles
         self.circles.list.forEach((circle) => {
@@ -229,16 +229,16 @@ const circleOne = {
         self.circles.cur++; // Update index of current circle
 
         if (self.circles.list[self.circles.cur]) {
-          currentCircle = self.circles.list[self.circles.cur];
-          direc = currentCircle.info.direc;
-          self.control.nextX += currentCircle.info.distance * direc; // Update next position
+          curCircle = self.circles.list[self.circles.cur];
+          curDirec = curCircle.info.direc;
+          self.control.nextX += curCircle.info.distance * curDirec; // Update next position
         }
       }
 
       // When finish all circles (final position)
       if (
         self.circles.cur === self.circles.list.length ||
-        currentCircle.alpha == 0
+        curCircle.alpha == 0
       ) {
         self.animation.animateKid = false;
         self.control.checkAnswer = true;
@@ -419,7 +419,7 @@ const circleOne = {
         ' balloonX: ' +
         self.basket.x +
         ', selIndex: ' +
-        self.fractionIndex;
+        self.control.fractionIndex;
 
       // FOR MOODLE
       sendToDatabase(data);
@@ -427,14 +427,15 @@ const circleOne = {
   },
 
   utils: {
-    renderRoad: function (x0, y0, distanceBetweenPoints) {
+    renderRoad: function (validPath) {
       // Road points
-      const operationModifier = gameOperation === 'minus' ? -1 : 1;
+      const directionModifier = gameOperation === 'minus' ? -1 : 1;
       for (let i = 0; i <= 5; i++) {
         game.add
           .sprite(
-            x0 + i * distanceBetweenPoints * operationModifier,
-            y0,
+            validPath.x0 +
+              i * validPath.distanceBetweenPoints * directionModifier,
+            validPath.y0,
             'map_place',
             0,
             0.45
@@ -442,33 +443,48 @@ const circleOne = {
           .anchor(0.5, 0.5);
         game.add.geom
           .circle(
-            x0 + i * distanceBetweenPoints * operationModifier,
-            y0 + 55,
+            validPath.x0 +
+              i * validPath.distanceBetweenPoints * directionModifier,
+            validPath.y0 + 55,
             50,
             undefined,
             0,
             colors.white,
-            0.5
+            0.7
           )
           .anchor(0, 0.25);
         game.add.text(
-          x0 + i * distanceBetweenPoints * operationModifier,
-          y0 + 55,
+          validPath.x0 +
+            i * validPath.distanceBetweenPoints * directionModifier,
+          validPath.y0 + 55,
           i,
-          textStyles.h2_
+          {
+            ...textStyles.h2_,
+            font: 'bold ' + textStyles.h2_.font,
+          }
         );
       }
 
-      self.walkedPath = game.add.geom.rect(x0 - 1, y0, 1, 1, colors.blue, 2);
+      self.walkedPath = game.add.geom.rect(
+        validPath.x0 - 1,
+        validPath.y0,
+        1,
+        1,
+        colors.blue,
+        2
+      );
       self.walkedPath.alpha = 0;
     },
 
-    renderCircles: function (x0, y0, distanceBetweenPoints) {
-      let restart = false;
-      let circle;
-
+    renderCircles: function (validPath) {
       // Balloon place
       self.balloonX = context.canvas.width / 2;
+
+      let restart = false;
+      const font = {
+        ...textStyles.h3_,
+        font: 'bold ' + textStyles.h3_.font,
+      };
 
       // Number of circles
       const max =
@@ -476,181 +492,193 @@ const circleOne = {
       const min =
         gameOperation == 'mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
       const total = game.math.randomInRange(min, max); // Total number of circles
-      // gameMode 'b' exclusive variables
-      self.fractionIndex = -1; // Index of clicked circle (game (b))
-      self.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
+      // for mode 'b'
+      self.control.numberOfPlusFractions = game.math.randomInRange(
+        1,
+        total - 1
+      );
 
       // CIRCLES
-      const levelDirection = gameOperation == 'minus' ? -1 : 1;
-      const x = x0 + 65 * levelDirection;
+      const directionModifier = gameOperation == 'minus' ? -1 : 1;
+      const x = validPath.x0 + 65 * directionModifier;
 
       for (let i = 0; i < total; i++) {
-        const circleInfo = {
+        let curDirection = undefined;
+        let curLineColor = undefined;
+        let curFillColor = undefined;
+        let curAngleDegree = undefined;
+        let curIsCounterclockwise = undefined;
+        let curFractionItems = undefined;
+        let curCircle = undefined;
+        const curCircleInfo = {
           direction: undefined,
           direc: undefined,
           distance: undefined,
           angle: undefined,
           label: [],
         };
-        const divisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
+        const curDivisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
 
-        if (divisor === gameDifficulty) self.control.hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
+        if (curDivisor === gameDifficulty)
+          self.control.hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
 
-        self.divisorsList += divisor + ','; // Add this divisor to the list of divisors (for postScore())
+        self.divisorsList += curDivisor + ','; // Add this divisor to the list of divisors (for postScore())
 
         // Set each circle direction
-        let direction;
-
         switch (gameOperation) {
           case 'plus':
-            direction = 'right';
+            curDirection = 'right';
             break;
           case 'minus':
-            direction = 'left';
+            curDirection = 'left';
             break;
           case 'mixed':
-            if (i < self.numberOfPlusFractions) direction = 'right';
-            else direction = 'left';
+            curDirection =
+              i < self.control.numberOfPlusFractions ? 'right' : 'left';
             break;
         }
-        circleInfo.direction = direction;
+        curCircleInfo.direction = curDirection;
 
         // Set each circle visual info
-        let color;
-        let font;
-        let anticlockwise;
-
-        if (direction === 'right') {
-          anticlockwise = true;
-          color = colors.green;
-          circleInfo.direc = 1;
+        if (curDirection === 'right') {
+          curIsCounterclockwise = true;
+          curLineColor = colors.green;
+          curFillColor = colors.greenLight;
+          curCircleInfo.direc = 1;
         } else {
-          anticlockwise = false;
-          color = colors.red;
-          circleInfo.direc = -1;
+          curIsCounterclockwise = false;
+          curLineColor = colors.red;
+          curFillColor = colors.redLight;
+          curCircleInfo.direc = -1;
         }
-        font = { ...textStyles.h2_, fill: color };
+        font.fill = curLineColor;
 
-        let fractionParts;
+        const curCircleY =
+          validPath.y0 - self.circles.diameter / 2 - i * self.circles.diameter;
+
         // Draw circles
-        if (divisor === 1) {
-          circle = game.add.geom.circle(
-            x0,
-            y0 - 36 - i * self.circles.diameter,
+        if (curDivisor === 1) {
+          curAngleDegree = 360;
+          curCircle = game.add.geom.circle(
+            validPath.x0,
+            curCircleY,
             self.circles.diameter,
-            color,
+            curLineColor,
             3,
-            colors.white,
+            curFillColor,
             1
           );
-          circle.anticlockwise = anticlockwise;
-          circleInfo.angle = 360;
+          curCircle.counterclockwise = curIsCounterclockwise;
+          curCircleInfo.angleDegree = curAngleDegree;
 
-          fractionParts = [
+          curFractionItems = [
             {
-              x: x,
-              y: y0 - 36 - i * self.circles.diameter,
+              y: curCircleY + 10,
               text: '1',
             },
           ];
         } else {
-          let degree = 360 / divisor;
-          if (direction == 'right') degree = 360 - degree; // Anticlockwise equivalent
+          curAngleDegree = 360 / curDivisor;
+          if (curDirection === 'right') curAngleDegree = 360 - curAngleDegree; // counterclockwise equivalent
 
-          circle = game.add.geom.arc(
-            x0,
-            y0 - 54 - i * self.circles.diameter,
+          curCircle = game.add.geom.arc(
+            validPath.x0,
+            curCircleY,
             self.circles.diameter,
             0,
-            game.math.degreeToRad(degree),
-            anticlockwise,
-            color,
+            game.math.degreeToRad(curAngleDegree),
+            curIsCounterclockwise,
+            curLineColor,
             3,
-            colors.white,
+            curFillColor,
             1
           );
-          circleInfo.angle = degree;
+          curCircleInfo.angleDegree = curAngleDegree;
 
-          fractionParts = [
+          curFractionItems = [
             {
-              x: x,
-              y: y0 - 46 - i * self.circles.diameter + 32,
-              text: divisor,
+              y: curCircleY + self.circles.diameter / 2 - 5,
+              text: curDivisor,
             },
             {
-              x: x,
-              y: y0 - 38 - i * self.circles.diameter,
+              y: curCircleY + 5,
               text: '1',
             },
             {
-              x: x,
-              y: y0 - 38 - i * self.circles.diameter,
+              y: curCircleY + 5,
               text: '__',
             },
           ];
         }
 
         if (fractionLabel) {
-          for (let part in fractionParts) {
-            circleInfo.label.push(
+          for (let item in curFractionItems) {
+            curCircleInfo.label.push(
               game.add.text(
-                fractionParts[part].x,
-                fractionParts[part].y,
-                fractionParts[part].text,
+                x,
+                curFractionItems[item].y,
+                curFractionItems[item].text,
                 font
               )
             );
           }
         }
 
-        circle.rotate = 90;
+        curCircle.rotate = 90;
 
         // If game is type (b) (select fractions)
         if (gameMode == 'b') {
-          circle.alpha = 0.5;
-          circle.index = i;
+          curCircle.alpha = 0.5;
+          curCircle.index = i;
         }
 
-        circleInfo.distance = Math.floor(distanceBetweenPoints / divisor);
+        curCircleInfo.distance = Math.floor(
+          validPath.distanceBetweenPoints / curDivisor
+        );
 
-        // add to the list
-        circle.info = circleInfo;
-        self.circles.list.push(circle);
+        // Add to the list
+        curCircle.info = curCircleInfo;
+        self.circles.list.push(curCircle);
 
         self.control.correctX +=
-          Math.floor(distanceBetweenPoints / divisor) * circle.info.direc;
+          Math.floor(validPath.distanceBetweenPoints / curDivisor) *
+          curCircle.info.direc;
+      }
+
+      // Restart if
+      // Does not have base difficulty
+      if (!self.control.hasBaseDifficulty) {
+        restart = true;
       }
 
       // Calculate next circle
       self.control.nextX =
-        x0 +
+        validPath.x0 +
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
-      // If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
+      // Restart if
+      // Correct position is out of bounds
       let isBeforeMin, isAfterMax;
       if (gameOperation === 'minus') {
-        isBeforeMin = self.control.correctX > x0;
-        isAfterMax = self.control.correctX < x0 - 3 * distanceBetweenPoints;
-        console.log(
-          'minMax',
-          isBeforeMin,
-          isAfterMax,
-          self.control.correctX,
-          x0 + self.road.width - 3 * distanceBetweenPoints
-        );
+        isBeforeMin = self.control.correctX > validPath.x0;
+        isAfterMax =
+          self.control.correctX <
+          validPath.x0 - 3 * validPath.distanceBetweenPoints;
       } else {
-        isBeforeMin = self.control.correctX < x0;
-        isAfterMax = self.control.correctX > x0 + 3 * distanceBetweenPoints;
+        isBeforeMin = self.control.correctX < validPath.x0;
+        isAfterMax =
+          self.control.correctX >
+          validPath.x0 + 3 * validPath.distanceBetweenPoints;
       }
-      if (!self.control.hasBaseDifficulty || isBeforeMin || isAfterMax) {
+      if (isBeforeMin || isAfterMax) {
         restart = true;
       }
 
       // If game is type (b), selectiong a random balloon place
       if (gameMode == 'b') {
-        self.balloonX = x0;
+        self.balloonX = validPath.x0;
         self.control.endIndex = game.math.randomInRange(
-          self.numberOfPlusFractions,
+          self.control.numberOfPlusFractions,
           self.circles.list.length
         );
 
@@ -660,16 +688,17 @@ const circleOne = {
             self.circles.list[i].info.direc;
         }
 
-        // If balloon position is out of bounds, restart
+        // Restart if
+        // Balloon position is out of bounds
         if (gameOperation === 'minus') {
-          isBeforeMin = self.balloonX > x0;
-          isAfterMax = self.balloonX < x0 - 3 * distanceBetweenPoints;
+          isBeforeMin = self.balloonX > validPath.x0;
+          isAfterMax =
+            self.balloonX < validPath.x0 - 3 * validPath.distanceBetweenPoints;
         } else {
-          isBeforeMin = self.balloonX < x0;
-          isAfterMax = self.balloonX > x0 + self.road.width;
+          isBeforeMin = self.balloonX < validPath.x0;
+          isAfterMax = self.balloonX > validPath.x0 + self.road.width;
         }
         if (isBeforeMin || isAfterMax) {
-          console.log('minMax balloon');
           restart = true;
         }
       }
@@ -677,8 +706,17 @@ const circleOne = {
       return restart;
     },
 
-    renderCharacters: function (x0, y0) {
+    renderCharacters: function (validPath) {
       // KID
+      self.kid = game.add.sprite(
+        validPath.x0,
+        validPath.y0 - 32 - self.circles.list.length * self.circles.diameter,
+        'kid_walking',
+        0,
+        1.2
+      );
+      self.kid.anchor(0.5, 0.8);
+
       self.animation.list.right = [
         'right',
         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
@@ -690,15 +728,6 @@ const circleOne = {
         4,
       ];
 
-      self.kid = game.add.sprite(
-        x0,
-        y0 - 31 - self.circles.list.length * self.circles.diameter,
-        'kid_walking',
-        0,
-        1.2
-      );
-      self.kid.anchor(0.5, 0.8);
-
       if (gameOperation == 'minus') {
         self.kid.animation = self.animation.list.left;
         self.kid.curFrame = 23;
@@ -709,7 +738,7 @@ const circleOne = {
       // BALLOON
       self.balloon = game.add.image(
         self.balloonX,
-        y0 - 295,
+        validPath.y0 - 295,
         'balloon',
         1.5,
         0.5
@@ -719,7 +748,7 @@ const circleOne = {
 
       self.basket = game.add.image(
         self.balloonX,
-        y0 - 95,
+        validPath.y0 - 95,
         'balloon_basket',
         1.5
       );
@@ -746,7 +775,7 @@ const circleOne = {
           for (let i in self.circles.list) {
             if (i <= cur.index) {
               self.circles.list[i].alpha = 1; // Keep selected circle
-              self.fractionIndex = cur.index;
+              self.control.fractionIndex = cur.index;
             } else {
               self.circles.list[i].alpha = 0; // Hide unselected circle
               self.kid.y += self.circles.diameter; // Lower kid to selected circle

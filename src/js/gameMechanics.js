@@ -671,7 +671,7 @@ const game = {
 
             angleStart: 0,
             angleEnd: 2 * Math.PI,
-            anticlockwise: game.add.default.anticlockwise,
+            counterclockwise: game.add.default.counterclockwise,
 
             lineColor: lineColor || game.add.default.lineColor,
             lineWidth: 0,
@@ -708,7 +708,7 @@ const game = {
        * @param {number} diameter arc diameter
        * @param {number} angleStart angle to start the arc
        * @param {number} angleEnd angle to end the arc
-       * @param {undefined|boolean} anticlockwise if true, arc is created anticlockwise (default = false)
+       * @param {undefined|boolean} counterclockwise if true, arc is created counterclockwise (default = false)
        * @param {undefined|string} lineColor stroke color (default = black)
        * @param {undefined|number} lineWidth stroke width (default = 1px)
        * @param {undefined|string} fillColor fill color (default = no fill)
@@ -722,7 +722,7 @@ const game = {
         diameter,
         angleStart,
         angleEnd,
-        anticlockwise,
+        counterclockwise,
         lineColor,
         lineWidth,
         fillColor,
@@ -761,7 +761,8 @@ const game = {
 
             angleStart: angleStart || 0,
             angleEnd: angleEnd || 2 * Math.PI,
-            anticlockwise: anticlockwise || game.add.default.anticlockwise,
+            counterclockwise:
+              counterclockwise || game.add.default.counterclockwise,
 
             lineColor: lineColor || game.add.default.lineColor,
             lineWidth: 0,
@@ -820,7 +821,7 @@ const game = {
       fillColor: 0, // No fill
       // Used in: circle.
       diameter: 50,
-      anticlockwise: false,
+      counterclockwise: false,
     },
   },
 
@@ -1013,7 +1014,7 @@ const game = {
           (cur.diameter / 2) * cur.scale,
           cur.angleStart,
           cur.angleEnd,
-          cur.anticlockwise
+          cur.counterclockwise
         );
         if (cur.angleEnd != 2 * Math.PI) context.lineTo(x, y);
         // End
@@ -1100,6 +1101,9 @@ const game = {
      */
     degreeToRad: function (degree) {
       return (degree * Math.PI) / 180;
+    },
+    getRadiusFromCircunference: function (circunference) {
+      return circunference / (2 * Math.PI);
     },
     /**
      * Returns distance from the center of an icon to mouse/pointer (radius).

@@ -7,7 +7,7 @@ const debugState = {
   customMenu: {
     status: true,
     getData: () => {
-      return { mode: 'a', operation: 'minus', difficulty: 5, label: true };
+      return { mode: 'a', operation: 'minus', difficulty: 2, label: true };
     },
   },
   map: { status: false },

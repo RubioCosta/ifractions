@@ -229,7 +229,7 @@ const gameList = [
               0.75
             );
           }
-          char.rotate = -30; // 25 anticlock
+          char.rotate = -30; // 25 counterclockwise
           char.anchor(0.25, 0.5);
           return char;
         },
@@ -536,7 +536,7 @@ const gameList = [
   //             0.75
   //           );
   //         }
-  //         char.rotate = -30; // 25 anticlock
+  //         char.rotate = -30; // 25 counterclockwise
   //         return char;
   //       },
   //       startBuilding: () => {
