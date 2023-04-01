@@ -1,8 +1,8 @@
 audio=AUDIO
 aux_rectangle=Auxiliar Rectangles
 circle=Circles
-circleOne_introText1=Where should the balloon be placed so the boy
-circleOne_introText2=can get to it?
+circleOne_intro1=Where should the balloon be placed so the boy
+circleOne_intro2=can get to it?
 continue=Continue
 custom_game=CUSTOMIZE THE CURRENT GAME
 difficulties=Difficulties

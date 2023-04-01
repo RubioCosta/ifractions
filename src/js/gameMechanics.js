@@ -1141,6 +1141,21 @@ const game = {
       );
     },
     /**
+     * Checks if 2 images overlap
+     *
+     * @param {object} imageA image 1
+     * @param {object} imageB image 2
+     *
+     * @returns {boolean} true if there is overlap
+     */
+    isOverlap: function (imageA, imageB) {
+      const xA = imageA.x;
+      const xB = imageB.x;
+
+      // Consider it comming from both sides
+      return !(Math.abs(xA - xB) > 14);
+    },
+    /**
      * Get mouse position coordinates
      *
      * @param {object} mouseEvent
