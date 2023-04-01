@@ -420,7 +420,7 @@ const squareOne = {
       if (audioStatus) game.audio.popSound.play();
 
       // Hide labels
-      if (fractionLabel) {
+      if (showFractions) {
         self.stck.labels.forEach((cur) => {
           cur.forEach((cur) => {
             cur.alpha = 0;
@@ -489,7 +489,7 @@ const squareOne = {
       self.stck.blocks.push(block);
 
       // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
-      if (fractionLabel) {
+      if (showFractions) {
         const x = self.startX + (curBlockWidth + 15) * self.direc_level;
         const y = self.defaultBlockHeight - lineSize;
 

@@ -95,7 +95,7 @@ let gameDifficulty;
  * Turns displaying the fraction labels on levels ON/OFF
  * @type {boolean}
  */
-let fractionLabel = true;
+let showFractions = true;
 
 /**
  * When true, the character can move to next position in the map

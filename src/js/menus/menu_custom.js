@@ -78,7 +78,7 @@ const customMenuState = {
         gameMode = mode;
         gameOperation = operation;
         gameDifficulty = difficulty || 1;
-        fractionLabel = label || true;
+        showFractions = label || true;
 
         curMapPosition = 0; // Map position
         canGoToNextMapPosition = true; // Move no next point
@@ -114,10 +114,10 @@ const customMenuState = {
       case 'selectionBox':
         if (icon.curFrame == 0) {
           icon.curFrame = 1;
-          fractionLabel = true;
+          showFractions = true;
         } else {
           icon.curFrame = 0;
-          fractionLabel = false;
+          showFractions = false;
         }
         game.render.all();
         break;
@@ -132,7 +132,7 @@ const customMenuState = {
               '\nGame Difficulty: ' +
               gameDifficulty +
               '\nDisplay Fraction Labels: ' +
-              fractionLabel +
+              showFractions +
               '\n------------------------------'
           );
         }
@@ -301,7 +301,7 @@ const customMenuState = {
 
   renderCheckBox: function (x, y, offsetW, offsetH) {
     y += 40;
-    const frame = fractionLabel ? 1 : 0;
+    const frame = showFractions ? 1 : 0;
 
     const selectionBox = game.add.sprite(
       x + 5 * offsetW,

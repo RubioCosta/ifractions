@@ -179,7 +179,7 @@ const squareTwo = {
       this.a.blocks.push(block);
 
       // Auxiliar blocks
-      const alpha = fractionLabel ? 0.1 : 0;
+      const alpha = showFractions ? 0.1 : 0;
 
       const yAux = yA + figureHeight + 10; // On the bottom of (a)
       const auxBlock = game.add.geom.rect(
@@ -247,7 +247,7 @@ const squareTwo = {
       this.b.blocks.push(block);
 
       // Auxiliar blocks
-      const alpha = fractionLabel ? 0.1 : 0;
+      const alpha = showFractions ? 0.1 : 0;
       const yAux = yB + figureHeight + 10; // On the bottom of (b)
       const auxBlock = game.add.geom.rect(
         x,

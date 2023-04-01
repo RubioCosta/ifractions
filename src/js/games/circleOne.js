@@ -154,12 +154,23 @@ const circleOne = {
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 
+    this.introText = [];
     // Text
-    game.add.text(
-      context.canvas.width / 2,
-      200,
-      'Onde o balão deve ficar para que o menino consiga chegar até ele?',
-      textStyles.h1_
+    this.introText.push(
+      game.add.text(
+        context.canvas.width / 2,
+        170,
+        game.lang.circleOne_introText1,
+        textStyles.h1_
+      )
+    );
+    this.introText.push(
+      game.add.text(
+        context.canvas.width / 2,
+        220,
+        game.lang.circleOne_introText2,
+        textStyles.h1_
+      )
     );
 
     if (!this.restart) {
@@ -456,7 +467,7 @@ const circleOne = {
         game.add.text(
           validPath.x0 +
             i * validPath.distanceBetweenPoints * directionModifier,
-          validPath.y0 + 55,
+          validPath.y0 + 60,
           i * directionModifier,
           {
             ...textStyles.h2_,
@@ -619,7 +630,7 @@ const circleOne = {
           ];
         }
 
-        if (fractionLabel) {
+        if (showFractions) {
           for (let cur in curFractionItems) {
             curCircleInfo.label.push(
               game.add.text(
@@ -794,7 +805,7 @@ const circleOne = {
         if (audioStatus) game.audio.popSound.play();
 
         // Hide fractions
-        if (fractionLabel) {
+        if (showFractions) {
           self.circles.list.forEach((circle) => {
             circle.info.label.forEach((labelPart) => {
               labelPart.alpha = 0;
@@ -804,6 +815,9 @@ const circleOne = {
 
         // Hide solution pointer
         if (self.help != undefined) self.help.alpha = 0;
+
+        self.introText[0].alpha = 0;
+        self.introText[1].alpha = 0;
 
         self.balloon.alpha = 1;
         self.walkedPath.alpha = 1;

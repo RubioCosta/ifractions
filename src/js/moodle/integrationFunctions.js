@@ -50,8 +50,8 @@ function getAnswer() {
       gameOperation +
       '\ngameDifficulty:' +
       gameDifficulty +
-      '\nfractionLabel:' +
-      fractionLabel +
+      '\nshowFractions:' +
+      showFractions +
       '\nresults:';
     for (let i = 0; i < moodleVar.hits.length; i++) {
       str +=
@@ -85,8 +85,8 @@ function getAnswer() {
       gameOperation +
       '\ngameDifficulty:' +
       gameDifficulty +
-      '\nfractionLabel:' +
-      fractionLabel;
+      '\nshowFractions:' +
+      showFractions;
   }
 
   return str;
@@ -241,7 +241,7 @@ const updateGlobalVariables = function (infoGame, infoResults) {
   gameMode = infoGame['gameMode'];
   gameOperation = infoGame['gameOperation'];
   gameDifficulty = parseInt(infoGame['gameDifficulty']);
-  fractionLabel = infoGame['fractionLabel'];
+  showFractions = infoGame['showFractions'];
   // Update default values
   curMapPosition = 0;
   canGoToNextMapPosition = true;
