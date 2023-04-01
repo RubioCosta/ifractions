@@ -91,7 +91,7 @@ const circleOne = {
     this.control = {
       checkAnswer: false, // Check kid inside ballon's basket
       hasClicked: false, // Air ballon positioned
-      result: false, // Game is correct
+      isCorrect: false, // Game is correct
       correctX: validPath.x0, // Ending position, is accumulative
       nextX: undefined,
       hasBaseDifficulty: false, // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
@@ -154,8 +154,8 @@ const circleOne = {
     this.help.anchor(0.5, 0);
     this.help.alpha = 0;
 
-    this.introText = [];
     // Text
+    this.introText = [];
     this.introText.push(
       game.add.text(
         context.canvas.width / 2,
@@ -172,6 +172,8 @@ const circleOne = {
         textStyles.h1_
       )
     );
+
+    self.utils.renderEndInfo();
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
@@ -263,7 +265,7 @@ const circleOne = {
       game.animation.stop(self.kid.animation[0]);
 
       if (self.utils.isOverlap(self.basket, self.kid)) {
-        self.control.result = true; // Answer is correct
+        self.control.isCorrect = true; // Answer is correct
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add
@@ -276,7 +278,7 @@ const circleOne = {
         completedLevels++;
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
-        self.control.result = false; // Answer is incorrect
+        self.control.isCorrect = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
         game.add
           .image(
@@ -287,12 +289,11 @@ const circleOne = {
           .anchor(0.5, 0.5);
       }
 
-      self.server.postScore();
+      self.fetch.postScore();
+      self.control.checkAnswer = false;
+      self.animation.counter = 0;
 
       self.animation.animateBalloon = true;
-      self.control.checkAnswer = false;
-
-      self.animation.counter = 0;
     }
 
     // Balloon flying animation
@@ -301,13 +302,13 @@ const circleOne = {
       self.balloon.y -= 2;
       self.basket.y -= 2;
 
-      if (self.control.result) self.kid.y -= 2;
+      if (self.control.isCorrect) self.kid.y -= 2;
 
-      if (self.animation.counter >= 140) {
-        if (self.control.result) canGoToNextMapPosition = true;
+      if (self.animation.counter >= 100) {
+        if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
 
-        game.state.start('map');
+        self.utils.showEndInfo();
       }
     }
 
@@ -346,6 +347,10 @@ const circleOne = {
         });
       }
 
+      if (game.math.isOverIcon(x, y, self.continueButton)) {
+        self.utils.endLevel();
+      }
+
       navigationIcons.onInputDown(x, y);
 
       game.render.all();
@@ -360,7 +365,7 @@ const circleOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
       let flag = false;
-
+      let overIcon = false;
       // GAME MODE A : balloon follow mouse
       if (gameMode == 'a' && !self.control.hasClicked) {
         if (
@@ -391,13 +396,28 @@ const circleOne = {
         if (!flag) self.utils.outCircleHandler();
       }
 
+      if (game.math.isOverIcon(x, y, self.continueButton)) {
+        overIcon = true;
+      }
+      if (overIcon) {
+        // If pointer is over icon
+        document.body.style.cursor = 'pointer';
+        self.continueButton.scale = self.continueButton.initialScale * 1.1;
+        self.continueText.style = textStyles.btnLg;
+      } else {
+        // If pointer is not over icon
+        self.continueButton.scale = self.continueButton.initialScale * 1;
+        self.continueText.style = textStyles.btn;
+        document.body.style.cursor = 'auto';
+      }
+
       navigationIcons.onInputOver(x, y);
 
       game.render.all();
     },
   },
 
-  server: {
+  fetch: {
     /**
      * Saves players data after level ends - to be sent to database <br>
      *
@@ -419,7 +439,7 @@ const circleOne = {
         '&line_posi=' +
         curMapPosition +
         '&line_resu=' +
-        self.control.result +
+        self.control.isCorrect +
         '&line_time=' +
         game.timer.elapsed +
         '&line_deta=' +
@@ -774,6 +794,58 @@ const circleOne = {
       self.basket.anchor(0.5, 0.5);
     },
 
+    renderEndInfo: function () {
+      // modal
+      self.modalBg = game.add.geom.rect(
+        0,
+        0,
+        context.canvas.width,
+        context.canvas.height,
+        undefined,
+        0,
+        colors.white,
+        0
+      );
+
+      // button
+      self.continueButton = game.add.geom.rect(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 200,
+        300,
+        100,
+        undefined,
+        0,
+        colors.green,
+        0
+      );
+      self.continueButton.anchor(0.5, 0.5);
+      // buttonText
+      self.continueText = game.add.text(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 16 + 200,
+        game.lang.continue,
+        textStyles.btn
+      );
+      self.continueText.alpha = 0;
+    },
+
+    showEndInfo: function () {
+      let color;
+      //let text;
+      if (self.control.isCorrect) {
+        color = colors.green;
+        //text = game.lang.continue;
+      } else {
+        color = colors.red;
+        //text = game.lang.retry;
+      }
+      self.modalBg.alpha = 0.25;
+      // self.continueText.name = text;
+      self.continueText.alpha = 1;
+      self.continueButton.fillColor = color;
+      self.continueButton.alpha = 1;
+    },
+
     /**
      * (in gameMode 'b') Function called when player clicked over a valid circle
      *
@@ -890,6 +962,10 @@ const circleOne = {
         }
         self.help.alpha = 0.7;
       }
+    },
+
+    endLevel: function () {
+      game.state.start('map');
     },
   },
 };

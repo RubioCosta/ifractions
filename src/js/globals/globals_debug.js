@@ -1,13 +1,13 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { status: true, lang: 'fr_FR' },
+  lang: { status: true, lang: 'en_US' },
   name: { status: true, name: 'Username' },
   menu: { status: true, id: 1 },
   customMenu: {
     status: true,
     getData: () => {
-      return { mode: 'a', operation: 'mixed', difficulty: 3, label: true };
+      return { mode: 'a', operation: 'plus', difficulty: 1, label: true };
     },
   },
   map: { status: true },
