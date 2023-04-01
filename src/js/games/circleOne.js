@@ -150,9 +150,7 @@ const circleOne = {
     this.utils.renderCharacters(validPath);
 
     // Help pointer
-    this.help = game.add.image(0, 0, 'pointer', 0.5);
-    this.help.anchor(0.5, 0);
-    this.help.alpha = 0;
+    this.help = game.add.image(0, 0, 'pointer', 2, 0);
 
     // Text
     this.introText = [];
@@ -342,7 +340,7 @@ const circleOne = {
               y,
               circle.yWithAnchor
             ) <=
-            (cur.diameter / 2) * circle.scale;
+            (circle.diameter / 2) * circle.scale;
           if (valid) self.utils.clickHandler(circle);
         });
       }
@@ -847,6 +845,24 @@ const circleOne = {
     },
 
     /**
+     * Show correct answer
+     */
+    showAnswer: function () {
+      if (!self.control.hasClicked) {
+        // On gameMode (a)
+        if (gameMode == 'a') {
+          self.help.x = self.control.correctX - 20;
+          self.help.y = self.road.y;
+          // On gameMode (b)
+        } else {
+          self.help.x = self.circles.list[self.control.endIndex - 1].x;
+          self.help.y = self.circles.list[self.control.endIndex - 1].y; // -            self.circles.diameter / 2;
+        }
+        self.help.alpha = 0.7;
+      }
+    },
+
+    /**
      * (in gameMode 'b') Function called when player clicked over a valid circle
      *
      * @param {number|object} cur clicked circle
@@ -942,26 +958,6 @@ const circleOne = {
       // Consider it comming from both sides
       if (Math.abs(xA - xB) > 14) return false;
       else return true;
-    },
-
-    /**
-     * Show correct answer
-     */
-    showAnswer: function () {
-      if (!self.control.hasClicked) {
-        // On gameMode (a)
-        if (gameMode == 'a') {
-          self.help.x = self.control.correctX;
-          self.help.y = 490;
-          // On gameMode (b)
-        } else {
-          self.help.x = self.circles.list[self.control.endIndex - 1].x;
-          self.help.y =
-            self.circles.list[self.control.endIndex - 1].y -
-            self.circles.diameter / 2;
-        }
-        self.help.alpha = 0.7;
-      }
     },
 
     endLevel: function () {

@@ -120,7 +120,7 @@ const navigationIcons = {
           case 'menu':
             navigationIcons.callState('menu');
             break;
-          case 'help':
+          case 'show_solution':
             navigationIcons.help();
             break;
           case 'language':
@@ -164,7 +164,7 @@ const navigationIcons = {
           case 'menu':
             navigationIcons.left_text.name = game.lang.nav_menu;
             break;
-          case 'help':
+          case 'show_solution':
             navigationIcons.left_text.name = game.lang.nav_help;
             break;
           case 'language':
