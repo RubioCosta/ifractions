@@ -5,8 +5,8 @@
 /** [GAME STATE]
  *
  * .....circleOne.... = gameName
- * ....../....\......
- * .....a......a..... = gameMode
+ * ....../...\.......
+ * .....a.....b...... = gameMode
  * .......\./........
  * ........|.........
  * ....../.|.\.......
@@ -44,27 +44,23 @@ const circleOne = {
    */
   control: undefined,
   animation: undefined,
+  road: undefined,
+
   circles: undefined,
   kid: undefined,
   balloon: undefined,
   basket: undefined,
-  road: undefined,
   walkedPath: undefined,
+
   help: undefined,
   message: undefined,
   continue: undefined,
-  restart: undefined,
 
   create: function () {
     this.road = {
       x: 150,
       y: context.canvas.height - game.image['floor_grass'].width * 1.5,
       width: 1620,
-    };
-    const validPath = {
-      x0: undefined,
-      y0: undefined,
-      distanceBetweenPoints: undefined,
     };
     this.continue = {
       modal: undefined,
@@ -73,36 +69,40 @@ const circleOne = {
     };
 
     const pointWidth = (game.sprite['map_place'].width / 2) * 0.45;
-    validPath.distanceBetweenPoints =
+    const distanceBetweenPoints =
       (context.canvas.width - this.road.x * 2 - pointWidth) / 5; // Distance between road points
-    validPath.y0 = this.road.y + 20;
-    validPath.x0 =
+    const y0 = this.road.y + 20;
+    const x0 =
       gameOperation == 'minus'
-        ? this.road.x + 5 * validPath.distanceBetweenPoints - pointWidth / 2
+        ? this.road.x + 5 * distanceBetweenPoints - pointWidth / 2
         : this.road.x + pointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
 
     const diameter =
-      game.math.getRadiusFromCircunference(validPath.distanceBetweenPoints) * 2; // (Fixed) diameter for circles
+      game.math.getRadiusFromCircunference(distanceBetweenPoints) * 2;
+
     this.circles = {
-      diameter: diameter,
+      diameter: diameter, // (Fixed) Circles Diameter
       cur: 0, // Current circle index
-      list: [], // Circles objects of current level
+      list: [], // Circle objects
     };
 
     this.control = {
+      correctX: x0, // Correct position (accumulative)
+      nextX: undefined, // Next point position
+      hasBaseDifficulty: false, // Informs if level is too easy (has at least one '1/difficulty' fraction)
+      divisorsList: '', // used in postScore (Accumulative)
+      hasClicked: false, // Checks if user has clicked
       checkAnswer: false, // Check kid inside ballon's basket
-      hasClicked: false, // Air ballon positioned
-      isCorrect: false, // Game is correct
-      correctX: validPath.x0, // Ending position, is accumulative
-      nextX: undefined,
-      hasBaseDifficulty: false, // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
-      divisorsList: '', // accumulative
+      isCorrect: false, // Informs answer is correct
+      showEndInfo: false,
       // mode 'b' exclusive
       endIndex: undefined,
       fractionIndex: -1, // Index of clicked circle (game (b))
       numberOfPlusFractions: undefined,
     };
 
+    const walkOffsetX = 2;
+    const walksPerDistanceBetweenPoints = distanceBetweenPoints / walkOffsetX;
     this.animation = {
       list: {
         left: undefined,
@@ -112,12 +112,9 @@ const circleOne = {
       animateKid: false,
       animateBalloon: false,
       counter: undefined,
-      walkOffsetX: 2,
-      angleOffset: undefined,
+      walkOffsetX,
+      angleOffset: 360 / walksPerDistanceBetweenPoints,
     };
-    const walksPerDistanceBetweenPoints =
-      validPath.distanceBetweenPoints / this.animation.walkOffsetX;
-    this.animation.angleOffset = 360 / walksPerDistanceBetweenPoints;
 
     renderBackground('farmRoad');
 
@@ -145,8 +142,8 @@ const circleOne = {
       );
     }
 
+    const validPath = { x0, y0, distanceBetweenPoints };
     this.utils.renderRoad(validPath);
-
     const [restart, balloonX] = this.utils.renderCircles(validPath);
     this.restart = restart;
 
@@ -164,7 +161,7 @@ const circleOne = {
    * Game loop
    */
   update: function () {
-    // Start animation
+    // Start kid animation
     if (self.animation.animateKid) {
       self.utils.animateKid();
     }
@@ -234,8 +231,9 @@ const circleOne = {
       self.walkedPath.alpha = 0;
     },
     renderCircles: function (validPath) {
-      // Balloon place
       let restart = false;
+      let balloonX = context.canvas.width / 2;
+
       const directionModifier = gameOperation == 'minus' ? -1 : 1;
       const fractionX =
         validPath.x0 + self.circles.diameter * directionModifier;
@@ -243,7 +241,6 @@ const circleOne = {
         ...textStyles.h3_,
         font: 'bold ' + textStyles.h2_.font,
       };
-      let balloonX = context.canvas.width / 2;
 
       // Number of circles
       const max =
@@ -648,7 +645,7 @@ const circleOne = {
       game.animation.stop(self.kid.animation[0]);
 
       if (game.math.isOverlap(self.basket, self.kid)) {
-        self.control.isCorrect = true; // Answer is correct
+        self.control.isCorrect = true;
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add
@@ -689,6 +686,7 @@ const circleOne = {
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
 
+        self.control.showEndInfo = true;
         self.utils.showEndInfo();
       }
     },
@@ -824,15 +822,15 @@ const circleOne = {
 
       // GAME MODE A : click road
       if (gameMode == 'a') {
-        const valid =
+        const isValid =
           y > 150 && x >= self.road.x && x <= self.road.x + self.road.width;
-        if (valid) self.utils.clickHandler(x);
+        if (isValid) self.utils.clickHandler(x);
       }
 
       // GAME MODE B : click circle
       if (gameMode == 'b') {
         self.circles.list.forEach((circle) => {
-          const valid =
+          const isValid =
             game.math.distanceToPointer(
               x,
               circle.xWithAnchor,
@@ -840,12 +838,15 @@ const circleOne = {
               circle.yWithAnchor
             ) <=
             (circle.diameter / 2) * circle.scale;
-          if (valid) self.utils.clickHandler(circle);
+          if (isValid) self.utils.clickHandler(circle);
         });
       }
 
-      if (game.math.isOverIcon(x, y, self.continue.button)) {
-        self.utils.endLevel();
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          self.utils.endLevel();
+        }
       }
 
       navigationIcons.onInputDown(x, y);
@@ -861,8 +862,8 @@ const circleOne = {
     onInputOver: function (mouseEvent) {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
-      let flag = false;
-      let overIcon = false;
+      let isOverCircle = false;
+
       // GAME MODE A : balloon follow mouse
       if (gameMode == 'a' && !self.control.hasClicked) {
         if (
@@ -877,7 +878,7 @@ const circleOne = {
       // GAME MODE B : hover circle
       if (gameMode == 'b' && !self.control.hasClicked) {
         self.circles.list.forEach((circle) => {
-          const valid =
+          const isValid =
             game.math.distanceToPointer(
               x,
               circle.xWithAnchor,
@@ -885,27 +886,27 @@ const circleOne = {
               circle.yWithAnchor
             ) <=
             (circle.diameter / 2) * circle.scale;
-          if (valid) {
+          if (isValid) {
             self.utils.overCircleHandler(circle);
-            flag = true;
+            isOverCircle = true;
           }
         });
-        if (!flag) self.utils.outCircleHandler();
+        if (!isOverCircle) self.utils.outCircleHandler();
       }
 
-      if (game.math.isOverIcon(x, y, self.continue.button)) {
-        overIcon = true;
-      }
-      if (overIcon) {
-        // If pointer is over icon
-        document.body.style.cursor = 'pointer';
-        self.continue.button.scale = self.continue.button.initialScale * 1.1;
-        self.continue.text.style = textStyles.btnLg;
-      } else {
-        // If pointer is not over icon
-        self.continue.button.scale = self.continue.button.initialScale * 1;
-        self.continue.text.style = textStyles.btn;
-        document.body.style.cursor = 'auto';
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          // If pointer is over icon
+          document.body.style.cursor = 'pointer';
+          self.continue.button.scale = self.continue.button.initialScale * 1.1;
+          self.continue.text.style = textStyles.btnLg;
+        } else {
+          // If pointer is not over icon
+          document.body.style.cursor = 'auto';
+          self.continue.button.scale = self.continue.button.initialScale * 1;
+          self.continue.text.style = textStyles.btn;
+        }
       }
 
       navigationIcons.onInputOver(x, y);
