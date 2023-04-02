@@ -65,6 +65,7 @@ const game = {
       game.loadedCur = 0; // Clears last state's number of loaded media
       game.loadedMax = 0; // Clears last state's expected loaded media
       game.state.name = name; // Updates state name
+      navigation.list = [];
       self = game.state.list[name]; // Updates self to current state
       if (self.preload) {
         game.render.clear(); // Clears render queue

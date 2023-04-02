@@ -71,25 +71,10 @@ const squareTwo = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.add(
-        false,
-        false,
-        false, // Left buttons
-        true,
-        false, // Right buttons
-        false,
-        false
-      );
+      navigation.add.right(['audio']);
     } else {
-      navigationIcons.add(
-        true,
-        true,
-        false, // Left buttons
-        true,
-        false, // Right buttons
-        'customMenu',
-        false
-      );
+      navigation.add.left(['back', 'menu'], 'customMenu');
+      navigation.add.right(['audio']);
     }
 
     // Add kid
@@ -520,7 +505,7 @@ const squareTwo = {
     });
 
     // Click navigation icons
-    navigationIcons.onInputDown(x, y);
+    navigation.onInputDown(x, y);
 
     game.render.all();
   },
@@ -557,7 +542,7 @@ const squareTwo = {
     if (!flagA && !flagB) document.body.style.cursor = 'auto';
 
     // Mouse over navigation icons : show name
-    navigationIcons.onInputOver(x, y);
+    navigation.onInputOver(x, y);
 
     game.render.all();
   },

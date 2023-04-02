@@ -141,9 +141,9 @@ const loadLangState = {
     // Make sure to only ask for player name on the first time oppening the game
     if (this.firstTime == undefined) {
       this.firstTime = false;
-      game.state.start('name'); // First time opening ifractions ('language' >> 'name' >> 'menu')
+      game.state.start('name'); // First time opening ifractions ('lang' >> 'name' >> 'menu')
     } else {
-      game.state.start('menu'); // If changing language during the game ('language' >> >> 'menu')
+      game.state.start('menu'); // If changing language during the game ('lang' >> >> 'menu')
     }
   },
 };

@@ -180,25 +180,8 @@ const mapState = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.add(
-        false,
-        false,
-        false, // Left icons
-        false,
-        false, // Right icons
-        false,
-        false
-      );
     } else {
-      navigationIcons.add(
-        true,
-        true,
-        false, // Left icons
-        false,
-        false, // Right icons
-        'customMenu',
-        false
-      );
+      navigation.add.left(['back', 'menu'], 'customMenu');
     }
 
     game.event.add('click', this.onInputDown);
@@ -271,7 +254,7 @@ const mapState = {
       self.loadGame();
     }
 
-    navigationIcons.onInputDown(x, y);
+    navigation.onInputDown(x, y);
   },
 
   /**
@@ -301,7 +284,7 @@ const mapState = {
       document.body.style.cursor = 'auto';
     }
 
-    navigationIcons.onInputOver(x, y);
+    navigation.onInputOver(x, y);
   },
 
   renderProgressBar: function () {

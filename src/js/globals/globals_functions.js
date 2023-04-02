@@ -1,139 +1,97 @@
-/**
- * Manages navigation icons on the top of the screen
- * @namespace
- */
-const navigationIcons = {
-  /**
-   * Add navigation icons.<br>
-   *  * The icons on the left are ordered from left to right. <br>
-   *  * The icons on the right are ordered from right to left.
-   *
-   * @param {boolean} leftIcon0 1st left icon (back)
-   * @param {boolean} leftIcon1 2nd left icon (main menu)
-   * @param {boolean} leftIcon2 3rd left icon (solve game)
-   * @param {boolean} rightIcon0 1st right icon (audio)
-   * @param {boolean} rightIcon1 2nd right icon (lang)
-   * @param {undefined|string} state state to be called by the 'back' button (must exist if param 'leftIcon0' is true)
-   * @param {undefined|function} help function in the current game state that display correct answer
-   */
-  add: function (
-    leftIcon0,
-    leftIcon1,
-    leftIcon2,
-    rightIcon0,
-    rightIcon1,
-    state,
-    help
-  ) {
-    const iconSize = 75;
-    let xLeft = 10;
-    let xRight = context.canvas.width - iconSize - 10;
+const navigation = {
+  list: [],
+  prevState: undefined,
+  audioIcon: undefined,
+  labelLeft: undefined,
+  labelRight: undefined,
 
-    this.iconsList = [];
+  add: {
+    left: (icons, prevState) => {
+      navigation.prevState = prevState;
+      const iconSize = 75;
+      let x = 10;
+      navigation.labelLeft = game.add.text(x, 110, '', textStyles.p_);
+      navigation.labelLeft.align = 'left';
+      icons.forEach((icon) => {
+        if (icon === 'back') {
+          if (!prevState) {
+            console.error(
+              "Game error: You tried to add a 'back' icon without the 'state' parameter."
+            );
+            return;
+          } else {
+            navigation.prevState = prevState;
+          }
+        }
+        if (icon === 'show_answer' && !self.utils.showAnswer) {
+          console.error(
+            "Game error: You tried to add a 'show_answer' icon without a 'showAnswer()' function o the game state."
+          );
+          return;
+        }
+        const asset = game.add.image(x, 10, icon, 1.5);
+        navigation.list.push(asset);
+        x += iconSize;
+      });
+    },
 
-    // 'Descriptive labels' for the navigation icons
-    this.left_text = game.add.text(xLeft, 110, '', textStyles.p_);
-    this.left_text.align = 'left';
+    right: (icons) => {
+      const iconSize = 75;
+      let x = context.canvas.width - iconSize - 10;
+      navigation.labelRight = game.add.text(x + 60, 110, '', textStyles.p_);
+      navigation.labelRight.align = 'right';
+      icons.forEach((icon) => {
+        let asset;
+        if (icon === 'audio') {
+          asset = game.add.sprite(x, 10, icon, 1, 1.5);
+          asset.curFrame = audioStatus ? 0 : 1;
+          navigation.audioIcon = asset;
+        }
 
-    this.right_text = game.add.text(xRight + 60, 110, '', textStyles.p_);
-    this.right_text.align = 'right';
+        if (icon === 'lang') {
+          asset = game.add.image(x, 10, 'lang', 1.5);
+        }
 
-    // Left icons
-
-    if (leftIcon0) {
-      // Return to previous screen
-      if (!state) {
-        console.error(
-          "Game error: You tried to add a 'back' icon without the 'state' parameter."
-        );
-      } else {
-        this.state = state;
-        this.iconsList.push(game.add.image(xLeft - 5, 10, 'back', 1.5));
-        xLeft += iconSize;
-      }
-    }
-
-    if (leftIcon1) {
-      // Return to main menu screen
-      this.iconsList.push(game.add.image(xLeft, 10, 'menu', 1.5));
-      xLeft += iconSize;
-    }
-
-    if (leftIcon2) {
-      // Shows solution to the game
-      if (!help) {
-        console.error(
-          "Game error: You tried to add a 'game solution' icon without the 'help' parameter."
-        );
-      } else {
-        this.help = help;
-        this.iconsList.push(game.add.image(xLeft, 10, 'show_solution', 1.5));
-        xLeft += iconSize;
-      }
-    }
-
-    // Right icons
-
-    if (rightIcon0) {
-      // Turns game audio on/off
-      this.audioIcon = game.add.sprite(xRight, 10, 'audio', 1, 1.6);
-      this.audioIcon.curFrame = audioStatus ? 0 : 1;
-      this.audioIcon.anchor(0.3, 0);
-      this.iconsList.push(this.audioIcon);
-      xRight -= iconSize;
-    }
-
-    if (rightIcon1) {
-      // Return to select language screen
-      this.iconsList.push(game.add.image(xRight, 10, 'language', 1.5));
-      this.audioIcon.anchor(0, 0);
-      xRight -= iconSize;
-    }
+        navigation.list.push(asset);
+        x -= iconSize;
+      });
+    },
   },
 
-  /**
-   * When 'back' icon is clicked go to this state
-   *
-   * @param {string} state name of the next state
-   */
-  callState: function (state) {
+  changeState: (state) => {
     if (audioStatus) game.audio.popSound.play();
 
     game.event.clear(self);
     game.state.start(state);
   },
 
-  /**
-   * Called by mouse click event
-   *
-   * @param {number} x contains the mouse x coordinate
-   * @param {number} y contains the mouse y coordinate
-   */
-  onInputDown: function (x, y) {
-    navigationIcons.iconsList.forEach((cur) => {
-      if (game.math.isOverIcon(x, y, cur)) {
-        const name = cur.name;
-        switch (name) {
-          case 'back':
-            navigationIcons.callState(navigationIcons.state);
-            break;
+  onInputDown: (x, y) => {
+    navigation.list.forEach((icon) => {
+      if (game.math.isOverIcon(x, y, icon)) {
+        const iconName = icon.name;
+        switch (iconName) {
           case 'menu':
-            navigationIcons.callState('menu');
+            navigation.changeState('menu');
             break;
-          case 'show_solution':
-            navigationIcons.help();
+          case 'lang':
+            navigation.changeState('lang');
             break;
-          case 'language':
-            navigationIcons.callState('lang');
+          case 'back':
+            const state = navigation.prevState;
+            navigation.changeState(state);
+            break;
+          case 'show_answer':
+            if (audioStatus) game.audio.popSound.play();
+            self.utils.showAnswer();
             break;
           case 'audio':
             if (audioStatus) {
               audioStatus = false;
-              navigationIcons.audioIcon.curFrame = 1;
+              navigation.audioIcon.curFrame = 1;
             } else {
               audioStatus = true;
-              if (audioStatus) game.audio.popSound.play();
-              navigationIcons.audioIcon.curFrame = 0;
+              navigation.audioIcon.curFrame = 0;
+              game.audio.popSound.play();
             }
             game.render.all();
             break;
@@ -144,42 +102,34 @@ const navigationIcons = {
     });
   },
 
-  /**
-   * Called by mouse move event
-   *
-   * @param {number} x contains the mouse x coordinate
-   * @param {number} y contains the mouse y coordinate
-   */
-  onInputOver: function (x, y) {
-    let flag = false;
-
-    navigationIcons.iconsList.forEach((cur) => {
-      if (game.math.isOverIcon(x, y, cur)) {
-        flag = true;
-        let name = cur.name;
-        switch (name) {
-          case 'back':
-            navigationIcons.left_text.name = game.lang.nav_back;
-            break;
+  onInputOver: (x, y) => {
+    let isOverIcon = false;
+    navigation.list.forEach((icon) => {
+      if (game.math.isOverIcon(x, y, icon)) {
+        isOverIcon = true;
+        const iconName = icon.name;
+        switch (iconName) {
           case 'menu':
-            navigationIcons.left_text.name = game.lang.nav_menu;
+            navigation.labelLeft.name = game.lang.nav_menu;
             break;
-          case 'show_solution':
-            navigationIcons.left_text.name = game.lang.nav_help;
+          case 'lang':
+            navigation.labelRight.name = game.lang.nav_lang;
             break;
-          case 'language':
-            navigationIcons.right_text.name = game.lang.nav_lang;
+          case 'back':
+            navigation.labelLeft.name = game.lang.nav_back;
+            break;
+          case 'show_answer':
+            navigation.labelLeft.name = game.lang.nav_help;
             break;
           case 'audio':
-            navigationIcons.right_text.name = game.lang.audio;
+            navigation.labelRight.name = game.lang.audio;
             break;
         }
       }
     });
-
-    if (!flag) {
-      navigationIcons.left_text.name = '';
-      navigationIcons.right_text.name = '';
+    if (!isOverIcon) {
+      if (navigation.labelLeft) navigation.labelLeft.name = '';
+      if (navigation.labelRight) navigation.labelRight.name = '';
     } else {
       document.body.style.cursor = 'pointer';
     }

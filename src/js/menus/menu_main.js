@@ -45,7 +45,7 @@ const menuState = {
       );
 
       // Loads navigation icons
-      navigationIcons.add(false, false, false, true, true, false, false);
+      navigation.add.right(['audio', 'lang']);
 
       this.menuIcons = [];
 
@@ -205,7 +205,7 @@ const menuState = {
     }
 
     // Check navigation icons
-    navigationIcons.onInputDown(x, y);
+    navigation.onInputDown(x, y);
 
     game.render.all();
   },
@@ -255,7 +255,7 @@ const menuState = {
     }
 
     // Check navigation icons
-    navigationIcons.onInputOver(x, y);
+    navigation.onInputOver(x, y);
 
     game.render.all();
   },

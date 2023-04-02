@@ -41,7 +41,8 @@ const customMenuState = {
       });
 
       // Loads navigation icons
-      navigationIcons.add(true, false, false, true, true, 'menu', false);
+      navigation.add.left(['back'], 'menu');
+      navigation.add.right(['audio', 'lang']);
 
       const curGame = gameList[gameId];
 
@@ -185,7 +186,7 @@ const customMenuState = {
       self.load(self.menuIcons[overIcon]);
     } else document.body.style.cursor = 'auto';
 
-    navigationIcons.onInputDown(x, y);
+    navigation.onInputDown(x, y);
 
     game.render.all();
   },
@@ -235,7 +236,7 @@ const customMenuState = {
     }
 
     // Check navigation icons
-    navigationIcons.onInputOver(x, y);
+    navigation.onInputOver(x, y);
 
     game.render.all();
   },

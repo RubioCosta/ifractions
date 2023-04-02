@@ -121,25 +121,10 @@ const circleOne = {
     // Calls function that loads navigation icons
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.add(
-        false,
-        false,
-        false, // Left buttons
-        true,
-        false, // Right buttons
-        false,
-        false
-      );
+      navigation.add.right(['audio']);
     } else {
-      navigationIcons.add(
-        true,
-        true,
-        true, // Left buttons
-        true,
-        false, // Right buttons
-        'customMenu',
-        this.utils.showAnswer
-      );
+      navigation.add.left(['back', 'menu', 'show_answer'], 'customMenu');
+      navigation.add.right(['audio']);
     }
 
     const validPath = { x0, y0, distanceBetweenPoints };
@@ -849,7 +834,7 @@ const circleOne = {
         }
       }
 
-      navigationIcons.onInputDown(x, y);
+      navigation.onInputDown(x, y);
 
       game.render.all();
     },
@@ -909,7 +894,7 @@ const circleOne = {
         }
       }
 
-      navigationIcons.onInputOver(x, y);
+      navigation.onInputOver(x, y);
 
       game.render.all();
     },

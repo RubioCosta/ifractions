@@ -133,9 +133,9 @@ const url = {
       ['flag_US', baseUrl + 'flags/us.png'],
       // Navigation icons on the top of the page
       ['back', baseUrl + 'icons_navigation/back.png'],
-      ['show_solution', baseUrl + 'icons_navigation/show_solution.png'],
+      ['show_answer', baseUrl + 'icons_navigation/show_solution.png'],
       ['home', baseUrl + 'icons_navigation/home.png'],
-      ['language', baseUrl + 'icons_navigation/language.png'],
+      ['lang', baseUrl + 'icons_navigation/language.png'],
       ['menu', baseUrl + 'icons_navigation/menu.png'],
       // Interactive icons
       ['answer_correct', baseUrl + 'icons_interactive/answer_correct.png'],

@@ -68,25 +68,10 @@ const squareOne = {
 
     // FOR MOODLE
     if (moodle) {
-      navigationIcons.add(
-        false,
-        false,
-        false, // Left icons
-        true,
-        false, // Right icons
-        false,
-        false
-      );
+      navigation.add.right(['audio']);
     } else {
-      navigationIcons.add(
-        true,
-        true,
-        true, // Left icons
-        true,
-        false, // Right icons
-        'customMenu',
-        this.showAnswer
-      );
+      navigation.add.left(['back', 'menu', 'show_answer'], 'customMenu');
+      navigation.add.right(['audio']);
     }
 
     // TRACTOR
@@ -157,8 +142,8 @@ const squareOne = {
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
-      game.event.add('click', this.onInputDown);
-      game.event.add('mousemove', this.onInputOver);
+      game.event.add('click', this.events.onInputDown);
+      game.event.add('mousemove', this.events.onInputOver);
     }
   },
 
@@ -299,7 +284,7 @@ const squareOne = {
         if (audioStatus) game.audio.errorSound.play();
       }
 
-      self.postScore();
+      self.fetch.postScore();
 
       // AFTER CHECK ANSWER
       self.checkAnswer = false;
@@ -327,8 +312,145 @@ const squareOne = {
     game.render.all();
   },
 
+  events: {
+    /**
+     * Called by mouse click event
+     *
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
+    onInputDown: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
+
+      if (gameMode == 'a') {
+        self.floor.blocks.forEach((cur) => {
+          if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+        });
+      } else {
+        self.stck.blocks.forEach((cur) => {
+          if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
+        });
+      }
+
+      navigation.onInputDown(x, y);
+
+      game.render.all();
+    },
+
+    /**
+     * Called by mouse move event
+     *
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
+    onInputOver: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
+      let flagA = false;
+      let flagB = false;
+
+      if (gameMode == 'a') {
+        // Make arrow follow mouse
+        if (!self.hasClicked && !self.animateEnding) {
+          if (
+            game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8
+          ) {
+            self.arrow.x = x < 250 ? 250 : x; // Limits the arrow left position to 250
+          }
+        }
+
+        self.floor.blocks.forEach((cur) => {
+          if (game.math.isOverIcon(x, y, cur)) {
+            flagA = true;
+            self.overSquare(cur);
+          }
+        });
+
+        if (!flagA) self.outSquare('a');
+      }
+
+      if (gameMode == 'b') {
+        self.stck.blocks.forEach((cur) => {
+          if (game.math.isOverIcon(x, y, cur)) {
+            flagB = true;
+            self.overSquare(cur);
+          }
+        });
+
+        if (!flagB) self.outSquare('b');
+      }
+
+      navigation.onInputOver(x, y);
+
+      game.render.all();
+    },
+  },
+
+  fetch: {
+    /**
+     * Saves players data after level ends - to be sent to database <br>
+     *
+     * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
+     *
+     * @see /php/save.php
+     */
+    postScore: function () {
+      // Creates string that is going to be sent to db
+      const data =
+        '&line_game=' +
+        gameShape +
+        '&line_mode=' +
+        gameMode +
+        '&line_oper=' +
+        gameOperation +
+        '&line_leve=' +
+        gameDifficulty +
+        '&line_posi=' +
+        curMapPosition +
+        '&line_resu=' +
+        self.result +
+        '&line_time=' +
+        game.timer.elapsed +
+        '&line_deta=' +
+        'numBlocks:' +
+        self.stck.blocks.length +
+        ', valBlocks: ' +
+        self.divisorsList + // Ends in ','
+        ' blockIndex: ' +
+        self.stck.index +
+        ', floorIndex: ' +
+        self.floor.index;
+
+      // FOR MOODLE
+      sendToDatabase(data);
+    },
+  },
+
+  utils: {
+    /**
+     * Display correct answer
+     */
+    showAnswer: function () {
+      if (!self.hasClicked) {
+        // On gameMode (a)
+        if (gameMode == 'a') {
+          const aux = self.floor.blocks[0];
+          self.help.x =
+            self.floor.correctX - (aux.width / 2) * self.direc_level;
+          self.help.y = 501;
+          // On gameMode (b)
+        } else {
+          const aux = self.stck.blocks[self.stck.correctIndex];
+          self.help.x = aux.x + (aux.width / 2) * self.direc_level;
+          self.help.y = aux.y;
+        }
+
+        self.help.alpha = 0.7;
+      }
+    },
+  },
+
   /**
-   * Function called by self.onInputOver() when cursor is over a valid rectangle
+   * Function called by self.events.onInputOver() when cursor is over a valid rectangle
    *
    * @param {object} cur rectangle the cursor is over
    */
@@ -358,7 +480,7 @@ const squareOne = {
   },
 
   /**
-   * Function called by self.onInputOver() when cursos is out of a valid rectangle
+   * Function called by self.events.onInputOver() when cursos is out of a valid rectangle
    */
   outSquare: function () {
     if (!self.hasClicked) {
@@ -383,7 +505,7 @@ const squareOne = {
   },
 
   /**
-   * Function called by self.onInputDown() when player clicks on a valid rectangle.
+   * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
    */
   clickSquare: function () {
     if (!self.hasClicked && !self.animateEnding) {
@@ -651,133 +773,5 @@ const squareOne = {
         textStyles.h2_
       );
     }
-  },
-
-  /**
-   * Display correct answer
-   */
-  showAnswer: function () {
-    if (!self.hasClicked) {
-      // On gameMode (a)
-      if (gameMode == 'a') {
-        const aux = self.floor.blocks[0];
-        self.help.x = self.floor.correctX - (aux.width / 2) * self.direc_level;
-        self.help.y = 501;
-        // On gameMode (b)
-      } else {
-        const aux = self.stck.blocks[self.stck.correctIndex];
-        self.help.x = aux.x + (aux.width / 2) * self.direc_level;
-        self.help.y = aux.y;
-      }
-
-      self.help.alpha = 0.7;
-    }
-  },
-
-  /**
-   * Called by mouse click event
-   *
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  onInputDown: function (mouseEvent) {
-    const x = game.math.getMouse(mouseEvent).x;
-    const y = game.math.getMouse(mouseEvent).y;
-
-    if (gameMode == 'a') {
-      self.floor.blocks.forEach((cur) => {
-        if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
-      });
-    } else {
-      self.stck.blocks.forEach((cur) => {
-        if (game.math.isOverIcon(x, y, cur)) self.clickSquare(cur);
-      });
-    }
-
-    navigationIcons.onInputDown(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   *
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  onInputOver: function (mouseEvent) {
-    const x = game.math.getMouse(mouseEvent).x;
-    const y = game.math.getMouse(mouseEvent).y;
-    let flagA = false;
-    let flagB = false;
-
-    if (gameMode == 'a') {
-      // Make arrow follow mouse
-      if (!self.hasClicked && !self.animateEnding) {
-        if (game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8) {
-          self.arrow.x = x < 250 ? 250 : x; // Limits the arrow left position to 250
-        }
-      }
-
-      self.floor.blocks.forEach((cur) => {
-        if (game.math.isOverIcon(x, y, cur)) {
-          flagA = true;
-          self.overSquare(cur);
-        }
-      });
-
-      if (!flagA) self.outSquare('a');
-    }
-
-    if (gameMode == 'b') {
-      self.stck.blocks.forEach((cur) => {
-        if (game.math.isOverIcon(x, y, cur)) {
-          flagB = true;
-          self.overSquare(cur);
-        }
-      });
-
-      if (!flagB) self.outSquare('b');
-    }
-
-    navigationIcons.onInputOver(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Saves players data after level ends - to be sent to database <br>
-   *
-   * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
-   *
-   * @see /php/save.php
-   */
-  postScore: function () {
-    // Creates string that is going to be sent to db
-    const data =
-      '&line_game=' +
-      gameShape +
-      '&line_mode=' +
-      gameMode +
-      '&line_oper=' +
-      gameOperation +
-      '&line_leve=' +
-      gameDifficulty +
-      '&line_posi=' +
-      curMapPosition +
-      '&line_resu=' +
-      self.result +
-      '&line_time=' +
-      game.timer.elapsed +
-      '&line_deta=' +
-      'numBlocks:' +
-      self.stck.blocks.length +
-      ', valBlocks: ' +
-      self.divisorsList + // Ends in ','
-      ' blockIndex: ' +
-      self.stck.index +
-      ', floorIndex: ' +
-      self.floor.index;
-
-    // FOR MOODLE
-    sendToDatabase(data);
   },
 };
