@@ -38,8 +38,8 @@ const squareTwo = {
 
   blocks: undefined,
 
-  // help: undefined,
-  // message: undefined,
+  help: undefined,
+  message: undefined,
   // continue: undefined,
 
   /**
@@ -53,13 +53,17 @@ const squareTwo = {
       // hasClicked: false, // Checks if user has clicked
       // checkAnswer: false, // Check kid inside ballon's basket
       isCorrect: false, // Check if selected blocks are correct
-      // showEndInfo: false,
+      showEndInfo: false,
       // // mode 'b' exclusive
       // endIndex: undefined,
       // fractionIndex: -1, // Index of clicked circle (game (b))
       // numberOfPlusFractions: undefined,
     };
-
+    this.continue = {
+      modal: undefined,
+      button: undefined,
+      text: undefined,
+    };
     this.default = {
       width: 400 * 1.5,
       height: 50 * 1.5,
@@ -106,12 +110,11 @@ const squareTwo = {
     }
 
     // Add kid
-    self.utils.renderCharacters();
-
-    self.utils.renderBlockSetup();
+    this.utils.renderCharacters();
+    this.utils.renderBlockSetup();
+    this.utils.renderAuxiliarUI();
 
     game.timer.start(); // Set a timer for the current level (used in postScore)
-
     game.event.add('click', this.events.onInputDown);
     game.event.add('mousemove', this.events.onInputOver);
   },
@@ -195,7 +198,8 @@ const squareTwo = {
       self.delay++;
 
       if (self.delay >= 80) {
-        game.state.start('map');
+        self.control.showEndInfo = true;
+        self.utils.showEndInfo();
       }
     }
 
@@ -368,7 +372,77 @@ const squareTwo = {
       );
       self.kidAnimation.anchor(0.5, 0.7);
     },
+    renderAuxiliarUI: function () {
+      // Intro text
+      self.message = [];
+      self.message.push(
+        game.add.text(
+          context.canvas.width / 2,
+          170,
+          game.lang.squareTwo_intro1 || '...',
+          textStyles.h1_
+        )
+      );
+      self.message.push(
+        game.add.text(
+          context.canvas.width / 2,
+          220,
+          game.lang.squareTwo_intro2 || '...',
+          textStyles.h1_
+        )
+      );
+
+      // continue button
+      self.continue.modal = game.add.geom.rect(
+        0,
+        0,
+        context.canvas.width,
+        context.canvas.height,
+        undefined,
+        0,
+        colors.white,
+        0
+      );
+      self.continue.button = game.add.geom.rect(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 200,
+        300,
+        100,
+        undefined,
+        0,
+        colors.green,
+        0
+      );
+      self.continue.button.anchor(0.5, 0.5);
+      self.continue.text = game.add.text(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 16 + 200,
+        game.lang.continue,
+        textStyles.btn
+      );
+      self.continue.text.alpha = 0;
+    },
+
     // UPDATE
+    showEndInfo: function () {
+      let color;
+      //let text;
+      if (self.control.isCorrect) {
+        color = colors.green;
+        //text = game.lang.continue;
+      } else {
+        color = colors.red;
+        //text = game.lang.retry;
+      }
+      self.continue.modal.alpha = 0.25;
+      // self.continue.text.name = text;
+      self.continue.text.alpha = 1;
+      self.continue.button.fillColor = color;
+      self.continue.button.alpha = 1;
+    },
+    endLevel: function () {
+      game.state.start('map');
+    },
 
     // INFORMATION
 
@@ -502,6 +576,13 @@ const squareTwo = {
         if (game.math.isOverIcon(x, y, cur)) self.utils.clickSquareHandler(cur);
       });
 
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          self.utils.endLevel();
+        }
+      }
+
       // Click navigation icons
       navigation.onInputDown(x, y);
 
@@ -538,6 +619,21 @@ const squareTwo = {
       if (!flagB) self.utils.outSquareHandler('b');
 
       if (!flagA && !flagB) document.body.style.cursor = 'auto';
+
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          // If pointer is over icon
+          document.body.style.cursor = 'pointer';
+          self.continue.button.scale = self.continue.button.initialScale * 1.1;
+          self.continue.text.style = textStyles.btnLg;
+        } else {
+          // If pointer is not over icon
+          document.body.style.cursor = 'auto';
+          self.continue.button.scale = self.continue.button.initialScale * 1;
+          self.continue.text.style = textStyles.btn;
+        }
+      }
 
       // Mouse over navigation icons : show name
       navigation.onInputOver(x, y);
