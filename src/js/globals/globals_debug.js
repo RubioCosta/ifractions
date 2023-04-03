@@ -3,7 +3,7 @@ const isDebugMode = true;
 const debugState = {
   lang: { status: true, lang: 'pt_BR' },
   name: { status: true, name: 'Username' },
-  menu: { status: true, id: 0 },
+  menu: { status: true, id: 2 },
   customMenu: {
     status: true,
     getData: () => {
