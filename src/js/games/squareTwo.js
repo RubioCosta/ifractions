@@ -215,13 +215,13 @@ const squareTwo = {
       if (gameMode != 'b') {
         // Has more subdivisions on (b)
         xA = context.canvas.width / 2 - self.default.width / 2;
-        yA = gameFrame().y;
+        yA = getFrameInfo().y + 100;
         xB = xA;
         yB = yA + 3 * self.default.height + 30;
       } else {
         // Has more subdivisions on (a)
         xB = context.canvas.width / 2 - self.default.width / 2;
-        yB = gameFrame().y;
+        yB = getFrameInfo().y + 100;
         xA = xB;
         yA = yB + 3 * self.default.height + 30;
       }
@@ -276,6 +276,7 @@ const squareTwo = {
         yB
       );
     },
+
     renderBlocks: function (
       blocks,
       blockType,
@@ -286,33 +287,30 @@ const squareTwo = {
       x0,
       y0
     ) {
-      // Create blocks
       for (let i = 0; i < totalBlocks; i++) {
-        const curX = x0 + i * blockWidth;
-
         // Blocks
-        const block = game.add.geom.rect(
+        const curX = x0 + i * blockWidth;
+        const curBlock = game.add.geom.rect(
           curX,
           y0,
           blockWidth,
           self.default.height,
           lineColor,
-          2,
+          4,
           fillColor,
           0.5
         );
-        block.figure = blockType;
-        block.index = i;
-        block.finalX = x0;
-        blocks.list.push(block);
+        curBlock.figure = blockType;
+        curBlock.index = i;
+        curBlock.finalX = x0;
+        blocks.list.push(curBlock);
 
-        // Auxiliar blocks
-        const alpha = showFractions ? 0.1 : 0;
-
-        const yAux = y0 + self.default.height + 10; // On the bottom of (a)
-        const auxBlock = game.add.geom.rect(
+        // Auxiliar blocks (lower alpha)
+        const alpha = showFractions ? 0.2 : 0;
+        const curYAux = y0 + self.default.height + 10;
+        const curAuxBlock = game.add.geom.rect(
           curX,
-          yAux,
+          curYAux,
           blockWidth,
           self.default.height,
           lineColor,
@@ -320,36 +318,26 @@ const squareTwo = {
           fillColor,
           alpha
         );
-        blocks.auxBlocks.push(auxBlock);
+        blocks.auxBlocks.push(curAuxBlock);
       }
 
-      // 'total blocks' label for (a) : on the side of (a)
-      const xLabel = x0 + self.default.width + 30;
-      let yLabel = y0 + self.default.height / 2;
+      // Label - number of blocks (on the right)
+      let yLabel = y0 + self.default.height / 2 + 10;
+      const xLabel = x0 + self.default.width + 35;
+      const font = {
+        ...textStyles.h4_,
+        font: 'bold ' + textStyles.h4_.font,
+        fill: lineColor,
+      };
 
-      blocks.label = game.add.text(
-        xLabel,
-        yLabel,
-        blocks.list.length,
-        textStyles.h4_
-      );
+      blocks.label = game.add.text(xLabel, yLabel, blocks.list.length, font);
 
       // 'selected blocks/fraction' label for (a) : at the bottom of (a)
-      yLabel = y0 + self.default.height + 34;
+      yLabel = y0 + self.default.height + 40;
 
-      blocks.fractions[0] = game.add.text(xLabel, yLabel, '', textStyles.h4_);
-      blocks.fractions[1] = game.add.text(
-        xLabel,
-        yLabel + 21,
-        '',
-        textStyles.h4_
-      );
-      blocks.fractions[2] = game.add.text(
-        xLabel,
-        yLabel,
-        '___',
-        textStyles.h4_
-      );
+      blocks.fractions[0] = game.add.text(xLabel, yLabel, '', font);
+      blocks.fractions[1] = game.add.text(xLabel, yLabel + 40, '', font);
+      blocks.fractions[2] = game.add.text(xLabel, yLabel + 2, '___', font);
       blocks.fractions[0].alpha = 0;
       blocks.fractions[1].alpha = 0;
       blocks.fractions[2].alpha = 0;
@@ -357,9 +345,9 @@ const squareTwo = {
       // Invalid selection text
       blocks.warningText = game.add.text(
         context.canvas.width / 2,
-        context.canvas.height / 2 - 225,
+        y0 - 20,
         '',
-        textStyles.h4_
+        font
       );
     },
     renderCharacters: function () {
@@ -478,8 +466,9 @@ const squareTwo = {
         const newX =
           curBlock.finalX +
           self.blocks[curSet].selected *
-            (self.figureWidth / self.blocks[curSet].list.length) +
-          25;
+            (self.default.width / self.blocks[curSet].list.length) +
+          40;
+        console.log(newX);
         self.blocks[curSet].fractions[0].x = newX;
         self.blocks[curSet].fractions[1].x = newX;
         self.blocks[curSet].fractions[2].x = newX;
@@ -529,7 +518,7 @@ const squareTwo = {
           const newX =
             curBlock.finalX +
             (curBlock.index + 1) *
-              (self.figureWidth / self.blocks[curSet].list.length) +
+              (self.default.width / self.blocks[curSet].list.length) +
             25;
           self.blocks[curSet].fractions[0].x = newX;
           self.blocks[curSet].fractions[1].x = newX;

@@ -319,16 +319,19 @@ const renderBackground = (type) => {
   }
 };
 
-const gameFrame = function () {
-  let x = (y = 300);
-  let width = context.canvas.width - 2 * x;
-  let height = context.canvas.height - 2 * y;
+const getFrameInfo = function () {
+  let x0 = (y0 = 300);
+  // width/height - offset on both sides
+  let width = context.canvas.width - 2 * x0;
+  let height = context.canvas.height - 2 * y0;
+
   let rect = function () {
-    game.add.geom.rect(x, y, width, height, colors.red, 2);
+    game.add.geom.rect(x0, y0, width, height, colors.red, 2);
   };
+
   let point = function (offsetW, offsetH) {
     for (let i = 0, y1 = y; i < 4; i++) {
-      x1 = x;
+      x1 = x0;
       for (let j = 0; j < 7; j++) {
         let sqr = game.add.geom.rect(
           x1,
@@ -346,7 +349,7 @@ const gameFrame = function () {
       y1 += offsetH;
     }
   };
-  return { x, y, width, height, rect, point };
+  return { x: x0, y: y0, width, height, rect, point };
 };
 
 const moveList = function (list, x, y) {

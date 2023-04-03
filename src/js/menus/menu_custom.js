@@ -48,14 +48,14 @@ const customMenuState = {
 
       this.menuIcons = [];
 
-      let offsetW = game.math.getOffset(gameFrame().width, 5);
+      let offsetW = game.math.getOffset(getFrameInfo().width, 5);
       let offsetH = game.math.getOffset(
-        gameFrame().height,
+        getFrameInfo().height,
         curGame.gameMode.length
       );
 
-      let x = gameFrame().x;
-      let y = gameFrame().y;
+      let x = getFrameInfo().x;
+      let y = getFrameInfo().y;
 
       this.renderSectionTitles(x, y, offsetW, offsetH);
       this.renderCheckBox(x, y, offsetW, offsetH);
@@ -317,8 +317,8 @@ const customMenuState = {
   },
 
   renderModeSection: function (x, y, offsetW, offsetH, curGame) {
-    x = gameFrame().x + offsetW;
-    y = gameFrame().y + offsetH / 2;
+    x = getFrameInfo().x + offsetW;
+    y = getFrameInfo().y + offsetH / 2;
 
     for (
       let i = 0;
@@ -348,10 +348,10 @@ const customMenuState = {
 
   renderOperationSection: function (x, y, offsetW, offsetH, curGame) {
     x += 3 * offsetW;
-    y = gameFrame().y + offsetH / 2;
+    y = getFrameInfo().y + offsetH / 2;
 
     offsetH = game.math.getOffset(
-      gameFrame().height,
+      getFrameInfo().height,
       curGame.gameOperation.length - 1
     );
 
@@ -382,11 +382,14 @@ const customMenuState = {
   },
 
   renderDifficultySection: function (x, y, offsetW, offsetH, curGame) {
-    x = gameFrame().x - 50 + 5 * offsetW;
+    x = getFrameInfo().x - 50 + 5 * offsetW;
 
-    offsetH = game.math.getOffset(gameFrame().height, curGame.gameMode.length);
+    offsetH = game.math.getOffset(
+      getFrameInfo().height,
+      curGame.gameMode.length
+    );
 
-    y = gameFrame().y + offsetH / 3;
+    y = getFrameInfo().y + offsetH / 3;
 
     if (gameName != 'squareOne') x -= 40;
 
