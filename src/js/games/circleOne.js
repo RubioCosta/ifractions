@@ -39,9 +39,6 @@
  * @namespace
  */
 const circleOne = {
-  /**
-   * Main code
-   */
   control: undefined,
   animation: undefined,
   road: undefined,
@@ -56,6 +53,9 @@ const circleOne = {
   message: undefined,
   continue: undefined,
 
+  /**
+   * Main code
+   */
   create: function () {
     this.road = {
       x: 150,
@@ -73,7 +73,7 @@ const circleOne = {
       (context.canvas.width - this.road.x * 2 - pointWidth) / 5; // Distance between road points
     const y0 = this.road.y + 20;
     const x0 =
-      gameOperation == 'minus'
+      gameOperation === 'minus'
         ? this.road.x + 5 * distanceBetweenPoints - pointWidth / 2
         : this.road.x + pointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
 
@@ -89,8 +89,8 @@ const circleOne = {
     this.control = {
       correctX: x0, // Correct position (accumulative)
       nextX: undefined, // Next point position
-      hasBaseDifficulty: false, // Informs if level is too easy (has at least one '1/difficulty' fraction)
       divisorsList: '', // used in postScore (Accumulative)
+
       hasClicked: false, // Checks if user has clicked
       checkAnswer: false, // Check kid inside ballon's basket
       isCorrect: false, // Informs answer is correct
@@ -128,7 +128,9 @@ const circleOne = {
     }
 
     const validPath = { x0, y0, distanceBetweenPoints };
+
     this.utils.renderRoad(validPath);
+
     const [restart, balloonX] = this.utils.renderCircles(validPath);
     this.restart = restart;
 
@@ -146,7 +148,7 @@ const circleOne = {
    * Game loop
    */
   update: function () {
-    // Start kid animation
+    // Starts kid animation
     if (self.animation.animateKid) {
       self.utils.animateKid();
     }
@@ -156,7 +158,7 @@ const circleOne = {
       self.utils.checkAnswer();
     }
 
-    // Balloon flying animation
+    // Starts balloon flying animation
     if (self.animation.animateBalloon) {
       self.utils.animateBalloon();
     }
@@ -200,7 +202,7 @@ const circleOne = {
           {
             ...textStyles.h2_,
             font: 'bold ' + textStyles.h2_.font,
-            fill: directionModifier == 1 ? colors.green : colors.red,
+            fill: directionModifier === 1 ? colors.green : colors.red,
           }
         );
       }
@@ -217,21 +219,22 @@ const circleOne = {
     },
     renderCircles: function (validPath) {
       let restart = false;
+      let hasBaseDifficulty = false;
       let balloonX = context.canvas.width / 2;
 
-      const directionModifier = gameOperation == 'minus' ? -1 : 1;
+      const directionModifier = gameOperation === 'minus' ? -1 : 1;
       const fractionX =
         validPath.x0 + self.circles.diameter * directionModifier;
       const font = {
-        ...textStyles.h3_,
+        ...textStyles.h2_,
         font: 'bold ' + textStyles.h2_.font,
       };
 
       // Number of circles
       const max =
-        gameOperation == 'mixed' || gameMode == 'b' ? 6 : curMapPosition + 1;
+        gameOperation === 'mixed' || gameMode === 'b' ? 6 : curMapPosition + 1;
       const min =
-        gameOperation == 'mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
+        gameOperation === 'mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
       const total = game.math.randomInRange(min, max); // Total number of circles
       // for mode 'b'
       self.control.numberOfPlusFractions = game.math.randomInRange(
@@ -256,8 +259,7 @@ const circleOne = {
         };
         const curDivisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
 
-        if (curDivisor === gameDifficulty)
-          self.control.hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
+        if (curDivisor === gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
 
         self.control.divisorsList += curDivisor + ','; // Add this divisor to the list of divisors (for postScore())
 
@@ -373,7 +375,7 @@ const circleOne = {
         curCircle.rotate = 90;
 
         // If game is type (b) (select fractions)
-        if (gameMode == 'b') {
+        if (gameMode === 'b') {
           curCircle.alpha = 0.5;
           curCircle.index = i;
         }
@@ -393,7 +395,7 @@ const circleOne = {
 
       // Restart if
       // Does not have base difficulty
-      if (!self.control.hasBaseDifficulty) {
+      if (!hasBaseDifficulty) {
         restart = true;
       }
 
@@ -421,7 +423,7 @@ const circleOne = {
       }
 
       // If game is type (b), selectiong a random balloon place
-      if (gameMode == 'b') {
+      if (gameMode === 'b') {
         balloonX = validPath.x0;
         self.control.endIndex = game.math.randomInRange(
           self.control.numberOfPlusFractions,
@@ -473,7 +475,7 @@ const circleOne = {
         4,
       ];
 
-      if (gameOperation == 'minus') {
+      if (gameOperation === 'minus') {
         self.kid.animation = self.animation.list.left;
         self.kid.curFrame = 23;
       } else {
@@ -618,7 +620,7 @@ const circleOne = {
       // When finish all circles (final position)
       if (
         self.circles.cur === self.circles.list.length ||
-        curCircle.alpha == 0
+        curCircle.alpha === 0
       ) {
         self.animation.animateKid = false;
         self.control.checkAnswer = true;
@@ -686,7 +688,7 @@ const circleOne = {
     showAnswer: function () {
       if (!self.control.hasClicked) {
         // On gameMode (a)
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           self.help.x = self.control.correctX - 20;
           self.help.y = self.road.y;
           // On gameMode (b)
@@ -720,16 +722,16 @@ const circleOne = {
      *
      * @param {number|object} cur clicked circle
      */
-    clickHandler: function (cur) {
+    clickCircleHandler: function (cur) {
       if (!self.control.hasClicked) {
         // On gameMode (a)
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           self.balloon.x = cur;
           self.basket.x = cur;
         }
 
         // On gameMode (b)
-        if (gameMode == 'b') {
+        if (gameMode === 'b') {
           document.body.style.cursor = 'auto';
 
           for (let i in self.circles.list) {
@@ -806,14 +808,14 @@ const circleOne = {
       const y = game.math.getMouse(mouseEvent).y;
 
       // GAME MODE A : click road
-      if (gameMode == 'a') {
+      if (gameMode === 'a') {
         const isValid =
           y > 150 && x >= self.road.x && x <= self.road.x + self.road.width;
-        if (isValid) self.utils.clickHandler(x);
+        if (isValid) self.utils.clickCircleHandler(x);
       }
 
       // GAME MODE B : click circle
-      if (gameMode == 'b') {
+      if (gameMode === 'b') {
         self.circles.list.forEach((circle) => {
           const isValid =
             game.math.distanceToPointer(
@@ -823,7 +825,7 @@ const circleOne = {
               circle.yWithAnchor
             ) <=
             (circle.diameter / 2) * circle.scale;
-          if (isValid) self.utils.clickHandler(circle);
+          if (isValid) self.utils.clickCircleHandler(circle);
         });
       }
 
@@ -850,7 +852,7 @@ const circleOne = {
       let isOverCircle = false;
 
       // GAME MODE A : balloon follow mouse
-      if (gameMode == 'a' && !self.control.hasClicked) {
+      if (gameMode === 'a' && !self.control.hasClicked) {
         if (
           game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8
         ) {
@@ -861,7 +863,7 @@ const circleOne = {
       }
 
       // GAME MODE B : hover circle
-      if (gameMode == 'b' && !self.control.hasClicked) {
+      if (gameMode === 'b' && !self.control.hasClicked) {
         self.circles.list.forEach((circle) => {
           const isValid =
             game.math.distanceToPointer(
