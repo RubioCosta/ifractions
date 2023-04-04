@@ -9,7 +9,7 @@
  * ..a.....b.. = gameMode
  * ....\./....
  * .....|.....
- * ...minus.. = gameOperation
+ * ..equals... = gameOperation
  * .....|.....
  * .1,2,3,4,5. = gameDifficulty
  *
@@ -27,69 +27,49 @@
  *
  * Operations :
  *
- *   minus : Player selects equivalent fractions of both blocks
+ *   equals : Player selects equivalent fractions of both blocks
  *
  * @namespace
  */
 const squareTwo = {
   control: undefined,
-  // animation: undefined,
-  // road: undefined,
-
   blocks: undefined,
-
-  help: undefined,
+  continue: undefined,
   message: undefined,
-  // continue: undefined,
 
   /**
    * Main code
    */
   create: function () {
     this.control = {
-      // correctX: x0, // Correct position (accumulative)
-      // nextX: undefined, // Next point position
-      // divisorsList: '', // used in postScore (Accumulative)
-      // hasClicked: false, // Checks if user has clicked
-      // checkAnswer: false, // Check kid inside ballon's basket
-      isCorrect: false, // Check if selected blocks are correct
+      blockWidth: 600,
+      blockHeight: 75,
+      isCorrect: false,
       showEndInfo: false,
-      // // mode 'b' exclusive
-      // endIndex: undefined,
-      // fractionIndex: -1, // Index of clicked circle (game (b))
-      // numberOfPlusFractions: undefined,
+      animationDelay: 0,
+      startEndAnimation: false,
     };
     this.continue = {
       modal: undefined,
       button: undefined,
       text: undefined,
     };
-    this.default = {
-      width: 400 * 1.5,
-      height: 50 * 1.5,
-    };
-
-    // CONTROL VARIABLES
-
-    this.delay = 0; // Counter for game dalays
-    this.endLevel = false;
-
     this.blocks = {
-      a: {
-        list: [], // List of selection blocks
+      top: {
+        list: [], // List of block objects
         auxBlocks: [], // List of shadow under selection blocks
-        fractions: [], // Fraction numbers
-        selected: 0, // Number of selected blocks for (a)
+        fractions: [], // Fractions
+        selectedAmount: 0,
         hasClicked: false, // Check if player clicked blocks from (a)
         animate: false, // Animate blocks from (a)
         warningText: undefined,
         label: undefined,
       },
-      b: {
+      bottom: {
         list: [],
         auxBlocks: [],
         fractions: [],
-        selected: 0,
+        selectedAmount: 0,
         hasClicked: false,
         animate: false,
         warningText: undefined,
@@ -124,83 +104,22 @@ const squareTwo = {
    */
   update: function () {
     // Animate blocks
-    if (self.blocks.a.animate || self.blocks.b.animate) {
-      ['a', 'b'].forEach((cur) => {
-        if (self.blocks[cur].animate) {
-          // Lower selected blocks
-          for (let i = 0; i < self.blocks[cur].selected; i++) {
-            self.blocks[cur].list[i].y += 2;
-          }
-
-          // After fully lowering blocks, set fraction value
-          if (self.blocks[cur].list[0].y >= self.blocks[cur].auxBlocks[0].y) {
-            self.blocks[cur].fractions[0].name = self.blocks[cur].selected;
-            self.blocks[cur].animate = false;
-          }
-        }
-      });
+    if (self.blocks.top.animate || self.blocks.bottom.animate) {
+      self.utils.moveBlocks();
     }
 
     // If (a) and (b) are already clicked
     if (
-      self.blocks.a.hasClicked &&
-      self.blocks.b.hasClicked &&
-      !self.endLevel
+      self.blocks.top.hasClicked &&
+      self.blocks.bottom.hasClicked &&
+      !self.control.startEndAnimation
     ) {
-      game.timer.stop();
-      self.delay++;
-
-      // After delay is over, check result
-      if (self.delay > 50) {
-        self.control.isCorrect =
-          self.blocks.a.selected / self.blocks.a.list.length ==
-          self.blocks.b.selected / self.blocks.b.list.length;
-
-        // Fractions are equivalent : CORRECT
-        if (self.control.isCorrect) {
-          if (audioStatus) game.audio.okSound.play();
-
-          game.add
-            .image(
-              context.canvas.width / 2,
-              context.canvas.height / 2,
-              'answer_correct'
-            )
-            .anchor(0.5, 0.5);
-          canGoToNextMapPosition = true; // Allow character to move to next level in map state
-          completedLevels++;
-
-          if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
-
-          // Fractions are not equivalent : INCORRECT
-        } else {
-          if (audioStatus) game.audio.errorSound.play();
-          game.add
-            .image(
-              context.canvas.width / 2,
-              context.canvas.height / 2,
-              'answer_wrong'
-            )
-            .anchor(0.5, 0.5);
-          canGoToNextMapPosition = false; // Doesnt allow character to move to next level in map state
-        }
-
-        self.fetch.postScore();
-        self.endLevel = true;
-
-        // Reset delay values for next delay
-        self.delay = 0;
-      }
+      self.utils.checkAnswer();
     }
 
     // Wait a bit and go to map state
-    if (self.endLevel) {
-      self.delay++;
-
-      if (self.delay >= 80) {
-        self.control.showEndInfo = true;
-        self.utils.showEndInfo();
-      }
+    if (self.control.startEndAnimation) {
+      self.utils.runEndAnimation();
     }
 
     game.render.all();
@@ -214,16 +133,16 @@ const squareTwo = {
 
       if (gameMode != 'b') {
         // Has more subdivisions on (b)
-        xA = context.canvas.width / 2 - self.default.width / 2;
+        xA = context.canvas.width / 2 - self.control.blockWidth / 2;
         yA = getFrameInfo().y + 100;
         xB = xA;
-        yB = yA + 3 * self.default.height + 30;
+        yB = yA + 3 * self.control.blockHeight + 30;
       } else {
         // Has more subdivisions on (a)
-        xB = context.canvas.width / 2 - self.default.width / 2;
+        xB = context.canvas.width / 2 - self.control.blockWidth / 2;
         yB = getFrameInfo().y + 100;
         xA = xB;
-        yA = yB + 3 * self.default.height + 30;
+        yA = yB + 3 * self.control.blockHeight + 30;
       }
 
       // Possible points for (a)
@@ -239,8 +158,8 @@ const squareTwo = {
       const totalBlocksA = points[randomIndex];
       const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
-      const blockWidthA = self.default.width / totalBlocksA;
-      const blockWidthB = self.default.width / totalBlocksB;
+      const blockWidthA = self.control.blockWidth / totalBlocksA;
+      const blockWidthB = self.control.blockWidth / totalBlocksB;
 
       if (isDebugMode) {
         console.log(
@@ -254,8 +173,8 @@ const squareTwo = {
 
       // (a)
       self.utils.renderBlocks(
-        self.blocks.a,
-        'a',
+        self.blocks.top,
+        'top',
         totalBlocksA,
         blockWidthA,
         colors.redDark,
@@ -266,8 +185,8 @@ const squareTwo = {
 
       // (b)
       self.utils.renderBlocks(
-        self.blocks.b,
-        'b',
+        self.blocks.bottom,
+        'bottom',
         totalBlocksB,
         blockWidthB,
         colors.greenDark,
@@ -276,7 +195,6 @@ const squareTwo = {
         yB
       );
     },
-
     renderBlocks: function (
       blocks,
       blockType,
@@ -294,25 +212,25 @@ const squareTwo = {
           curX,
           y0,
           blockWidth,
-          self.default.height,
+          self.control.blockHeight,
           lineColor,
           4,
           fillColor,
           0.5
         );
-        curBlock.figure = blockType;
+        curBlock.position = blockType;
         curBlock.index = i;
         curBlock.finalX = x0;
         blocks.list.push(curBlock);
 
         // Auxiliar blocks (lower alpha)
         const alpha = showFractions ? 0.2 : 0;
-        const curYAux = y0 + self.default.height + 10;
+        const curYAux = y0 + self.control.blockHeight + 10;
         const curAuxBlock = game.add.geom.rect(
           curX,
           curYAux,
           blockWidth,
-          self.default.height,
+          self.control.blockHeight,
           lineColor,
           1,
           fillColor,
@@ -322,8 +240,8 @@ const squareTwo = {
       }
 
       // Label - number of blocks (on the right)
-      let yLabel = y0 + self.default.height / 2 + 10;
-      const xLabel = x0 + self.default.width + 35;
+      let yLabel = y0 + self.control.blockHeight / 2 + 10;
+      const xLabel = x0 + self.control.blockWidth + 35;
       const font = {
         ...textStyles.h4_,
         font: 'bold ' + textStyles.h4_.font,
@@ -333,7 +251,7 @@ const squareTwo = {
       blocks.label = game.add.text(xLabel, yLabel, blocks.list.length, font);
 
       // 'selected blocks/fraction' label for (a) : at the bottom of (a)
-      yLabel = y0 + self.default.height + 40;
+      yLabel = y0 + self.control.blockHeight + 40;
 
       blocks.fractions[0] = game.add.text(xLabel, yLabel, '', font);
       blocks.fractions[1] = game.add.text(xLabel, yLabel + 40, '', font);
@@ -346,9 +264,10 @@ const squareTwo = {
       blocks.warningText = game.add.text(
         context.canvas.width / 2,
         y0 - 20,
-        '',
+        game.lang.s2_error_msg,
         font
       );
+      blocks.warningText.alpha = 0;
     },
     renderCharacters: function () {
       self.kidAnimation = game.add.sprite(
@@ -367,7 +286,7 @@ const squareTwo = {
         game.add.text(
           context.canvas.width / 2,
           170,
-          game.lang.squareTwo_intro1 || '...',
+          game.lang.squareTwo_intro1,
           textStyles.h1_
         )
       );
@@ -375,7 +294,7 @@ const squareTwo = {
         game.add.text(
           context.canvas.width / 2,
           220,
-          game.lang.squareTwo_intro2 || '...',
+          game.lang.squareTwo_intro2,
           textStyles.h1_
         )
       );
@@ -412,6 +331,82 @@ const squareTwo = {
     },
 
     // UPDATE
+    moveBlocks: function () {
+      ['top', 'bottom'].forEach((cur) => {
+        if (self.blocks[cur].animate) {
+          // Lower selected blocks
+          for (let i = 0; i < self.blocks[cur].selectedAmount; i++) {
+            self.blocks[cur].list[i].y += 2;
+          }
+
+          // After fully lowering blocks, set fraction value
+          if (self.blocks[cur].list[0].y >= self.blocks[cur].auxBlocks[0].y) {
+            self.blocks[cur].fractions[0].name =
+              self.blocks[cur].selectedAmount;
+            self.blocks[cur].animate = false;
+          }
+        }
+      });
+    },
+    checkAnswer: function () {
+      game.timer.stop();
+      self.control.animationDelay++;
+
+      // After delay is over, check result
+      if (self.control.animationDelay > 50) {
+        self.control.isCorrect =
+          self.blocks.top.selectedAmount / self.blocks.top.list.length ==
+          self.blocks.bottom.selectedAmount / self.blocks.bottom.list.length;
+
+        // Fractions are equivalent : CORRECT
+        if (self.control.isCorrect) {
+          if (audioStatus) game.audio.okSound.play();
+
+          game.add
+            .image(
+              context.canvas.width / 2,
+              context.canvas.height / 2,
+              'answer_correct'
+            )
+            .anchor(0.5, 0.5);
+          canGoToNextMapPosition = true; // Allow character to move to next level in map state
+          completedLevels++;
+
+          if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
+
+          // Fractions are not equivalent : INCORRECT
+        } else {
+          if (audioStatus) game.audio.errorSound.play();
+          game.add
+            .image(
+              context.canvas.width / 2,
+              context.canvas.height / 2,
+              'answer_wrong'
+            )
+            .anchor(0.5, 0.5);
+          canGoToNextMapPosition = false; // Doesnt allow character to move to next level in map state
+        }
+
+        self.fetch.postScore();
+        self.control.startEndAnimation = true;
+
+        // Reset delay values for next delay
+        self.control.animationDelay = 0;
+      }
+    },
+    runEndAnimation: function () {
+      self.control.animationDelay++;
+
+      if (self.control.animationDelay >= 80) {
+        self.control.showEndInfo = true;
+        self.utils.showEndInfo();
+      }
+    },
+    endLevel: function () {
+      game.state.start('map');
+    },
+
+    // INFORMATION
     showEndInfo: function () {
       let color;
       //let text;
@@ -428,20 +423,15 @@ const squareTwo = {
       self.continue.button.fillColor = color;
       self.continue.button.alpha = 1;
     },
-    endLevel: function () {
-      game.state.start('map');
-    },
-
-    // INFORMATION
 
     // HANDLERS
     /**
      * Function called by self.onInputDown() when player clicked a valid rectangle.
      *
-     * @param {object} curBlock clicked rectangle : can be self.blocks.a.list[i] or self.blocks.b.list[i]
+     * @param {object} curBlock clicked rectangle : can be self.blocks.top.list[i] or self.blocks.bottom.list[i]
      */
     clickSquareHandler: function (curBlock) {
-      const curSet = curBlock.figure; // 'a' || 'b'
+      const curSet = curBlock.position;
 
       if (
         !self.blocks[curSet].hasClicked &&
@@ -460,15 +450,15 @@ const squareTwo = {
         if (audioStatus) game.audio.popSound.play();
 
         // Save number of selected blocks
-        self.blocks[curSet].selected = curBlock.index + 1;
+        self.blocks[curSet].selectedAmount = curBlock.index + 1;
 
         // Set fraction x position
         const newX =
           curBlock.finalX +
-          self.blocks[curSet].selected *
-            (self.default.width / self.blocks[curSet].list.length) +
+          self.blocks[curSet].selectedAmount *
+            (self.control.blockWidth / self.blocks[curSet].list.length) +
           40;
-        console.log(newX);
+
         self.blocks[curSet].fractions[0].x = newX;
         self.blocks[curSet].fractions[1].x = newX;
         self.blocks[curSet].fractions[2].x = newX;
@@ -485,26 +475,26 @@ const squareTwo = {
     /**
      * Function called by self.onInputOver() when cursor is over a valid rectangle.
      *
-     * @param {object} curBlock rectangle the cursor is over : can be self.blocks.a.list[i] or self.blocks.b.list[i]
+     * @param {object} curBlock rectangle the cursor is over : can be self.blocks.top.list[i] or self.blocks.bottom.list[i]
      */
     overSquareHandler: function (curBlock) {
-      const curSet = curBlock.figure; // 'a' || 'b'
+      const curSet = curBlock.position;
 
       if (!self.blocks[curSet].hasClicked) {
-        // self.blocks.a.hasClicked || self.blocks.b.hasClicked
+        // self.blocks.top.hasClicked || self.blocks.bottom.hasClicked
         // If over fraction 'n/n' shows warning message not allowing it
         if (curBlock.index == self.blocks[curSet].list.length - 1) {
-          const otherSet = curSet == 'a' ? 'b' : 'a';
+          const otherSet = curSet == 'top' ? 'bottom' : 'top';
 
-          self.blocks[curSet].warningText.name = game.lang.s2_error_msg;
-          self.blocks[otherSet].warningText.name = '';
+          self.blocks[curSet].warningText.alpha = 1;
+          self.blocks[otherSet].warningText.alpha = 0;
 
           self.utils.outSquareHandler(curSet);
         } else {
           document.body.style.cursor = 'pointer';
 
-          self.blocks.a.warningText.name = '';
-          self.blocks.b.warningText.name = '';
+          self.blocks.top.warningText.alpha = 0;
+          self.blocks.bottom.warningText.alpha = 0;
 
           // Selected blocks become fully visible
           for (let i in self.blocks[curSet].list) {
@@ -518,7 +508,7 @@ const squareTwo = {
           const newX =
             curBlock.finalX +
             (curBlock.index + 1) *
-              (self.default.width / self.blocks[curSet].list.length) +
+              (self.control.blockWidth / self.blocks[curSet].list.length) +
             25;
           self.blocks[curSet].fractions[0].x = newX;
           self.blocks[curSet].fractions[1].x = newX;
@@ -531,7 +521,7 @@ const squareTwo = {
     /**
      * Function called (by self.onInputOver() and self.utils.overSquareHandler()) when cursor is out of a valid rectangle.
      *
-     * @param {object} curSet set of rectangles : can be top (self.blocks.a) or bottom (self.blocks.b)
+     * @param {object} curSet set of rectangles : can be top (self.blocks.top) or bottom (self.blocks.bottom)
      */
     outSquareHandler: function (curSet) {
       if (!self.blocks[curSet].hasClicked) {
@@ -556,12 +546,12 @@ const squareTwo = {
       const y = game.math.getMouse(mouseEvent).y;
 
       // Click block in (a)
-      self.blocks.a.list.forEach((cur) => {
+      self.blocks.top.list.forEach((cur) => {
         if (game.math.isOverIcon(x, y, cur)) self.utils.clickSquareHandler(cur);
       });
 
       // Click block in (b)
-      self.blocks.b.list.forEach((cur) => {
+      self.blocks.bottom.list.forEach((cur) => {
         if (game.math.isOverIcon(x, y, cur)) self.utils.clickSquareHandler(cur);
       });
 
@@ -590,22 +580,22 @@ const squareTwo = {
       let flagB = false;
 
       // Mouse over (a) : show fraction
-      self.blocks.a.list.forEach((cur) => {
+      self.blocks.top.list.forEach((cur) => {
         if (game.math.isOverIcon(x, y, cur)) {
           flagA = true;
           self.utils.overSquareHandler(cur);
         }
       });
-      if (!flagA) self.utils.outSquareHandler('a');
+      if (!flagA) self.utils.outSquareHandler('top');
 
       // Mouse over (b) : show fraction
-      self.blocks.b.list.forEach((cur) => {
+      self.blocks.bottom.list.forEach((cur) => {
         if (game.math.isOverIcon(x, y, cur)) {
           flagB = true;
           self.utils.overSquareHandler(cur);
         }
       });
-      if (!flagB) self.utils.outSquareHandler('b');
+      if (!flagB) self.utils.outSquareHandler('bottom');
 
       if (!flagA && !flagB) document.body.style.cursor = 'auto';
 
@@ -656,13 +646,13 @@ const squareTwo = {
         game.timer.elapsed +
         '&line_deta=' +
         'numBlocksA: ' +
-        self.blocks.a.list.length +
+        self.blocks.top.list.length +
         ', valueA: ' +
-        self.blocks.a.selected +
+        self.blocks.top.selectedAmount +
         ', numBlocksB: ' +
-        self.blocks.b.list.length +
+        self.blocks.bottom.list.length +
         ', valueB: ' +
-        self.blocks.b.selected;
+        self.blocks.bottom.selectedAmount;
 
       // FOR MOODLE
       sendToDatabase(data);

@@ -485,7 +485,7 @@ const squareOne = {
         game.add.text(
           context.canvas.width / 2,
           170,
-          game.lang.squareOne_intro1 || '...',
+          game.lang.squareOne_intro1,
           textStyles.h1_
         )
       );
@@ -493,7 +493,7 @@ const squareOne = {
         game.add.text(
           context.canvas.width / 2,
           220,
-          game.lang.squareOne_intro2 || '...',
+          game.lang.squareOne_intro2,
           textStyles.h1_
         )
       );
