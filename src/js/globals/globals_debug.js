@@ -10,7 +10,7 @@ const debugState = {
       return { mode: 'a', operation: 'plus', difficulty: 2, label: true };
     },
   },
-  map: { status: false },
+  map: { status: true },
   end: { status: false, stop: false },
 };
 

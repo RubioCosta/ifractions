@@ -59,7 +59,6 @@ const squareOne = {
       button: undefined,
       text: undefined,
     };
-
     this.control = {
       direc: gameOperation == 'minus' ? -1 : 1, // Will be multiplied to values to easily change tractor direction when needed
       divisorsList: '', // Hold the divisors for each fraction on stacked blocks (created for postScore())
@@ -70,21 +69,21 @@ const squareOne = {
 
       count: 0, // An 'x' position counter used in the tractor animation
     };
-
     this.animation = {
       animateTractor: false, // When true allows game to run 'tractor animation' code in update (turns animation of the moving tractor ON/OFF)
       animateEnding: false, // When true allows game to run 'tractor ending animation' code in update (turns 'ending' animation of the moving tractor ON/OFF)
       speed: 2 * this.control.direc, // X distance in which the tractor moves in each iteration of the animation
     };
-
+    const truckWidth = 201;
     this.default = {
-      width: context.canvas.width / 11, // Base block width,
-      height: 40 * 1.5, // Base block height
+      width: 172, // Base block width,
+      height: 70, // Base block height
       x0:
-        gameOperation == 'minus' ? context.canvas.width - 170 * 1.5 : 170 * 1.5, // Initial 'x' coordinate for the tractor and stacked blocks
-      y0: context.canvas.height - 157 * 1.5 + 10,
+        gameOperation == 'minus'
+          ? context.canvas.width - truckWidth
+          : truckWidth, // Initial 'x' coordinate for the tractor and stacked blocks
+      y0: context.canvas.height - game.image['floor_grass'].width * 1.5,
     };
-
     renderBackground();
 
     // Calls function that loads navigation icons
@@ -124,34 +123,6 @@ const squareOne = {
       },
     };
 
-    // // STACKED BLOCKS variables
-    // this.stck = {
-    //   blocks: [], // Group of 'stacked' block objects
-
-    //   index: undefined, // (gameMode 'b') index of 'stacked' block selected by player
-
-    //   // Control variables for animation
-    //   curIndex: 0, // (needs to be 0)
-    //   curBlockEnd: undefined,
-
-    //   // Correct values
-    //   correctIndex: undefined, // (gameMode 'b') index of the CORRECT 'stacked' block
-    // };
-
-    // // FLOOR BLOCKS variables
-    // this.floor = {
-    //   blocks: [], // Group of 'floor' block objects
-    //   index: undefined, // (gameMode 'a') index of 'floor' block selected by player
-
-    //   // Control variables for animation
-    //   curIndex: -1, // (needs to be -1)
-
-    //   // Correct values
-    //   correctIndex: undefined, // (gameMode 'a') index of the CORRECT 'floor' block
-    //   correctX: undefined, // 'x' coordinate of CORRECT 'floor' block
-    //   correctXA: undefined, // Temporary variable
-    //   correctXB: undefined, // Temporary variable
-    // };
     let lineColor = undefined;
     let fillColor = undefined;
     if (gameOperation === 'minus') {
@@ -161,6 +132,7 @@ const squareOne = {
       lineColor = colors.green;
       fillColor = colors.greenLight;
     }
+
     this.restart = this.utils.renderStackedBlocks(
       this.control.direc,
       lineColor,
@@ -217,7 +189,7 @@ const squareOne = {
 
       self.blocks.floor.correctXA =
         self.default.x0 + self.default.width * direc;
-
+      console.log('-->' + self.blocks.floor.correctXA);
       for (let i = 0; i < total; i++) {
         let curFractionItems = undefined;
         let font = undefined;
@@ -227,13 +199,13 @@ const squareOne = {
         if (curDivisor === 3) curDivisor = 4; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
         const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
-
         self.control.divisorsList += curDivisor + ','; // List of divisors (for postScore())
         self.blocks.floor.correctXA += curBlockWidth * direc;
+        console.log('->' + self.blocks.floor.correctXA);
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
-          self.default.y0 + 17 - i * (self.default.height - lineSize),
+          self.default.y0 - i * (self.default.height - lineSize),
           curBlockWidth - lineSize,
           self.default.height - lineSize,
           lineColor,
@@ -241,7 +213,7 @@ const squareOne = {
           fillColor,
           1
         );
-        curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 0);
+        curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 1);
 
         // If game mode is (b), adding events to stacked blocks
         if (gameMode == 'b') {
@@ -261,7 +233,7 @@ const squareOne = {
             curFractionItems = [
               {
                 x: x,
-                y: self.default.y0 - (i - 1) * y,
+                y: self.default.y0 - i * y - 20,
                 text: gameOperation === 'minus' ? '-1' : '1',
               },
             ];
@@ -270,22 +242,22 @@ const squareOne = {
             curFractionItems = [
               {
                 x: x,
-                y: self.default.y0 + 45 - i * y + 23, //curCircleY + 34,
+                y: self.default.y0 - i * y - 10,
                 text: curDivisor,
               },
               {
                 x: x,
-                y: self.default.y0 + 40 - i * y, //curCircleY - 2
+                y: self.default.y0 - i * y - 40,
                 text: '1',
               },
               {
                 x: x,
-                y: self.default.y0 + 40 - i * y, // curCircleY - 2,
+                y: self.default.y0 - i * y - 37,
                 text: '__',
               },
               {
-                x: x - 25, // x - 35,
-                y: self.default.y0 + 40 + 10 - i * y, // curCircleY + 15
+                x: x - 25,
+                y: self.default.y0 - i * y - 27,
                 text: gameOperation === 'minus' ? '-' : '',
               },
             ];
@@ -344,6 +316,8 @@ const squareOne = {
      * Create floor blocks for the level in create()
      */
     renderFloorBlocks: function (direc, lineColor) {
+      const lineSize = 2;
+
       // For each floor block
       const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
@@ -370,25 +344,24 @@ const squareOne = {
       let flag = true;
 
       for (let i = 0; i < total; i++) {
-        // For each floor block
-        // 'x' coordinate for floor block
-        const x =
-          self.default.x0 + (self.default.width + i * blockWidth) * direc;
-
+        const curX =
+          self.default.x0 + (self.default.width + i * blockWidth) * direc; //lineSize;
+        console.log(curX, self.blocks.floor.correctXA, '.');
         if (flag && gameMode == 'a') {
           if (
-            (gameOperation == 'plus' && x >= self.blocks.floor.correctXA) ||
-            (gameOperation == 'minus' && x <= self.blocks.floor.correctXA)
+            (gameOperation == 'plus' && curX >= self.blocks.floor.correctXA) ||
+            (gameOperation == 'minus' && curX <= self.blocks.floor.correctXA)
           ) {
             self.blocks.floor.correctIndex = i - 1; // Set index of correct floor block
             flag = false;
+            console.log(self.blocks.floor.correctIndex);
           }
         }
 
         if (gameMode == 'b') {
           if (
-            (gameOperation == 'plus' && x >= self.blocks.floor.correctXB) ||
-            (gameOperation == 'minus' && x <= self.blocks.floor.correctXB)
+            (gameOperation == 'plus' && curX >= self.blocks.floor.correctXB) ||
+            (gameOperation == 'minus' && curX <= self.blocks.floor.correctXB)
           ) {
             total = i;
             break;
@@ -396,28 +369,27 @@ const squareOne = {
         }
 
         // Create floor block
-        const lineSize = 0.9;
-        const block = game.add.geom.rect(
-          x,
-          self.default.y0 + 17 + self.default.height - lineSize,
+        const curBlock = game.add.geom.rect(
+          curX,
+          self.default.y0 - lineSize, // + self.default.height - lineSize,
           blockWidth - lineSize,
           self.default.height - lineSize,
-          colors.blue,
+          lineColor,
           lineSize,
           colors.blueBgInsideLevel,
           1
         );
         const anchor = gameOperation == 'minus' ? 1 : 0;
-        block.anchor(anchor, 0);
+        curBlock.anchor(anchor, 0);
 
         // If game is type (a), adding events to floor blocks
         if (gameMode == 'a') {
-          block.alpha = 0.5;
-          block.index = i;
+          curBlock.alpha = 0.5;
+          curBlock.index = i;
         }
 
         // Add current label to group of labels
-        self.blocks.floor.list.push(block);
+        self.blocks.floor.list.push(curBlock);
       }
 
       if (gameMode == 'a')
@@ -428,7 +400,7 @@ const squareOne = {
       // Creates labels on the floor to display the numbers
       for (let i = 0; i <= 8; i++) {
         const x = self.default.x0 + (i + 1) * self.default.width * direc;
-        const y = self.default.y0 + self.default.height + 80 * 1.5;
+        const y = self.default.y0 + self.default.height + 45;
         game.add.geom
           .circle(x, y, 60, undefined, 0, colors.white, 0.6)
           .anchor(0, 0.25);
@@ -450,14 +422,14 @@ const squareOne = {
         self.default.y0,
         'tractor',
         0,
-        1.2
+        1
       );
 
       if (gameOperation == 'plus') {
-        self.tractor.anchor(1, 0.5);
+        self.tractor.anchor(1, 1);
         self.tractor.animation = ['move', [0, 1, 2, 3, 4], 4];
       } else {
-        self.tractor.anchor(0, 0.5);
+        self.tractor.anchor(0, 1);
         self.tractor.animation = ['move', [5, 6, 7, 8, 9], 4];
         self.tractor.curFrame = 5;
       }
@@ -536,10 +508,8 @@ const squareOne = {
 
       // MANAGE HORIZONTAL MOVEMENT
 
-      // Move 'tractor'
+      // Move
       self.tractor.x += self.animation.speed;
-
-      // Move 'stacked blocks'
       for (let i in stack.list) {
         stack.list[i].x += self.animation.speed;
       }
@@ -596,7 +566,7 @@ const squareOne = {
               (gameOperation == 'plus' && floor.list[i].x < curEnd) ||
               (gameOperation == 'minus' && floor.list[i].x > curEnd)
             ) {
-              floor.list[i].alpha = 0.2;
+              floor.list[i].alpha = 0; //.2;
               floor.curIndex = i;
             }
           }
@@ -625,6 +595,7 @@ const squareOne = {
       if (gameMode == 'a') {
         self.control.isCorrect =
           self.blocks.floor.index == self.blocks.floor.correctIndex;
+        console.log(self.blocks.floor.index, self.blocks.floor.correctIndex);
       } else {
         self.control.isCorrect =
           self.blocks.stack.index == self.blocks.stack.correctIndex;
