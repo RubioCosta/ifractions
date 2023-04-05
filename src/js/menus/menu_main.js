@@ -29,7 +29,7 @@ const menuState = {
         context.canvas.width / 2,
         60,
         game.lang.welcome + ', ' + playerName + '!',
-        { ...textStyles.h3_, fill: colors.redDark }
+        { ...textStyles.h3_, fill: colors.maroon }
       );
       // Title : Select a game
       game.add.text(context.canvas.width / 2, 120, game.lang.menu_title, {

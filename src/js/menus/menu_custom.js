@@ -32,7 +32,7 @@ const customMenuState = {
         context.canvas.width / 2,
         60,
         game.lang.game.toUpperCase() + ': ' + menuState.menuIcons,
-        { ...textStyles.h3_, fill: colors.redDark }
+        { ...textStyles.h3_, fill: colors.maroon }
       );
       // Title : Customize the selected game
       game.add.text(context.canvas.width / 2, 120, game.lang.custom_game, {

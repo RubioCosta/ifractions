@@ -92,7 +92,7 @@ const squareTwo = {
     // Add kid
     this.utils.renderCharacters();
     this.utils.renderBlockSetup();
-    this.utils.renderAuxiliarUI();
+    this.utils.renderUI();
 
     game.timer.start(); // Set a timer for the current level (used in postScore)
     game.event.add('click', this.events.onInputDown);
@@ -177,8 +177,8 @@ const squareTwo = {
         'top',
         totalBlocksA,
         blockWidthA,
-        colors.redDark,
-        colors.redLight,
+        colors.blueDark,
+        colors.blueLight,
         xA,
         yA
       );
@@ -265,7 +265,7 @@ const squareTwo = {
         context.canvas.width / 2,
         y0 - 20,
         game.lang.s2_error_msg,
-        font
+        { ...font, font: textStyles.h4_.font }
       );
       blocks.warningText.alpha = 0;
     },
@@ -279,14 +279,19 @@ const squareTwo = {
       );
       self.kidAnimation.anchor(0.5, 0.7);
     },
-    renderAuxiliarUI: function () {
+    renderUI: function () {
       // Intro text
+      const correctMessage =
+        gameMode === 'a'
+          ? game.lang.squareTwo_intro_a
+          : game.lang.squareTwo_intro_b;
+      const treatedMessage = correctMessage.split('\\n');
       self.message = [];
       self.message.push(
         game.add.text(
           context.canvas.width / 2,
           170,
-          game.lang.squareTwo_intro1,
+          treatedMessage[0],
           textStyles.h1_
         )
       );
@@ -294,7 +299,7 @@ const squareTwo = {
         game.add.text(
           context.canvas.width / 2,
           220,
-          game.lang.squareTwo_intro2,
+          treatedMessage[1],
           textStyles.h1_
         )
       );

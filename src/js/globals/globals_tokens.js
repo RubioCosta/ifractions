@@ -7,8 +7,9 @@ const fallbackImgUrl = 'src/assets/img/fallback.png';
  */
 const colors = {
   // Blues
+  blueDark: '#02277d', // Line color that indicates right and fraction numbers
   blue: '#003cb3', // Subtitle
-  blueDark: '#183780', // Line color that indicates right and fraction numbers
+  blueLight: '#7997d2',
 
   blueBg: '#cce5ff', // Background color
   blueBgInsideLevel: '#a8c0e6', // Background color in squareOne (used for floor gap)
@@ -16,14 +17,16 @@ const colors = {
   blueMenuLine: '#b7cdf4',
 
   // Reds
-  red: '#b30000', // Linecolor that indicates left
   redLight: '#d27979', // squareTwo figures
-  redDark: '#330000', // squareTwo figures and some titles
+  red: '#b30000', // Linecolor that indicates left
+  redDark: '#730101', // squareTwo figures and some titles
+
+  maroon: '#330000', // squareTwo figures and some titles
 
   // Greens
+  greenLight: '#79d2a1', // squareTwo figures
   green: '#00804d', // Title
-  greenLight: '#83afaf', // squareTwo figures
-  greenDark: '#1e2f2f', // squareTwo figures
+  greenDark: '#005231', // squareTwo figures
 
   // Basics
   white: '#fff',
@@ -65,7 +68,7 @@ const textStyles = {
   p_: {
     font: `${font.sizes.p} ${font.families.default}`,
     align: 'center',
-    fill: colors.redDark,
+    fill: colors.maroon,
   },
   btn: {
     font: `${font.sizes.h2} ${font.families.btn}`,

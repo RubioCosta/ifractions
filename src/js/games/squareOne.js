@@ -140,7 +140,7 @@ const squareOne = {
     );
     this.utils.renderFloorBlocks(this.control.direc, lineColor);
     this.utils.renderCharacters();
-    this.utils.renderAuxiliarUI(this.control.direc);
+    this.utils.renderUI(this.control.direc);
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
@@ -434,7 +434,7 @@ const squareOne = {
         self.tractor.curFrame = 5;
       }
     },
-    renderAuxiliarUI: function (direc) {
+    renderUI: function (direc) {
       // Help pointer
       self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
       //self.help.anchor(0.5, 0);
@@ -452,12 +452,17 @@ const squareOne = {
       }
 
       // Intro text
+      const correctMessage =
+        gameMode === 'a'
+          ? game.lang.squareOne_intro_a
+          : game.lang.squareOne_intro_b;
+      const treatedMessage = correctMessage.split('\\n');
       self.message = [];
       self.message.push(
         game.add.text(
           context.canvas.width / 2,
           170,
-          game.lang.squareOne_intro1,
+          treatedMessage[0],
           textStyles.h1_
         )
       );
@@ -465,7 +470,7 @@ const squareOne = {
         game.add.text(
           context.canvas.width / 2,
           220,
-          game.lang.squareOne_intro2,
+          treatedMessage[1],
           textStyles.h1_
         )
       );

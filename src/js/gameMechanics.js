@@ -1121,6 +1121,52 @@ const game = {
       const b = Math.max(yMouse, yIcon) - Math.min(yMouse, yIcon);
       return Math.sqrt(a * a + b * b);
     },
+    mdc: function (num1, num2) {
+      if (num2 === 0) return num1;
+      return game.math.mdc(num2, num1 % num2);
+    },
+    mmcArray: (input) => {
+      if (toString.call(input) !== '[object Array]') return false;
+      var len, a, b;
+      len = input.length;
+      if (!len) {
+        return null;
+      }
+      a = input[0];
+      for (var i = 1; i < len; i++) {
+        b = input[i];
+        a = game.math.mmcTwoNumbers(a, b);
+      }
+      return a;
+    },
+    mmcTwoNumbers: (num1, num2) => {
+      var resto, x, y;
+      x = num1;
+      y = num2;
+      while (resto != 0) {
+        resto = x % y;
+        x = y;
+        y = resto;
+      }
+      return (num1 * num2) / x;
+    },
+    getFractionFromDecimal: function (fraction) {
+      const len = fraction.toString().length - 2;
+
+      let denominator = Math.pow(10, len);
+      let numerator = fraction * denominator;
+
+      const divisor = game.math.greatestCommonDivisor(numerator, denominator);
+
+      numerator /= divisor;
+      denominator /= divisor;
+
+      return {
+        string: Math.floor(numerator) + '/' + Math.floor(denominator),
+        numerator: Math.floor(numerator),
+        denominator: Math.floor(denominator),
+      };
+    },
     /**
      * Checks if pointer/mouse is over (rectangular) icon.
      *

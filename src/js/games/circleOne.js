@@ -135,7 +135,7 @@ const circleOne = {
     this.restart = restart;
 
     this.utils.renderCharacters(validPath, balloonX);
-    this.utils.renderAuxiliarUI();
+    this.utils.renderUI();
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
@@ -255,7 +255,11 @@ const circleOne = {
           direc: undefined,
           distance: undefined,
           angle: undefined,
-          label: [],
+          fraction: {
+            labels: [],
+            nominator: undefined,
+            denominator: undefined,
+          },
         };
         const curDivisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
 
@@ -314,7 +318,22 @@ const circleOne = {
             {
               x: fractionX,
               y: curCircleY + 10,
-              text: curDirection === 'left' ? '-1' : '1',
+              text: '1',
+            },
+            {
+              x: fractionX,
+              y: curCircleY - 2,
+              text: '',
+            },
+            {
+              x: fractionX,
+              y: curCircleY - 2,
+              text: '',
+            },
+            {
+              x: fractionX - 25,
+              y: curCircleY + 10,
+              text: curDirection === 'left' ? '-' : '',
             },
           ];
         } else {
@@ -361,7 +380,7 @@ const circleOne = {
 
         if (showFractions) {
           for (let cur in curFractionItems) {
-            curCircleInfo.label.push(
+            curCircleInfo.fraction.labels.push(
               game.add.text(
                 curFractionItems[cur].x,
                 curFractionItems[cur].y,
@@ -370,6 +389,9 @@ const circleOne = {
               )
             );
           }
+          curCircleInfo.fraction.nominator = curCircleInfo.direc;
+          curCircleInfo.fraction.denominator = curDivisor;
+          console.log(curCircleInfo.fraction.nominator);
         }
 
         curCircle.rotate = 90;
@@ -501,17 +523,22 @@ const circleOne = {
       );
       self.basket.anchor(0.5, 0.5);
     },
-    renderAuxiliarUI: function () {
+    renderUI: function () {
       // Help pointer
       self.help = game.add.image(0, 0, 'pointer', 2, 0);
 
       // Intro text
+      const correctMessage =
+        gameMode === 'a'
+          ? game.lang.circleOne_intro_a
+          : game.lang.circleOne_intro_b;
+      const treatedMessage = correctMessage.split('\\n');
       self.message = [];
       self.message.push(
         game.add.text(
           context.canvas.width / 2,
           170,
-          game.lang.circleOne_intro1,
+          treatedMessage[0],
           textStyles.h1_
         )
       );
@@ -519,10 +546,12 @@ const circleOne = {
         game.add.text(
           context.canvas.width / 2,
           220,
-          game.lang.circleOne_intro2,
+          treatedMessage[1],
           textStyles.h1_
         )
       );
+
+      self.utils.renderFractionCalculationUI();
 
       // continue button
       self.continue.modal = game.add.geom.rect(
@@ -553,6 +582,162 @@ const circleOne = {
         textStyles.btn
       );
       self.continue.text.alpha = 0;
+    },
+    renderFractionCalculationUI: function () {
+      const font = {
+        font: '62px monospace',
+        align: 'left',
+        fill: colors.green,
+      };
+
+      const nominators = [];
+      const denominators = [];
+      const renderList = [];
+
+      const padding = 100;
+      const offsetX = 100;
+      const widthOfChar = 35;
+
+      const x0 = padding;
+      const y0 = context.canvas.height / 2;
+      let nextX = x0;
+
+      const cardHeight = 400;
+      const cardX = x0 - padding;
+      const cardY = y0; // + cardHeight / 4;
+
+      // Card
+      const card = game.add.geom.rect(
+        cardX,
+        cardY,
+        0,
+        cardHeight,
+        colors.blueDark,
+        8,
+        colors.blueLight,
+        0.5
+      );
+      card.anchor(0, 0.5);
+      renderList.push(card);
+
+      // Fraction list
+      for (let i in self.circles.list) {
+        const curFraction = self.circles.list[i].info.fraction;
+        let curFractionSign = '+';
+        if (curFraction.labels[3].name === '-') {
+          curFractionSign = '-';
+          font.fill = colors.red;
+        }
+
+        renderList.push(
+          game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
+        );
+        renderList.push(
+          game.add.text(x0 + i * offsetX + offsetX / 2, y0, '1', font)
+        );
+        renderList.push(
+          game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
+        );
+        renderList.push(
+          game.add.text(
+            x0 + i * offsetX + offsetX / 2,
+            y0 + 70,
+            curFraction.labels[0].name,
+            font
+          )
+        );
+
+        nominators.push(curFraction.nominator);
+        denominators.push(curFraction.denominator);
+      }
+
+      // Setup for fraction operation with least common multiple
+      font.fill = colors.black;
+      const updatedNominators = [];
+      const mmc = game.math.mmcArray(denominators);
+      let resultNominator = 0;
+      for (let i in nominators) {
+        const temp = nominators[i] * (mmc / denominators[i]);
+        updatedNominators.push(temp);
+        resultNominator += temp;
+      }
+      const resultNominatorUnsigned =
+        resultNominator < 0 ? -resultNominator : resultNominator;
+      const resultAux = resultNominator / mmc;
+      const result =
+        ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
+
+      // let fracLine = '';
+      // const updatedNominatorsString = updatedNominators
+      //   .map((n) => {
+      //     const len = ('' + n).length;
+      //     for (let i = 0; i < len; i++) fracLine += '_';
+      //     fracLine = n < 0 ? fracLine : fracLine + '_';
+      //     return n >= 0 ? '+' + n : n;
+      //   })
+      //   .join('');
+      // const fractionMiddleX = widthOfChar * (fracLine.length / 2);
+
+      // Fraction operation with least common multiple
+      nextX = x0 + self.circles.list.length * offsetX + 20;
+      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      // nextX += offsetX / 2;
+      // renderList.push(game.add.text(nextX, y0, updatedNominatorsString, font));
+      // renderList.push(
+      //   game.add.text(nextX + fractionMiddleX, y0 + 70, mmc, font)
+      // );
+      // renderList.push(game.add.text(nextX, y0, fracLine, font));
+
+      // Fraction result
+      //nextX += fractionMiddleX * 2 + 50;
+      renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      font.align = 'center';
+      nextX += offsetX + 40;
+      renderList.push(
+        game.add.text(nextX - 80, y0 + 35, result > 0 ? '' : '-', font)
+      );
+      renderList.push(game.add.text(nextX, y0, resultNominatorUnsigned, font));
+      renderList.push(game.add.text(nextX, y0 + 70, mmc, font));
+      renderList.push(game.add.text(nextX, y0, '___', font));
+
+      // Fraction result simplified setup
+      const mdcAux = game.math.mdc(resultNominator, mmc);
+      const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
+      if (mdc !== 1) {
+        nextX += offsetX;
+        renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+        nextX += offsetX;
+        renderList.push(
+          game.add.text(nextX - 50, y0 + 35, result > 0 ? '' : '-', font)
+        );
+        renderList.push(
+          game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
+        );
+        renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
+        renderList.push(game.add.text(nextX, y0, '__', font));
+      }
+
+      // Decimal result
+      // nextX += offsetX;
+      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      // nextX += offsetX / 2;
+      // renderList.push(game.add.text(nextX, y0 + 35, result, font));
+
+      //let resultWidth = ('' + result).length * widthOfChar;
+      let resultWidth = '__'.length * widthOfChar;
+      const cardWidth = nextX - x0 + resultWidth + padding * 2;
+      card.width = cardWidth;
+
+      // Center Card
+      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
+
+      renderList.forEach((item) => (item.alpha = 0));
+
+      self.fractionOperationUI = renderList;
     },
 
     // UPDATE
@@ -630,6 +815,8 @@ const circleOne = {
       game.timer.stop();
 
       game.animation.stop(self.kid.animation[0]);
+
+      self.fractionOperationUI.forEach((item) => (item.alpha = 1));
 
       if (game.math.isOverlap(self.basket, self.kid)) {
         self.control.isCorrect = true;
@@ -750,7 +937,7 @@ const circleOne = {
         // Hide fractions
         if (showFractions) {
           self.circles.list.forEach((circle) => {
-            circle.info.label.forEach((labelPart) => {
+            circle.info.fraction.labels.forEach((labelPart) => {
               labelPart.alpha = 0;
             });
           });
