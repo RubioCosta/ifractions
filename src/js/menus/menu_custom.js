@@ -271,33 +271,7 @@ const customMenuState = {
     infoIcon.id = 'gameDifficulty';
     self.menuIcons.push(infoIcon);
 
-    // Label 'Show Fractions / Auxiliar rectangles'
-    game.add.text(
-      x + 5 * offsetW,
-      y + offsetH + 50,
-      game.lang.show,
-      textStyles.h4_
-    );
-
-    self.auxText;
-
-    if (gameName == 'squareTwo') {
-      self.auxText = game.lang.aux_rectangle;
-      game.add.text(
-        x + 5 * offsetW + 10,
-        y + offsetH + 80,
-        self.auxText,
-        textStyles.h4_
-      );
-    } else {
-      self.auxText = game.lang.title;
-      game.add.text(
-        x + 5 * offsetW,
-        y + offsetH + 80,
-        self.auxText,
-        textStyles.h2_
-      );
-    }
+    gameList[gameId].assets.customMenu.auxiliarTitle(x, y, offsetW, offsetH);
   },
 
   renderCheckBox: function (x, y, offsetW, offsetH) {
