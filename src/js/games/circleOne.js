@@ -587,6 +587,14 @@ const circleOne = {
       self.continue.text.alpha = 0;
     },
     renderFractionCalculationUI: function () {
+      let validCircles = self.circles.list;
+      if (gameMode === 'b') {
+        validCircles = [];
+        for (let i = 0; i < self.control.endIndex; i++) {
+          validCircles.push(self.circles.list[i]);
+        }
+      }
+
       const font = textStyles.fraction;
       font.fill = colors.green;
 
@@ -622,8 +630,8 @@ const circleOne = {
       renderList.push(card);
 
       // Fraction list
-      for (let i in self.circles.list) {
-        const curFraction = self.circles.list[i].info.fraction;
+      for (let i in validCircles) {
+        const curFraction = validCircles[i].info.fraction;
         let curFractionSign = '+';
         if (curFraction.labels[3].name === '-') {
           curFractionSign = '-';
@@ -680,7 +688,7 @@ const circleOne = {
       // const fractionMiddleX = widthOfChar * (fracLine.length / 2);
 
       // Fraction operation with least common multiple
-      nextX = x0 + self.circles.list.length * offsetX + 20;
+      nextX = x0 + validCircles.length * offsetX + 20;
       // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
 
       // nextX += offsetX / 2;
