@@ -373,7 +373,7 @@ const squareOne = {
           curX,
           self.default.y0 - lineSize, // + self.default.height - lineSize,
           blockWidth - lineSize,
-          self.default.height - lineSize,
+          self.default.height - lineSize - 20,
           lineColor,
           lineSize,
           colors.blueBgInsideLevel,
@@ -402,7 +402,7 @@ const squareOne = {
         const x = self.default.x0 + (i + 1) * self.default.width * direc;
         const y = self.default.y0 + self.default.height + 45;
         game.add.geom
-          .circle(x, y, 60, undefined, 0, colors.white, 0.6)
+          .circle(x, y, 60, undefined, 0, colors.white, 0.8)
           .anchor(0, 0.25);
         game.add.text(
           gameOperation === 'minus' ? x - 2 : x,

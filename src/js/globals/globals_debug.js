@@ -5,12 +5,12 @@ const debugState = {
   name: { status: true, name: 'Username' },
   menu: { status: true, id: 1 },
   customMenu: {
-    status: false,
+    status: true,
     getData: () => {
-      return { mode: 'b', operation: 'minus', difficulty: 5, label: true };
+      return { mode: 'b', operation: 'plus', difficulty: 5, label: true };
     },
   },
-  map: { status: false },
+  map: { status: true },
   end: { status: false, stop: false },
 };
 

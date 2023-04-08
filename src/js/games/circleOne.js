@@ -95,6 +95,7 @@ const circleOne = {
       checkAnswer: false, // Check kid inside ballon's basket
       isCorrect: false, // Informs answer is correct
       showEndInfo: false,
+      endSignX: undefined,
       // mode 'b' exclusive
       endIndex: undefined,
       fractionIndex: -1, // Index of clicked circle (game (b))
@@ -191,7 +192,7 @@ const circleOne = {
             undefined,
             0,
             colors.white,
-            0.5
+            0.8
           )
           .anchor(0, 0.25);
         game.add.text(
@@ -391,7 +392,6 @@ const circleOne = {
           }
           curCircleInfo.fraction.nominator = curCircleInfo.direc;
           curCircleInfo.fraction.denominator = curDivisor;
-          console.log(curCircleInfo.fraction.nominator);
         }
 
         curCircle.rotate = 90;
@@ -551,9 +551,7 @@ const circleOne = {
         )
       );
 
-      self.utils.renderFractionCalculationUI();
-
-      // continue button
+      // Modal
       self.continue.modal = game.add.geom.rect(
         0,
         0,
@@ -564,6 +562,11 @@ const circleOne = {
         colors.white,
         0
       );
+
+      // Fraction operation
+      self.utils.renderFractionCalculationUI();
+
+      // continue button
       self.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
         context.canvas.height / 2 + 200,
@@ -584,11 +587,8 @@ const circleOne = {
       self.continue.text.alpha = 0;
     },
     renderFractionCalculationUI: function () {
-      const font = {
-        font: '62px monospace',
-        align: 'left',
-        fill: colors.green,
-      };
+      const font = textStyles.fraction;
+      font.fill = colors.green;
 
       const nominators = [];
       const denominators = [];
@@ -617,6 +617,7 @@ const circleOne = {
         colors.blueLight,
         0.5
       );
+      card.id = 'card';
       card.anchor(0, 0.5);
       renderList.push(card);
 
@@ -732,10 +733,15 @@ const circleOne = {
       const cardWidth = nextX - x0 + resultWidth + padding * 2;
       card.width = cardWidth;
 
+      self.control.endSignX =
+        (context.canvas.width - cardWidth) / 2 + cardWidth;
+
       // Center Card
       moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
 
-      renderList.forEach((item) => (item.alpha = 0));
+      renderList.forEach((item) => {
+        item.alpha = 0;
+      });
 
       self.fractionOperationUI = renderList;
     },
@@ -816,7 +822,11 @@ const circleOne = {
 
       game.animation.stop(self.kid.animation[0]);
 
-      self.fractionOperationUI.forEach((item) => (item.alpha = 1));
+      self.fractionOperationUI.forEach((item) => {
+        item.alpha = item.id === 'card' ? 0.5 : 1;
+      });
+
+      self.continue.modal.alpha = 0.3;
 
       if (game.math.isOverlap(self.basket, self.kid)) {
         self.control.isCorrect = true;
@@ -824,11 +834,12 @@ const circleOne = {
         if (audioStatus) game.audio.okSound.play();
         game.add
           .image(
-            context.canvas.width / 2,
+            self.control.endSignX + 50, //context.canvas.width / 2,
             context.canvas.height / 2,
             'answer_correct'
           )
           .anchor(0.5, 0.5);
+        self.continue.text.name = game.lang.continue;
         completedLevels++;
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
@@ -836,11 +847,12 @@ const circleOne = {
         if (audioStatus) game.audio.errorSound.play();
         game.add
           .image(
-            context.canvas.width / 2,
+            self.control.endSignX, //context.canvas.width / 2,
             context.canvas.height / 2,
             'answer_wrong'
           )
           .anchor(0.5, 0.5);
+        self.continue.text.name = game.lang.retry;
       }
 
       self.fetch.postScore();
@@ -896,7 +908,6 @@ const circleOne = {
         color = colors.red;
         //text = game.lang.retry;
       }
-      self.continue.modal.alpha = 0.25;
       // self.continue.text.name = text;
       self.continue.text.alpha = 1;
       self.continue.button.fillColor = color;

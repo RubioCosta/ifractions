@@ -9,7 +9,7 @@ const colors = {
   // Blues
   blueDark: '#02277d', // Line color that indicates right and fraction numbers
   blue: '#003cb3', // Subtitle
-  blueLight: '#7997d2',
+  blueLight: '#92b3e8', //'#a4c6fc',
 
   blueBg: '#cce5ff', // Background color
   blueBgInsideLevel: '#a8c0e6', // Background color in squareOne (used for floor gap)
@@ -35,8 +35,19 @@ const colors = {
 };
 
 const font = {
-  sizes: { h1: '48px', h2: '42px', h3: '38px', h4: '36px', p: '30px' },
-  families: { default: 'Arial, sans-serif', btn: "'Bangers', serif" },
+  sizes: {
+    h1: '48px',
+    h2: '42px',
+    h3: '38px',
+    h4: '36px',
+    p: '30px',
+    display: '62px',
+  },
+  families: {
+    default: 'Arial, sans-serif',
+    btn: "'Bangers', serif",
+    fraction: 'monospace',
+  },
 };
 
 /**
@@ -81,6 +92,11 @@ const textStyles = {
     align: 'center',
     fill: colors.white,
     increaseLetterSpacing: true,
+  },
+  fraction: {
+    font: `${font.sizes.display} ${font.families.fraction}`,
+    align: 'left',
+    fill: colors.blue,
   },
 };
 
