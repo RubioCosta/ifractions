@@ -189,7 +189,6 @@ const squareOne = {
 
       self.blocks.floor.correctXA =
         self.default.x0 + self.default.width * direc;
-      console.log('-->' + self.blocks.floor.correctXA);
       for (let i = 0; i < total; i++) {
         let curFractionItems = undefined;
         let font = undefined;
@@ -201,7 +200,6 @@ const squareOne = {
         const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
         self.control.divisorsList += curDivisor + ','; // List of divisors (for postScore())
         self.blocks.floor.correctXA += curBlockWidth * direc;
-        console.log('->' + self.blocks.floor.correctXA);
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
@@ -276,7 +274,7 @@ const squareOne = {
             );
           }
 
-          curBlock.labels = fractionPartsList;
+          curBlock.fraction = { labels: fractionPartsList };
         }
       }
 
@@ -346,7 +344,6 @@ const squareOne = {
       for (let i = 0; i < total; i++) {
         const curX =
           self.default.x0 + (self.default.width + i * blockWidth) * direc; //lineSize;
-        console.log(curX, self.blocks.floor.correctXA, '.');
         if (flag && gameMode == 'a') {
           if (
             (gameOperation == 'plus' && curX >= self.blocks.floor.correctXA) ||
@@ -354,7 +351,6 @@ const squareOne = {
           ) {
             self.blocks.floor.correctIndex = i - 1; // Set index of correct floor block
             flag = false;
-            console.log(self.blocks.floor.correctIndex);
           }
         }
 
@@ -602,7 +598,6 @@ const squareOne = {
       if (gameMode == 'a') {
         self.control.isCorrect =
           self.blocks.floor.index == self.blocks.floor.correctIndex;
-        console.log(self.blocks.floor.index, self.blocks.floor.correctIndex);
       } else {
         self.control.isCorrect =
           self.blocks.stack.index == self.blocks.stack.correctIndex;
@@ -705,58 +700,46 @@ const squareOne = {
     /**
      * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
      */
-    clickSquareHandler: function () {
+    clickSquareHandler: function (selectedIndex, curSet) {
       if (!self.control.hasClicked && !self.animation.animateEnding) {
         document.body.style.cursor = 'auto';
-
-        // On gameMode (a)
-        if (gameMode == 'a') {
-          // Turns selection arrow completely visible
-          self.arrow.alpha = 1;
-
-          // Make the unselected blocks invisible (look like there's only the ground)
-          for (let i in self.blocks.floor.list) {
-            // (SELECTION : self.blocks.floor.index)
-            if (i > self.blocks.floor.index)
-              self.blocks.floor.list[i].alpha = 0; // Make unselected 'floor' blocks invisible
-          }
-
-          // (FIXED : self.blocks.stack.index) save the 'stacked' blocks index
-          self.blocks.stack.index = self.blocks.stack.list.length - 1;
-          // On gameMode (b)
-        } else {
-          for (let i in self.blocks.stack.list) {
-            // (FIXED : self.blocks.stack.index)
-            if (i > self.blocks.stack.index)
-              self.blocks.stack.list[i].alpha = 0; // Make unselected 'stacked' blocks invisible
-          }
-
-          // (SELECTION : self.blocks.floor.index) save the 'floor' blocks index to compare to the stacked index in update
-          self.blocks.floor.index = self.blocks.floor.list.length - 1;
-
-          // Save the updated total stacked blocks to compare in update
-          self.blocks.stack.list.length = self.blocks.stack.index + 1;
-        }
-
         // Play beep sound
         if (audioStatus) game.audio.popSound.play();
 
         // Hide labels
         if (showFractions) {
           self.blocks.stack.list.forEach((block) => {
-            block.labels.forEach((label) => {
-              label.alpha = 0;
+            block.fraction.labels.forEach((lbl) => {
+              lbl.alpha = 0;
             });
           });
         }
         // Hide solution pointer
         if (self.help != undefined) self.help.alpha = 0;
+        // Hide unselected blocks
+        for (let i = curSet.list.length - 1; i > selectedIndex; i--) {
+          curSet.list[i].alpha = 0;
+        }
 
-        // Turn tractir animation on
+        // Save selected index
+        curSet.index = selectedIndex; //curSet.list.length - 1;
+
+        if (gameMode == 'a') {
+          self.arrow.alpha = 1;
+          // Save the other blocks index
+          self.blocks.stack.index = self.blocks.stack.list.length - 1;
+        } else {
+          // Save the other blocks index
+          self.blocks.floor.index = self.blocks.floor.list.length - 1;
+          // Save the updated total stacked blocks to compare in update
+          curSet.list.length = curSet.index + 1;
+        }
+
+        // Turn tractor animation on
         game.animation.play(self.tractor.animation[0]);
+        self.animation.animateTruck = true;
 
         self.control.hasClicked = true;
-        self.animation.animateTruck = true;
       }
     },
     /**
@@ -824,16 +807,13 @@ const squareOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
-      if (gameMode == 'a') {
-        self.blocks.floor.list.forEach((cur) => {
-          if (game.math.isOverIcon(x, y, cur))
-            self.utils.clickSquareHandler(cur);
-        });
-      } else {
-        self.blocks.stack.list.forEach((cur) => {
-          if (game.math.isOverIcon(x, y, cur))
-            self.utils.clickSquareHandler(cur);
-        });
+      const curSet = gameMode == 'a' ? self.blocks.floor : self.blocks.stack;
+
+      for (let i in curSet.list) {
+        if (game.math.isOverIcon(x, y, curSet.list[i])) {
+          self.utils.clickSquareHandler(i, curSet);
+          break;
+        }
       }
 
       navigation.onInputDown(x, y);
