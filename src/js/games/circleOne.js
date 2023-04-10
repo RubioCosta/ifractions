@@ -407,11 +407,7 @@ const circleOne = {
 
         // If game is type (b) (select fractions)
         if (gameMode === 'b') {
-          curCircle.alpha = 0.5;
           curCircle.index = i;
-          curCircleInfo.fraction.labels.forEach((lbl) => {
-            lbl.alpha = 0.5;
-          });
         }
 
         curCircleInfo.distance = Math.floor(
@@ -1021,7 +1017,7 @@ const circleOne = {
     outCircleHandler: function () {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'auto';
-        const alpha = 0.5;
+        const alpha = 1;
         self.circles.list.forEach((circle) => {
           circle.alpha = alpha;
           circle.info.fraction.labels.forEach((lbl) => {
