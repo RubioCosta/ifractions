@@ -67,6 +67,7 @@ const circleOne = {
       button: undefined,
       text: undefined,
     };
+    this.walkedPath = [];
 
     const pointWidth = (game.sprite['map_place'].width / 2) * 0.45;
     const distanceBetweenPoints =
@@ -96,8 +97,9 @@ const circleOne = {
       isCorrect: false, // Informs answer is correct
       showEndInfo: false,
       endSignX: undefined,
+      curWalkedPath: 0,
       // mode 'b' exclusive
-      endIndex: undefined,
+      correctIndex: undefined,
       fractionIndex: -1, // Index of clicked circle (game (b))
       numberOfPlusFractions: undefined,
     };
@@ -170,9 +172,9 @@ const circleOne = {
   utils: {
     // RENDERS
     renderRoad: function (validPath) {
-      // Road points
       const directionModifier = gameOperation === 'minus' ? -1 : 1;
       for (let i = 0; i <= 5; i++) {
+        // place
         game.add
           .sprite(
             validPath.x0 +
@@ -183,6 +185,7 @@ const circleOne = {
             0.45
           )
           .anchor(0.5, 0.5);
+        // circle behind number
         game.add.geom
           .circle(
             validPath.x0 +
@@ -195,6 +198,7 @@ const circleOne = {
             0.8
           )
           .anchor(0, 0.25);
+        // number
         game.add.text(
           validPath.x0 +
             i * validPath.distanceBetweenPoints * directionModifier,
@@ -208,15 +212,17 @@ const circleOne = {
         );
       }
 
-      self.walkedPath = game.add.geom.rect(
+      self.utils.renderWalkedPath(
         validPath.x0 - 1,
-        validPath.y0,
-        1,
-        1,
-        colors.blue,
-        2
+        validPath.y0 - 5,
+        gameOperation === 'minus' ? colors.red : colors.green
       );
-      self.walkedPath.alpha = 0;
+    },
+    renderWalkedPath: function (x, y, color) {
+      const path = game.add.geom.rect(x, y, 1, 1, color, 4);
+      //path.alpha = 0;
+      self.walkedPath.push(path);
+      return path;
     },
     renderCircles: function (validPath) {
       let restart = false;
@@ -225,7 +231,7 @@ const circleOne = {
 
       const directionModifier = gameOperation === 'minus' ? -1 : 1;
       const fractionX =
-        validPath.x0 + self.circles.diameter * directionModifier;
+        validPath.x0 - (self.circles.diameter - 10) * directionModifier;
       const font = {
         ...textStyles.h2_,
         font: 'bold ' + textStyles.h2_.font,
@@ -298,7 +304,10 @@ const circleOne = {
         font.fill = curLineColor;
 
         const curCircleY =
-          validPath.y0 - self.circles.diameter / 2 - i * self.circles.diameter;
+          validPath.y0 -
+          5 -
+          self.circles.diameter / 2 -
+          i * self.circles.diameter;
 
         // Draw circles
         if (curDivisor === 1) {
@@ -400,6 +409,9 @@ const circleOne = {
         if (gameMode === 'b') {
           curCircle.alpha = 0.5;
           curCircle.index = i;
+          curCircleInfo.fraction.labels.forEach((lbl) => {
+            lbl.alpha = 0.5;
+          });
         }
 
         curCircleInfo.distance = Math.floor(
@@ -447,12 +459,12 @@ const circleOne = {
       // If game is type (b), selectiong a random balloon place
       if (gameMode === 'b') {
         balloonX = validPath.x0;
-        self.control.endIndex = game.math.randomInRange(
+        self.control.correctIndex = game.math.randomInRange(
           self.control.numberOfPlusFractions,
           self.circles.list.length
         );
 
-        for (let i = 0; i < self.control.endIndex; i++) {
+        for (let i = 0; i < self.control.correctIndex; i++) {
           balloonX +=
             self.circles.list[i].info.distance *
             self.circles.list[i].info.direc;
@@ -521,6 +533,7 @@ const circleOne = {
         'balloon_basket',
         1.5
       );
+      self.basket.alpha = 0.8;
       self.basket.anchor(0.5, 0.5);
     },
     renderUI: function () {
@@ -590,7 +603,7 @@ const circleOne = {
       let validCircles = self.circles.list;
       if (gameMode === 'b') {
         validCircles = [];
-        for (let i = 0; i < self.control.endIndex; i++) {
+        for (let i = 0; i < self.control.correctIndex; i++) {
           validCircles.push(self.circles.list[i]);
         }
       }
@@ -705,7 +718,7 @@ const circleOne = {
       font.align = 'center';
       nextX += offsetX + 40;
       renderList.push(
-        game.add.text(nextX - 80, y0 + 35, result > 0 ? '' : '-', font)
+        game.add.text(nextX - 80, y0 + 35, result >= 0 ? '' : '-', font)
       );
       renderList.push(game.add.text(nextX, y0, resultNominatorUnsigned, font));
       renderList.push(game.add.text(nextX, y0 + 70, mmc, font));
@@ -765,8 +778,8 @@ const circleOne = {
         circle.x += self.animation.walkOffsetX * curDirec;
       });
       self.kid.x += self.animation.walkOffsetX * curDirec;
-      self.walkedPath.width += self.animation.walkOffsetX * curDirec;
-      self.walkedPath.lineColor = curCircle.lineColor;
+      self.walkedPath[self.control.curWalkedPath].width +=
+        self.animation.walkOffsetX * curDirec;
 
       // Update arc
       curCircle.info.angleDegree += self.animation.angleOffset * curDirec;
@@ -795,6 +808,13 @@ const circleOne = {
         self.kid.animation = self.animation.list.left;
         self.kid.curFrame = 23;
         game.animation.play('left');
+
+        self.control.curWalkedPath = 1;
+        self.utils.renderWalkedPath(
+          curCircle.x,
+          self.walkedPath[0].y + 8,
+          colors.red
+        );
       }
 
       if (lowerCircles) {
@@ -900,8 +920,8 @@ const circleOne = {
           self.help.y = self.road.y;
           // On gameMode (b)
         } else {
-          self.help.x = self.circles.list[self.control.endIndex - 1].x;
-          self.help.y = self.circles.list[self.control.endIndex - 1].y; // -            self.circles.diameter / 2;
+          self.help.x = self.circles.list[self.control.correctIndex - 1].x;
+          self.help.y = self.circles.list[self.control.correctIndex - 1].y; // -            self.circles.diameter / 2;
         }
         self.help.alpha = 0.7;
       }
@@ -969,7 +989,8 @@ const circleOne = {
         self.message[1].alpha = 0;
 
         self.balloon.alpha = 1;
-        self.walkedPath.alpha = 1;
+        self.basket.alpha = 1;
+        self.walkedPath[self.control.curWalkedPath].alpha = 1;
 
         self.control.hasClicked = true;
         self.animation.animateKid = true;
@@ -986,7 +1007,11 @@ const circleOne = {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'pointer';
         for (let i in self.circles.list) {
-          self.circles.list[i].alpha = i <= cur.index ? 1 : 0.5;
+          const alpha = i <= cur.index ? 1 : 0.5;
+          self.circles.list[i].alpha = alpha;
+          self.circles.list[i].info.fraction.labels.forEach((lbl) => {
+            lbl.alpha = alpha;
+          });
         }
       }
     },
@@ -996,8 +1021,12 @@ const circleOne = {
     outCircleHandler: function () {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'auto';
+        const alpha = 0.5;
         self.circles.list.forEach((circle) => {
-          circle.alpha = 0.5;
+          circle.alpha = alpha;
+          circle.info.fraction.labels.forEach((lbl) => {
+            lbl.alpha = alpha;
+          });
         });
       }
     },
