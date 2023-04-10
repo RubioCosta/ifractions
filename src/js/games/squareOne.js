@@ -62,6 +62,7 @@ const squareOne = {
     this.control = {
       direc: gameOperation == 'minus' ? -1 : 1, // Will be multiplied to values to easily change tractor direction when needed
       divisorsList: '', // Hold the divisors for each fraction on stacked blocks (created for postScore())
+      lineWidth: 4,
 
       hasClicked: false, // Checks if player 'clicked' on a block
       checkAnswer: false, // When true allows game to run 'check answer' code in update
@@ -136,9 +137,14 @@ const squareOne = {
     this.restart = this.utils.renderStackedBlocks(
       this.control.direc,
       lineColor,
-      fillColor
+      fillColor,
+      this.control.lineWidth
     );
-    this.utils.renderFloorBlocks(this.control.direc, lineColor);
+    this.utils.renderFloorBlocks(
+      this.control.direc,
+      lineColor,
+      this.control.lineWidth
+    );
     this.utils.renderCharacters();
     this.utils.renderUI(this.control.direc);
 
@@ -178,11 +184,9 @@ const squareOne = {
      *
      * @returns {boolean}
      */
-    renderStackedBlocks: function (direc, lineColor, fillColor) {
+    renderStackedBlocks: function (direc, lineColor, fillColor, lineWidth) {
       let restart = false;
       let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
-
-      const lineSize = 3;
 
       const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
       const total = game.math.randomInRange(curMapPosition + 2, max); // Current number of stacked blocks for the level
@@ -203,11 +207,11 @@ const squareOne = {
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
-          self.default.y0 - i * (self.default.height - lineSize),
-          curBlockWidth - lineSize,
-          self.default.height - lineSize,
+          self.default.y0 - i * self.default.height,
+          curBlockWidth,
+          self.default.height,
           lineColor,
-          lineSize,
+          lineWidth,
           fillColor,
           1
         );
@@ -224,7 +228,7 @@ const squareOne = {
         // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
         if (showFractions) {
           const x = self.default.x0 + (curBlockWidth + 40) * direc;
-          const y = self.default.height - lineSize;
+          const y = self.default.height;
 
           if (curDivisor === 1) {
             font = textStyles.h2_;
@@ -313,9 +317,7 @@ const squareOne = {
     /**
      * Create floor blocks for the level in create()
      */
-    renderFloorBlocks: function (direc, lineColor) {
-      const lineSize = 2;
-
+    renderFloorBlocks: function (direc, lineColor, lineWidth) {
       // For each floor block
       const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
@@ -343,7 +345,7 @@ const squareOne = {
 
       for (let i = 0; i < total; i++) {
         const curX =
-          self.default.x0 + (self.default.width + i * blockWidth) * direc; //lineSize;
+          self.default.x0 + (self.default.width + i * blockWidth) * direc;
         if (flag && gameMode == 'a') {
           if (
             (gameOperation == 'plus' && curX >= self.blocks.floor.correctXA) ||
@@ -367,11 +369,11 @@ const squareOne = {
         // Create floor block
         const curBlock = game.add.geom.rect(
           curX,
-          self.default.y0 - lineSize, // + self.default.height - lineSize,
-          blockWidth - lineSize,
-          self.default.height - lineSize - 20,
+          self.default.y0,
+          blockWidth,
+          self.default.height - 20,
           lineColor,
-          lineSize,
+          lineWidth,
           colors.blueBgInsideLevel,
           1
         );
@@ -435,7 +437,7 @@ const squareOne = {
       self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
 
       if (gameMode === 'b') self.help.anchor(0.25, 0.7);
-      else self.help.anchor(0.5, 0);
+      else self.help.anchor(0.2, 0);
 
       // Selection Arrow
       if (gameMode == 'a') {
@@ -509,79 +511,23 @@ const squareOne = {
       const stack = self.blocks.stack;
       const floor = self.blocks.floor;
 
-      // MANAGE HORIZONTAL MOVEMENT
-
       // Move
       self.tractor.x += self.animation.speed;
-      for (let i in stack.list) {
-        stack.list[i].x += self.animation.speed;
-      }
+      stack.list.forEach((cur) => (cur.x += self.animation.speed));
 
-      // MANAGE BLOCKS AND FLOOR GAPS
-      // If block is 1/n (not 1/1) there's an extra block space to go through before the start of next block
+      // If block is 1/n (not 1/1) there is an extra block space
+      // to go through before the start of next block
       const restOfCurBlock =
         (self.default.width - stack.list[stack.curIndex].width) *
         self.control.direc;
 
-      // Check if block falls
       if (
         (gameOperation == 'plus' &&
           stack.list[0].x >= stack.curBlockEnd + restOfCurBlock) ||
         (gameOperation == 'minus' &&
           stack.list[0].x <= stack.curBlockEnd + restOfCurBlock)
       ) {
-        let lowerBlock = true;
-
-        const curEnd =
-          stack.list[0].x +
-          stack.list[stack.curIndex].width * self.control.direc;
-
-        // If current index is (a) last stacked index (correct index - fixed)
-        // If current index is (b) selected stacked index
-        if (stack.curIndex == stack.index) {
-          // floor.index : (a) selected floor index
-          // floor.index : (b) last floor index (correct index - fixed)
-          const selectedEnd =
-            floor.list[floor.index].x +
-            floor.list[0].width * self.control.direc;
-
-          // (a) last stacked block (fixed) doesnt fit selected gap AKA NOT ENOUGH FLOOR BLOCKS (DOESNT CHECK TOO MANY)
-          // (b) selected stacked index doesnt fit last floor gap (fixed) AKA TOO MANY STACKED BLOCKS (DOESNT CHECK NOT ENOUGH)
-          if (
-            (gameOperation == 'plus' && curEnd > selectedEnd) ||
-            (gameOperation == 'minus' && curEnd < selectedEnd)
-          ) {
-            lowerBlock = false;
-          }
-        } else {
-          // Update to next block end
-          stack.curBlockEnd +=
-            stack.list[stack.curIndex + 1].width * self.control.direc;
-        }
-
-        // Fill floor gap
-        if (lowerBlock) {
-          // Until (a) selected floor index
-          // Until (b) last floor index (correct index - fixed)
-          // Updates floor index to be equivalent to stacked index (and change alpha so floor appears to be filled)
-          for (let i = 0; i <= floor.index; i++) {
-            if (
-              (gameOperation == 'plus' && floor.list[i].x < curEnd) ||
-              (gameOperation == 'minus' && floor.list[i].x > curEnd)
-            ) {
-              floor.list[i].alpha = 0; //.2;
-              floor.curIndex = i;
-            }
-          }
-
-          // Lower
-          stack.list[stack.curIndex].alpha = 0;
-          stack.list.forEach((cur) => {
-            cur.y += self.default.height - 2;
-          }); // Lower stacked blocks
-        }
-
-        stack.curIndex++;
+        self.utils.checkIfBlockFalls(stack, floor, restOfCurBlock);
       }
 
       // WHEN REACHED END POSITION
@@ -589,6 +535,58 @@ const squareOne = {
         self.animation.animateTruck = false;
         self.control.checkAnswer = true;
       }
+    },
+    checkIfBlockFalls: (stack, floor) => {
+      let lowerBlock = true;
+
+      const curEnd =
+        stack.list[0].x + stack.list[stack.curIndex].width * self.control.direc;
+
+      // If current index is (a) last stacked index (correct index - fixed)
+      // If current index is (b) selected stacked index
+      if (stack.curIndex == stack.index) {
+        // floor.index : (a) selected floor index
+        // floor.index : (b) last floor index (correct index - fixed)
+        const selectedEnd =
+          floor.list[floor.index].x + floor.list[0].width * self.control.direc;
+
+        // (a) last stacked block (fixed) doesnt fit selected gap AKA NOT ENOUGH FLOOR BLOCKS (DOESNT CHECK TOO MANY)
+        // (b) selected stacked index doesnt fit last floor gap (fixed) AKA TOO MANY STACKED BLOCKS (DOESNT CHECK NOT ENOUGH)
+        if (
+          (gameOperation == 'plus' && curEnd > selectedEnd) ||
+          (gameOperation == 'minus' && curEnd < selectedEnd)
+        ) {
+          lowerBlock = false;
+        }
+      } else {
+        // Update to next block end
+        stack.curBlockEnd +=
+          stack.list[stack.curIndex + 1].width * self.control.direc;
+      }
+
+      // Fill floor gap
+      if (lowerBlock) {
+        // Until (a) selected floor index
+        // Until (b) last floor index (correct index - fixed)
+        // Updates floor index to be equivalent to stacked index (and change alpha so floor appears to be filled)
+        for (let i = 0; i <= floor.index; i++) {
+          if (
+            (gameOperation == 'plus' && floor.list[i].x < curEnd) ||
+            (gameOperation == 'minus' && floor.list[i].x > curEnd)
+          ) {
+            floor.list[i].alpha = 0;
+            floor.curIndex = i;
+          }
+        }
+
+        // Lower
+        stack.list[stack.curIndex].alpha = 0;
+        stack.list.forEach((cur) => {
+          cur.y += self.default.height;
+        });
+      }
+
+      stack.curIndex++;
     },
     checkAnswer: () => {
       game.timer.stop();
