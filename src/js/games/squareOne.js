@@ -437,17 +437,19 @@ const squareOne = {
     renderUI: function (direc) {
       // Help pointer
       self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
-      //self.help.anchor(0.5, 0);
+
+      if (gameMode === 'b') self.help.anchor(0.25, 0.7);
+      else self.help.anchor(0.5, 0);
 
       // Selection Arrow
       if (gameMode == 'a') {
         self.arrow = game.add.image(
           self.default.x0 + self.default.width * direc,
-          self.default.y0 + 35,
+          self.default.y0,
           'arrow_down',
           1.5
         );
-        self.arrow.anchor(0.5, 0.5);
+        self.arrow.anchor(0.5, 1);
         self.arrow.alpha = 0.5;
       }
 
@@ -671,7 +673,7 @@ const squareOne = {
           const aux = self.blocks.floor.list[0];
           self.help.x =
             self.blocks.floor.correctX - (aux.width / 2) * self.control.direc;
-          self.help.y = 501;
+          self.help.y = self.default.y0;
           // On gameMode (b)
         } else {
           const aux = self.blocks.stack.list[self.blocks.stack.correctIndex];
