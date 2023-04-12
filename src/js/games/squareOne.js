@@ -39,17 +39,13 @@
 const squareOne = {
   default: undefined,
 
+  ui: undefined,
   control: undefined,
   animation: undefined,
 
   tractor: undefined,
   stack: undefined,
   floor: undefined,
-
-  arrow: undefined,
-  help: undefined,
-  message: undefined,
-  continue: undefined,
 
   /**
    * Main code
@@ -59,7 +55,6 @@ const squareOne = {
     const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
     let lineColor = undefined;
     let fillColor = undefined;
-
     if (gameOperation === 'minus') {
       lineColor = colors.red;
       fillColor = colors.redLight;
@@ -68,10 +63,15 @@ const squareOne = {
       fillColor = colors.greenLight;
     }
 
-    this.continue = {
-      // modal: undefined,
-      button: undefined,
-      text: undefined,
+    this.ui = {
+      arrow: undefined,
+      help: undefined,
+      message: undefined,
+      continue: {
+        // modal: undefined,
+        button: undefined,
+        text: undefined,
+      },
     };
     this.control = {
       direc: gameOperation == 'minus' ? -1 : 1, // Will be multiplied to values to easily change tractor direction when needed
@@ -102,6 +102,7 @@ const squareOne = {
       self.default.x0 + self.default.width * self.control.direc;
     this.default.arrowXEnd =
       self.default.arrowX0 + self.default.width * self.control.direc * 8;
+
     renderBackground();
 
     // FOR MOODLE
@@ -183,8 +184,6 @@ const squareOne = {
     // RENDER
     /**
      * Create stacked blocks for the level in create()
-     *
-     * @returns {boolean}
      */
     renderStackedBlocks: (direc, lineColor, fillColor, lineWidth, divisor) => {
       let restart = false;
@@ -457,20 +456,20 @@ const squareOne = {
     },
     renderMainUI: () => {
       // Help pointer
-      self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
-      if (gameMode === 'b') self.help.anchor(0.25, 0.7);
-      else self.help.anchor(0.2, 0);
+      self.ui.help = game.add.image(0, 0, 'pointer', 1.7, 0);
+      if (gameMode === 'b') self.ui.help.anchor(0.25, 0.7);
+      else self.ui.help.anchor(0.2, 0);
 
       // Selection Arrow
       if (gameMode == 'a') {
-        self.arrow = game.add.image(
+        self.ui.arrow = game.add.image(
           self.default.arrowX0,
           self.default.y0,
           'arrow_down',
           1.5
         );
-        self.arrow.anchor(0.5, 1);
-        self.arrow.alpha = 0.5;
+        self.ui.arrow.anchor(0.5, 1);
+        self.ui.arrow.alpha = 0.5;
       }
 
       // Intro text
@@ -479,8 +478,8 @@ const squareOne = {
           ? game.lang.squareOne_intro_a
           : game.lang.squareOne_intro_b;
       const treatedMessage = correctMessage.split('\\n');
-      self.message = [];
-      self.message.push(
+      self.ui.message = [];
+      self.ui.message.push(
         game.add.text(
           context.canvas.width / 2,
           170,
@@ -488,7 +487,7 @@ const squareOne = {
           textStyles.h1_
         )
       );
-      self.message.push(
+      self.ui.message.push(
         game.add.text(
           context.canvas.width / 2,
           220,
@@ -499,7 +498,7 @@ const squareOne = {
     },
     renderOperationUI: () => {
       // Modal
-      // self.continue.modal = game.add.geom.rect(
+      // self.ui.continue.modal = game.add.geom.rect(
       //   0,
       //   0,
       //   context.canvas.width,
@@ -686,7 +685,7 @@ const squareOne = {
       }
 
       // continue button
-      self.continue.button = game.add.geom.rect(
+      self.ui.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
         context.canvas.height / 2 + 200,
         350,
@@ -695,8 +694,8 @@ const squareOne = {
         0,
         btnColor
       );
-      self.continue.button.anchor(0.5, 0.5);
-      self.continue.text = game.add.text(
+      self.ui.continue.button.anchor(0.5, 0.5);
+      self.ui.continue.text = game.add.text(
         context.canvas.width / 2,
         context.canvas.height / 2 + 16 + 200,
         btnText,
@@ -766,7 +765,7 @@ const squareOne = {
 
       game.animation.stop(self.tractor.animation[0]);
 
-      if (gameMode === 'a') self.arrow.alpha = 0;
+      if (gameMode === 'a') self.ui.arrow.alpha = 0;
 
       self.control.isCorrect =
         gameMode === 'a'
@@ -833,17 +832,17 @@ const squareOne = {
         // On gameMode (a)
         if (gameMode == 'a') {
           const aux = self.floor.list[0];
-          self.help.x =
+          self.ui.help.x =
             self.floor.correctX - (aux.width / 2) * self.control.direc;
-          self.help.y = self.default.y0;
+          self.ui.help.y = self.default.y0;
           // On gameMode (b)
         } else {
           const aux = self.stack.list[self.stack.correctIndex];
-          self.help.x = aux.x + (aux.width / 2) * self.control.direc;
-          self.help.y = aux.y;
+          self.ui.help.x = aux.x + (aux.width / 2) * self.control.direc;
+          self.ui.help.y = aux.y;
         }
 
-        self.help.alpha = 0.7;
+        self.ui.help.alpha = 0.7;
       }
     },
 
@@ -857,8 +856,8 @@ const squareOne = {
         // Play beep sound
         if (audioStatus) game.audio.popSound.play();
 
-        self.message[0].alpha = 0;
-        self.message[1].alpha = 0;
+        self.ui.message[0].alpha = 0;
+        self.ui.message[1].alpha = 0;
         // Hide labels
         if (showFractions) {
           self.stack.list.forEach((block) => {
@@ -868,7 +867,7 @@ const squareOne = {
           });
         }
         // Hide solution pointer
-        if (self.help != undefined) self.help.alpha = 0;
+        if (self.ui.help != undefined) self.ui.help.alpha = 0;
         // Hide unselected blocks
         for (let i = curSet.list.length - 1; i > clickedIndex; i--) {
           curSet.list[i].alpha = 0;
@@ -878,7 +877,7 @@ const squareOne = {
         curSet.selectedIndex = clickedIndex;
 
         if (gameMode == 'a') {
-          self.arrow.alpha = 1;
+          self.ui.arrow.alpha = 1;
         } else {
           // update list size
           self.stack.list.length = curSet.selectedIndex + 1;
@@ -916,29 +915,6 @@ const squareOne = {
           self.stack.selectedIndex = cur.blockIndex;
         }
       }
-
-      // if (!self.control.hasClicked) {
-      //   document.body.style.cursor = 'pointer';
-
-      // On gameMode (a)
-      // if (gameMode == 'a') {
-      //   for (let i in self.floor.list) {
-      //     self.floor.list[i].alpha = i <= cur.blockIndex ? 1 : 0.5;
-      //   }
-
-      //   // Saves the index of the selected 'floor' block
-      //   self.floor.selectedIndex = cur.blockIndex;
-
-      //   // On gameMode (b)
-      // } else {
-      //   for (let i in self.stack.list) {
-      //     self.stack.list[i].alpha = i <= cur.blockIndex ? 0.5 : 0.2;
-      //   }
-
-      //   // Saves the index of the selected 'stack' block
-      //   self.stack.selectedIndex = cur.blockIndex;
-      // }
-      // }
     },
     /**
      * Function called by self.events.onInputOver() when cursos is out of a valid rectangle
@@ -951,7 +927,7 @@ const squareOne = {
           for (let i in self.floor.list) {
             self.floor.list[i].alpha = 0.5;
           }
-          self.floor.selectedIndex = cur.blockIndex;
+          self.floor.selectedIndex = undefined;
         } else {
           for (let i in self.stack.list) {
             self.stack.list[i].alpha = 0.5;
@@ -959,7 +935,7 @@ const squareOne = {
               lbl.alpha = 1;
             });
           }
-          self.stack.selectedIndex = cur.blockIndex;
+          self.stack.selectedIndex = undefined;
         }
       }
     },
@@ -986,7 +962,7 @@ const squareOne = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           self.utils.endLevel();
         }
       }
@@ -1020,7 +996,7 @@ const squareOne = {
             !self.animation.animateEnding &&
             game.math.isOverIcon(x, self.default.y0, cur)
           ) {
-            self.arrow.x = x;
+            self.ui.arrow.x = x;
           }
         });
 
@@ -1040,16 +1016,18 @@ const squareOne = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           // If pointer is over icon
           document.body.style.cursor = 'pointer';
-          self.continue.button.scale = self.continue.button.initialScale * 1.1;
-          self.continue.text.style = textStyles.btnLg;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1.1;
+          self.ui.continue.text.style = textStyles.btnLg;
         } else {
           // If pointer is not over icon
           document.body.style.cursor = 'auto';
-          self.continue.button.scale = self.continue.button.initialScale * 1;
-          self.continue.text.style = textStyles.btn;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1;
+          self.ui.continue.text.style = textStyles.btn;
         }
       }
 
