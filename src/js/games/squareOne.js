@@ -43,7 +43,7 @@ const squareOne = {
   animation: undefined,
 
   tractor: undefined,
-  stck: undefined,
+  stack: undefined,
   floor: undefined,
 
   arrow: undefined,
@@ -851,7 +851,7 @@ const squareOne = {
     /**
      * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
      */
-    clickSquareHandler: (clickedIndex, curSet) => {
+    clickHandler: (clickedIndex, curSet) => {
       if (!self.control.hasClicked && !self.animation.animateEnding) {
         document.body.style.cursor = 'auto';
         // Play beep sound
@@ -895,51 +895,71 @@ const squareOne = {
      *
      * @param {object} cur rectangle the cursor is over
      */
-    overSquareHandler: (cur) => {
+    overHandler: (cur) => {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'pointer';
 
-        // On gameMode (a)
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           for (let i in self.floor.list) {
             self.floor.list[i].alpha = i <= cur.blockIndex ? 1 : 0.5;
           }
-
-          // Saves the index of the selected 'floor' block
           self.floor.selectedIndex = cur.blockIndex;
-
-          // On gameMode (b)
         } else {
           for (let i in self.stack.list) {
-            self.stack.list[i].alpha = i <= cur.blockIndex ? 0.5 : 0.2;
-          }
+            const alpha = i <= cur.blockIndex ? 0.5 : 0.2;
 
-          // Saves the index of the selected 'stack' block
+            self.stack.list[i].alpha = alpha;
+            self.stack.list[i].fraction.labels.forEach((lbl) => {
+              lbl.alpha = alpha;
+            });
+          }
           self.stack.selectedIndex = cur.blockIndex;
         }
       }
+
+      // if (!self.control.hasClicked) {
+      //   document.body.style.cursor = 'pointer';
+
+      // On gameMode (a)
+      // if (gameMode == 'a') {
+      //   for (let i in self.floor.list) {
+      //     self.floor.list[i].alpha = i <= cur.blockIndex ? 1 : 0.5;
+      //   }
+
+      //   // Saves the index of the selected 'floor' block
+      //   self.floor.selectedIndex = cur.blockIndex;
+
+      //   // On gameMode (b)
+      // } else {
+      //   for (let i in self.stack.list) {
+      //     self.stack.list[i].alpha = i <= cur.blockIndex ? 0.5 : 0.2;
+      //   }
+
+      //   // Saves the index of the selected 'stack' block
+      //   self.stack.selectedIndex = cur.blockIndex;
+      // }
+      // }
     },
     /**
      * Function called by self.events.onInputOver() when cursos is out of a valid rectangle
      */
-    outSquareHandler: () => {
+    outHandler: () => {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'auto';
 
-        // On game mode (a)
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           for (let i in self.floor.list) {
-            self.floor.list[i].alpha = 0.5; // Back to normal
+            self.floor.list[i].alpha = 0.5;
           }
-
-          self.floor.selectedIndex = undefined;
-          // On game mode (b)
+          self.floor.selectedIndex = cur.blockIndex;
         } else {
           for (let i in self.stack.list) {
-            self.stack.list[i].alpha = 0.5; // Back to normal
+            self.stack.list[i].alpha = 0.5;
+            self.stack.list[i].fraction.labels.forEach((lbl) => {
+              lbl.alpha = 1;
+            });
           }
-
-          self.stack.selectedIndex = undefined;
+          self.stack.selectedIndex = cur.blockIndex;
         }
       }
     },
@@ -959,7 +979,7 @@ const squareOne = {
       const curSet = gameMode == 'a' ? self.floor : self.stack;
       for (let i in curSet.list) {
         if (game.math.isOverIcon(x, y, curSet.list[i])) {
-          self.utils.clickSquareHandler(+i, curSet);
+          self.utils.clickHandler(+i, curSet);
           break;
         }
       }
@@ -992,7 +1012,7 @@ const squareOne = {
           // hover floor blocks
           if (game.math.isOverIcon(x, y, cur)) {
             isOverFloor = true;
-            self.utils.overSquareHandler(cur);
+            self.utils.overHandler(cur);
           }
           // move arrow
           if (
@@ -1004,7 +1024,7 @@ const squareOne = {
           }
         });
 
-        if (!isOverFloor) self.utils.outSquareHandler('a');
+        if (!isOverFloor) self.utils.outHandler('a');
       }
 
       if (gameMode == 'b') {
@@ -1012,10 +1032,10 @@ const squareOne = {
         self.stack.list.forEach((cur) => {
           if (game.math.isOverIcon(x, y, cur)) {
             isOverStack = true;
-            self.utils.overSquareHandler(cur);
+            self.utils.overHandler(cur);
           }
         });
-        if (!isOverStack) self.utils.outSquareHandler('b');
+        if (!isOverStack) self.utils.outHandler('b');
       }
 
       // Continue button
