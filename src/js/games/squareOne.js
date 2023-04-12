@@ -85,9 +85,9 @@ const squareOne = {
           : truckWidth, // Initial 'x' coordinate for the tractor and stacked blocks
       y0: context.canvas.height - game.image['floor_grass'].width * 1.5,
     };
-    renderBackground();
+    const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
-    // Calls function that loads navigation icons
+    renderBackground();
 
     // FOR MOODLE
     if (moodle) {
@@ -97,31 +97,26 @@ const squareOne = {
       navigation.add.right(['audio']);
     }
 
-    this.blocks = {
-      stack: {
-        list: [],
-        index: undefined, // (gameMode 'b') index of 'stacked' block selected by player
+    this.stack = {
+      list: [],
+      selectedIndex: undefined,
+      correctIndex: undefined, // (gameMode 'b') index of the CORRECT 'stacked' block
 
-        // Control variables for animation
-        curIndex: 0, // (needs to be 0)
-        curBlockEnd: undefined,
+      curIndex: 0, // (needs to be 0)
 
-        // Correct values
-        correctIndex: undefined, // (gameMode 'b') index of the CORRECT 'stacked' block
-      },
-      floor: {
-        list: [], // Group of 'floor' block objects
-        index: undefined, // (gameMode 'a') index of 'floor' block selected by player
+      curBlockEndX: undefined,
+    };
+    this.floor = {
+      list: [],
+      selectedIndex: undefined,
+      correctIndex: undefined, // (gameMode 'a') index of the CORRECT 'floor' block
 
-        // Control variables for animation
-        curIndex: -1, // (needs to be -1)
+      curIndex: -1, // (needs to be -1)
 
-        // Correct values
-        correctIndex: undefined, // (gameMode 'a') index of the CORRECT 'floor' block
-        correctX: undefined, // 'x' coordinate of CORRECT 'floor' block
-        correctXA: undefined, // Temporary variable
-        correctXB: undefined, // Temporary variable
-      },
+      selectedX: undefined,
+      correctX: undefined, // 'x' coordinate of CORRECT 'floor' block
+      correctXA: undefined, // Temporary variable
+      correctXB: undefined, // Temporary variable
     };
 
     let lineColor = undefined;
@@ -138,12 +133,14 @@ const squareOne = {
       this.control.direc,
       lineColor,
       fillColor,
-      this.control.lineWidth
+      this.control.lineWidth,
+      divisor
     );
     this.utils.renderFloorBlocks(
       this.control.direc,
       lineColor,
-      this.control.lineWidth
+      this.control.lineWidth,
+      divisor
     );
     this.utils.renderCharacters();
     this.utils.renderUI(this.control.direc);
@@ -184,15 +181,20 @@ const squareOne = {
      *
      * @returns {boolean}
      */
-    renderStackedBlocks: function (direc, lineColor, fillColor, lineWidth) {
+    renderStackedBlocks: function (
+      direc,
+      lineColor,
+      fillColor,
+      lineWidth,
+      divisor
+    ) {
       let restart = false;
       let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
 
       const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
       const total = game.math.randomInRange(curMapPosition + 2, max); // Current number of stacked blocks for the level
 
-      self.blocks.floor.correctXA =
-        self.default.x0 + self.default.width * direc;
+      self.floor.correctXA = self.default.x0 + self.default.width * direc;
       for (let i = 0; i < total; i++) {
         let curFractionItems = undefined;
         let font = undefined;
@@ -203,7 +205,7 @@ const squareOne = {
 
         const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
         self.control.divisorsList += curDivisor + ','; // List of divisors (for postScore())
-        self.blocks.floor.correctXA += curBlockWidth * direc;
+        self.floor.correctXA += curBlockWidth * direc;
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
@@ -216,14 +218,15 @@ const squareOne = {
           1
         );
         curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 1);
+        curBlock.blockValue = divisor / curDivisor;
 
         // If game mode is (b), adding events to stacked blocks
         if (gameMode == 'b') {
           curBlock.alpha = 0.5;
-          curBlock.index = i;
+          curBlock.blockIndex = i;
         }
 
-        self.blocks.stack.list.push(curBlock);
+        self.stack.list.push(curBlock);
 
         // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
         if (showFractions) {
@@ -282,21 +285,23 @@ const squareOne = {
         }
       }
 
+      // Computer generated correct stack index
+      if (gameMode === 'a') self.stack.selectedIndex = total - 1;
+
       // Will be used as a counter in update, adding in the width of each stacked block to check if the end matches the floor selected position
-      self.blocks.stack.curBlockEnd =
-        self.default.x0 + self.blocks.stack.list[0].width * direc;
+      // initial value is end of current block
+      self.stack.curBlockEndX =
+        self.default.x0 + self.stack.list[0].width * direc;
 
       // Check for errors (level too easy for its difficulty or end position out of bounds)
       if (
         !hasBaseDifficulty ||
         (gameOperation == 'plus' &&
-          (self.blocks.floor.correctXA < self.default.x0 + self.default.width ||
-            self.blocks.floor.correctXA >
-              self.default.x0 + 8 * self.default.width)) ||
+          (self.floor.correctXA < self.default.x0 + self.default.width ||
+            self.floor.correctXA > self.default.x0 + 8 * self.default.width)) ||
         (gameOperation == 'minus' &&
-          (self.blocks.floor.correctXA <
-            self.default.x0 - 8 * self.default.width ||
-            self.blocks.floor.correctXA > self.default.x0 - self.default.width))
+          (self.floor.correctXA < self.default.x0 - 8 * self.default.width ||
+            self.floor.correctXA > self.default.x0 - self.default.width))
       ) {
         restart = true; // If any error is found restart the level
       }
@@ -317,27 +322,22 @@ const squareOne = {
     /**
      * Create floor blocks for the level in create()
      */
-    renderFloorBlocks: function (direc, lineColor, lineWidth) {
-      // For each floor block
-      const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
-
+    renderFloorBlocks: function (direc, lineColor, lineWidth, divisor) {
       let total = 8 * divisor; // Number of floor blocks
 
       const blockWidth = self.default.width / divisor; // Width of each floor block
 
       // If game is type (b), selectiong a random floor x position
       if (gameMode == 'b') {
-        self.blocks.stack.correctIndex = game.math.randomInRange(
+        self.stack.correctIndex = game.math.randomInRange(
           0,
-          self.blocks.stack.list.length - 1
+          self.stack.list.length - 1
         ); // Correct stacked index
 
-        self.blocks.floor.correctXB =
-          self.default.x0 + self.default.width * direc;
+        self.floor.correctXB = self.default.x0 + self.default.width * direc;
 
-        for (let i = 0; i <= self.blocks.stack.correctIndex; i++) {
-          self.blocks.floor.correctXB +=
-            self.blocks.stack.list[i].width * direc; // Equivalent x position on the floor
+        for (let i = 0; i <= self.stack.correctIndex; i++) {
+          self.floor.correctXB += self.stack.list[i].width * direc; // Equivalent x position on the floor
         }
       }
 
@@ -346,20 +346,21 @@ const squareOne = {
       for (let i = 0; i < total; i++) {
         const curX =
           self.default.x0 + (self.default.width + i * blockWidth) * direc;
+
         if (flag && gameMode == 'a') {
           if (
-            (gameOperation == 'plus' && curX >= self.blocks.floor.correctXA) ||
-            (gameOperation == 'minus' && curX <= self.blocks.floor.correctXA)
+            (gameOperation == 'plus' && curX >= self.floor.correctXA) ||
+            (gameOperation == 'minus' && curX <= self.floor.correctXA)
           ) {
-            self.blocks.floor.correctIndex = i - 1; // Set index of correct floor block
+            self.floor.correctIndex = i - 1; // Set index of correct floor block
             flag = false;
           }
         }
 
         if (gameMode == 'b') {
           if (
-            (gameOperation == 'plus' && curX >= self.blocks.floor.correctXB) ||
-            (gameOperation == 'minus' && curX <= self.blocks.floor.correctXB)
+            (gameOperation == 'plus' && curX >= self.floor.correctXB) ||
+            (gameOperation == 'minus' && curX <= self.floor.correctXB)
           ) {
             total = i;
             break;
@@ -379,21 +380,23 @@ const squareOne = {
         );
         const anchor = gameOperation == 'minus' ? 1 : 0;
         curBlock.anchor(anchor, 0);
+        curBlock.blockValue = 1;
 
         // If game is type (a), adding events to floor blocks
         if (gameMode == 'a') {
           curBlock.alpha = 0.5;
-          curBlock.index = i;
+          curBlock.blockIndex = i;
         }
 
         // Add current label to group of labels
-        self.blocks.floor.list.push(curBlock);
+        self.floor.list.push(curBlock);
       }
 
-      if (gameMode == 'a')
-        self.blocks.floor.correctX = self.blocks.floor.correctXA;
-      else if (gameMode == 'b')
-        self.blocks.floor.correctX = self.blocks.floor.correctXB;
+      // Computer generated correct floor index
+      if (gameMode === 'b') self.floor.selectedIndex = total - 1;
+
+      if (gameMode == 'a') self.floor.correctX = self.floor.correctXA;
+      else if (gameMode == 'b') self.floor.correctX = self.floor.correctXB;
 
       // Creates labels on the floor to display the numbers
       for (let i = 0; i <= 8; i++) {
@@ -508,105 +511,80 @@ const squareOne = {
 
     // UPDATE
     animateTruck: () => {
-      const stack = self.blocks.stack;
-      const floor = self.blocks.floor;
+      const stack = self.stack;
+      const floor = self.floor;
 
       // Move
       self.tractor.x += self.animation.speed;
-      stack.list.forEach((cur) => (cur.x += self.animation.speed));
+      stack.list.forEach((block) => (block.x += self.animation.speed));
 
-      // If block is 1/n (not 1/1) there is an extra block space
-      // to go through before the start of next block
-      const restOfCurBlock =
+      // If the current block is 1/n (not 1/1) we need to consider the
+      // extra space the truck needs to pass after the blocks falls but
+      // before reaching the next block
+      const curBlockExtra =
         (self.default.width - stack.list[stack.curIndex].width) *
         self.control.direc;
 
-      if (
+      const hasPassedCurBlock =
         (gameOperation == 'plus' &&
-          stack.list[0].x >= stack.curBlockEnd + restOfCurBlock) ||
+          stack.list[0].x >= stack.curBlockEndX + curBlockExtra) ||
         (gameOperation == 'minus' &&
-          stack.list[0].x <= stack.curBlockEnd + restOfCurBlock)
-      ) {
-        self.utils.checkIfBlockFalls(stack, floor, restOfCurBlock);
-      }
+          stack.list[0].x <= stack.curBlockEndX + curBlockExtra);
+      if (hasPassedCurBlock) {
+        const endAnimation = self.utils.lowerBlocksHandler(stack, floor);
 
-      // WHEN REACHED END POSITION
-      if (stack.curIndex > stack.index || floor.curIndex == floor.index) {
-        self.animation.animateTruck = false;
-        self.control.checkAnswer = true;
+        if (!endAnimation) {
+          self.animation.animateTruck = false;
+          self.control.checkAnswer = true;
+        }
       }
     },
-    checkIfBlockFalls: (stack, floor) => {
-      let lowerBlock = true;
+    lowerBlocksHandler: (stack, floor) => {
+      floor.curIndex += stack.list[stack.curIndex].blockValue;
 
-      const curEnd =
-        stack.list[0].x + stack.list[stack.curIndex].width * self.control.direc;
-
-      // If current index is (a) last stacked index (correct index - fixed)
-      // If current index is (b) selected stacked index
-      if (stack.curIndex == stack.index) {
-        // floor.index : (a) selected floor index
-        // floor.index : (b) last floor index (correct index - fixed)
-        const selectedEnd =
-          floor.list[floor.index].x + floor.list[0].width * self.control.direc;
-
-        // (a) last stacked block (fixed) doesnt fit selected gap AKA NOT ENOUGH FLOOR BLOCKS (DOESNT CHECK TOO MANY)
-        // (b) selected stacked index doesnt fit last floor gap (fixed) AKA TOO MANY STACKED BLOCKS (DOESNT CHECK NOT ENOUGH)
-        if (
-          (gameOperation == 'plus' && curEnd > selectedEnd) ||
-          (gameOperation == 'minus' && curEnd < selectedEnd)
-        ) {
-          lowerBlock = false;
-        }
-      } else {
-        // Update to next block end
-        stack.curBlockEnd +=
-          stack.list[stack.curIndex + 1].width * self.control.direc;
+      const tooManyStackBlocks = floor.curIndex > floor.selectedIndex;
+      if (tooManyStackBlocks) {
+        return false;
       }
 
-      // Fill floor gap
-      if (lowerBlock) {
-        // Until (a) selected floor index
-        // Until (b) last floor index (correct index - fixed)
-        // Updates floor index to be equivalent to stacked index (and change alpha so floor appears to be filled)
-        for (let i = 0; i <= floor.index; i++) {
-          if (
-            (gameOperation == 'plus' && floor.list[i].x < curEnd) ||
-            (gameOperation == 'minus' && floor.list[i].x > curEnd)
-          ) {
-            floor.list[i].alpha = 0;
-            floor.curIndex = i;
-          }
-        }
+      // fill floor
+      for (let i = 0; i <= floor.curIndex; i++) {
+        floor.list[i].alpha = 0.5;
+      }
+      // lower blocks
+      stack.list.forEach((block) => {
+        block.y += self.default.height;
+      });
+      // hide current block
+      stack.list[stack.curIndex].alpha = 0;
 
-        // Lower
-        stack.list[stack.curIndex].alpha = 0;
-        stack.list.forEach((cur) => {
-          cur.y += self.default.height;
-        });
+      const isLastFloorBlock = floor.curIndex === floor.selectedIndex;
+      const notEnoughStackBlocks = stack.curIndex === stack.list.length - 1;
+
+      if (isLastFloorBlock || notEnoughStackBlocks) {
+        return false;
       }
 
+      // update stack blocks
       stack.curIndex++;
+      stack.curBlockEndX +=
+        stack.list[stack.curIndex].width * self.control.direc;
+
+      return true;
     },
     checkAnswer: () => {
       game.timer.stop();
 
       game.animation.stop(self.tractor.animation[0]);
 
-      if (gameMode == 'a') {
-        self.control.isCorrect =
-          self.blocks.floor.index == self.blocks.floor.correctIndex;
-      } else {
-        self.control.isCorrect =
-          self.blocks.stack.index == self.blocks.stack.correctIndex;
-      }
+      self.control.isCorrect =
+        gameMode === 'a'
+          ? self.floor.selectedIndex === self.floor.correctIndex
+          : self.stack.selectedIndex === self.stack.correctIndex;
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
-        // Correct answer
         game.animation.play(self.tractor.animation[0]);
-
-        // Displays feedback image and sound
         game.add
           .image(
             context.canvas.width / 2,
@@ -619,8 +597,6 @@ const squareOne = {
         completedLevels++; // Increases number os finished levels
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
-        // Incorrect answer
-        // Displays feedback image and sound
         game.add
           .image(
             context.canvas.width / 2,
@@ -663,13 +639,13 @@ const squareOne = {
       if (!self.control.hasClicked) {
         // On gameMode (a)
         if (gameMode == 'a') {
-          const aux = self.blocks.floor.list[0];
+          const aux = self.floor.list[0];
           self.help.x =
-            self.blocks.floor.correctX - (aux.width / 2) * self.control.direc;
+            self.floor.correctX - (aux.width / 2) * self.control.direc;
           self.help.y = self.default.y0;
           // On gameMode (b)
         } else {
-          const aux = self.blocks.stack.list[self.blocks.stack.correctIndex];
+          const aux = self.stack.list[self.stack.correctIndex];
           self.help.x = aux.x + (aux.width / 2) * self.control.direc;
           self.help.y = aux.y;
         }
@@ -698,7 +674,7 @@ const squareOne = {
     /**
      * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
      */
-    clickSquareHandler: function (selectedIndex, curSet) {
+    clickSquareHandler: function (clickedIndex, curSet) {
       if (!self.control.hasClicked && !self.animation.animateEnding) {
         document.body.style.cursor = 'auto';
         // Play beep sound
@@ -706,7 +682,7 @@ const squareOne = {
 
         // Hide labels
         if (showFractions) {
-          self.blocks.stack.list.forEach((block) => {
+          self.stack.list.forEach((block) => {
             block.fraction.labels.forEach((lbl) => {
               lbl.alpha = 0;
             });
@@ -715,28 +691,27 @@ const squareOne = {
         // Hide solution pointer
         if (self.help != undefined) self.help.alpha = 0;
         // Hide unselected blocks
-        for (let i = curSet.list.length - 1; i > selectedIndex; i--) {
+        for (let i = curSet.list.length - 1; i > clickedIndex; i--) {
           curSet.list[i].alpha = 0;
         }
 
         // Save selected index
-        curSet.index = selectedIndex; //curSet.list.length - 1;
+        curSet.selectedIndex = clickedIndex;
 
         if (gameMode == 'a') {
           self.arrow.alpha = 1;
-          // Save the other blocks index
-          self.blocks.stack.index = self.blocks.stack.list.length - 1;
         } else {
-          // Save the other blocks index
-          self.blocks.floor.index = self.blocks.floor.list.length - 1;
-          // Save the updated total stacked blocks to compare in update
-          curSet.list.length = curSet.index + 1;
+          // update list size
+          self.stack.list.length = curSet.selectedIndex + 1;
         }
+
+        self.floor.selectedX =
+          self.floor.list[self.floor.selectedIndex].x +
+          self.floor.list[0].width * self.control.direc;
 
         // Turn tractor animation on
         game.animation.play(self.tractor.animation[0]);
         self.animation.animateTruck = true;
-
         self.control.hasClicked = true;
       }
     },
@@ -751,21 +726,21 @@ const squareOne = {
 
         // On gameMode (a)
         if (gameMode == 'a') {
-          for (let i in self.blocks.floor.list) {
-            self.blocks.floor.list[i].alpha = i <= cur.index ? 1 : 0.5;
+          for (let i in self.floor.list) {
+            self.floor.list[i].alpha = i <= cur.blockIndex ? 1 : 0.5;
           }
 
           // Saves the index of the selected 'floor' block
-          self.blocks.floor.index = cur.index;
+          self.floor.selectedIndex = cur.blockIndex;
 
           // On gameMode (b)
         } else {
-          for (let i in self.blocks.stack.list) {
-            self.blocks.stack.list[i].alpha = i <= cur.index ? 0.5 : 0.2;
+          for (let i in self.stack.list) {
+            self.stack.list[i].alpha = i <= cur.blockIndex ? 0.5 : 0.2;
           }
 
           // Saves the index of the selected 'stack' block
-          self.blocks.stack.index = cur.index;
+          self.stack.selectedIndex = cur.blockIndex;
         }
       }
     },
@@ -778,18 +753,18 @@ const squareOne = {
 
         // On game mode (a)
         if (gameMode == 'a') {
-          for (let i in self.blocks.floor.list) {
-            self.blocks.floor.list[i].alpha = 0.5; // Back to normal
+          for (let i in self.floor.list) {
+            self.floor.list[i].alpha = 0.5; // Back to normal
           }
 
-          self.blocks.floor.index = -1;
+          self.floor.selectedIndex = undefined;
           // On game mode (b)
         } else {
-          for (let i in self.blocks.stack.list) {
-            self.blocks.stack.list[i].alpha = 0.5; // Back to normal
+          for (let i in self.stack.list) {
+            self.stack.list[i].alpha = 0.5; // Back to normal
           }
 
-          self.blocks.stack.index = -1;
+          self.stack.selectedIndex = undefined;
         }
       }
     },
@@ -805,11 +780,11 @@ const squareOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
-      const curSet = gameMode == 'a' ? self.blocks.floor : self.blocks.stack;
+      const curSet = gameMode == 'a' ? self.floor : self.stack;
 
       for (let i in curSet.list) {
         if (game.math.isOverIcon(x, y, curSet.list[i])) {
-          self.utils.clickSquareHandler(i, curSet);
+          self.utils.clickSquareHandler(+i, curSet);
           break;
         }
       }
@@ -840,7 +815,7 @@ const squareOne = {
           }
         }
 
-        self.blocks.floor.list.forEach((cur) => {
+        self.floor.list.forEach((cur) => {
           if (game.math.isOverIcon(x, y, cur)) {
             flagA = true;
             self.utils.overSquareHandler(cur);
@@ -851,7 +826,7 @@ const squareOne = {
       }
 
       if (gameMode == 'b') {
-        self.blocks.stack.list.forEach((cur) => {
+        self.stack.list.forEach((cur) => {
           if (game.math.isOverIcon(x, y, cur)) {
             flagB = true;
             self.utils.overSquareHandler(cur);
@@ -894,13 +869,13 @@ const squareOne = {
         game.timer.elapsed +
         '&line_deta=' +
         'numBlocks:' +
-        self.blocks.stack.list.length +
+        self.stack.list.length +
         ', valBlocks: ' +
         self.control.divisorsList + // Ends in ','
         ' blockIndex: ' +
-        self.blocks.stack.index +
+        self.stack.selectedIndex +
         ', floorIndex: ' +
-        self.blocks.floor.index;
+        self.floor.selectedIndex;
 
       // FOR MOODLE
       sendToDatabase(data);
