@@ -46,6 +46,7 @@ const squareOne = {
   stck: undefined,
   floor: undefined,
 
+  arrow: undefined,
   help: undefined,
   message: undefined,
   continue: undefined,
@@ -97,7 +98,10 @@ const squareOne = {
           : truckWidth, // Initial 'x' coordinate for the tractor and stacked blocks
       y0: context.canvas.height - game.image['floor_grass'].width * 1.5,
     };
-
+    this.default.arrowX0 =
+      self.default.x0 + self.default.width * self.control.direc;
+    this.default.arrowXEnd =
+      self.default.arrowX0 + self.default.width * self.control.direc * 8;
     renderBackground();
 
     // FOR MOODLE
@@ -143,7 +147,7 @@ const squareOne = {
       correctXA
     );
     this.utils.renderCharacters();
-    this.utils.renderMainUI(this.control.direc);
+    this.utils.renderMainUI();
 
     this.restart = restart;
     if (!this.restart) {
@@ -451,7 +455,7 @@ const squareOne = {
         self.tractor.curFrame = 5;
       }
     },
-    renderMainUI: (direc) => {
+    renderMainUI: () => {
       // Help pointer
       self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
       if (gameMode === 'b') self.help.anchor(0.25, 0.7);
@@ -460,7 +464,7 @@ const squareOne = {
       // Selection Arrow
       if (gameMode == 'a') {
         self.arrow = game.add.image(
-          self.default.x0 + self.default.width * direc,
+          self.default.arrowX0,
           self.default.y0,
           'arrow_down',
           1.5
@@ -762,7 +766,7 @@ const squareOne = {
 
       game.animation.stop(self.tractor.animation[0]);
 
-      self.arrow.alpha = 0;
+      if (gameMode === 'a') self.arrow.alpha = 0;
 
       self.control.isCorrect =
         gameMode === 'a'
@@ -980,38 +984,38 @@ const squareOne = {
     onInputOver: (mouseEvent) => {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
-      let flagA = false;
-      let flagB = false;
+      let isOverFloor = false;
+      let isOverStack = false;
 
       if (gameMode == 'a') {
-        // Make arrow follow mouse
-        if (!self.control.hasClicked && !self.animation.animateEnding) {
-          if (
-            game.math.distanceToPointer(self.arrow.x, x, self.arrow.y, y) > 8
-          ) {
-            self.arrow.x = x < 250 ? 250 : x; // Limits the arrow left position to 250
-          }
-        }
-
         self.floor.list.forEach((cur) => {
+          // hover floor blocks
           if (game.math.isOverIcon(x, y, cur)) {
-            flagA = true;
+            isOverFloor = true;
             self.utils.overSquareHandler(cur);
+          }
+          // move arrow
+          if (
+            !self.control.hasClicked &&
+            !self.animation.animateEnding &&
+            game.math.isOverIcon(x, self.default.y0, cur)
+          ) {
+            self.arrow.x = x;
           }
         });
 
-        if (!flagA) self.utils.outSquareHandler('a');
+        if (!isOverFloor) self.utils.outSquareHandler('a');
       }
 
       if (gameMode == 'b') {
+        // hover stack blocks
         self.stack.list.forEach((cur) => {
           if (game.math.isOverIcon(x, y, cur)) {
-            flagB = true;
+            isOverStack = true;
             self.utils.overSquareHandler(cur);
           }
         });
-
-        if (!flagB) self.utils.outSquareHandler('b');
+        if (!isOverStack) self.utils.outSquareHandler('b');
       }
 
       // Continue button
