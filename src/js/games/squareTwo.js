@@ -304,7 +304,7 @@ const squareTwo = {
         )
       );
 
-      // continue button
+      // Modal
       self.continue.modal = game.add.geom.rect(
         0,
         0,
@@ -315,6 +315,11 @@ const squareTwo = {
         colors.white,
         0
       );
+
+      // Fraction operation
+      self.utils.renderFractionCalculationUI();
+
+      // continue button
       self.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
         context.canvas.height / 2 + 200,

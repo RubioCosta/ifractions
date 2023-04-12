@@ -54,6 +54,19 @@ const squareOne = {
    * Main code
    */
   create: function () {
+    const truckWidth = 201;
+    const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
+    let lineColor = undefined;
+    let fillColor = undefined;
+
+    if (gameOperation === 'minus') {
+      lineColor = colors.red;
+      fillColor = colors.redLight;
+    } else {
+      lineColor = colors.green;
+      fillColor = colors.greenLight;
+    }
+
     this.continue = {
       modal: undefined,
       button: undefined,
@@ -75,7 +88,6 @@ const squareOne = {
       animateEnding: false, // When true allows game to run 'tractor ending animation' code in update (turns 'ending' animation of the moving tractor ON/OFF)
       speed: 2 * this.control.direc, // X distance in which the tractor moves in each iteration of the animation
     };
-    const truckWidth = 201;
     this.default = {
       width: 172, // Base block width,
       height: 70, // Base block height
@@ -85,7 +97,6 @@ const squareOne = {
           : truckWidth, // Initial 'x' coordinate for the tractor and stacked blocks
       y0: context.canvas.height - game.image['floor_grass'].width * 1.5,
     };
-    const divisor = gameDifficulty == 3 ? 4 : gameDifficulty; // Make sure valid divisors are 1, 2 and 4 (not 3)
 
     renderBackground();
 
@@ -113,38 +124,28 @@ const squareOne = {
 
       curIndex: -1, // (needs to be -1)
 
-      selectedX: undefined,
       correctX: undefined, // 'x' coordinate of CORRECT 'floor' block
-      correctXA: undefined, // Temporary variable
-      correctXB: undefined, // Temporary variable
     };
 
-    let lineColor = undefined;
-    let fillColor = undefined;
-    if (gameOperation === 'minus') {
-      lineColor = colors.red;
-      fillColor = colors.redLight;
-    } else {
-      lineColor = colors.green;
-      fillColor = colors.greenLight;
-    }
-
-    this.restart = this.utils.renderStackedBlocks(
+    let [restart, correctXA] = this.utils.renderStackedBlocks(
       this.control.direc,
       lineColor,
       fillColor,
       this.control.lineWidth,
       divisor
     );
+
     this.utils.renderFloorBlocks(
       this.control.direc,
       lineColor,
       this.control.lineWidth,
-      divisor
+      divisor,
+      correctXA
     );
     this.utils.renderCharacters();
-    this.utils.renderUI(this.control.direc);
+    this.utils.renderMainUI(this.control.direc);
 
+    this.restart = restart;
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
       game.event.add('click', this.events.onInputDown);
@@ -157,18 +158,18 @@ const squareOne = {
    */
   update: function () {
     // Starts tractor animation
-    if (self.animation.animateTruck) {
-      self.utils.animateTruck();
+    if (self.animation.animateTractor) {
+      self.utils.animateTractorHandler();
     }
 
     // Check answer after animation ends
     if (self.control.checkAnswer) {
-      self.utils.checkAnswer();
+      self.utils.checkAnswerHandler();
     }
 
     // Starts tractor moving animation
     if (self.animation.animateEnding) {
-      self.utils.animateEnding();
+      self.utils.animateEndingHandler();
     }
 
     game.render.all();
@@ -194,7 +195,7 @@ const squareOne = {
       const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
       const total = game.math.randomInRange(curMapPosition + 2, max); // Current number of stacked blocks for the level
 
-      self.floor.correctXA = self.default.x0 + self.default.width * direc;
+      let correctXA = self.default.x0 + self.default.width * direc;
       for (let i = 0; i < total; i++) {
         let curFractionItems = undefined;
         let font = undefined;
@@ -205,7 +206,7 @@ const squareOne = {
 
         const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
         self.control.divisorsList += curDivisor + ','; // List of divisors (for postScore())
-        self.floor.correctXA += curBlockWidth * direc;
+        correctXA += curBlockWidth * direc;
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
@@ -235,11 +236,27 @@ const squareOne = {
 
           if (curDivisor === 1) {
             font = textStyles.h2_;
+
             curFractionItems = [
               {
                 x: x,
                 y: self.default.y0 - i * y - 20,
-                text: gameOperation === 'minus' ? '-1' : '1',
+                text: '1',
+              },
+              {
+                x: x,
+                y: self.default.y0 - i * y - 40,
+                text: '',
+              },
+              {
+                x: x,
+                y: self.default.y0 - i * y - 37,
+                text: '',
+              },
+              {
+                x: x - 25,
+                y: self.default.y0 - i * y - 27,
+                text: gameOperation === 'minus' ? '-' : '',
               },
             ];
           } else {
@@ -281,7 +298,11 @@ const squareOne = {
             );
           }
 
-          curBlock.fraction = { labels: fractionPartsList };
+          curBlock.fraction = {
+            labels: fractionPartsList,
+            nominator: direc,
+            denominator: curDivisor,
+          };
         }
       }
 
@@ -297,11 +318,11 @@ const squareOne = {
       if (
         !hasBaseDifficulty ||
         (gameOperation == 'plus' &&
-          (self.floor.correctXA < self.default.x0 + self.default.width ||
-            self.floor.correctXA > self.default.x0 + 8 * self.default.width)) ||
+          (correctXA < self.default.x0 + self.default.width ||
+            correctXA > self.default.x0 + 8 * self.default.width)) ||
         (gameOperation == 'minus' &&
-          (self.floor.correctXA < self.default.x0 - 8 * self.default.width ||
-            self.floor.correctXA > self.default.x0 - self.default.width))
+          (correctXA < self.default.x0 - 8 * self.default.width ||
+            correctXA > self.default.x0 - self.default.width))
       ) {
         restart = true; // If any error is found restart the level
       }
@@ -317,12 +338,19 @@ const squareOne = {
             ')'
         );
 
-      return restart;
+      return [restart, correctXA];
     },
     /**
      * Create floor blocks for the level in create()
      */
-    renderFloorBlocks: function (direc, lineColor, lineWidth, divisor) {
+    renderFloorBlocks: function (
+      direc,
+      lineColor,
+      lineWidth,
+      divisor,
+      correctXA
+    ) {
+      let correctXB = 0;
       let total = 8 * divisor; // Number of floor blocks
 
       const blockWidth = self.default.width / divisor; // Width of each floor block
@@ -334,10 +362,10 @@ const squareOne = {
           self.stack.list.length - 1
         ); // Correct stacked index
 
-        self.floor.correctXB = self.default.x0 + self.default.width * direc;
+        correctXB = self.default.x0 + self.default.width * direc;
 
         for (let i = 0; i <= self.stack.correctIndex; i++) {
-          self.floor.correctXB += self.stack.list[i].width * direc; // Equivalent x position on the floor
+          correctXB += self.stack.list[i].width * direc; // Equivalent x position on the floor
         }
       }
 
@@ -349,8 +377,8 @@ const squareOne = {
 
         if (flag && gameMode == 'a') {
           if (
-            (gameOperation == 'plus' && curX >= self.floor.correctXA) ||
-            (gameOperation == 'minus' && curX <= self.floor.correctXA)
+            (gameOperation == 'plus' && curX >= correctXA) ||
+            (gameOperation == 'minus' && curX <= correctXA)
           ) {
             self.floor.correctIndex = i - 1; // Set index of correct floor block
             flag = false;
@@ -359,8 +387,8 @@ const squareOne = {
 
         if (gameMode == 'b') {
           if (
-            (gameOperation == 'plus' && curX >= self.floor.correctXB) ||
-            (gameOperation == 'minus' && curX <= self.floor.correctXB)
+            (gameOperation == 'plus' && curX >= correctXB) ||
+            (gameOperation == 'minus' && curX <= correctXB)
           ) {
             total = i;
             break;
@@ -395,8 +423,8 @@ const squareOne = {
       // Computer generated correct floor index
       if (gameMode === 'b') self.floor.selectedIndex = total - 1;
 
-      if (gameMode == 'a') self.floor.correctX = self.floor.correctXA;
-      else if (gameMode == 'b') self.floor.correctX = self.floor.correctXB;
+      if (gameMode == 'a') self.floor.correctX = correctXA;
+      else if (gameMode == 'b') self.floor.correctX = correctXB;
 
       // Creates labels on the floor to display the numbers
       for (let i = 0; i <= 8; i++) {
@@ -435,10 +463,9 @@ const squareOne = {
         self.tractor.curFrame = 5;
       }
     },
-    renderUI: function (direc) {
+    renderMainUI: (direc) => {
       // Help pointer
       self.help = game.add.image(0, 0, 'pointer', 1.7, 0);
-
       if (gameMode === 'b') self.help.anchor(0.25, 0.7);
       else self.help.anchor(0.2, 0);
 
@@ -477,8 +504,9 @@ const squareOne = {
           textStyles.h1_
         )
       );
-
-      // continue button
+    },
+    renderOperationUI: function () {
+      // Modal
       self.continue.modal = game.add.geom.rect(
         0,
         0,
@@ -487,92 +515,265 @@ const squareOne = {
         undefined,
         0,
         colors.white,
-        0
+        0.3
       );
+
+      // Fraction operation
+      return self.utils.renderOperationUIHandler();
+    },
+    renderOperationUIHandler: function () {
+      let validBlocks = [];
+      const lastValidIndex =
+        gameMode === 'a' ? self.stack.curIndex : self.stack.selectedIndex;
+      for (let i = 0; i <= lastValidIndex; i++) {
+        validBlocks.push(self.stack.list[i]);
+      }
+
+      const font = textStyles.fraction;
+      font.fill = colors.green;
+
+      const nominators = [];
+      const denominators = [];
+      const renderList = [];
+
+      const padding = 100;
+      const offsetX = 100;
+      const widthOfChar = 35;
+
+      const x0 = padding;
+      const y0 = context.canvas.height / 2;
+      let nextX = x0;
+
+      const cardHeight = 400;
+      const cardX = x0 - padding;
+      const cardY = y0; // + cardHeight / 4;
+
+      // Card
+      const card = game.add.geom.rect(
+        cardX,
+        cardY,
+        0,
+        cardHeight,
+        colors.blueDark,
+        8,
+        colors.blueLight,
+        0.5
+      );
+      card.id = 'card';
+      card.anchor(0, 0.5);
+      renderList.push(card);
+
+      // Fraction list
+      for (let i in validBlocks) {
+        const curFraction = validBlocks[i].fraction;
+        let curFractionSign = '+';
+        if (curFraction.labels[3].name === '-') {
+          curFractionSign = '-';
+          font.fill = colors.red;
+        }
+
+        renderList.push(
+          game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
+        );
+        renderList.push(
+          game.add.text(x0 + i * offsetX + offsetX / 2, y0, '1', font)
+        );
+        renderList.push(
+          game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
+        );
+        renderList.push(
+          game.add.text(
+            x0 + i * offsetX + offsetX / 2,
+            y0 + 70,
+            curFraction.labels[0].name,
+            font
+          )
+        );
+
+        nominators.push(curFraction.nominator);
+        denominators.push(curFraction.denominator);
+      }
+
+      // Setup for fraction operation with least common multiple
+      font.fill = colors.black;
+      const updatedNominators = [];
+      const mmc = game.math.mmcArray(denominators);
+      let resultNominator = 0;
+      for (let i in nominators) {
+        const temp = nominators[i] * (mmc / denominators[i]);
+        updatedNominators.push(temp);
+        resultNominator += temp;
+      }
+      const resultNominatorUnsigned =
+        resultNominator < 0 ? -resultNominator : resultNominator;
+      const resultAux = resultNominator / mmc;
+      const result =
+        ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
+
+      // let fracLine = '';
+      // const updatedNominatorsString = updatedNominators
+      //   .map((n) => {
+      //     const len = ('' + n).length;
+      //     for (let i = 0; i < len; i++) fracLine += '_';
+      //     fracLine = n < 0 ? fracLine : fracLine + '_';
+      //     return n >= 0 ? '+' + n : n;
+      //   })
+      //   .join('');
+      // const fractionMiddleX = widthOfChar * (fracLine.length / 2);
+
+      // Fraction operation with least common multiple
+      nextX = x0 + validBlocks.length * offsetX + 20;
+      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      // nextX += offsetX / 2;
+      // renderList.push(game.add.text(nextX, y0, updatedNominatorsString, font));
+      // renderList.push(
+      //   game.add.text(nextX + fractionMiddleX, y0 + 70, mmc, font)
+      // );
+      // renderList.push(game.add.text(nextX, y0, fracLine, font));
+
+      // Fraction result
+      //nextX += fractionMiddleX * 2 + 50;
+      renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      font.align = 'center';
+      nextX += offsetX + 40;
+      renderList.push(
+        game.add.text(nextX - 80, y0 + 35, result >= 0 ? '' : '-', font)
+      );
+      renderList.push(game.add.text(nextX, y0, resultNominatorUnsigned, font));
+      renderList.push(game.add.text(nextX, y0 + 70, mmc, font));
+      renderList.push(game.add.text(nextX, y0, '___', font));
+
+      // Fraction result simplified setup
+      const mdcAux = game.math.mdc(resultNominator, mmc);
+      const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
+      if (mdc !== 1) {
+        nextX += offsetX;
+        renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+        nextX += offsetX;
+        renderList.push(
+          game.add.text(nextX - 50, y0 + 35, result > 0 ? '' : '-', font)
+        );
+        renderList.push(
+          game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
+        );
+        renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
+        renderList.push(game.add.text(nextX, y0, '__', font));
+      }
+
+      // Decimal result
+      // nextX += offsetX;
+      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      // nextX += offsetX / 2;
+      // renderList.push(game.add.text(nextX, y0 + 35, result, font));
+
+      //let resultWidth = ('' + result).length * widthOfChar;
+      let resultWidth = '__'.length * widthOfChar;
+      const cardWidth = nextX - x0 + resultWidth + padding * 2;
+      card.width = cardWidth;
+
+      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
+
+      // Center Card
+      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
+
+      // renderList.forEach((item) => {
+      //   item.alpha = 0;
+      // });
+
+      self.fractionOperationUI = renderList;
+
+      return endSignX;
+    },
+    renderEndUI: () => {
+      let btnColor = colors.green;
+      let btnText = game.lang.continue;
+
+      if (!self.control.isCorrect) {
+        btnColor = colors.red;
+        btnText = game.lang.retry;
+      }
+
+      // continue button
       self.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
         context.canvas.height / 2 + 200,
-        300,
+        350,
         100,
         undefined,
         0,
-        colors.green,
-        0
+        btnColor
       );
       self.continue.button.anchor(0.5, 0.5);
       self.continue.text = game.add.text(
         context.canvas.width / 2,
         context.canvas.height / 2 + 16 + 200,
-        game.lang.continue,
+        btnText,
         textStyles.btn
       );
-      self.continue.text.alpha = 0;
     },
 
     // UPDATE
-    animateTruck: () => {
-      const stack = self.stack;
-      const floor = self.floor;
-
+    animateTractorHandler: () => {
       // Move
       self.tractor.x += self.animation.speed;
-      stack.list.forEach((block) => (block.x += self.animation.speed));
+      self.stack.list.forEach((block) => (block.x += self.animation.speed));
 
       // If the current block is 1/n (not 1/1) we need to consider the
       // extra space the truck needs to pass after the blocks falls but
       // before reaching the next block
       const curBlockExtra =
-        (self.default.width - stack.list[stack.curIndex].width) *
+        (self.default.width - self.stack.list[self.stack.curIndex].width) *
         self.control.direc;
 
-      const hasPassedCurBlock =
+      const canLowerBlocks =
         (gameOperation == 'plus' &&
-          stack.list[0].x >= stack.curBlockEndX + curBlockExtra) ||
+          self.stack.list[0].x >= self.stack.curBlockEndX + curBlockExtra) ||
         (gameOperation == 'minus' &&
-          stack.list[0].x <= stack.curBlockEndX + curBlockExtra);
-      if (hasPassedCurBlock) {
-        const endAnimation = self.utils.lowerBlocksHandler(stack, floor);
+          self.stack.list[0].x <= self.stack.curBlockEndX + curBlockExtra);
+      if (canLowerBlocks) {
+        const endAnimation = self.utils.lowerBlocksHandler();
 
         if (!endAnimation) {
-          self.animation.animateTruck = false;
+          self.animation.animateTractor = false;
           self.control.checkAnswer = true;
         }
       }
     },
-    lowerBlocksHandler: (stack, floor) => {
-      floor.curIndex += stack.list[stack.curIndex].blockValue;
+    lowerBlocksHandler: () => {
+      self.floor.curIndex += self.stack.list[self.stack.curIndex].blockValue;
 
-      const tooManyStackBlocks = floor.curIndex > floor.selectedIndex;
-      if (tooManyStackBlocks) {
-        return false;
-      }
+      const tooManyStackBlocks = self.floor.curIndex > self.floor.selectedIndex;
+      if (tooManyStackBlocks) return false;
 
       // fill floor
-      for (let i = 0; i <= floor.curIndex; i++) {
-        floor.list[i].alpha = 0.5;
+      for (let i = 0; i <= self.floor.curIndex; i++) {
+        self.floor.list[i].alpha = 0.5;
       }
       // lower blocks
-      stack.list.forEach((block) => {
+      self.stack.list.forEach((block) => {
         block.y += self.default.height;
       });
       // hide current block
-      stack.list[stack.curIndex].alpha = 0;
+      self.stack.list[self.stack.curIndex].alpha = 0;
 
-      const isLastFloorBlock = floor.curIndex === floor.selectedIndex;
-      const notEnoughStackBlocks = stack.curIndex === stack.list.length - 1;
+      const isLastFloorBlock = self.floor.curIndex === self.floor.selectedIndex;
+      const notEnoughStackBlocks =
+        self.stack.curIndex === self.stack.list.length - 1;
 
-      if (isLastFloorBlock || notEnoughStackBlocks) {
-        return false;
-      }
+      if (isLastFloorBlock || notEnoughStackBlocks) return false;
 
       // update stack blocks
-      stack.curIndex++;
-      stack.curBlockEndX +=
-        stack.list[stack.curIndex].width * self.control.direc;
+      self.stack.curIndex++;
+      self.stack.curBlockEndX +=
+        self.stack.list[self.stack.curIndex].width * self.control.direc;
 
       return true;
     },
-    checkAnswer: () => {
+    checkAnswerHandler: () => {
       game.timer.stop();
 
       game.animation.stop(self.tractor.animation[0]);
@@ -582,29 +783,30 @@ const squareOne = {
           ? self.floor.selectedIndex === self.floor.correctIndex
           : self.stack.selectedIndex === self.stack.correctIndex;
 
+      const x = self.utils.renderOperationUI();
+
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
+        if (audioStatus) game.audio.okSound.play();
+        completedLevels++; // Increases number os finished levels
         game.animation.play(self.tractor.animation[0]);
         game.add
           .image(
-            context.canvas.width / 2,
+            x + 50, //context.canvas.width / 2,
             context.canvas.height / 2,
             'answer_correct'
           )
           .anchor(0.5, 0.5);
-        if (audioStatus) game.audio.okSound.play();
-
-        completedLevels++; // Increases number os finished levels
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
+        if (audioStatus) game.audio.errorSound.play();
         game.add
           .image(
-            context.canvas.width / 2,
+            x, //context.canvas.width / 2,
             context.canvas.height / 2,
             'answer_wrong'
           )
           .anchor(0.5, 0.5);
-        if (audioStatus) game.audio.errorSound.play();
       }
 
       self.fetch.postScore();
@@ -613,22 +815,26 @@ const squareOne = {
       self.control.checkAnswer = false;
       self.animation.animateEnding = true;
     },
-    animateEnding: () => {
+    animateEndingHandler: () => {
       // ANIMATE ENDING
-
       self.control.count++;
 
       // If CORRECT ANSWER runs final tractor animation (else tractor desn't move, just wait)
       if (self.control.isCorrect) self.tractor.x += self.animation.speed;
 
       // WHEN REACHED END POSITION calls map state
-      if (self.count >= 140) {
+      if (self.control.count >= 100) {
         // If CORRECT ANSWER, player goes to next level in map
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
 
-        game.state.start('map');
+        self.animation.animateEnding = false;
+        self.utils.renderEndUI();
+        self.control.showEndInfo = true;
       }
+    },
+    endLevel: function () {
+      game.state.start('map');
     },
 
     // INFORMATION
@@ -652,22 +858,6 @@ const squareOne = {
 
         self.help.alpha = 0.7;
       }
-    },
-    showEndInfo: function () {
-      let color;
-      //let text;
-      if (self.control.isCorrect) {
-        color = colors.green;
-        //text = game.lang.continue;
-      } else {
-        color = colors.red;
-        //text = game.lang.retry;
-      }
-      self.continue.modal.alpha = 0.25;
-      // self.continue.text.name = text;
-      self.continue.text.alpha = 1;
-      self.continue.button.fillColor = color;
-      self.continue.button.alpha = 1;
     },
 
     // HANDLERS
@@ -705,13 +895,9 @@ const squareOne = {
           self.stack.list.length = curSet.selectedIndex + 1;
         }
 
-        self.floor.selectedX =
-          self.floor.list[self.floor.selectedIndex].x +
-          self.floor.list[0].width * self.control.direc;
-
         // Turn tractor animation on
         game.animation.play(self.tractor.animation[0]);
-        self.animation.animateTruck = true;
+        self.animation.animateTractor = true;
         self.control.hasClicked = true;
       }
     },
@@ -780,12 +966,19 @@ const squareOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
+      // click blocks
       const curSet = gameMode == 'a' ? self.floor : self.stack;
-
       for (let i in curSet.list) {
         if (game.math.isOverIcon(x, y, curSet.list[i])) {
           self.utils.clickSquareHandler(+i, curSet);
           break;
+        }
+      }
+
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          self.utils.endLevel();
         }
       }
 
@@ -834,6 +1027,21 @@ const squareOne = {
         });
 
         if (!flagB) self.utils.outSquareHandler('b');
+      }
+
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.continue.button)) {
+          // If pointer is over icon
+          document.body.style.cursor = 'pointer';
+          self.continue.button.scale = self.continue.button.initialScale * 1.1;
+          self.continue.text.style = textStyles.btnLg;
+        } else {
+          // If pointer is not over icon
+          document.body.style.cursor = 'auto';
+          self.continue.button.scale = self.continue.button.initialScale * 1;
+          self.continue.text.style = textStyles.btn;
+        }
       }
 
       navigation.onInputOver(x, y);
