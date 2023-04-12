@@ -68,7 +68,7 @@ const squareOne = {
     }
 
     this.continue = {
-      modal: undefined,
+      // modal: undefined,
       button: undefined,
       text: undefined,
     };
@@ -182,13 +182,7 @@ const squareOne = {
      *
      * @returns {boolean}
      */
-    renderStackedBlocks: function (
-      direc,
-      lineColor,
-      fillColor,
-      lineWidth,
-      divisor
-    ) {
+    renderStackedBlocks: (direc, lineColor, fillColor, lineWidth, divisor) => {
       let restart = false;
       let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
 
@@ -343,13 +337,7 @@ const squareOne = {
     /**
      * Create floor blocks for the level in create()
      */
-    renderFloorBlocks: function (
-      direc,
-      lineColor,
-      lineWidth,
-      divisor,
-      correctXA
-    ) {
+    renderFloorBlocks: (direc, lineColor, lineWidth, divisor, correctXA) => {
       let correctXB = 0;
       let total = 8 * divisor; // Number of floor blocks
 
@@ -445,7 +433,7 @@ const squareOne = {
         );
       }
     },
-    renderCharacters: function () {
+    renderCharacters: () => {
       self.tractor = game.add.sprite(
         self.default.x0,
         self.default.y0,
@@ -505,23 +493,19 @@ const squareOne = {
         )
       );
     },
-    renderOperationUI: function () {
+    renderOperationUI: () => {
       // Modal
-      self.continue.modal = game.add.geom.rect(
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height,
-        undefined,
-        0,
-        colors.white,
-        0.3
-      );
+      // self.continue.modal = game.add.geom.rect(
+      //   0,
+      //   0,
+      //   context.canvas.width,
+      //   context.canvas.height,
+      //   undefined,
+      //   0,
+      //   colors.black,
+      //   0.2
+      // );
 
-      // Fraction operation
-      return self.utils.renderOperationUIHandler();
-    },
-    renderOperationUIHandler: function () {
       let validBlocks = [];
       const lastValidIndex =
         gameMode === 'a' ? self.stack.curIndex : self.stack.selectedIndex;
@@ -716,7 +700,7 @@ const squareOne = {
       );
     },
 
-    // UPDATE
+    // UPDATE HANDLERS
     animateTractorHandler: () => {
       // Move
       self.tractor.x += self.animation.speed;
@@ -778,6 +762,8 @@ const squareOne = {
 
       game.animation.stop(self.tractor.animation[0]);
 
+      self.arrow.alpha = 0;
+
       self.control.isCorrect =
         gameMode === 'a'
           ? self.floor.selectedIndex === self.floor.correctIndex
@@ -787,8 +773,8 @@ const squareOne = {
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
-        if (audioStatus) game.audio.okSound.play();
         completedLevels++; // Increases number os finished levels
+        if (audioStatus) game.audio.okSound.play();
         game.animation.play(self.tractor.animation[0]);
         game.add
           .image(
@@ -822,18 +808,15 @@ const squareOne = {
       // If CORRECT ANSWER runs final tractor animation (else tractor desn't move, just wait)
       if (self.control.isCorrect) self.tractor.x += self.animation.speed;
 
-      // WHEN REACHED END POSITION calls map state
-      if (self.control.count >= 100) {
-        // If CORRECT ANSWER, player goes to next level in map
-        if (self.control.isCorrect) canGoToNextMapPosition = true;
-        else canGoToNextMapPosition = false;
-
-        self.animation.animateEnding = false;
+      if (self.control.count === 100) {
         self.utils.renderEndUI();
         self.control.showEndInfo = true;
+
+        if (self.control.isCorrect) canGoToNextMapPosition = true;
+        else canGoToNextMapPosition = false;
       }
     },
-    endLevel: function () {
+    endLevel: () => {
       game.state.start('map');
     },
 
@@ -841,7 +824,7 @@ const squareOne = {
     /**
      * Display correct answer
      */
-    showAnswer: function () {
+    showAnswer: () => {
       if (!self.control.hasClicked) {
         // On gameMode (a)
         if (gameMode == 'a') {
@@ -860,16 +843,18 @@ const squareOne = {
       }
     },
 
-    // HANDLERS
+    // EVENT HANDLERS
     /**
      * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
      */
-    clickSquareHandler: function (clickedIndex, curSet) {
+    clickSquareHandler: (clickedIndex, curSet) => {
       if (!self.control.hasClicked && !self.animation.animateEnding) {
         document.body.style.cursor = 'auto';
         // Play beep sound
         if (audioStatus) game.audio.popSound.play();
 
+        self.message[0].alpha = 0;
+        self.message[1].alpha = 0;
         // Hide labels
         if (showFractions) {
           self.stack.list.forEach((block) => {
@@ -906,7 +891,7 @@ const squareOne = {
      *
      * @param {object} cur rectangle the cursor is over
      */
-    overSquareHandler: function (cur) {
+    overSquareHandler: (cur) => {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'pointer';
 
@@ -933,7 +918,7 @@ const squareOne = {
     /**
      * Function called by self.events.onInputOver() when cursos is out of a valid rectangle
      */
-    outSquareHandler: function () {
+    outSquareHandler: () => {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'auto';
 
@@ -962,7 +947,7 @@ const squareOne = {
      *
      * @param {object} mouseEvent contains the mouse click coordinates
      */
-    onInputDown: function (mouseEvent) {
+    onInputDown: (mouseEvent) => {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
@@ -992,7 +977,7 @@ const squareOne = {
      *
      * @param {object} mouseEvent contains the mouse move coordinates
      */
-    onInputOver: function (mouseEvent) {
+    onInputOver: (mouseEvent) => {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
       let flagA = false;
@@ -1058,7 +1043,7 @@ const squareOne = {
      *
      * @see /php/save.php
      */
-    postScore: function () {
+    postScore: () => {
       // Creates string that is going to be sent to db
       const data =
         '&line_game=' +
