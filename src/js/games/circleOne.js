@@ -39,6 +39,7 @@
  * @namespace
  */
 const circleOne = {
+  ui: undefined,
   control: undefined,
   animation: undefined,
   road: undefined,
@@ -49,23 +50,23 @@ const circleOne = {
   basket: undefined,
   walkedPath: undefined,
 
-  help: undefined,
-  message: undefined,
-  continue: undefined,
-
   /**
    * Main code
    */
   create: function () {
+    this.ui = {
+      help: undefined,
+      message: undefined,
+      continue: {
+        // modal: undefined,
+        button: undefined,
+        text: undefined,
+      },
+    };
     this.road = {
       x: 150,
       y: context.canvas.height - game.image['floor_grass'].width * 1.5,
       width: 1620,
-    };
-    this.continue = {
-      modal: undefined,
-      button: undefined,
-      text: undefined,
     };
     this.walkedPath = [];
 
@@ -100,7 +101,7 @@ const circleOne = {
       curWalkedPath: 0,
       // mode 'b' exclusive
       correctIndex: undefined,
-      fractionIndex: -1, // Index of clicked circle (game (b))
+      selectedIndex: -1, // Index of clicked circle (game (b))
       numberOfPlusFractions: undefined,
     };
 
@@ -138,7 +139,7 @@ const circleOne = {
     this.restart = restart;
 
     this.utils.renderCharacters(validPath, balloonX);
-    this.utils.renderUI();
+    this.utils.renderMainUI();
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
@@ -153,17 +154,17 @@ const circleOne = {
   update: function () {
     // Starts kid animation
     if (self.animation.animateKid) {
-      self.utils.animateKid();
+      self.utils.animateKidHandler();
     }
 
     // Check if kid is inside the basket
     if (self.control.checkAnswer) {
-      self.utils.checkAnswer();
+      self.utils.checkAnswerHandler();
     }
 
     // Starts balloon flying animation
     if (self.animation.animateBalloon) {
-      self.utils.animateBalloon();
+      self.utils.animateBalloonHandler();
     }
 
     game.render.all();
@@ -532,9 +533,9 @@ const circleOne = {
       self.basket.alpha = 0.8;
       self.basket.anchor(0.5, 0.5);
     },
-    renderUI: function () {
+    renderMainUI: function () {
       // Help pointer
-      self.help = game.add.image(0, 0, 'pointer', 2, 0);
+      self.ui.help = game.add.image(0, 0, 'pointer', 2, 0);
 
       // Intro text
       const correctMessage =
@@ -542,8 +543,8 @@ const circleOne = {
           ? game.lang.circleOne_intro_a
           : game.lang.circleOne_intro_b;
       const treatedMessage = correctMessage.split('\\n');
-      self.message = [];
-      self.message.push(
+      self.ui.message = [];
+      self.ui.message.push(
         game.add.text(
           context.canvas.width / 2,
           170,
@@ -551,7 +552,7 @@ const circleOne = {
           textStyles.h1_
         )
       );
-      self.message.push(
+      self.ui.message.push(
         game.add.text(
           context.canvas.width / 2,
           220,
@@ -559,50 +560,28 @@ const circleOne = {
           textStyles.h1_
         )
       );
-
-      // Modal
-      self.continue.modal = game.add.geom.rect(
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height,
-        undefined,
-        0,
-        colors.white,
-        0
-      );
-
-      // Fraction operation
-      self.utils.renderFractionCalculationUI();
-
-      // continue button
-      self.continue.button = game.add.geom.rect(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 200,
-        300,
-        100,
-        undefined,
-        0,
-        colors.green,
-        0
-      );
-      self.continue.button.anchor(0.5, 0.5);
-      self.continue.text = game.add.text(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 16 + 200,
-        game.lang.continue,
-        textStyles.btn
-      );
-      self.continue.text.alpha = 0;
     },
-    renderFractionCalculationUI: function () {
+    renderOperationUI: function () {
+      // Modal
+      // self.ui.continue.modal = game.add.geom.rect(
+      //   0,
+      //   0,
+      //   context.canvas.width,
+      //   context.canvas.height,
+      //   undefined,
+      //   0,
+      //   colors.black,
+      //   0.2
+      // );
+
       let validCircles = self.circles.list;
       if (gameMode === 'b') {
         validCircles = [];
-        for (let i = 0; i < self.control.correctIndex; i++) {
+        for (let i = 0; i <= self.control.selectedIndex; i++) {
           validCircles.push(self.circles.list[i]);
         }
       }
+      console.log(validCircles);
 
       const font = textStyles.fraction;
       font.fill = colors.green;
@@ -750,21 +729,45 @@ const circleOne = {
       const cardWidth = nextX - x0 + resultWidth + padding * 2;
       card.width = cardWidth;
 
-      self.control.endSignX =
-        (context.canvas.width - cardWidth) / 2 + cardWidth;
+      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
 
       // Center Card
       moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
 
-      renderList.forEach((item) => {
-        item.alpha = 0;
-      });
-
       self.fractionOperationUI = renderList;
+
+      return endSignX;
+    },
+    renderEndUI: () => {
+      let btnColor = colors.green;
+      let btnText = game.lang.continue;
+
+      if (!self.control.isCorrect) {
+        btnColor = colors.red;
+        btnText = game.lang.retry;
+      }
+
+      // continue button
+      self.ui.continue.button = game.add.geom.rect(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 200,
+        350,
+        100,
+        undefined,
+        0,
+        btnColor
+      );
+      self.ui.continue.button.anchor(0.5, 0.5);
+      self.ui.continue.text = game.add.text(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 16 + 200,
+        btnText,
+        textStyles.btn
+      );
     },
 
     // UPDATE
-    animateKid: function () {
+    animateKidHandler: function () {
       let lowerCircles = undefined;
       let curCircle = self.circles.list[self.circles.cur];
       let curDirec = curCircle.info.direc;
@@ -841,63 +844,50 @@ const circleOne = {
         self.control.checkAnswer = true;
       }
     },
-    checkAnswer: function () {
+    checkAnswerHandler: function () {
       game.timer.stop();
 
       game.animation.stop(self.kid.animation[0]);
 
-      self.fractionOperationUI.forEach((item) => {
-        item.alpha = item.id === 'card' ? 0.5 : 1;
-      });
+      self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
 
-      self.continue.modal.alpha = 0.3;
+      const x = self.utils.renderOperationUI();
 
-      if (game.math.isOverlap(self.basket, self.kid)) {
-        self.control.isCorrect = true;
+      if (self.control.isCorrect) {
+        completedLevels++;
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add
-          .image(
-            self.control.endSignX + 50, //context.canvas.width / 2,
-            context.canvas.height / 2,
-            'answer_correct'
-          )
+          .image(x + 50, context.canvas.height / 2, 'answer_correct')
           .anchor(0.5, 0.5);
-        self.continue.text.name = game.lang.continue;
-        completedLevels++;
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
-        self.control.isCorrect = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
         game.add
-          .image(
-            self.control.endSignX, //context.canvas.width / 2,
-            context.canvas.height / 2,
-            'answer_wrong'
-          )
+          .image(x, context.canvas.height / 2, 'answer_wrong')
           .anchor(0.5, 0.5);
-        self.continue.text.name = game.lang.retry;
       }
 
       self.fetch.postScore();
+
       self.control.checkAnswer = false;
       self.animation.counter = 0;
 
       self.animation.animateBalloon = true;
     },
-    animateBalloon: function () {
+    animateBalloonHandler: function () {
       self.animation.counter++;
       self.balloon.y -= 2;
       self.basket.y -= 2;
 
       if (self.control.isCorrect) self.kid.y -= 2;
 
-      if (self.animation.counter >= 100) {
+      if (self.animation.counter === 100) {
+        self.utils.renderEndUI();
+        self.control.showEndInfo = true;
+
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
-
-        self.control.showEndInfo = true;
-        self.utils.showEndInfo();
       }
     },
     endLevel: function () {
@@ -912,30 +902,15 @@ const circleOne = {
       if (!self.control.hasClicked) {
         // On gameMode (a)
         if (gameMode === 'a') {
-          self.help.x = self.control.correctX - 20;
-          self.help.y = self.road.y;
+          self.ui.help.x = self.control.correctX - 20;
+          self.ui.help.y = self.road.y;
           // On gameMode (b)
         } else {
-          self.help.x = self.circles.list[self.control.correctIndex - 1].x;
-          self.help.y = self.circles.list[self.control.correctIndex - 1].y; // -            self.circles.diameter / 2;
+          self.ui.help.x = self.circles.list[self.control.correctIndex - 1].x;
+          self.ui.help.y = self.circles.list[self.control.correctIndex - 1].y; // -            self.circles.diameter / 2;
         }
-        self.help.alpha = 0.7;
+        self.ui.help.alpha = 0.7;
       }
-    },
-    showEndInfo: function () {
-      let color;
-      //let text;
-      if (self.control.isCorrect) {
-        color = colors.green;
-        //text = game.lang.continue;
-      } else {
-        color = colors.red;
-        //text = game.lang.retry;
-      }
-      // self.continue.text.name = text;
-      self.continue.text.alpha = 1;
-      self.continue.button.fillColor = color;
-      self.continue.button.alpha = 1;
     },
 
     // HANDLERS
@@ -959,7 +934,7 @@ const circleOne = {
           for (let i in self.circles.list) {
             if (i <= cur.index) {
               self.circles.list[i].alpha = 1; // Keep selected circle
-              self.control.fractionIndex = cur.index;
+              self.control.selectedIndex = cur.index;
             } else {
               self.circles.list[i].alpha = 0; // Hide unselected circle
               self.kid.y += self.circles.diameter; // Lower kid to selected circle
@@ -979,10 +954,10 @@ const circleOne = {
         }
 
         // Hide solution pointer
-        if (self.help != undefined) self.help.alpha = 0;
+        if (self.ui.help != undefined) self.ui.help.alpha = 0;
 
-        self.message[0].alpha = 0;
-        self.message[1].alpha = 0;
+        self.ui.message[0].alpha = 0;
+        self.ui.message[1].alpha = 0;
 
         self.balloon.alpha = 1;
         self.basket.alpha = 1;
@@ -1062,7 +1037,7 @@ const circleOne = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           self.utils.endLevel();
         }
       }
@@ -1114,16 +1089,18 @@ const circleOne = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           // If pointer is over icon
           document.body.style.cursor = 'pointer';
-          self.continue.button.scale = self.continue.button.initialScale * 1.1;
-          self.continue.text.style = textStyles.btnLg;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1.1;
+          self.ui.continue.text.style = textStyles.btnLg;
         } else {
           // If pointer is not over icon
           document.body.style.cursor = 'auto';
-          self.continue.button.scale = self.continue.button.initialScale * 1;
-          self.continue.text.style = textStyles.btn;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1;
+          self.ui.continue.text.style = textStyles.btn;
         }
       }
 
@@ -1166,7 +1143,7 @@ const circleOne = {
         ' balloonX: ' +
         self.basket.x +
         ', selIndex: ' +
-        self.control.fractionIndex;
+        self.control.selectedIndex;
 
       // FOR MOODLE
       sendToDatabase(data);

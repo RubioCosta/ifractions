@@ -667,10 +667,6 @@ const squareOne = {
       // Center Card
       moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
 
-      // renderList.forEach((item) => {
-      //   item.alpha = 0;
-      // });
-
       self.fractionOperationUI = renderList;
 
       return endSignX;
@@ -780,27 +776,18 @@ const squareOne = {
         if (audioStatus) game.audio.okSound.play();
         game.animation.play(self.tractor.animation[0]);
         game.add
-          .image(
-            x + 50, //context.canvas.width / 2,
-            context.canvas.height / 2,
-            'answer_correct'
-          )
+          .image(x + 50, context.canvas.height / 2, 'answer_correct')
           .anchor(0.5, 0.5);
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         if (audioStatus) game.audio.errorSound.play();
         game.add
-          .image(
-            x, //context.canvas.width / 2,
-            context.canvas.height / 2,
-            'answer_wrong'
-          )
+          .image(x, context.canvas.height / 2, 'answer_wrong')
           .anchor(0.5, 0.5);
       }
 
       self.fetch.postScore();
 
-      // AFTER CHECK ANSWER
       self.control.checkAnswer = false;
       self.animation.animateEnding = true;
     },
