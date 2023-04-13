@@ -843,6 +843,9 @@ const squareOne = {
         // Play beep sound
         if (audioStatus) game.audio.popSound.play();
 
+        // Disable show answer nav icon
+        navigation.disableIcon(navigation.showAnswerIcon);
+        // Hide intro message
         self.ui.message[0].alpha = 0;
         self.ui.message[1].alpha = 0;
         // Hide labels

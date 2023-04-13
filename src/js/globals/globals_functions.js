@@ -2,6 +2,7 @@ const navigation = {
   list: [],
   prevState: undefined,
   audioIcon: undefined,
+  showAnswerIcon: undefined,
   labelLeft: undefined,
   labelRight: undefined,
 
@@ -30,6 +31,7 @@ const navigation = {
           return;
         }
         const asset = game.add.image(x, 10, icon, 1.5);
+        navigation.showAnswerIcon = asset;
         navigation.list.push(asset);
         x += iconSize;
       });
@@ -48,9 +50,7 @@ const navigation = {
           navigation.audioIcon = asset;
         }
 
-        if (icon === 'lang') {
-          asset = game.add.image(x, 10, 'lang', 1.5);
-        }
+        if (icon === 'lang') asset = game.add.image(x, 10, 'lang', 1.5);
 
         navigation.list.push(asset);
         x -= iconSize;
@@ -65,9 +65,14 @@ const navigation = {
     game.state.start(state);
   },
 
+  disableIcon: (icon) => {
+    icon.alpha = 0.4;
+    icon.isDisabled = true;
+  },
+
   onInputDown: (x, y) => {
     navigation.list.forEach((icon) => {
-      if (game.math.isOverIcon(x, y, icon)) {
+      if (game.math.isOverIcon(x, y, icon) && !icon.isDisabled) {
         const iconName = icon.name;
         switch (iconName) {
           case 'menu':
@@ -81,8 +86,11 @@ const navigation = {
             navigation.changeState(state);
             break;
           case 'show_answer':
-            if (audioStatus) game.audio.popSound.play();
-            self.utils.showAnswer();
+            if (navigation.showAnswerIcon.alpha === 1) {
+              if (audioStatus) game.audio.popSound.play();
+              self.utils.showAnswer();
+              navigation.disableIcon(navigation.showAnswerIcon);
+            }
             break;
           case 'audio':
             if (audioStatus) {
@@ -105,7 +113,7 @@ const navigation = {
   onInputOver: (x, y) => {
     let isOverIcon = false;
     navigation.list.forEach((icon) => {
-      if (game.math.isOverIcon(x, y, icon)) {
+      if (game.math.isOverIcon(x, y, icon) && !icon.isDisabled) {
         isOverIcon = true;
         const iconName = icon.name;
         switch (iconName) {

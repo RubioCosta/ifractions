@@ -221,7 +221,6 @@ const circleOne = {
     },
     renderWalkedPath: function (x, y, color) {
       const path = game.add.geom.rect(x, y, 1, 1, color, 4);
-      //path.alpha = 0;
       self.walkedPath.push(path);
       return path;
     },
@@ -909,7 +908,7 @@ const circleOne = {
           self.ui.help.x = self.circles.list[self.control.correctIndex - 1].x;
           self.ui.help.y = self.circles.list[self.control.correctIndex - 1].y; // -            self.circles.diameter / 2;
         }
-        self.ui.help.alpha = 0.7;
+        self.ui.help.alpha = 1;
       }
     },
 
@@ -958,6 +957,8 @@ const circleOne = {
 
         self.ui.message[0].alpha = 0;
         self.ui.message[1].alpha = 0;
+
+        navigation.disableIcon(navigation.showAnswerIcon);
 
         self.balloon.alpha = 1;
         self.basket.alpha = 1;
