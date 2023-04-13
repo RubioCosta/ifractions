@@ -220,7 +220,7 @@ const squareOne = {
 
         // If game mode is (b), adding events to stacked blocks
         if (gameMode == 'b') {
-          curBlock.alpha = 0.5;
+          //curBlock.alpha = 0.5;
           curBlock.blockIndex = i;
         }
 
@@ -892,7 +892,7 @@ const squareOne = {
           self.floor.selectedIndex = cur.blockIndex;
         } else {
           for (let i in self.stack.list) {
-            const alpha = i <= cur.blockIndex ? 0.5 : 0.2;
+            const alpha = i <= cur.blockIndex ? 1 : 0.4;
 
             self.stack.list[i].alpha = alpha;
             self.stack.list[i].fraction.labels.forEach((lbl) => {
@@ -917,7 +917,7 @@ const squareOne = {
           self.floor.selectedIndex = undefined;
         } else {
           for (let i in self.stack.list) {
-            self.stack.list[i].alpha = 0.5;
+            self.stack.list[i].alpha = 1;
             self.stack.list[i].fraction.labels.forEach((lbl) => {
               lbl.alpha = 1;
             });

@@ -317,7 +317,7 @@ const squareTwo = {
       );
 
       // Fraction operation
-      self.utils.renderFractionCalculationUI();
+      //self.utils.renderFractionCalculationUI();
 
       // continue button
       self.continue.button = game.add.geom.rect(

@@ -237,13 +237,16 @@ const circleOne = {
         ...textStyles.h2_,
         font: 'bold ' + textStyles.h2_.font,
       };
-
       // Number of circles
-      const max =
-        gameOperation === 'mixed' || gameMode === 'b' ? 6 : curMapPosition + 1;
+      const max = gameOperation === 'mixed' ? 6 : curMapPosition + 1;
+
       const min =
-        gameOperation === 'mixed' && curMapPosition < 2 ? 2 : curMapPosition; // Mixed level has at least 2 fractions
+        curMapPosition === 1 && (gameOperation === 'mixed' || gameMode === 'b')
+          ? 2
+          : curMapPosition; // Mixed level has at least 2 fractions
+
       const total = game.math.randomInRange(min, max); // Total number of circles
+
       // for mode 'b'
       self.control.numberOfPlusFractions = game.math.randomInRange(
         1,
@@ -425,8 +428,9 @@ const circleOne = {
       }
 
       // Restart if
-      // Does not have base difficulty
+      // Does not have at least one fraction of type 1/difficulty
       if (!hasBaseDifficulty) {
+        alert('restart no base difficulty');
         restart = true;
       }
 
@@ -435,27 +439,26 @@ const circleOne = {
         validPath.x0 +
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
-      // Restart if
-      // Correct position is out of bounds
-      let isBeforeMin, isAfterMax;
-      if (gameOperation === 'minus') {
-        isBeforeMin = self.control.correctX > validPath.x0;
-        isAfterMax =
-          self.control.correctX <
-          validPath.x0 - 3 * validPath.distanceBetweenPoints;
-      } else {
-        isBeforeMin = self.control.correctX < validPath.x0;
-        isAfterMax =
-          self.control.correctX >
-          validPath.x0 + 3 * validPath.distanceBetweenPoints;
-      }
-      if (isBeforeMin || isAfterMax) {
-        restart = true;
-      }
-
-      // If game is type (b), selectiong a random balloon place
       if (gameMode === 'b') {
+        // Restart if
+        // Correct position is out of bounds
+        let isBeforeMin, isAfterMax;
+        if (gameOperation === 'minus') {
+          isBeforeMin = self.control.correctX > validPath.x0;
+          isAfterMax =
+            self.control.correctX <
+            validPath.x0 - 5 * validPath.distanceBetweenPoints;
+        } else {
+          isBeforeMin = self.control.correctX < validPath.x0;
+          isAfterMax =
+            self.control.correctX >
+            validPath.x0 + 5 * validPath.distanceBetweenPoints;
+        }
+        if (isBeforeMin || isAfterMax) restart = true;
+
+        // If game is type (b), selectiong a random balloon place
         balloonX = validPath.x0;
+
         self.control.correctIndex = game.math.randomInRange(
           self.control.numberOfPlusFractions,
           self.circles.list.length
@@ -472,14 +475,13 @@ const circleOne = {
         if (gameOperation === 'minus') {
           isBeforeMin = balloonX > validPath.x0;
           isAfterMax =
-            balloonX < validPath.x0 - 3 * validPath.distanceBetweenPoints;
+            balloonX < validPath.x0 - 5 * validPath.distanceBetweenPoints;
         } else {
           isBeforeMin = balloonX < validPath.x0;
-          isAfterMax = balloonX > validPath.x0 + self.road.width;
+          isAfterMax =
+            balloonX > validPath.x0 + 5 * validPath.distanceBetweenPoints;
         }
-        if (isBeforeMin || isAfterMax) {
-          restart = true;
-        }
+        if (isBeforeMin || isAfterMax) restart = true;
       }
 
       return [restart, balloonX];
@@ -581,7 +583,6 @@ const circleOne = {
           validCircles.push(self.circles.list[i]);
         }
       }
-      console.log(validCircles);
 
       const font = textStyles.fraction;
       font.fill = colors.green;
@@ -600,7 +601,7 @@ const circleOne = {
 
       const cardHeight = 400;
       const cardX = x0 - padding;
-      const cardY = y0; // + cardHeight / 4;
+      const cardY = y0;
 
       // Card
       const card = game.add.geom.rect(
@@ -768,7 +769,7 @@ const circleOne = {
 
     // UPDATE
     animateKidHandler: function () {
-      let lowerCircles = undefined;
+      let canLowerCircles = undefined;
       let curCircle = self.circles.list[self.circles.cur];
       let curDirec = curCircle.info.direc;
 
@@ -786,9 +787,9 @@ const circleOne = {
 
       // When finish current circle
       if (curCircle.info.direction === 'right') {
-        lowerCircles = curCircle.x >= self.control.nextX;
+        canLowerCircles = curCircle.x >= self.control.nextX;
       } else if (curCircle.info.direction === 'left') {
-        lowerCircles = curCircle.x <= self.control.nextX;
+        canLowerCircles = curCircle.x <= self.control.nextX;
         // If just changed from 'right' to 'left' inform to change direction of kid animation
         if (
           self.animation.invertDirection === undefined &&
@@ -816,7 +817,7 @@ const circleOne = {
         );
       }
 
-      if (lowerCircles) {
+      if (canLowerCircles) {
         // Hide current circle
         curCircle.alpha = 0;
 
@@ -978,7 +979,7 @@ const circleOne = {
       if (!self.control.hasClicked) {
         document.body.style.cursor = 'pointer';
         for (let i in self.circles.list) {
-          const alpha = i <= cur.index ? 1 : 0.5;
+          const alpha = i <= cur.index ? 1 : 0.4;
           self.circles.list[i].alpha = alpha;
           self.circles.list[i].info.fraction.labels.forEach((lbl) => {
             lbl.alpha = alpha;
