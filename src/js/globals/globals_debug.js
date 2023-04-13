@@ -1,17 +1,17 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { status: true, lang: 'pt_BR' },
-  name: { status: true, name: 'Username' },
-  menu: { status: true, id: 1 },
+  lang: { skip: true, lang: 'pt_BR' },
+  name: { skip: true, name: 'Username' },
+  menu: { skip: true, id: 1 },
   customMenu: {
-    status: true,
+    skip: true,
     getData: () => {
-      return { mode: 'b', operation: 'plus', difficulty: 2, label: true };
+      return { mode: 'b', operation: 'minus', difficulty: 2, label: true };
     },
   },
-  map: { status: false },
-  end: { status: false, stop: false },
+  map: { skip: true },
+  end: { skip: false, stop: false },
 };
 
 const debugFunctions = {

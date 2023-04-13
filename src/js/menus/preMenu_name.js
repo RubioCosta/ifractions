@@ -66,7 +66,7 @@ const nameState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    if (isDebugMode && debugState.name.status) {
+    if (isDebugMode && debugState.name.skip) {
       // programmatically select a user name
       document.querySelector('.ifr-input').value =
         debugState.name.name || 'My User Name';

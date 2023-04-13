@@ -90,7 +90,7 @@ const menuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      if (isDebugMode && debugState.menu.status) {
+      if (isDebugMode && debugState.menu.skip) {
         // programmatically select a game
         const id = debugState.menu.id;
         gameId = id;

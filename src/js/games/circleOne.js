@@ -430,7 +430,6 @@ const circleOne = {
       // Restart if
       // Does not have at least one fraction of type 1/difficulty
       if (!hasBaseDifficulty) {
-        alert('restart no base difficulty');
         restart = true;
       }
 

@@ -194,11 +194,11 @@ const mapState = {
   update: function () {
     self.moveCounter++;
 
-    if (isDebugMode && debugState.end.status) {
+    if (isDebugMode && debugState.end.skip) {
       curMapPosition = 4;
     }
 
-    if (isDebugMode && debugState.map.status) {
+    if (isDebugMode && debugState.map.skip) {
       // programmatically skip map
       curMapPosition++;
       self.loadGame();

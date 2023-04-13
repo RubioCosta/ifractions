@@ -53,7 +53,7 @@ const langState = {
     game.event.add('click', this.onInputDown);
     game.event.add('mousemove', this.onInputOver);
 
-    if (isDebugMode && debugState.lang.status) {
+    if (isDebugMode && debugState.lang.skip) {
       // programmatically select a language
       this.setLang(debugState.lang.lang || 'pt_BR');
     }

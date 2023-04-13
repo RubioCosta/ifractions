@@ -71,7 +71,7 @@ const customMenuState = {
       game.event.add('click', this.onInputDown);
       game.event.add('mousemove', this.onInputOver);
 
-      if (isDebugMode && debugState.customMenu.status) {
+      if (isDebugMode && debugState.customMenu.skip) {
         // programmatically customize a game
         const { mode, operation, difficulty, label } =
           debugState.customMenu.getData();

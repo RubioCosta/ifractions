@@ -116,7 +116,7 @@ const endState = {
    * Game loop
    */
   update: function () {
-    if (isDebugMode && debugState.end.status) {
+    if (isDebugMode && debugState.end.skip) {
       if (debugState.end.stop) {
         self.animate = false;
       }
