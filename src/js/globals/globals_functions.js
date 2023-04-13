@@ -293,7 +293,7 @@ const renderBackground = (type) => {
 
   if (type === 'farmRoad') {
     game.add.image(0, context.canvas.height - floorSize, 'floor_grass', 1.5);
-    for (let i = 1; i < context.canvas.width / floorSize; i++) {
+    for (let i = 1; i < context.canvas.width / floorSize - 1; i++) {
       game.add.image(
         i * floorSize,
         context.canvas.height - floorSize,

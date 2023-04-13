@@ -76,7 +76,7 @@ const circleOne = {
     const y0 = this.road.y + 20;
     const x0 =
       gameOperation === 'minus'
-        ? this.road.x + 5 * distanceBetweenPoints - pointWidth / 2
+        ? context.canvas.width - this.road.x - pointWidth / 2
         : this.road.x + pointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
 
     const diameter =
