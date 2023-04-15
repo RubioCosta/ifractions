@@ -76,7 +76,7 @@ const squareOne = {
     this.control = {
       direc: gameOperation == 'minus' ? -1 : 1, // Will be multiplied to values to easily change tractor direction when needed
       divisorsList: '', // Hold the divisors for each fraction on stacked blocks (created for postScore())
-      lineWidth: 4,
+      lineWidth: 3,
 
       hasClicked: false, // Checks if player 'clicked' on a block
       checkAnswer: false, // When true allows game to run 'check answer' code in update
@@ -207,7 +207,7 @@ const squareOne = {
 
         const curBlock = game.add.geom.rect(
           self.default.x0,
-          self.default.y0 - i * self.default.height,
+          self.default.y0 - i * self.default.height - lineWidth,
           curBlockWidth,
           self.default.height,
           lineColor,
@@ -220,7 +220,6 @@ const squareOne = {
 
         // If game mode is (b), adding events to stacked blocks
         if (gameMode == 'b') {
-          //curBlock.alpha = 0.5;
           curBlock.blockIndex = i;
         }
 
@@ -229,7 +228,7 @@ const squareOne = {
         // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
         if (showFractions) {
           const x = self.default.x0 + (curBlockWidth + 40) * direc;
-          const y = self.default.height;
+          const y = self.default.height + 1;
 
           if (curDivisor === 1) {
             font = textStyles.h2_;
@@ -391,8 +390,8 @@ const squareOne = {
           curX,
           self.default.y0,
           blockWidth,
-          self.default.height - 20,
-          lineColor,
+          self.default.height + 10,
+          colors.gray,
           lineWidth,
           colors.blueBgInsideLevel,
           1
@@ -403,7 +402,7 @@ const squareOne = {
 
         // If game is type (a), adding events to floor blocks
         if (gameMode == 'a') {
-          curBlock.alpha = 0.5;
+          curBlock.fillColor = '';
           curBlock.blockIndex = i;
         }
 
@@ -420,20 +419,27 @@ const squareOne = {
       // Creates labels on the floor to display the numbers
       for (let i = 0; i <= 8; i++) {
         const x = self.default.x0 + (i + 1) * self.default.width * direc;
-        const y = self.default.y0 + self.default.height + 45;
+        const y = self.default.y0 + self.default.height + 45 - 65;
+
+        let numberX = x;
+        let numberText = i;
+        let numberCircleSize = 45;
+        let numberFont = {
+          ...textStyles.h3_,
+          fill: lineColor,
+          font: 'bold ' + textStyles.h3_.font,
+        };
+        if (gameOperation === 'minus') {
+          numberX = i !== 0 ? x - 2 : x;
+          numberText = -i;
+          numberCircleSize = 45;
+          numberFont.font = 'bold ' + textStyles.h4_.font;
+        }
+
         game.add.geom
-          .circle(x, y, 60, undefined, 0, colors.white, 0.8)
+          .circle(x, y, numberCircleSize, undefined, 0, colors.white, 1)
           .anchor(0, 0.25);
-        game.add.text(
-          gameOperation === 'minus' ? x - 2 : x,
-          y,
-          gameOperation === 'minus' ? -i : i,
-          {
-            ...textStyles.h3_,
-            font: 'bold ' + textStyles.h3_.font,
-            fill: lineColor,
-          }
-        );
+        game.add.text(numberX, y + 2, numberText, numberFont);
       }
     },
     renderCharacters: () => {
@@ -478,22 +484,13 @@ const squareOne = {
           ? game.lang.squareOne_intro_a
           : game.lang.squareOne_intro_b;
       const treatedMessage = correctMessage.split('\\n');
+      const font = textStyles.h1_;
       self.ui.message = [];
       self.ui.message.push(
-        game.add.text(
-          context.canvas.width / 2,
-          170,
-          treatedMessage[0],
-          textStyles.h1_
-        )
+        game.add.text(context.canvas.width / 2, 170, treatedMessage[0], font)
       );
       self.ui.message.push(
-        game.add.text(
-          context.canvas.width / 2,
-          220,
-          treatedMessage[1],
-          textStyles.h1_
-        )
+        game.add.text(context.canvas.width / 2, 220, treatedMessage[1], font)
       );
     },
     renderOperationUI: () => {
@@ -528,7 +525,7 @@ const squareOne = {
       const widthOfChar = 35;
 
       const x0 = padding;
-      const y0 = context.canvas.height / 2;
+      const y0 = context.canvas.height / 3;
       let nextX = x0;
 
       const cardHeight = 400;
@@ -683,7 +680,7 @@ const squareOne = {
       // continue button
       self.ui.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
-        context.canvas.height / 2 + 200,
+        context.canvas.height / 2 + 100,
         350,
         100,
         undefined,
@@ -693,7 +690,7 @@ const squareOne = {
       self.ui.continue.button.anchor(0.5, 0.5);
       self.ui.continue.text = game.add.text(
         context.canvas.width / 2,
-        context.canvas.height / 2 + 16 + 200,
+        context.canvas.height / 2 + 16 + 100,
         btnText,
         textStyles.btn
       );
@@ -734,7 +731,7 @@ const squareOne = {
 
       // fill floor
       for (let i = 0; i <= self.floor.curIndex; i++) {
-        self.floor.list[i].alpha = 0.5;
+        self.floor.list[i].fillColor = '';
       }
       // lower blocks
       self.stack.list.forEach((block) => {
@@ -776,13 +773,13 @@ const squareOne = {
         if (audioStatus) game.audio.okSound.play();
         game.animation.play(self.tractor.animation[0]);
         game.add
-          .image(x + 50, context.canvas.height / 2, 'answer_correct')
+          .image(x + 50, context.canvas.height / 3, 'answer_correct')
           .anchor(0.5, 0.5);
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         if (audioStatus) game.audio.errorSound.play();
         game.add
-          .image(x, context.canvas.height / 2, 'answer_wrong')
+          .image(x, context.canvas.height / 3, 'answer_wrong')
           .anchor(0.5, 0.5);
       }
 
@@ -867,7 +864,7 @@ const squareOne = {
         curSet.selectedIndex = clickedIndex;
 
         if (gameMode == 'a') {
-          self.ui.arrow.alpha = 1;
+          self.ui.arrow.alpha = 0;
         } else {
           // update list size
           self.stack.list.length = curSet.selectedIndex + 1;
@@ -890,7 +887,8 @@ const squareOne = {
 
         if (gameMode === 'a') {
           for (let i in self.floor.list) {
-            self.floor.list[i].alpha = i <= cur.blockIndex ? 1 : 0.5;
+            self.floor.list[i].fillColor =
+              i <= cur.blockIndex ? colors.blueBgInsideLevel : '';
           }
           self.floor.selectedIndex = cur.blockIndex;
         } else {
@@ -915,7 +913,7 @@ const squareOne = {
 
         if (gameMode === 'a') {
           for (let i in self.floor.list) {
-            self.floor.list[i].alpha = 0.5;
+            self.floor.list[i].fillColor = '';
           }
           self.floor.selectedIndex = undefined;
         } else {

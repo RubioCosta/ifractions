@@ -30,7 +30,7 @@ const colors = {
 
   // Basics
   white: '#fff',
-  gray: '#708090',
+  gray: '#1f1f1f',
   black: '#000',
 };
 
