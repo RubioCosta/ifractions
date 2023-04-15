@@ -594,7 +594,7 @@ const circleOne = {
       const widthOfChar = 35;
 
       const x0 = padding;
-      const y0 = context.canvas.height / 2;
+      const y0 = context.canvas.height / 3;
       let nextX = x0;
 
       const cardHeight = 400;
@@ -749,7 +749,7 @@ const circleOne = {
       // continue button
       self.ui.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
-        context.canvas.height / 2 + 200,
+        context.canvas.height / 2 + 100,
         350,
         100,
         undefined,
@@ -759,7 +759,7 @@ const circleOne = {
       self.ui.continue.button.anchor(0.5, 0.5);
       self.ui.continue.text = game.add.text(
         context.canvas.width / 2,
-        context.canvas.height / 2 + 16 + 200,
+        context.canvas.height / 2 + 16 + 100,
         btnText,
         textStyles.btn
       );
@@ -857,13 +857,13 @@ const circleOne = {
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
         if (audioStatus) game.audio.okSound.play();
         game.add
-          .image(x + 50, context.canvas.height / 2, 'answer_correct')
+          .image(x + 50, context.canvas.height / 3, 'answer_correct')
           .anchor(0.5, 0.5);
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         if (audioStatus) game.audio.errorSound.play();
         game.add
-          .image(x, context.canvas.height / 2, 'answer_wrong')
+          .image(x, context.canvas.height / 3, 'answer_wrong')
           .anchor(0.5, 0.5);
       }
 
