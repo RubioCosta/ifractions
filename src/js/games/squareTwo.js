@@ -32,27 +32,31 @@
  * @namespace
  */
 const squareTwo = {
+  ui: undefined,
   control: undefined,
+
   blocks: undefined,
-  continue: undefined,
-  message: undefined,
 
   /**
    * Main code
    */
   create: function () {
+    this.ui = {
+      message: undefined,
+      continue: {
+        // modal: undefined,
+        button: undefined,
+        text: undefined,
+      },
+    };
     this.control = {
       blockWidth: 600,
       blockHeight: 75,
       isCorrect: false,
       showEndInfo: false,
       animationDelay: 0,
+      startDelay: false,
       startEndAnimation: false,
-    };
-    this.continue = {
-      modal: undefined,
-      button: undefined,
-      text: undefined,
     };
     this.blocks = {
       top: {
@@ -92,7 +96,7 @@ const squareTwo = {
     // Add kid
     this.utils.renderCharacters();
     this.utils.renderBlockSetup();
-    this.utils.renderUI();
+    this.utils.renderMainUI();
 
     game.timer.start(); // Set a timer for the current level (used in postScore)
     game.event.add('click', this.events.onInputDown);
@@ -110,11 +114,16 @@ const squareTwo = {
 
     // If (a) and (b) are already clicked
     if (
+      !self.control.startDelay &&
+      !self.control.startEndAnimation &&
       self.blocks.top.hasClicked &&
-      self.blocks.bottom.hasClicked &&
-      !self.control.startEndAnimation
+      self.blocks.bottom.hasClicked
     ) {
-      self.utils.checkAnswer();
+      self.control.startDelay = true;
+    }
+
+    if (self.control.startDelay && !self.control.startEndAnimation) {
+      self.utils.startDelayHandler();
     }
 
     // Wait a bit and go to map state
@@ -126,6 +135,16 @@ const squareTwo = {
   },
 
   utils: {
+    startDelayHandler: () => {
+      console.log('startdelayhandler');
+      self.control.animationDelay++;
+
+      if (self.control.animationDelay === 50) {
+        self.utils.checkAnswer();
+        self.control.animationDelay = 0;
+        self.control.startEndAnimation = true;
+      }
+    },
     // RENDERS
     renderBlockSetup: function () {
       // Coordinates for (a) and (b)
@@ -279,65 +298,128 @@ const squareTwo = {
       );
       self.kidAnimation.anchor(0.5, 0.7);
     },
-    renderUI: function () {
+    renderMainUI: () => {
       // Intro text
       const correctMessage =
         gameMode === 'a'
           ? game.lang.squareTwo_intro_a
           : game.lang.squareTwo_intro_b;
       const treatedMessage = correctMessage.split('\\n');
-      self.message = [];
-      self.message.push(
-        game.add.text(
-          context.canvas.width / 2,
-          170,
-          treatedMessage[0],
-          textStyles.h1_
-        )
+      const font = textStyles.h1_;
+      self.ui.message = [];
+      self.ui.message.push(
+        game.add.text(context.canvas.width / 2, 170, treatedMessage[0], font)
       );
-      self.message.push(
-        game.add.text(
-          context.canvas.width / 2,
-          220,
-          treatedMessage[1],
-          textStyles.h1_
-        )
+      self.ui.message.push(
+        game.add.text(context.canvas.width / 2, 220, treatedMessage[1], font)
+      );
+    },
+    renderOperationUI: () => {
+      const uiList = [
+        ...self.blocks.top.list,
+        ...self.blocks.bottom.list,
+        ...self.blocks.top.fractions,
+        ...self.blocks.bottom.fractions,
+      ];
+      moveList(uiList, -400, 0);
+
+      const font = textStyles.fraction;
+      font.fill = colors.black;
+      font.align = 'center';
+
+      const nominators = [
+        self.blocks.top.selectedAmount,
+        self.blocks.bottom.selectedAmount,
+      ];
+      const denominators = [
+        self.blocks.top.list.length,
+        self.blocks.bottom.list.length,
+      ];
+      const renderList = [];
+
+      const padding = 100;
+      const offsetX = 100;
+
+      const cardHeight = 400;
+
+      const x0 = padding + 400;
+      const y0 = context.canvas.height / 2;
+      let nextX = x0;
+
+      const cardX = x0 - padding;
+      const cardY = y0;
+
+      // Card
+      const card = game.add.geom.rect(
+        cardX,
+        cardY,
+        0,
+        cardHeight,
+        colors.blueDark,
+        8,
+        colors.blueLight,
+        0.5
+      );
+      card.id = 'card';
+      card.anchor(0, 0.5);
+      renderList.push(card);
+
+      renderList.push(game.add.text(nextX, y0, nominators[0], font));
+      renderList.push(game.add.text(nextX, y0 + 70, denominators[0], font));
+      renderList.push(game.add.text(nextX, y0, '___', font));
+
+      font.fill = self.control.isCorrect ? colors.green : colors.red;
+      nextX += offsetX;
+      renderList.push(
+        game.add.text(nextX, y0 + 35, self.control.isCorrect ? '=' : '≠', font)
       );
 
-      // Modal
-      self.continue.modal = game.add.geom.rect(
-        0,
-        0,
-        context.canvas.width,
-        context.canvas.height,
-        undefined,
-        0,
-        colors.white,
-        0
-      );
+      font.fill = colors.black;
+      nextX += offsetX;
+      renderList.push(game.add.text(nextX, y0, nominators[1], font));
+      renderList.push(game.add.text(nextX, y0 + 70, denominators[1], font));
+      renderList.push(game.add.text(nextX, y0, '___', font));
 
-      // Fraction operation
-      //self.utils.renderFractionCalculationUI();
+      //let resultWidth = ''.length * widthOfChar;
+      const cardWidth = nextX - x0 + padding * 2;
+      card.width = cardWidth;
+
+      const endSignX =
+        (context.canvas.width - cardWidth) / 2 + cardWidth + 400 + 50;
+
+      // Center Card
+      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
+
+      self.fractionOperationUI = renderList;
+
+      return endSignX;
+    },
+    renderEndUI: () => {
+      let btnColor = colors.green;
+      let btnText = game.lang.continue;
+
+      if (!self.control.isCorrect) {
+        btnColor = colors.red;
+        btnText = game.lang.retry;
+      }
 
       // continue button
-      self.continue.button = game.add.geom.rect(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 200,
-        300,
+      self.ui.continue.button = game.add.geom.rect(
+        context.canvas.width / 2 + 400,
+        context.canvas.height / 2 + 280,
+        350,
         100,
         undefined,
         0,
-        colors.green,
-        0
+        btnColor
       );
-      self.continue.button.anchor(0.5, 0.5);
-      self.continue.text = game.add.text(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 16 + 200,
-        game.lang.continue,
+      self.ui.continue.button.anchor(0.5, 0.5);
+      self.ui.continue.text = game.add.text(
+        context.canvas.width / 2 + 400,
+        context.canvas.height / 2 + 16 + 280,
+        btnText,
         textStyles.btn
       );
-      self.continue.text.alpha = 0;
     },
 
     // UPDATE
@@ -359,79 +441,50 @@ const squareTwo = {
       });
     },
     checkAnswer: function () {
-      game.timer.stop();
-      self.control.animationDelay++;
+      for (let block of self.blocks.top.auxBlocks) {
+        block.alpha = 0;
+      }
+      for (let block of self.blocks.bottom.auxBlocks) {
+        block.alpha = 0;
+      }
 
       // After delay is over, check result
-      if (self.control.animationDelay > 50) {
-        self.control.isCorrect =
-          self.blocks.top.selectedAmount / self.blocks.top.list.length ==
-          self.blocks.bottom.selectedAmount / self.blocks.bottom.list.length;
+      //if (self.control.animationDelay > 50) {
+      self.control.isCorrect =
+        self.blocks.top.selectedAmount / self.blocks.top.list.length ==
+        self.blocks.bottom.selectedAmount / self.blocks.bottom.list.length;
 
-        // Fractions are equivalent : CORRECT
-        if (self.control.isCorrect) {
-          if (audioStatus) game.audio.okSound.play();
+      const x = self.utils.renderOperationUI();
 
-          game.add
-            .image(
-              context.canvas.width / 2,
-              context.canvas.height / 2,
-              'answer_correct'
-            )
-            .anchor(0.5, 0.5);
-          canGoToNextMapPosition = true; // Allow character to move to next level in map state
-          completedLevels++;
-
-          if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
-
-          // Fractions are not equivalent : INCORRECT
-        } else {
-          if (audioStatus) game.audio.errorSound.play();
-          game.add
-            .image(
-              context.canvas.width / 2,
-              context.canvas.height / 2,
-              'answer_wrong'
-            )
-            .anchor(0.5, 0.5);
-          canGoToNextMapPosition = false; // Doesnt allow character to move to next level in map state
-        }
-
-        self.fetch.postScore();
-        self.control.startEndAnimation = true;
-
-        // Reset delay values for next delay
-        self.control.animationDelay = 0;
+      if (self.control.isCorrect) {
+        if (audioStatus) game.audio.okSound.play();
+        game.add
+          .image(x + 50, context.canvas.height / 2, 'answer_correct')
+          .anchor(0.5, 0.5);
+        completedLevels++;
+        if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
+      } else {
+        if (audioStatus) game.audio.errorSound.play();
+        game.add
+          .image(x, context.canvas.height / 2, 'answer_wrong')
+          .anchor(0.5, 0.5);
       }
+
+      self.fetch.postScore();
     },
     runEndAnimation: function () {
       self.control.animationDelay++;
 
-      if (self.control.animationDelay >= 80) {
+      if (self.control.animationDelay === 100) {
+        self.utils.renderEndUI();
         self.control.showEndInfo = true;
-        self.utils.showEndInfo();
+
+        if (self.control.isCorrect) canGoToNextMapPosition = true;
+        else canGoToNextMapPosition = false;
       }
     },
     endLevel: function () {
       game.state.start('map');
-    },
-
-    // INFORMATION
-    showEndInfo: function () {
-      let color;
-      //let text;
-      if (self.control.isCorrect) {
-        color = colors.green;
-        //text = game.lang.continue;
-      } else {
-        color = colors.red;
-        //text = game.lang.retry;
-      }
-      self.continue.modal.alpha = 0.25;
-      // self.continue.text.name = text;
-      self.continue.text.alpha = 1;
-      self.continue.button.fillColor = color;
-      self.continue.button.alpha = 1;
     },
 
     // HANDLERS
@@ -567,7 +620,7 @@ const squareTwo = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           self.utils.endLevel();
         }
       }
@@ -611,16 +664,18 @@ const squareTwo = {
 
       // Continue button
       if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.continue.button)) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           // If pointer is over icon
           document.body.style.cursor = 'pointer';
-          self.continue.button.scale = self.continue.button.initialScale * 1.1;
-          self.continue.text.style = textStyles.btnLg;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1.1;
+          self.ui.continue.text.style = textStyles.btnLg;
         } else {
           // If pointer is not over icon
           document.body.style.cursor = 'auto';
-          self.continue.button.scale = self.continue.button.initialScale * 1;
-          self.continue.text.style = textStyles.btn;
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1;
+          self.ui.continue.text.style = textStyles.btn;
         }
       }
 
