@@ -66,7 +66,7 @@ const navigation = {
   },
 
   disableIcon: (icon) => {
-    icon.alpha = 0.4;
+    icon.alpha = 0;
     icon.isDisabled = true;
   },
 
