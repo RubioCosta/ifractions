@@ -293,10 +293,11 @@ const squareTwo = {
         100,
         context.canvas.height - 128 * 1.5,
         'kid_standing',
-        5,
+        0,
         1.2
       );
       self.kidAnimation.anchor(0.5, 0.7);
+      self.kidAnimation.curFrame = 3;
     },
     renderMainUI: () => {
       // Intro text

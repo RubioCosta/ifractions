@@ -292,9 +292,9 @@ const renderBackground = (type) => {
   game.add.image(0, 0, 'bg_default', 2.2);
 
   // Add clouds
-  game.add.image(640, 100, 'cloud', 1.5);
-  game.add.image(1280, 80, 'cloud', 1.5);
-  game.add.image(300, 85, 'cloud', 1.2);
+  game.add.image(300, context.canvas.height / 2 - 50, 'cloud', 1.5);
+  game.add.image(700, context.canvas.height / 2 + 50 - 50, 'cloud', 1.5);
+  game.add.image(1280, context.canvas.height / 2 - 50 - 50, 'cloud', 1.5);
 
   // Add floor
   const floorSize = 150;
@@ -323,6 +323,19 @@ const renderBackground = (type) => {
       context.canvas.height - floorSize,
       'floor_grass',
       1.5
+    );
+  }
+
+  if (type === 'end') {
+    game.add.geom.rect(
+      0,
+      context.canvas.height - floorSize * 2 + 15,
+      150 * (context.canvas.width / floorSize),
+      150,
+      undefined,
+      0,
+      '#48d813',
+      1
     );
   }
 };

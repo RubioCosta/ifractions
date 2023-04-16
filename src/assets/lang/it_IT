@@ -1,13 +1,15 @@
 audio=AUDIO
 aux_rectangle=Rettangoli Ausiliari
+back_to_menu=Torna al menu principale
 circle=Cerchi
-continue=Continua
 circleOne_intro_a=Dove dovrebbe essere il pallone in modo che il\nragazzo possa raggiungerlo?
 circleOne_intro_b=Quanti cerchi dobbiamo selezionare affinché\nil ragazzo possa raggiungere il pallone?
 squareOne_intro_a=Di che dimensione deve essere aperto il buco nel terreno in modo\nche nentrino tutti i blocchi che prenderà il trattore?
 squareOne_intro_b=Quanti blocchi deve spingere il bulldozer\nper riempire il buco nel terreno?
 squareTwo_intro_a=...\n...
 squareTwo_intro_b=...\n...
+congratulations=Congratulazioni!
+continue=Continua
 custom_game=PERSONALIZZA IL GIOCO ATTUALE
 difficulties=Difficoltà
 difficulty=Difficoltà

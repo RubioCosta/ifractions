@@ -7,109 +7,55 @@
  * @namespace
  */
 const endState = {
+  ui: undefined,
+  control: undefined,
+
+  character: undefined,
+  balloon: undefined,
+  basket: undefined,
+
   /**
    * Main code
    */
   create: function () {
-    self.preAnimate = false;
-    self.animate = true;
+    this.control = {
+      animate: true,
+      preAnimate: false,
+      waitUserAction: false,
+      endUpdate: false,
+      counter: 0,
+      direc: 1,
+    };
 
-    self.waitUserAction = false;
-    self.endUpdate = false;
+    this.ui = {
+      continue: {
+        button: undefined,
+        text: undefined,
+      },
+    };
 
-    renderBackground();
+    renderBackground('end');
 
-    // Progress bar
-    const y = 20;
+    self.utils.renderProgressBar();
 
-    for (let i = 0; i < 4; i++) {
-      game.add.image(
-        context.canvas.width - 300 + 37.5 * i,
-        y,
-        'progress_bar_tile'
-      );
-    }
-
-    game.add.geom.rect(
-      context.canvas.width - 300 + 1,
-      y + 1,
-      149,
-      34,
-      colors.blue,
-      3,
-      undefined,
-      1
-    );
-    game.add.text(
-      context.canvas.width - 300 + 160,
-      y + 33,
-      '100%',
-      textStyles.h2_
-    ).align = 'left';
-    game.add.text(
-      context.canvas.width - 300 - 10,
-      y + 33,
-      game.lang.difficulty + ' ' + gameDifficulty,
-      textStyles.h2_
-    ).align = 'right';
-
+    // Back trees
     game.add
-      .image(360 + 400, context.canvas.height - 100, 'tree_4', 1.05)
+      .image(-100, context.canvas.height - 200, 'tree_4', 1.05)
+      .anchor(0, 1);
+    game.add
+      .image(360 + 400 + 400, context.canvas.height - 200, 'tree_4', 1.05)
       .anchor(0, 1);
 
-    gameList[gameId].assets.end.building();
+    self.utils.renderCharacters();
+    if (this.control.animate) game.animation.play(this.character.animation[0]);
 
-    this.character = gameList[gameId].assets.end.character();
-    this.character.animation = gameList[gameId].assets.end.characterAnimation;
-
-    if (gameName === 'circleOne') {
-      this.preAnimate = true;
-      this.animate = false;
-
-      // Balloon
-      this.balloon = game.add.image(0, -260, 'balloon', 1.5);
-      this.balloon.anchor(0.5, 0.5);
-
-      this.basket = game.add.image(0, -150, 'balloon_basket', 1.5);
-      this.basket.anchor(0.5, 0.5);
-    }
-
-    if (this.animate) game.animation.play(this.character.animation[0]);
-
-    //tree
+    // Front tree
     game.add
-      .image(30 + 200, context.canvas.height - 20, 'tree_4', 1.275)
+      .image(30 + 200 + 100, context.canvas.height - 30, 'tree_4', 1.275)
       .anchor(0, 1);
 
-    // feedback
-    this.continueButton = game.add.geom.rect(
-      context.canvas.width / 2,
-      context.canvas.height / 2,
-      500,
-      100,
-      undefined,
-      0,
-      colors.green,
-      0
-    );
-    this.continueButton.anchor(0.5, 0.5);
-
-    game.add.text(
-      context.canvas.width / 2,
-      200,
-      'Congratulations!',
-      textStyles.h1_
-    );
-    this.continueText = game.add.text(
-      context.canvas.width / 2,
-      context.canvas.height / 2 + 16,
-      'Go back to main menu',
-      textStyles.btn
-    );
-    this.continueText.alpha = 0;
-
-    game.event.add('click', this.onInputDown);
-    game.event.add('mousemove', this.onInputOver);
+    game.event.add('click', this.events.onInputDown);
+    game.event.add('mousemove', this.events.onInputOver);
   },
 
   /**
@@ -118,42 +64,52 @@ const endState = {
   update: function () {
     if (isDebugMode && debugState.end.skip) {
       if (debugState.end.stop) {
-        self.animate = false;
+        self.control.animate = false;
       }
     }
 
-    // Balloon falling
-    if (self.preAnimate) {
-      if (self.character.y < 460) {
-        self.balloon.y += 2;
-        self.basket.y += 2;
-        self.character.y += 2;
+    self.control.counter++;
 
-        self.balloon.x++;
-        self.basket.x++;
-        self.character.x++;
+    // Balloon falling
+    if (self.control.preAnimate) {
+      const speedY = 3,
+        speedX = 2;
+      if (self.basket.y < context.canvas.height - 240) {
+        self.balloon.y += speedY;
+        self.basket.y += speedY;
+        self.character.y += speedY;
+
+        self.balloon.x += speedX;
+        self.basket.x += speedX;
+        self.character.x += speedX;
       } else {
-        self.preAnimate = false;
-        self.animate = true;
+        self.control.preAnimate = false;
+        self.control.animate = true;
         game.animation.play(self.character.animation[0]);
       }
     }
 
-    // Character running
-    if (self.animate) {
-      if (self.character.x <= 700) {
-        self.character.x += 2;
-      } else {
-        self.waitUserAction = true;
-        self.continueText.alpha = 1;
-        self.continueButton.alpha = 1;
+    if (gameName == 'circleOne') {
+      if (self.control.counter % 40 === 0) {
+        self.balloon.x += 5 * self.control.direc;
+        self.control.direc *= -1;
       }
     }
 
-    if (self.endUpdate) {
-      self.animate = false;
-      game.animation.stop(self.character.animation[0]);
+    // Character running
+    if (self.control.animate) {
+      if (self.character.x <= 1550) {
+        self.character.x += 4;
+      } else {
+        self.control.animate = false;
+        game.animation.stop(self.character.animation[0]);
+        self.character.alpha = 0;
+        self.control.waitUserAction = true;
+        self.utils.renderEndUI();
+      }
+    }
 
+    if (self.control.endLevel) {
       // FOR MOODLE
       if (!moodle) {
         completedLevels = 0;
@@ -167,50 +123,151 @@ const endState = {
     game.render.all();
   },
 
-  /**
-   * Called by mouse click event
-   *
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  onInputDown: function (mouseEvent) {
-    console.log('clicked');
-    const x = game.math.getMouse(mouseEvent).x;
-    const y = game.math.getMouse(mouseEvent).y;
+  utils: {
+    renderProgressBar: () => {
+      const x0 = 300;
+      const y0 = 20;
 
-    if (game.math.isOverIcon(x, y, self.continueButton)) {
-      self.endUpdate = true;
-      //self.loadGame();
-    }
+      // Bar content
+      for (let i = 0; i < 4; i++) {
+        game.add.image(
+          context.canvas.width - x0 + 37.5 * i,
+          y0,
+          'progress_bar_tile'
+        );
+      }
+
+      // Bar wrapper
+      game.add.geom.rect(
+        context.canvas.width - x0 + 1,
+        y0 + 1,
+        149, //150, //149,
+        34, //35, //34,
+        colors.blue,
+        3,
+        undefined,
+        1
+      );
+
+      // percentage label
+      game.add.text(
+        context.canvas.width - x0 + 160,
+        y0 + 33,
+        '100%',
+        textStyles.h2_
+      ).align = 'left';
+
+      // Difficulty label
+      game.add.text(
+        context.canvas.width - x0 - 10,
+        y0 + 33,
+        game.lang.difficulty + ' ' + gameDifficulty,
+        textStyles.h2_
+      ).align = 'right';
+    },
+    renderCharacters: () => {
+      gameList[gameId].assets.end.building();
+
+      self.character = gameList[gameId].assets.end.character();
+      self.character.animation =
+        gameList[gameId].assets.end.characterAnimation();
+
+      if (gameName === 'circleOne') {
+        self.control.preAnimate = true;
+        self.control.animate = false;
+
+        // Balloon
+        self.balloon = game.add.image(0, -350, 'balloon', 1.5);
+        self.balloon.anchor(0.5, 0.5);
+
+        self.basket = game.add.image(0, -150, 'balloon_basket', 1.5);
+        self.basket.anchor(0.5, 0.5);
+
+        self.character.curFrame = 6;
+      }
+    },
+    renderEndUI: () => {
+      const btnY = context.canvas.height / 2;
+
+      // Continue Button
+      self.ui.continue.button = game.add.geom.rect(
+        context.canvas.width / 2,
+        btnY,
+        600,
+        100,
+        undefined,
+        0,
+        colors.green,
+        1
+      );
+      self.ui.continue.button.anchor(0.5, 0.5);
+
+      // Continue button text
+      self.ui.continue.text = game.add.text(
+        context.canvas.width / 2,
+        btnY + 16,
+        game.lang.back_to_menu,
+        textStyles.btn
+      );
+
+      // Title
+      const font = { ...textStyles.btnLg };
+      font.fill = colors.blue;
+      game.add.text(
+        context.canvas.width / 2,
+        btnY - 100,
+        game.lang.congratulations,
+        font
+      );
+    },
   },
 
-  /**
-   * Called by mouse move event
-   *
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  onInputOver: function (mouseEvent) {
-    console.log('moved');
+  events: {
+    /**
+     * Called by mouse click event
+     *
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
+    onInputDown: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
 
-    const x = game.math.getMouse(mouseEvent).x;
-    const y = game.math.getMouse(mouseEvent).y;
-    let overIcon;
+      if (self.control.waitUserAction) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          self.control.endLevel = true;
+        }
+      }
+    },
 
-    if (game.math.isOverIcon(x, y, self.continueButton)) {
-      overIcon = true;
-      console.log('is over icon');
-    }
+    /**
+     * Called by mouse move event
+     *
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
+    onInputOver: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
+      let overIcon;
 
-    // Update gui
-    if (overIcon) {
-      // If pointer is over icon
-      document.body.style.cursor = 'pointer';
-      self.continueButton.scale = self.continueButton.initialScale * 1.1;
-      self.continueText.style = textStyles.btnLg;
-    } else {
-      // If pointer is not over icon
-      self.continueButton.scale = self.continueButton.initialScale * 1;
-      document.body.style.cursor = 'auto';
-      self.continueText.style = textStyles.btn;
-    }
+      if (self.control.waitUserAction) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          overIcon = true;
+        }
+      }
+      // Update gui
+      if (overIcon) {
+        // If pointer is over icon
+        document.body.style.cursor = 'pointer';
+        self.ui.continue.button.scale =
+          self.ui.continue.button.initialScale * 1.1;
+        self.ui.continue.text.style = textStyles.btnLg;
+      } else {
+        // If pointer is not over icon
+        self.ui.continue.button.scale =
+          self.ui.continue.button.initialScale * 1;
+        document.body.style.cursor = 'auto';
+        self.ui.continue.text.style = textStyles.btn;
+      }
+    },
   },
 };

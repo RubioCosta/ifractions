@@ -1,5 +1,6 @@
 audio=ÁUDIO
 aux_rectangle=Retângulos Auxiliares
+back_to_menu=Voltar ao menu principal
 circle=Círculos
 circleOne_intro_a=Onde o balão deve ficar para que o menino\nconsiga chegar até ele?
 circleOne_intro_b=Quantos arcos devemos selecionar para que\no menino consiga chegar até o balão?
@@ -8,6 +9,7 @@ squareOne_intro_b=Quantos blocos o trator deve empurrar para conseguir\npreenche
 squareTwo_intro_a=...\n...
 squareTwo_intro_b=...\n...
 continue=Continue
+congratulations=Parabéns!
 custom_game=PERSONALIZE O JOGO ATUAL
 difficulties=Dificuldades
 difficulty=Dificuldade

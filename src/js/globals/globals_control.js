@@ -220,8 +220,8 @@ const gameList = [
       map: {
         characterAnimation: (operation) => {
           return operation === 'plus'
-            ? ['green_tractor', [0, 1, 2, 3, 4], 3]
-            : ['red_tractor', [10, 11, 12, 13, 14], 3];
+            ? ['move', [0, 1, 2, 3, 4], 3]
+            : ['move', [10, 11, 12, 13, 14], 3];
         },
         character: (operation) => {
           let char;
@@ -265,29 +265,32 @@ const gameList = [
         },
       },
       end: {
-        characterAnimation: (animation) =>
-          animation === 'plus'
-            ? ['move', [0, 1, 2, 3, 4], 4]
-            : ['move', [10, 11, 12, 13, 14], 4],
-        character: (operation) => {
+        characterAnimation: () =>
+          gameOperation === 'plus'
+            ? ['move', [0, 1, 2, 3, 4], 3]
+            : ['move', [10, 11, 12, 13, 14], 3],
+        character: () => {
           const char = game.add.sprite(
             0,
-            context.canvas.height - 170,
+            context.canvas.height - 170 - 80,
             'tractor',
             0,
             1.05
           );
           char.anchor(0.5, 0.5);
-          if (operation === 'plus') char.curFrame = 10;
+          if (gameOperation === 'minus') char.curFrame = 10;
+
           return char;
         },
         building: () =>
-          game.add.image(
-            context.canvas.width - 400,
-            context.canvas.height - 400,
-            'farm',
-            1.155
-          ),
+          game.add
+            .image(
+              context.canvas.width - 420,
+              context.canvas.height - 100,
+              'farm',
+              1.7
+            )
+            .anchor(0, 1),
       },
     },
   },
@@ -410,13 +413,25 @@ const gameList = [
         },
       },
       end: {
-        characterAnimation: ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3],
+        characterAnimation: () => [
+          'move',
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+          3,
+        ],
         character: () => {
           const char = game.add.sprite(0, -152, 'kid_running', 0, 1.05);
           char.anchor(0.5, 0.5);
           return char;
         },
-        building: () => game.add.image(600, 222, 'school', 1.05),
+        building: () =>
+          game.add
+            .image(
+              context.canvas.width - 620,
+              context.canvas.height - 20 - 15,
+              'school',
+              1.3
+            )
+            .anchor(0, 1),
       },
     },
   },
@@ -525,13 +540,31 @@ const gameList = [
         },
       },
       end: {
-        characterAnimation: ['move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 3],
+        characterAnimation: () => [
+          'move',
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+          3,
+        ],
         character: () => {
-          const char = game.add.sprite(0, 460, 'kid_running', 6, 1.05);
+          const char = game.add.sprite(
+            0,
+            context.canvas.height - 240,
+            'kid_running',
+            0,
+            1.05
+          );
           char.anchor(0.5, 0.5);
           return char;
         },
-        building: () => game.add.image(600, 222, 'school', 1.05),
+        building: () =>
+          game.add
+            .image(
+              context.canvas.width - 620,
+              context.canvas.height - 20 - 15,
+              'school',
+              1.3
+            )
+            .anchor(0, 1),
       },
     },
   },

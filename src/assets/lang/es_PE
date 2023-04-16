@@ -1,13 +1,15 @@
 audio=AUDIO
 aux_rectangle=Rectángulos Auxiliares
+back_to_menu=Volver al menú principal
 circle=Circulos
-continue=Continúa
 circleOne_intro_a=¿Dónde debe estar el globo para que el niño\npueda alcanzarlo?
 circleOne_intro_b=¿Cuántos aros debemos seleccionar para que\nel niño pueda llegar al globo?
 squareOne_intro_a=¿Qué tamaño de agujero hay que abrir en el suelo para que quepan todos los bloques que llevará el tractor?
 squareOne_intro_b=¿Cuántos bloques debe empujar la excavadora para llenar\nel agujero en el suelo?
 squareTwo_intro_a=...\n...
 squareTwo_intro_b=...\n...
+congratulations=¡Felicidades!
+continue=Continúa
 custom_game=PERSONALIZAR EL JUEGO ACTUAL
 difficulties=Dificultades
 difficulty=Dificultade

@@ -1,13 +1,15 @@
 audio=AUDIO
 aux_rectangle=Rectangles Auxiliaires
+back_to_menu=Retour au menu principal
 circle=Cercles
-continue=Continuez
 circleOne_intro_a=Où doit être le ballon pour que le garçon\npuisse l'atteindre ?
 circleOne_intro_b=Combien de cerceaux devons-nous choisir pour que\nle garçon puisse atteindre le ballon ?
 squareOne_intro_a=Quelle taille de trou faut-il ouvrir dans le sol pour que tous les blocs\nque prendra le tracteur puissent y rentrer ?
 squareOne_intro_b=Combien de blocs le bulldozer doit-il pousser\npour combler le trou dans le sol ?
 squareTwo_intro_a=...\n...
 squareTwo_intro_b=...\n...
+congratulations=Toutes nos félicitations!
+continue=Continuez
 custom_game=PERSONNALISER LE JEU ACTUEL
 difficulties=Difficultés
 difficulty=Difficulté
