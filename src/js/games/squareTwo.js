@@ -301,11 +301,7 @@ const squareTwo = {
     },
     renderMainUI: () => {
       // Intro text
-      const correctMessage =
-        gameMode === 'a'
-          ? game.lang.squareTwo_intro_a
-          : game.lang.squareTwo_intro_b;
-      const treatedMessage = correctMessage.split('\\n');
+      const treatedMessage = game.lang.squareTwo_intro.split('\\n');
       const font = textStyles.h1_;
       self.ui.message = [];
       self.ui.message.push(

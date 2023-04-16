@@ -1,9 +1,9 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { skip: true, lang: 'pt_BR' },
+  lang: { skip: true, lang: 'en_US' },
   name: { skip: true, name: 'Username' },
-  menu: { skip: true, id: 0 },
+  menu: { skip: true, id: 2 },
   customMenu: {
     skip: true,
     getData: () => {
@@ -11,7 +11,7 @@ const debugState = {
     },
   },
   map: { skip: true },
-  end: { skip: true, stop: false },
+  end: { skip: false, stop: false },
 };
 
 const debugFunctions = {
