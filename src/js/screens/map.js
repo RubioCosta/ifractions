@@ -150,9 +150,7 @@ const mapState = {
       0,
       context.canvas.width,
       context.canvas.height,
-      undefined,
-      0,
-      colors.white,
+      colors.black,
       0
     );
 
@@ -161,8 +159,6 @@ const mapState = {
       context.canvas.height / 2,
       300,
       100,
-      undefined,
-      0,
       colors.green,
       0
     );
@@ -307,10 +303,10 @@ const mapState = {
       y0 + 1,
       150, //149,
       35, //34,
+      'transparent',
+      1,
       colors.blue,
-      3,
-      undefined,
-      1
+      3
     );
 
     // percentage label

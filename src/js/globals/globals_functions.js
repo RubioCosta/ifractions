@@ -236,10 +236,7 @@ const renderBackground = (type) => {
       0,
       context.canvas.width,
       context.canvas.height,
-      colors.white,
-      0,
-      colors.blueBg,
-      1
+      colors.blueBg
     );
     return;
   }
@@ -332,10 +329,7 @@ const renderBackground = (type) => {
       context.canvas.height - floorSize * 2 + 15,
       150 * (context.canvas.width / floorSize),
       150,
-      undefined,
-      0,
-      '#48d813',
-      1
+      '#48d813'
     );
   }
 };
@@ -347,23 +341,14 @@ const getFrameInfo = function () {
   let height = context.canvas.height - 2 * y0;
 
   let rect = function () {
-    game.add.geom.rect(x0, y0, width, height, colors.red, 2);
+    game.add.geom.rect(x0, y0, width, height, 'transparent', 1, colors.red, 2);
   };
 
   let point = function (offsetW, offsetH) {
     for (let i = 0, y1 = y; i < 4; i++) {
       x1 = x0;
       for (let j = 0; j < 7; j++) {
-        let sqr = game.add.geom.rect(
-          x1,
-          y1,
-          20,
-          20,
-          undefined,
-          0,
-          colors.red,
-          1
-        );
+        let sqr = game.add.geom.rect(x1, y1, 20, 20, colors.red);
         sqr.anchor(0.5, 0.5);
         x1 += offsetW;
       }

@@ -210,10 +210,10 @@ const squareOne = {
           self.default.y0 - i * self.default.height - lineWidth,
           curBlockWidth,
           self.default.height,
-          lineColor,
-          lineWidth,
           fillColor,
-          1
+          1,
+          lineColor,
+          lineWidth
         );
         curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 1);
         curBlock.blockValue = divisor / curDivisor;
@@ -391,10 +391,10 @@ const squareOne = {
           self.default.y0,
           blockWidth,
           self.default.height + 10,
-          colors.gray,
-          lineWidth,
           colors.blueBgInsideLevel,
-          1
+          1,
+          colors.gray,
+          lineWidth
         );
         const anchor = gameOperation == 'minus' ? 1 : 0;
         curBlock.anchor(anchor, 0);
@@ -402,7 +402,7 @@ const squareOne = {
 
         // If game is type (a), adding events to floor blocks
         if (gameMode == 'a') {
-          curBlock.fillColor = '';
+          curBlock.fillColor = 'transparent';
           curBlock.blockIndex = i;
         }
 
@@ -494,18 +494,6 @@ const squareOne = {
       );
     },
     renderOperationUI: () => {
-      // Modal
-      // self.ui.continue.modal = game.add.geom.rect(
-      //   0,
-      //   0,
-      //   context.canvas.width,
-      //   context.canvas.height,
-      //   undefined,
-      //   0,
-      //   colors.black,
-      //   0.2
-      // );
-
       let validBlocks = [];
       const lastValidIndex =
         gameMode === 'a' ? self.stack.curIndex : self.stack.selectedIndex;
@@ -538,10 +526,10 @@ const squareOne = {
         cardY,
         0,
         cardHeight,
-        colors.blueDark,
-        8,
         colors.blueLight,
-        0.5
+        0.5,
+        colors.blueDark,
+        8
       );
       card.id = 'card';
       card.anchor(0, 0.5);
@@ -683,8 +671,6 @@ const squareOne = {
         context.canvas.height / 2 + 100,
         350,
         100,
-        undefined,
-        0,
         btnColor
       );
       self.ui.continue.button.anchor(0.5, 0.5);
@@ -731,7 +717,7 @@ const squareOne = {
 
       // fill floor
       for (let i = 0; i <= self.floor.curIndex; i++) {
-        self.floor.list[i].fillColor = '';
+        self.floor.list[i].fillColor = 'transparent';
       }
       // lower blocks
       self.stack.list.forEach((block) => {
@@ -888,7 +874,7 @@ const squareOne = {
         if (gameMode === 'a') {
           for (let i in self.floor.list) {
             self.floor.list[i].fillColor =
-              i <= cur.blockIndex ? colors.blueBgInsideLevel : '';
+              i <= cur.blockIndex ? colors.blueBgInsideLevel : 'transparent';
           }
           self.floor.selectedIndex = cur.blockIndex;
         } else {
@@ -913,7 +899,7 @@ const squareOne = {
 
         if (gameMode === 'a') {
           for (let i in self.floor.list) {
-            self.floor.list[i].fillColor = '';
+            self.floor.list[i].fillColor = 'transparent';
           }
           self.floor.selectedIndex = undefined;
         } else {

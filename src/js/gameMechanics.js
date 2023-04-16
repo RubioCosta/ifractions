@@ -75,8 +75,6 @@ const game = {
           0,
           context.canvas.width,
           context.canvas.height,
-          colors.white,
-          0,
           colors.blueBg,
           1
         );
@@ -85,8 +83,6 @@ const game = {
           context.canvas.height / 2,
           40,
           40,
-          undefined,
-          0,
           colors.blue,
           0.4
         );
@@ -566,10 +562,10 @@ const game = {
         y,
         width,
         height,
-        lineColor,
-        lineWidth,
         fillColor,
-        alpha
+        alpha,
+        lineColor,
+        lineWidth
       ) {
         if (x == undefined || y == undefined || width == undefined)
           console.error('Game error: missing parameters.');
@@ -818,8 +814,8 @@ const game = {
       width: 50,
       height: 50,
       lineColor: '#000',
-      lineWidth: 1,
-      fillColor: 0, // No fill
+      lineWidth: 0, // No line
+      fillColor: '#fff', // white fill
       // Used in: circle.
       diameter: 50,
       counterclockwise: false,
@@ -959,7 +955,7 @@ const game = {
         context.shadowBlur = cur.shadow ? cur.shadowBlur : 0;
         context.shadowColor = cur.shadowColor;
         // Fill
-        if (cur.fillColor != 0) {
+        if (cur.fillColor !== 'transparent') {
           context.fillStyle = cur.fillColor;
           context.fillRect(x, y, cur.width * cur.scale, cur.height * cur.scale);
         }

@@ -94,15 +94,7 @@ const studentReport = {
           textStyles.h2_
         );
 
-        game.add.geom.rect(
-          x - 55,
-          y - 40,
-          5,
-          135,
-          undefined,
-          0,
-          colors.blueMenuLine
-        );
+        game.add.geom.rect(x - 55, y - 40, 5, 135, colors.blueMenuLine);
         game.add.text(
           x - 40,
           y - 25,

@@ -220,7 +220,7 @@ const circleOne = {
       );
     },
     renderWalkedPath: function (x, y, color) {
-      const path = game.add.geom.rect(x, y, 1, 1, color, 4);
+      const path = game.add.geom.rect(x, y, 1, 1, 'transparent', 1, color, 4);
       self.walkedPath.push(path);
       return path;
     },
@@ -562,18 +562,6 @@ const circleOne = {
       );
     },
     renderOperationUI: function () {
-      // Modal
-      // self.ui.continue.modal = game.add.geom.rect(
-      //   0,
-      //   0,
-      //   context.canvas.width,
-      //   context.canvas.height,
-      //   undefined,
-      //   0,
-      //   colors.black,
-      //   0.2
-      // );
-
       let validCircles = self.circles.list;
       if (gameMode === 'b') {
         validCircles = [];
@@ -607,10 +595,10 @@ const circleOne = {
         cardY,
         0,
         cardHeight,
-        colors.blueDark,
-        8,
         colors.blueLight,
-        0.5
+        0.5,
+        colors.blueDark,
+        8
       );
       card.id = 'card';
       card.anchor(0, 0.5);
@@ -752,8 +740,6 @@ const circleOne = {
         context.canvas.height / 2 + 100,
         350,
         100,
-        undefined,
-        0,
         btnColor
       );
       self.ui.continue.button.anchor(0.5, 0.5);

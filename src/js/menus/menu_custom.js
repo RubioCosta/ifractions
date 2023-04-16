@@ -371,17 +371,6 @@ const customMenuState = {
       // Parameters
       const curX = x + (50 + 10) * i;
 
-      // Difficulty menuIcons
-      // const icon = game.add.geom.rect(
-      //   curX,
-      //   y - 5,
-      //   50,
-      //   50,
-      //   undefined,
-      //   0,
-      //   colors.gray,
-      //   1
-      // );
       const icon = game.add.sprite(curX, y - 5, 'btn_square', 1, 0.8);
       icon.anchor(0.5, 0.5);
       icon.difficulty = i + 1;

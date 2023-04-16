@@ -232,10 +232,10 @@ const squareTwo = {
           y0,
           blockWidth,
           self.control.blockHeight,
-          lineColor,
-          4,
           fillColor,
-          0.5
+          0.5,
+          lineColor,
+          4
         );
         curBlock.position = blockType;
         curBlock.index = i;
@@ -250,10 +250,10 @@ const squareTwo = {
           curYAux,
           blockWidth,
           self.control.blockHeight,
-          lineColor,
-          1,
           fillColor,
-          alpha
+          alpha,
+          lineColor,
+          1
         );
         blocks.auxBlocks.push(curAuxBlock);
       }
@@ -352,10 +352,10 @@ const squareTwo = {
         cardY,
         0,
         cardHeight,
-        colors.blueDark,
-        8,
         colors.blueLight,
-        0.5
+        0.5,
+        colors.blueDark,
+        8
       );
       card.id = 'card';
       card.anchor(0, 0.5);
@@ -406,8 +406,6 @@ const squareTwo = {
         context.canvas.height / 2 + 280,
         350,
         100,
-        undefined,
-        0,
         btnColor
       );
       self.ui.continue.button.anchor(0.5, 0.5);

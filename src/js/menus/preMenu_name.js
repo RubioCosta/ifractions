@@ -33,10 +33,7 @@ const nameState = {
       context.canvas.height / 2 + 93 + 44,
       300,
       100,
-      undefined,
-      0,
-      colors.green,
-      1
+      colors.green
     );
     this.okBtn.anchor(0.5, 0.5);
 

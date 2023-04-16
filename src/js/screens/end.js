@@ -143,10 +143,10 @@ const endState = {
         y0 + 1,
         149, //150, //149,
         34, //35, //34,
+        'transparent',
+        1,
         colors.blue,
-        3,
-        undefined,
-        1
+        3
       );
 
       // percentage label
@@ -195,10 +195,7 @@ const endState = {
         btnY,
         600,
         100,
-        undefined,
-        0,
-        colors.green,
-        1
+        colors.green
       );
       self.ui.continue.button.anchor(0.5, 0.5);
 
@@ -251,22 +248,18 @@ const endState = {
 
       if (self.control.waitUserAction) {
         if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
-          overIcon = true;
+          // If pointer is over icon
+          document.body.style.cursor = 'pointer';
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1.1;
+          self.ui.continue.text.style = textStyles.btnLg;
+        } else {
+          // If pointer is not over icon
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1;
+          document.body.style.cursor = 'auto';
+          self.ui.continue.text.style = textStyles.btn;
         }
-      }
-      // Update gui
-      if (overIcon) {
-        // If pointer is over icon
-        document.body.style.cursor = 'pointer';
-        self.ui.continue.button.scale =
-          self.ui.continue.button.initialScale * 1.1;
-        self.ui.continue.text.style = textStyles.btnLg;
-      } else {
-        // If pointer is not over icon
-        self.ui.continue.button.scale =
-          self.ui.continue.button.initialScale * 1;
-        document.body.style.cursor = 'auto';
-        self.ui.continue.text.style = textStyles.btn;
       }
     },
   },
