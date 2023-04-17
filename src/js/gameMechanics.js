@@ -78,22 +78,32 @@ const game = {
           colors.blueBg,
           1
         );
+        game.add.geom.rect(
+          context.canvas.width / 2 - 500 / 2,
+          context.canvas.height / 2 - 40 / 2,
+          500,
+          40,
+          colors.white,
+          1
+        );
+
         game.state.progressBar = game.add.geom.rect(
-          context.canvas.width / 2,
+          context.canvas.width / 2 - 500 / 2,
           context.canvas.height / 2,
           40,
           40,
           colors.blue,
           0.4
         );
-        game.state.progressBar.anchor(0.5, 0.5);
+        game.state.progressBar.anchor(0, 0.5);
 
         game.state.progressBarLabel = game.add.text(
           context.canvas.width / 2,
-          context.canvas.height / 2 + 100,
-          '...',
+          context.canvas.height / 2 + 80,
+          'Loading...',
           textStyles.h2_
         );
+
         // Calls state's preload() to load the state's media
         self.preload();
       } else {

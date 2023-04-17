@@ -1,16 +1,16 @@
-const isDebugMode = true;
+const isDebugMode = false;
 
 const debugState = {
-  lang: { skip: true, lang: 'es_PE' },
-  name: { skip: true, name: 'Username' },
-  menu: { skip: true, id: 1 },
+  lang: { skip: false, lang: 'es_PE' },
+  name: { skip: false, name: 'Username' },
+  menu: { skip: false, id: 1 },
   customMenu: {
-    skip: true,
+    skip: false,
     getData: () => {
       return { mode: 'b', operation: 'plus', difficulty: 3, label: true };
     },
   },
-  map: { skip: true },
+  map: { skip: false },
   end: { skip: false, stop: false },
   moodle: {
     emulate: false,
