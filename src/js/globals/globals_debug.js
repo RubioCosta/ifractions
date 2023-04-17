@@ -1,17 +1,25 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { skip: true, lang: 'en_US' },
+  lang: { skip: true, lang: 'es_PE' },
   name: { skip: true, name: 'Username' },
-  menu: { skip: true, id: 1 },
+  menu: { skip: true, id: 2 },
   customMenu: {
     skip: true,
     getData: () => {
-      return { mode: 'a', operation: 'mixed', difficulty: 1, label: true };
+      return { mode: 'b', operation: 'mixed', difficulty: 3, label: true };
     },
   },
   map: { skip: true },
   end: { skip: true, stop: false },
+  moodle: {
+    emulate: true,
+    info: {
+      hits: [1, 1, 1, 0],
+      errors: [2, 3, 0, 4],
+      time: [60, 120, 120, 2],
+    },
+  },
 };
 
 const debugFunctions = {

@@ -62,9 +62,15 @@ const endState = {
    * Game loop
    */
   update: function () {
-    if (isDebugMode && debugState.end.skip) {
-      if (debugState.end.stop) {
+    if (isDebugMode) {
+      if (debugState.end.skip && debugState.end.stop) {
         self.control.animate = false;
+      }
+
+      if (debugState.moodle.emulate) {
+        moodleVar = debugState.moodle.info;
+        game.state.start('studentReport');
+        return;
       }
     }
 

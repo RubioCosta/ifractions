@@ -17,103 +17,131 @@ const studentReport = {
    * Main code
    */
   create: function () {
-    const offsetW = context.canvas.width / 4;
-    let x = offsetW / 2;
-    let y = context.canvas.height / 2 - 50;
+    const offsetX = context.canvas.width / 4;
+    const offsetY = 37.5;
+
+    const x0 = offsetX / 2;
+    const y0 = context.canvas.height / 2 - 100;
+
+    const titleFont = { ...textStyles.h1_, fill: colors.green };
+    const infoFont = {
+      ...textStyles.h4_,
+      align: 'left',
+      fill: colors.maroon,
+    };
 
     renderBackground();
 
     // Title
-    game.add.text(
-      context.canvas.width / 2,
-      80,
-      game.lang.results,
-      textStyles.h1_
-    );
+    game.add.text(context.canvas.width / 2, 120, game.lang.results, titleFont);
     game.add.image(
-      x - 40,
-      y - 70,
+      x0 - 80,
+      y0 - 110,
       gameList[gameId].assets.menu.gameNameBtn,
-      0.8
+      1.4
     );
 
-    // Game info
-    text =
-      game.lang[gameShape].charAt(0).toUpperCase() +
-      game.lang[gameShape].slice(1);
-    text =
-      game.lang.game +
-      ': ' +
-      text +
-      (gameName.slice(-3) == 'One' ? ' I' : ' II');
-    game.add.text(190, y - 50, text, textStyles.h4_).align = 'left';
-    game.add.text(
-      190,
-      y - 25,
-      game.lang.game_mode + ': ' + gameMode,
-      textStyles.h4_
-    ).align = 'left';
-    game.add.text(
-      190,
-      y,
-      game.lang.operation + ': ' + gameOperation,
-      textStyles.h4_
-    ).align = 'left';
-    game.add.text(
-      190,
-      y + 25,
-      game.lang.difficulty + ': ' + gameDifficulty,
-      textStyles.h4_
-    ).align = 'left';
+    this.utils.renderCurGameMetadata(y0, offsetY, infoFont);
+    this.utils.renderCurGameStats(x0, offsetX, offsetY, infoFont);
+  },
 
-    // Student info
-    y = context.canvas.height - 200;
-    for (let i = 0; i < 4; i++, x += offsetW) {
-      // If level wasnt completed, show broken sign
-      if (moodleVar.hits[i] == 0 && moodleVar.errors[i] == 0) {
-        const sign = game.add.image(
-          x,
-          context.canvas.height - 100,
-          'sign_broken',
-          0.7
-        );
-        sign.anchor(0.5, 0.5);
-      } else {
+  utils: {
+    renderCurGameMetadata: function (defaultY, offsetY, font) {
+      // Game info
+      let text =
+        game.lang[gameShape].charAt(0).toUpperCase() +
+        game.lang[gameShape].slice(1);
+      text =
+        game.lang.game +
+        ': ' +
+        text +
+        (gameName.slice(-3) == 'One' ? ' I' : ' II');
+
+      const x0 = 360;
+
+      game.add.text(x0, defaultY - offsetY * 2, text, font);
+      game.add.text(
+        x0,
+        defaultY - offsetY,
+        game.lang.game_mode + ': ' + gameMode.toUpperCase(),
+        font
+      );
+      const operationText =
+        gameOperation.charAt(0).toUpperCase() + gameOperation.slice(1);
+      game.add.text(
+        x0,
+        defaultY,
+        game.lang.operation + ': ' + operationText,
+        font
+      );
+      game.add.text(
+        x0,
+        defaultY + offsetY,
+        game.lang.difficulty + ': ' + gameDifficulty,
+        font
+      );
+    },
+    renderCurGameStats: function (defaultX, offsetX, offsetY, font) {
+      // Student info
+      const y0 = context.canvas.height - 300;
+      let x = defaultX;
+
+      for (let i = 0; i < 4; i++, x += offsetX) {
+        // If level wasnt completed, show broken sign
+        if (moodleVar.hits[i] === 0 && moodleVar.errors[i] === 0) {
+          const sign = game.add.image(
+            x,
+            context.canvas.height - 150,
+            'sign_broken',
+            1.2
+          );
+          sign.anchor(0.5, 0.5);
+          continue;
+        }
+
         // If level was completed shows sign with level number and student report
         const sign = game.add.image(
           x,
-          context.canvas.height - 100,
+          context.canvas.height - 150,
           'sign',
-          0.7
+          1.2
         );
         sign.anchor(0.5, 0.5);
-        game.add.text(
-          x,
-          context.canvas.height - 100,
-          '' + (i + 1),
-          textStyles.h2_
-        );
 
-        game.add.geom.rect(x - 55, y - 40, 5, 135, colors.blueMenuLine);
+        const numberFont = {
+          ...textStyles.h2_,
+          font: 'bold ' + textStyles.h2_.font,
+          fill: colors.white,
+        };
+        game.add.text(x, context.canvas.height - 150, '' + (i + 1), numberFont);
+
+        game.add.geom.rect(
+          x - 40 - 50,
+          y0 - offsetY * 1.75,
+          10,
+          135 * 1.5,
+          colors.blue,
+          0.1
+        );
         game.add.text(
-          x - 40,
-          y - 25,
+          x - 60,
+          y0 - offsetY,
           game.lang.time + ': ' + game.math.convertTime(moodleVar.time[i]),
-          textStyles.h4_
-        ).align = 'left';
+          font
+        );
         game.add.text(
-          x - 40,
-          y,
+          x - 60,
+          y0,
           game.lang.hits + ': ' + moodleVar.hits[i],
-          textStyles.h4_
-        ).align = 'left';
+          font
+        );
         game.add.text(
-          x - 40,
-          y + 25,
+          x - 60,
+          y0 + offsetY,
           game.lang.errors + ': ' + moodleVar.errors[i],
-          textStyles.h4_
-        ).align = 'left';
+          font
+        );
       }
-    }
+    },
   },
 };

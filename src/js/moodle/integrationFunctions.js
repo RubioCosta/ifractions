@@ -261,7 +261,7 @@ const updateGlobalVariables = function (infoGame, infoResults) {
   }
 };
 
-const moodleVar = {
+moodleVar = {
   hits: [0, 0, 0, 0],
   errors: [0, 0, 0, 0],
   time: [0, 0, 0, 0],

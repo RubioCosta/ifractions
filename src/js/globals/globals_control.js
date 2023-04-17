@@ -39,6 +39,8 @@
  */
 const moodle = false;
 
+let moodleVar;
+
 /**
  * Index of the current game in gameList array
  *
