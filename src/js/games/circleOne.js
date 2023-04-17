@@ -738,7 +738,7 @@ const circleOne = {
       self.ui.continue.button = game.add.geom.rect(
         context.canvas.width / 2,
         context.canvas.height / 2 + 100,
-        350,
+        450,
         100,
         btnColor
       );

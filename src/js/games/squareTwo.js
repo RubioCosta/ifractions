@@ -404,7 +404,7 @@ const squareTwo = {
       self.ui.continue.button = game.add.geom.rect(
         context.canvas.width / 2 + 400,
         context.canvas.height / 2 + 280,
-        350,
+        450,
         100,
         btnColor
       );
