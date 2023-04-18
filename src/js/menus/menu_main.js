@@ -96,6 +96,7 @@ const menuState = {
         gameId = id;
         gameName = gameList[id].gameName;
         gameShape = gameList[id].gameShape;
+        audioStatus = debugState.menu.audioStatus || false;
         self.menuIcons =
           game.lang[gameShape] + ' ' + gameName.slice(-3) == 'One' ? 'I' : 'II';
         game.state.start('customMenu');

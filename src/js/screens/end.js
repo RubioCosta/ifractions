@@ -237,6 +237,7 @@ const endState = {
 
       if (self.control.waitUserAction) {
         if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          if (audioStatus) game.audio.popSound.play();
           self.control.endLevel = true;
         }
       }

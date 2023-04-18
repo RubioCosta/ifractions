@@ -1025,6 +1025,7 @@ const circleOne = {
       // Continue button
       if (self.control.showEndInfo) {
         if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          if (audioStatus) game.audio.popSound.play();
           self.utils.endLevel();
         }
       }

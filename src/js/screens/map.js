@@ -247,6 +247,7 @@ const mapState = {
     const y = game.math.getMouse(mouseEvent).y;
 
     if (game.math.isOverIcon(x, y, self.continueButton)) {
+      if (audioStatus) game.audio.popSound.play();
       self.loadGame();
     }
 
