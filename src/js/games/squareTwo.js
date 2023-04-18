@@ -135,16 +135,6 @@ const squareTwo = {
   },
 
   utils: {
-    startDelayHandler: () => {
-      console.log('startdelayhandler');
-      self.control.animationDelay++;
-
-      if (self.control.animationDelay === 50) {
-        self.utils.checkAnswer();
-        self.control.animationDelay = 0;
-        self.control.startEndAnimation = true;
-      }
-    },
     // RENDERS
     renderBlockSetup: function () {
       // Coordinates for (a) and (b)
@@ -415,6 +405,17 @@ const squareTwo = {
         btnText,
         textStyles.btn
       );
+    },
+    startDelayHandler: () => {
+      self.control.animationDelay++;
+
+      if (self.control.animationDelay === 50) {
+        self.ui.message[0].alpha = 0;
+        self.ui.message[1].alpha = 0;
+        self.utils.checkAnswer();
+        self.control.animationDelay = 0;
+        self.control.startEndAnimation = true;
+      }
     },
 
     // UPDATE

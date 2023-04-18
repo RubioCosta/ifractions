@@ -11,7 +11,7 @@ const debugState = {
     },
   },
   map: { skip: true },
-  end: { skip: true, stop: false },
+  end: { skip: false, stop: false },
   moodle: {
     emulate: false,
     info: {
