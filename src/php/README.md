@@ -9,8 +9,8 @@ First you'll need a **MySQL** database installed on the server (more info in htt
 Now, in order for iFractions to successfully establish a connection to the database you must:
 
 1. create and set up the database for the game.
-2. update `/php/save.php` 
-3. update `/js/globals/globals_functions.js`
+2. update `src/php/save.php` 
+3. update `src/js/globals/globals_functions.js`
 
 ## 1) Creating the database for iFractions
 
@@ -41,7 +41,7 @@ Note that each column has the prefix `line_`.
 
 ## 2) `save.php`
 
-You have to set values for the following variables in `/php/save.php` to match the database's:
+You have to set values for the following variables in `src/php/save.php` to match the database's:
 
 	$servername = "localhost"; 	// INSERT MySQL server
 	$username = "your_db_username";	// INSERT MySQL user name
@@ -51,7 +51,7 @@ You have to set values for the following variables in `/php/save.php` to match t
 
 ## 3) `globals_functions.js`
 
-Inside `/js/globals/globals_functions.js` there's a global function called `sendToDatabase()`. When the player's information is collected after each game, the game file sends it as a parameter to `sendToDatabase()`. It makes an asynchronous call to `/php/save.php`, that executes the connection to the database.
+Inside `src/js/globals/globals_functions.js` there's a global function called `sendToDatabase()`. When the player's information is collected after each game, the game file sends it as a parameter to `sendToDatabase()`. It makes an asynchronous call to `src/php/save.php`, that executes the connection to the database.
 
 	const data = 'line_ip='// INSERT the IP of the machine where the MySQL was set up
 		+ '&line_name=' + // player's name
@@ -62,11 +62,11 @@ Inside `/js/globals/globals_functions.js` there's a global function called `send
 # Where do we use the database in the code?
 
 There is a function `postScore()` in every game file:
-* `/js/games/squareOne.js`
-* `/js/games/squareTwo.js`
-* `/js/games/circleOne.js`
+* `src/js/games/squareOne.js`
+* `src/js/games/squareTwo.js`
+* `src/js/games/circleOne.js`
 
-After each level is completed (with the player's answer being correct or not), before going back to the level map, the function `postScore()`, is called. It joins all the player's progress information into a string (as can be seen below), that is sent as a parameter to `sendToDatabase()`, from `/js/globals/globals_functions.js`, that sends it to the database.
+After each level is completed (with the player's answer being correct or not), before going back to the level map, the function `postScore()`, is called. It joins all the player's progress information into a string (as can be seen below), that is sent as a parameter to `sendToDatabase()`, from `src/js/globals/globals_functions.js`, that sends it to the database.
 
 	const data = '&line_game=' + // collect game shape
 	+ '&line_mode=' + // collect game mode type

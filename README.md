@@ -14,9 +14,9 @@ Follow the description below based on in which platform you want to run iFractio
 
 #### 1) on a server
 
-* Extract the content of **Ifraction-web.zip** inside the server directory
+* Extract the content of `Ifraction-web.zip` inside the server directory
 
-* Check that the variable **moodle** is set to **false** inside **/js/globals/global_control.js**
+* Check that the variable `moodle` is set to **false** inside `src/js/globals/global_control.js`
 
 * It can now be accessed through the **browser** (e.g http://localhost/Ifractions-web)
 
@@ -24,7 +24,7 @@ Follow the description below based on in which platform you want to run iFractio
 
   * you'll need to have **PHP** and **MySQL** installed on the machine
 
-  * follow the steps on **/php/README.md** to setup the database and variables
+  * follow the steps on `src/php/README.md` to setup the database and variables
 
 * Otherwise you're good to go.
 
@@ -34,7 +34,7 @@ iFractions is one of the iLM (Interactive Learning Modules) provided by the iAss
 
 * To download and setup iAssign access: http://200.144.254.107/git/LInE/iassign
 
-* Be sure to check that the variable **moodle** is set to **true** inside **/js/globals/global_control.js**
+* Be sure to check that the variable **moodle** is set to **true** inside `src/js/globals/global_control.js`
 
 * With iAssign installed, as a Moodle professor on you'll be able to:
   
