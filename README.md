@@ -16,7 +16,7 @@ Follow the description below based on in which platform you want to run iFractio
 
 * Extract the content of `Ifraction-web.zip` inside the server directory
 
-* Check that the variable `moodle` is set to **false** inside `src/js/globals/global_control.js`
+* Check that the variable `moodle` is set to **false** inside `src/js/globals/globals_control.js`
 
 * It can now be accessed through the **browser** (e.g http://localhost/Ifractions-web)
 
@@ -30,13 +30,13 @@ Follow the description below based on in which platform you want to run iFractio
 
 #### 2) on Moodle
 
-iFractions is one of the iLM (Interactive Learning Modules) provided by the iAssign package for Moodle. 
+**iFractions** is one of the iLM (Interactive Learning Modules) provided by the **iAssign** package for **Moodle**. 
 
-* To download and setup iAssign access: http://200.144.254.107/git/LInE/iassign
+* To download and setup **iAssign** access: http://200.144.254.107/git/LInE/iassign
 
-* Be sure to check that the variable **moodle** is set to **true** inside `src/js/globals/global_control.js`
+* Be sure to check that the variable `moodle` is set to **true** inside `src/js/globals/globals_control.js`
 
-* With iAssign installed, as a Moodle professor on you'll be able to:
+* With **iAssign** installed, as a Moodle professor on you'll be able to:
   
   * create activities for your course that are customizable iFractions games
   
