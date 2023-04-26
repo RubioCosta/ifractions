@@ -1,8 +1,8 @@
 const isDebugMode = true;
 
 const debugState = {
-  lang: { skip: true, lang: 'es_PE' },
-  name: { skip: true, name: 'Username' },
+  lang: { skip: true, lang: 'it_IT' },
+  name: { skip: false, name: 'Username' },
   menu: { skip: true, id: 2, audioStatus: true },
   customMenu: {
     skip: true,
