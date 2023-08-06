@@ -145,10 +145,10 @@ const url = {
       ['tree_3', baseUrl + 'scene/tree_3.png'],
       ['tree_4', baseUrl + 'scene/tree_4.png'],
       // Flags
-      ['flag_BR', baseUrl + 'flags/br.png'],
+      ['flag_PT', baseUrl + 'flags/pt.png'],
       ['flag_FR', baseUrl + 'flags/fr.png'],
       ['flag_IT', baseUrl + 'flags/it.png'],
-      ['flag_PE', baseUrl + 'flags/pe.png'],
+      ['flag_ES', baseUrl + 'flags/es.png'],
       ['flag_US', baseUrl + 'flags/us.png'],
       // Navigation icons on the top of the page
       ['back', baseUrl + 'icons_navigation/back.png'],
