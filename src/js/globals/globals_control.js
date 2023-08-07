@@ -170,14 +170,8 @@ const gameList = [
           game.add.text(
             x + 5 * offsetW,
             y + offsetH + 50,
-            game.lang.show,
+            game.lang.show + '\n' + game.lang.title,
             textStyles.h4_
-          );
-          game.add.text(
-            x + 5 * offsetW,
-            y + offsetH + 80,
-            game.lang.title,
-            textStyles.h2_
           );
         },
         infoBox: () => ({
@@ -323,14 +317,8 @@ const gameList = [
           game.add.text(
             x + 5 * offsetW,
             y + offsetH + 50,
-            game.lang.show,
+            game.lang.show + '\n' + game.lang.title,
             textStyles.h4_
-          );
-          game.add.text(
-            x + 5 * offsetW,
-            y + offsetH + 80,
-            game.lang.title,
-            textStyles.h2_
           );
         },
         infoBox: () => ({
@@ -460,13 +448,7 @@ const gameList = [
           game.add.text(
             x + 5 * offsetW,
             y + offsetH + 50,
-            game.lang.show,
-            textStyles.h4_
-          );
-          game.add.text(
-            x + 5 * offsetW + 10,
-            y + offsetH + 80,
-            game.lang.aux_rectangle,
+            game.lang.show + '\n' + game.lang.aux_rectangle,
             textStyles.h4_
           );
         },

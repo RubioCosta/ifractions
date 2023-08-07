@@ -275,7 +275,7 @@ const customMenuState = {
   },
 
   renderCheckBox: function (x, y, offsetW, offsetH) {
-    y += 40;
+    y += 60;
     const frame = showFractions ? 1 : 0;
 
     const selectionBox = game.add.sprite(
