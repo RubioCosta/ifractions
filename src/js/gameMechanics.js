@@ -933,7 +933,12 @@ const game = {
       context.textAlign = cur.align;
       context.fillStyle = cur.fill;
       // Text
-      context.fillText(cur.name, x, y);
+      const paragraphs = String(cur.name).split('\n');
+      let newY = y;
+      for (let line in paragraphs) {
+        context.fillText(paragraphs[line], x, newY);
+        newY += 48;
+      }
       // End
       context.shadowBlur = 0;
       context.globalAlpha = 1;
