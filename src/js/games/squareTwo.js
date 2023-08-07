@@ -295,10 +295,12 @@ const squareTwo = {
       const font = textStyles.h1_;
       self.ui.message = [];
       self.ui.message.push(
-        game.add.text(context.canvas.width / 2, 170, treatedMessage[0], font)
-      );
-      self.ui.message.push(
-        game.add.text(context.canvas.width / 2, 220, treatedMessage[1], font)
+        game.add.text(
+          context.canvas.width / 2,
+          170,
+          treatedMessage[0] + '\n' + treatedMessage[1],
+          font
+        )
       );
     },
     renderOperationUI: () => {

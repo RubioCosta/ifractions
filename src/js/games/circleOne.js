@@ -548,15 +548,7 @@ const circleOne = {
         game.add.text(
           context.canvas.width / 2,
           170,
-          treatedMessage[0],
-          textStyles.h1_
-        )
-      );
-      self.ui.message.push(
-        game.add.text(
-          context.canvas.width / 2,
-          220,
-          treatedMessage[1],
+          treatedMessage[0] + '\n' + treatedMessage[1],
           textStyles.h1_
         )
       );
