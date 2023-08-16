@@ -263,11 +263,9 @@ const squareTwo = {
       yLabel = y0 + self.control.blockHeight + 40;
 
       blocks.fractions[0] = game.add.text(xLabel, yLabel, '', font);
-      blocks.fractions[1] = game.add.text(xLabel, yLabel + 40, '', font);
-      blocks.fractions[2] = game.add.text(xLabel, yLabel + 2, '___', font);
+      blocks.fractions[1] = game.add.text(xLabel, yLabel + 10, '___', font);
       blocks.fractions[0].alpha = 0;
       blocks.fractions[1].alpha = 0;
-      blocks.fractions[2].alpha = 0;
 
       // Invalid selection text
       blocks.warningText = game.add.text(
@@ -353,9 +351,25 @@ const squareTwo = {
       card.anchor(0, 0.5);
       renderList.push(card);
 
-      renderList.push(game.add.text(nextX, y0, nominators[0], font));
-      renderList.push(game.add.text(nextX, y0 + 70, denominators[0], font));
-      renderList.push(game.add.text(nextX, y0, '___', font));
+      renderList.push(
+        game.add.text(
+          nextX,
+          y0,
+          nominators[0] + '\n' + denominators[0],
+          font,
+          70
+        )
+      );
+      const topFractionLine = game.add.geom.rect(
+        nextX,
+        y0 + 10,
+        100,
+        4,
+        colors.black,
+        4
+      );
+      topFractionLine.anchor(0.5, 0);
+      renderList.push(topFractionLine);
 
       font.fill = self.control.isCorrect ? colors.green : colors.red;
       nextX += offsetX;
@@ -365,9 +379,25 @@ const squareTwo = {
 
       font.fill = colors.black;
       nextX += offsetX;
-      renderList.push(game.add.text(nextX, y0, nominators[1], font));
-      renderList.push(game.add.text(nextX, y0 + 70, denominators[1], font));
-      renderList.push(game.add.text(nextX, y0, '___', font));
+      renderList.push(
+        game.add.text(
+          nextX,
+          y0,
+          nominators[1] + '\n' + denominators[1],
+          font,
+          70
+        )
+      );
+      const bottomFractionLine = game.add.geom.rect(
+        nextX,
+        y0 + 10,
+        100,
+        4,
+        colors.black,
+        4
+      );
+      bottomFractionLine.anchor(0.5, 0);
+      renderList.push(bottomFractionLine);
 
       //let resultWidth = ''.length * widthOfChar;
       const cardWidth = nextX - x0 + padding * 2;
@@ -413,7 +443,6 @@ const squareTwo = {
 
       if (self.control.animationDelay === 50) {
         self.ui.message[0].alpha = 0;
-        self.ui.message[1].alpha = 0;
         self.utils.checkAnswer();
         self.control.animationDelay = 0;
         self.control.startEndAnimation = true;
@@ -432,7 +461,9 @@ const squareTwo = {
           // After fully lowering blocks, set fraction value
           if (self.blocks[cur].list[0].y >= self.blocks[cur].auxBlocks[0].y) {
             self.blocks[cur].fractions[0].name =
-              self.blocks[cur].selectedAmount;
+              self.blocks[cur].selectedAmount +
+              '\n' +
+              self.blocks[cur].list.length;
             self.blocks[cur].animate = false;
           }
         }
@@ -522,10 +553,12 @@ const squareTwo = {
 
         self.blocks[curSet].fractions[0].x = newX;
         self.blocks[curSet].fractions[1].x = newX;
-        self.blocks[curSet].fractions[2].x = newX;
+
+        self.blocks[curSet].fractions[0].name = `${curBlock.index + 1}\n${
+          self.blocks[curSet].list.length
+        }`;
 
         self.blocks[curSet].fractions[1].alpha = 1;
-        self.blocks[curSet].fractions[2].alpha = 1;
 
         self.blocks[curSet].hasClicked = true; // Inform player have clicked in current block set
         self.blocks[curSet].animate = true; // Let it initiate animation
@@ -563,8 +596,6 @@ const squareTwo = {
           }
 
           self.blocks[curSet].fractions[0].name = curBlock.index + 1; // Nominator : selected blocks
-          self.blocks[curSet].fractions[1].name =
-            self.blocks[curSet].list.length; // Denominator : total blocks
 
           const newX =
             curBlock.finalX +
@@ -573,7 +604,6 @@ const squareTwo = {
             25;
           self.blocks[curSet].fractions[0].x = newX;
           self.blocks[curSet].fractions[1].x = newX;
-          self.blocks[curSet].fractions[2].x = newX;
 
           self.blocks[curSet].fractions[0].alpha = 1;
         }
@@ -588,7 +618,6 @@ const squareTwo = {
       if (!self.blocks[curSet].hasClicked) {
         self.blocks[curSet].fractions[0].alpha = 0;
         self.blocks[curSet].fractions[1].alpha = 0;
-        self.blocks[curSet].fractions[2].alpha = 0;
 
         self.blocks[curSet].list.forEach((cur) => {
           cur.alpha = 0.5;
