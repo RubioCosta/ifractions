@@ -495,10 +495,11 @@ const game = {
      * @param {number} y y coordinate for the figure
      * @param {string} text text to be displayed on screen
      * @param {object} style object containing font, color and align for the text
+     * @param {object|undefined} lineHeight space between current and next paragraph
      *
      * @returns {object} a reference to the created text.
      */
-    text: function (x, y, text, style) {
+    text: function (x, y, text, style, lineHeight) {
       if (
         x == undefined ||
         y == undefined ||
@@ -528,6 +529,8 @@ const game = {
           font: style.font || game.add.default.font,
           fill: style.fill || game.add.default.fill,
           align: style.align || game.add.default.align,
+
+          lineHeight: lineHeight || game.add.default.lineHeight,
 
           anchor: function () {
             console.error("Game error: there's no anchor for text.");
@@ -625,6 +628,71 @@ const game = {
           if (lineWidth != 0) {
             med.lineWidth = lineWidth || game.add.default.lineWidth;
           }
+          game.render.queue.push(med);
+          return med;
+        }
+      },
+      /**
+       * Adds line to media queue.
+       *
+       * @param {number} x x coordinate for top left corner of the rectangle
+       * @param {number} y y coordinate for top left corner of the rectangle
+       * @param {number} width rectangle width (default = 50)
+       * @param {undefined|number} lineWidth stroke width (default = 1px)
+       * @param {undefined|string} lineColor stroke color (default = black)
+       * @param {undefined|number} alpha level of transparency, from 0 (invisible) to 1 (100% visible)) (default = 1)
+       *
+       * @returns {object} a reference to the created rectangle.
+       */
+      line: function (x0, y0, x1, y1, lineWidth, lineColor, alpha) {
+        if (x0 == undefined || y0 == undefined)
+          console.error('Game error: missing parameters.');
+        else {
+          const med = {
+            typeOfMedia: 'line',
+
+            x0: x0 || game.add.default.x,
+            y0: y0 || game.add.default.y,
+            x1: x1 || x0 + 50,
+            y1: y1 || y0,
+            x0Anchor: 0,
+            y0Anchor: 0,
+            x1Anchor: 0,
+            y1Anchor: 0,
+
+            shadow: game.add.default.shadow,
+            shadowColor: game.add.default.shadowColor,
+            shadowBlur: game.add.default.shadowBlur,
+            alpha: alpha != undefined ? alpha : game.add.default.alpha,
+
+            width: 0,
+
+            lineColor: lineColor || game.add.default.lineColor,
+            lineWidth: lineWidth || 1,
+
+            anchor: function (xAnchor, yAnchor) {
+              this.x0Anchor = xAnchor;
+              this.y0Anchor = yAnchor;
+              this.x1Anchor = xAnchor;
+              this.y1Anchor = yAnchor;
+            },
+            get x0WithAnchor() {
+              return this.x0 - this.width * this.x0Anchor;
+            },
+            get y0WithAnchor() {
+              return this.y0 - this.width * this.y0Anchor;
+            },
+            get x1WithAnchor() {
+              return this.x1 - this.width * this.x1Anchor;
+            },
+            get y1WithAnchor() {
+              return this.y1 - this.width * this.y1Anchor;
+            },
+          };
+          const width =
+            (med.x1 - x0) * (med.x1 - x0) + (med.y1 - y0) * (med.y1 - y0);
+          med.width = Math.sqrt(width);
+
           game.render.queue.push(med);
           return med;
         }
@@ -820,6 +888,7 @@ const game = {
       font: '14px Arial,sans-serif',
       fill: '#000',
       align: 'center',
+      lineHeight: 50,
       // Used in: square, circle (image and sprite have width and height, but do not have default values).
       width: 50,
       height: 50,
@@ -937,7 +1006,7 @@ const game = {
       let newY = y;
       for (let line in paragraphs) {
         context.fillText(paragraphs[line], x, newY);
-        newY += 48;
+        newY += cur.lineHeight;
       }
       // End
       context.shadowBlur = 0;
@@ -984,6 +1053,42 @@ const game = {
             cur.width * cur.scale,
             cur.height * cur.scale
           );
+        }
+        // End
+        context.shadowBlur = 0;
+        context.globalAlpha = 1;
+        if (cur.rotate && cur.rotate != 0) context.restore();
+      },
+      /**
+       * Renders line on canvas.
+       *
+       * @param {object} cur current media in media queue
+       */
+      line: function (cur) {
+        const x0 = cur.x0WithAnchor,
+          y0 = cur.y0WithAnchor,
+          x1 = cur.x1WithAnchor,
+          y1 = cur.y1WithAnchor;
+        // Rotation
+        if (cur.rotate && cur.rotate != 0) {
+          context.save();
+          context.translate(cur.x0, cur.y0);
+          context.rotate((cur.rotate * Math.PI) / 180);
+          context.translate(-cur.x0, -cur.y0);
+        }
+        // Alpha
+        context.globalAlpha = cur.alpha;
+        // Shadow
+        context.shadowBlur = cur.shadow ? cur.shadowBlur : 0;
+        context.shadowColor = cur.shadowColor;
+        // Stroke
+        if (cur.lineWidth != 0) {
+          context.strokeStyle = cur.lineColor;
+          context.lineWidth = cur.lineWidth;
+          context.beginPath();
+          context.moveTo(x0, y0);
+          context.lineTo(x1, y1);
+          context.stroke();
         }
         // End
         context.shadowBlur = 0;
@@ -1054,6 +1159,9 @@ const game = {
             break;
           case 'rect':
             this.geom.rect(cur);
+            break;
+          case 'line':
+            this.geom.line(cur);
             break;
           case 'arc':
             this.geom.arc(cur);
