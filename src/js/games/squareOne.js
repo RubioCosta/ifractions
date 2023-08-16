@@ -241,11 +241,6 @@ const squareOne = {
               },
               {
                 x: x,
-                y: self.default.y0 - i * y - 40,
-                text: '',
-              },
-              {
-                x: x,
                 y: self.default.y0 - i * y - 37,
                 text: '',
               },
@@ -260,13 +255,8 @@ const squareOne = {
             curFractionItems = [
               {
                 x: x,
-                y: self.default.y0 - i * y - 10,
-                text: curDivisor,
-              },
-              {
-                x: x,
                 y: self.default.y0 - i * y - 40,
-                text: '1',
+                text: '1\n' + curDivisor,
               },
               {
                 x: x,
@@ -284,14 +274,14 @@ const squareOne = {
 
           const fractionPartsList = [];
           for (let cur in curFractionItems) {
-            fractionPartsList.push(
-              game.add.text(
-                curFractionItems[cur].x,
-                curFractionItems[cur].y,
-                curFractionItems[cur].text,
-                font
-              )
+            const fraction = game.add.text(
+              curFractionItems[cur].x,
+              curFractionItems[cur].y,
+              curFractionItems[cur].text,
+              font
             );
+            fraction.lineHeight = 30;
+            fractionPartsList.push(fraction);
           }
 
           curBlock.fraction = {
@@ -541,27 +531,25 @@ const squareOne = {
       for (let i in validBlocks) {
         const curFraction = validBlocks[i].fraction;
         let curFractionSign = '+';
-        if (curFraction.labels[3].name === '-') {
+        if (curFraction.labels[2].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
         }
 
+        const fraction = game.add.text(
+          x0 + i * offsetX + offsetX / 2,
+          y0,
+          curFraction.labels[0].name,
+          font,
+          60
+        );
+        fraction.lineHeight = 70;
         renderList.push(
           game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
         );
-        renderList.push(
-          game.add.text(x0 + i * offsetX + offsetX / 2, y0, '1', font)
-        );
+        renderList.push(fraction);
         renderList.push(
           game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
-        );
-        renderList.push(
-          game.add.text(
-            x0 + i * offsetX + offsetX / 2,
-            y0 + 70,
-            curFraction.labels[0].name,
-            font
-          )
         );
 
         nominators.push(curFraction.nominator);
@@ -832,7 +820,6 @@ const squareOne = {
         navigation.disableIcon(navigation.showAnswerIcon);
         // Hide intro message
         self.ui.message[0].alpha = 0;
-        self.ui.message[1].alpha = 0;
         // Hide labels
         if (showFractions) {
           self.stack.list.forEach((block) => {
