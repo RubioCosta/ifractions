@@ -339,11 +339,6 @@ const circleOne = {
               text: '',
             },
             {
-              x: fractionX,
-              y: curCircleY - 2,
-              text: '',
-            },
-            {
               x: fractionX - 25,
               y: curCircleY + 10,
               text: curDirection === 'left' ? '-' : '',
@@ -370,13 +365,8 @@ const circleOne = {
           curFractionItems = [
             {
               x: fractionX,
-              y: curCircleY + 34,
-              text: curDivisor,
-            },
-            {
-              x: fractionX,
               y: curCircleY - 2,
-              text: '1',
+              text: `1\n${curDivisor}`,
             },
             {
               x: fractionX,
@@ -393,14 +383,14 @@ const circleOne = {
 
         if (showFractions) {
           for (let cur in curFractionItems) {
-            curCircleInfo.fraction.labels.push(
-              game.add.text(
-                curFractionItems[cur].x,
-                curFractionItems[cur].y,
-                curFractionItems[cur].text,
-                font
-              )
+            const fraction = game.add.text(
+              curFractionItems[cur].x,
+              curFractionItems[cur].y,
+              curFractionItems[cur].text,
+              font
             );
+            fraction.lineHeight = 37;
+            curCircleInfo.fraction.labels.push(fraction);
           }
           curCircleInfo.fraction.nominator = curCircleInfo.direc;
           curCircleInfo.fraction.denominator = curDivisor;
@@ -600,27 +590,25 @@ const circleOne = {
       for (let i in validCircles) {
         const curFraction = validCircles[i].info.fraction;
         let curFractionSign = '+';
-        if (curFraction.labels[3].name === '-') {
+        if (curFraction.labels[2].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
         }
 
+        const fraction = game.add.text(
+          x0 + i * offsetX + offsetX / 2,
+          y0,
+          curFraction.labels[0].name,
+          font
+        );
+        fraction.lineHeight = 70;
+
         renderList.push(
           game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
         );
-        renderList.push(
-          game.add.text(x0 + i * offsetX + offsetX / 2, y0, '1', font)
-        );
+        renderList.push(fraction);
         renderList.push(
           game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
-        );
-        renderList.push(
-          game.add.text(
-            x0 + i * offsetX + offsetX / 2,
-            y0 + 70,
-            curFraction.labels[0].name,
-            font
-          )
         );
 
         nominators.push(curFraction.nominator);
@@ -934,7 +922,6 @@ const circleOne = {
         if (self.ui.help != undefined) self.ui.help.alpha = 0;
 
         self.ui.message[0].alpha = 0;
-        self.ui.message[1].alpha = 0;
 
         navigation.disableIcon(navigation.showAnswerIcon);
 
