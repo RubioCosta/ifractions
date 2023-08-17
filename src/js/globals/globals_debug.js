@@ -1,4 +1,4 @@
-const isDebugMode = true;
+const isDebugMode = false;
 
 const debugState = {
   lang: { skip: true, lang: 'pt_BR' },
