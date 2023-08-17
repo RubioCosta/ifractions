@@ -427,24 +427,10 @@ const circleOne = {
         validPath.x0 +
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
-      if (gameMode === 'b') {
-        // Restart if
-        // Correct position is out of bounds
-        let isBeforeMin, isAfterMax;
-        if (gameOperation === 'minus') {
-          isBeforeMin = self.control.correctX > validPath.x0;
-          isAfterMax =
-            self.control.correctX <
-            validPath.x0 - 5 * validPath.distanceBetweenPoints;
-        } else {
-          isBeforeMin = self.control.correctX < validPath.x0;
-          isAfterMax =
-            self.control.correctX >
-            validPath.x0 + 5 * validPath.distanceBetweenPoints;
-        }
-        if (isBeforeMin || isAfterMax) restart = true;
+      let finalPosition = self.control.correctX;
 
-        // If game is type (b), selectiong a random balloon place
+      if (gameMode === 'b') {
+        // If game is type (b), select a random balloon place
         balloonX = validPath.x0;
 
         self.control.correctIndex = game.math.randomInRange(
@@ -457,20 +443,23 @@ const circleOne = {
             self.circles.list[i].info.distance *
             self.circles.list[i].info.direc;
         }
-
-        // Restart if
-        // Balloon position is out of bounds
-        if (gameOperation === 'minus') {
-          isBeforeMin = balloonX > validPath.x0;
-          isAfterMax =
-            balloonX < validPath.x0 - 5 * validPath.distanceBetweenPoints;
-        } else {
-          isBeforeMin = balloonX < validPath.x0;
-          isAfterMax =
-            balloonX > validPath.x0 + 5 * validPath.distanceBetweenPoints;
-        }
-        if (isBeforeMin || isAfterMax) restart = true;
+        finalPosition = balloonX;
       }
+
+      let isBeforeMin = (isAfterMax = false);
+      // Restart if
+      // In Game mode 'a' : Balloon position is out of bounds (for type 'a')
+      // In Game mode 'b' : Top circle position is out of bounds (when on the ground - A)
+      if (gameOperation === 'minus') {
+        isBeforeMin = finalPosition > validPath.x0;
+        isAfterMax =
+          finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
+      } else {
+        isBeforeMin = finalPosition < validPath.x0;
+        isAfterMax =
+          finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+      }
+      if (isBeforeMin || isAfterMax) restart = true;
 
       return [restart, balloonX];
     },
