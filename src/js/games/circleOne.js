@@ -427,7 +427,20 @@ const circleOne = {
         validPath.x0 +
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
+      let isBeforeMin = (isAfterMax = false);
       let finalPosition = self.control.correctX;
+      // Restart if
+      // In Game mode 'a' and 'b' : Balloon position is out of bounds
+      if (gameOperation === 'minus') {
+        isBeforeMin = finalPosition > validPath.x0;
+        isAfterMax =
+          finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
+      } else {
+        isBeforeMin = finalPosition < validPath.x0;
+        isAfterMax =
+          finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+      }
+      if (isBeforeMin || isAfterMax) restart = true;
 
       if (gameMode === 'b') {
         // If game is type (b), select a random balloon place
@@ -443,23 +456,21 @@ const circleOne = {
             self.circles.list[i].info.distance *
             self.circles.list[i].info.direc;
         }
-        finalPosition = balloonX;
-      }
 
-      let isBeforeMin = (isAfterMax = false);
-      // Restart if
-      // In Game mode 'a' : Balloon position is out of bounds (for type 'a')
-      // In Game mode 'b' : Top circle position is out of bounds (when on the ground - A)
-      if (gameOperation === 'minus') {
-        isBeforeMin = finalPosition > validPath.x0;
-        isAfterMax =
-          finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
-      } else {
-        isBeforeMin = finalPosition < validPath.x0;
-        isAfterMax =
-          finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+        finalPosition = balloonX;
+        // Restart if
+        // In Game mode 'b' : Top circle position is out of bounds (when on the ground)
+        if (gameOperation === 'minus') {
+          isBeforeMin = finalPosition > validPath.x0;
+          isAfterMax =
+            finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
+        } else {
+          isBeforeMin = finalPosition < validPath.x0;
+          isAfterMax =
+            finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+        }
+        if (isBeforeMin || isAfterMax) restart = true;
       }
-      if (isBeforeMin || isAfterMax) restart = true;
 
       return [restart, balloonX];
     },
@@ -578,26 +589,32 @@ const circleOne = {
       // Fraction list
       for (let i in validCircles) {
         const curFraction = validCircles[i].info.fraction;
-        let curFractionSign = '+';
+        const curFractionString = curFraction.labels[0].name;
+        let curFractionSign = i !== '0' ? '+' : '';
         if (curFraction.labels[2].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
         }
 
-        const fraction = game.add.text(
+        const fractionText = game.add.text(
           x0 + i * offsetX + offsetX / 2,
-          y0,
-          curFraction.labels[0].name,
+          curFractionString === '1' ? y0 + 40 : y0,
+          curFractionString,
           font
         );
-        fraction.lineHeight = 70;
+        fractionText.lineHeight = 70;
 
         renderList.push(
           game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
         );
-        renderList.push(fraction);
+        renderList.push(fractionText);
         renderList.push(
-          game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
+          game.add.text(
+            x0 + offsetX / 2 + i * offsetX,
+            y0,
+            curFractionString === '1' ? '' : '_',
+            font
+          )
         );
 
         nominators.push(curFraction.nominator);
@@ -648,17 +665,35 @@ const circleOne = {
 
       font.align = 'center';
       nextX += offsetX + 40;
+
       renderList.push(
         game.add.text(nextX - 80, y0 + 35, result >= 0 ? '' : '-', font)
       );
-      renderList.push(game.add.text(nextX, y0, resultNominatorUnsigned, font));
-      renderList.push(game.add.text(nextX, y0 + 70, mmc, font));
-      renderList.push(game.add.text(nextX, y0, '___', font));
+
+      const fractionResult = game.add.text(
+        nextX,
+        mmc === 1 || resultNominatorUnsigned === 0 ? y0 + 40 : y0,
+        mmc === 1 || resultNominatorUnsigned === 0
+          ? resultNominatorUnsigned
+          : resultNominatorUnsigned + '\n' + mmc,
+        font
+      );
+      fractionResult.lineHeight = 70;
+      renderList.push(fractionResult);
+      renderList.push(
+        game.add.text(
+          nextX,
+          y0,
+          mmc === 1 || resultNominatorUnsigned === 0 ? '' : '___',
+          font
+        )
+      );
 
       // Fraction result simplified setup
       const mdcAux = game.math.mdc(resultNominator, mmc);
       const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
-      if (mdc !== 1) {
+      if (mdc !== 1 && resultNominatorUnsigned !== 0) {
+        alert(mdc + ' ' + resultNominatorUnsigned);
         nextX += offsetX;
         renderList.push(game.add.text(nextX, y0 + 35, '=', font));
 
