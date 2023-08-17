@@ -145,7 +145,7 @@ const url = {
       ['tree_3', baseUrl + 'scene/tree_3.png'],
       ['tree_4', baseUrl + 'scene/tree_4.png'],
       // Flags
-      ['flag_PT', baseUrl + 'flags/pt.png'],
+      ['flag_BR', baseUrl + 'flags/br.png'],
       ['flag_FR', baseUrl + 'flags/fr.png'],
       ['flag_IT', baseUrl + 'flags/it.png'],
       ['flag_ES', baseUrl + 'flags/es.png'],

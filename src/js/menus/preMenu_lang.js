@@ -19,12 +19,12 @@ const langState = {
     this.langs = {
       text: [
         'PORTUGUÊS  ',
-        'ESPANÕL  ',
+        'ESPAÑOL  ',
         'FRANÇAIS  ',
         'ENGLISH  ',
         'ITALIANO  ',
       ], // Language names
-      flag: ['flag_PT', 'flag_ES', 'flag_FR', 'flag_US', 'flag_IT'], // Icon names
+      flag: ['flag_BR', 'flag_ES', 'flag_FR', 'flag_US', 'flag_IT'], // Icon names
       lang: ['pt_BR', 'es_ES', 'fr_FR', 'en_US', 'it_IT'], // Parameters sent for language object
       x: [-350, -350, -350, 250, 250],
       y: [-220, 0, 220, -110, 110],
