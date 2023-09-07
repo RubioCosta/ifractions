@@ -530,7 +530,8 @@ const squareOne = {
       // Fraction list
       for (let i in validBlocks) {
         const curFraction = validBlocks[i].fraction;
-        let curFractionSign = '+';
+        const curFractionString = curFraction.labels[0].name;
+        let curFractionSign = i !== '0' ? '+' : '';
         if (curFraction.labels[2].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
@@ -538,18 +539,24 @@ const squareOne = {
 
         const fraction = game.add.text(
           x0 + i * offsetX + offsetX / 2,
-          y0,
-          curFraction.labels[0].name,
+          curFractionString === '1' ? y0 + 40 : y0,
+          curFractionString,
           font,
           60
         );
         fraction.lineHeight = 70;
+
         renderList.push(
           game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
         );
         renderList.push(fraction);
         renderList.push(
-          game.add.text(x0 + offsetX / 2 + i * offsetX, y0, '_', font)
+          game.add.text(
+            x0 + offsetX / 2 + i * offsetX,
+            y0,
+            curFractionString === '1' ? '' : '_',
+            font
+          )
         );
 
         nominators.push(curFraction.nominator);
@@ -600,17 +607,34 @@ const squareOne = {
 
       font.align = 'center';
       nextX += offsetX + 40;
+
       renderList.push(
         game.add.text(nextX - 80, y0 + 35, result >= 0 ? '' : '-', font)
       );
-      renderList.push(game.add.text(nextX, y0, resultNominatorUnsigned, font));
-      renderList.push(game.add.text(nextX, y0 + 70, mmc, font));
-      renderList.push(game.add.text(nextX, y0, '___', font));
+
+      const fractionResult = game.add.text(
+        nextX,
+        mmc === 1 || resultNominatorUnsigned === 0 ? y0 + 40 : y0,
+        mmc === 1 || resultNominatorUnsigned === 0
+          ? resultNominatorUnsigned
+          : resultNominatorUnsigned + '\n' + mmc,
+        font
+      );
+      fractionResult.lineHeight = 70;
+      renderList.push(fractionResult);
+      renderList.push(
+        game.add.text(
+          nextX,
+          y0,
+          mmc === 1 || resultNominatorUnsigned === 0 ? '' : '___',
+          font
+        )
+      );
 
       // Fraction result simplified setup
       const mdcAux = game.math.mdc(resultNominator, mmc);
       const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
-      if (mdc !== 1) {
+      if (mdc !== 1 && resultNominatorUnsigned !== 0) {
         nextX += offsetX;
         renderList.push(game.add.text(nextX, y0 + 35, '=', font));
 
