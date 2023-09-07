@@ -693,7 +693,7 @@ const circleOne = {
       const mdcAux = game.math.mdc(resultNominator, mmc);
       const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
       if (mdc !== 1 && resultNominatorUnsigned !== 0) {
-        alert(mdc + ' ' + resultNominatorUnsigned);
+        // alert(mdc + ' ' + resultNominatorUnsigned);
         nextX += offsetX;
         renderList.push(game.add.text(nextX, y0 + 35, '=', font));
 
