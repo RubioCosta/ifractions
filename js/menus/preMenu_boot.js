@@ -34,7 +34,7 @@ const bootState = {
         default:
           langString = 'en_US';
       }
-      game.load.lang('src/assets/lang/' + langString);
+      game.load.lang('./assets/lang/' + langString);
     }
     // LOADING MEDIA
     if (isDebugMode) {

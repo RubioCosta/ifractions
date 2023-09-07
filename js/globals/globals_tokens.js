@@ -1,5 +1,5 @@
-const baseUrl = 'src/assets/img/'; // Base directory for media
-const fallbackImgUrl = 'src/assets/img/fallback.png';
+const baseUrl = './assets/img/'; // Base directory for media
+const fallbackImgUrl = './assets/img/fallback.png';
 
 /**
  * Preset colors for graphic elements.
@@ -220,13 +220,10 @@ const url = {
     ],
     audio: [
       // Sound effects
-      ['beepSound', ['src/assets/audio/beep.ogg', 'src/assets/audio/beep.mp3']],
-      ['okSound', ['src/assets/audio/ok.ogg', 'src/assets/audio/ok.mp3']],
-      [
-        'errorSound',
-        ['src/assets/audio/error.ogg', 'src/assets/audio/error.mp3'],
-      ],
-      ['popSound', ['', 'src/assets/audio/pop.wav']],
+      ['beepSound', ['./assets/audio/beep.ogg', './assets/audio/beep.mp3']],
+      ['okSound', ['./assets/audio/ok.ogg', './assets/audio/ok.mp3']],
+      ['errorSound', ['./assets/audio/error.ogg', './assets/audio/error.mp3']],
+      ['popSound', ['', './assets/audio/pop.wav']],
     ],
   },
   squareOne: {

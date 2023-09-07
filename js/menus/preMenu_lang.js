@@ -129,7 +129,7 @@ const loadLangState = {
    */
   preload: function () {
     // LOADING MEDIA : selected language
-    game.load.lang('src/assets/lang/' + langString);
+    game.load.lang('./assets/lang/' + langString);
   },
 
   /**
