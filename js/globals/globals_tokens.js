@@ -45,7 +45,7 @@ const font = {
   },
   families: {
     default: 'Arial, sans-serif',
-    btn: "'Bangers', serif",
+    btn: 'Arial, sans-serif',
     fraction: 'monospace',
   },
 };
