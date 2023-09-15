@@ -13,7 +13,7 @@
  * .plus.minus.mixed. = gameOperation
  * ......\.|./.......
  * ........|.........
- * ....1,2,3,4,5..... = gameDifficulty
+ * ......1,2,3....... = gameDifficulty
  *
  * Character : kid/balloon
  * Theme : flying in a balloon

@@ -294,7 +294,7 @@ const gameList = [
     gameName: 'circleOne',
     gameMode: ['a', 'b'],
     gameOperation: ['plus', 'minus', 'mixed'],
-    gameDifficulty: 5,
+    gameDifficulty: 3,
     // info
     gameShape: 'circle',
     assets: {

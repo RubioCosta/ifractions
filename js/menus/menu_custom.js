@@ -365,7 +365,7 @@ const customMenuState = {
 
     y = getFrameInfo().y + offsetH / 3;
 
-    if (gameName != 'squareOne') x -= 40;
+    if (gameName === 'squareTwo') x -= 70;
 
     for (let i = 0; i < curGame.gameDifficulty; i++) {
       // Parameters
