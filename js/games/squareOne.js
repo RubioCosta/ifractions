@@ -240,15 +240,11 @@ const squareOne = {
                 text: '1',
               },
               {
-                x: x,
-                y: self.default.y0 - i * y - 37,
-                text: '',
-              },
-              {
                 x: x - 25,
                 y: self.default.y0 - i * y - 27,
                 text: gameOperation === 'minus' ? '-' : '',
               },
+              null,
             ];
           } else {
             font = textStyles.p_;
@@ -259,29 +255,46 @@ const squareOne = {
                 text: '1\n' + curDivisor,
               },
               {
-                x: x,
-                y: self.default.y0 - i * y - 37,
-                text: '__',
-              },
-              {
                 x: x - 25,
                 y: self.default.y0 - i * y - 27,
                 text: gameOperation === 'minus' ? '-' : '',
+              },
+              {
+                x0: x,
+                y: self.default.y0 - i * y - 35,
+                x1: x + 25,
+                lineWidth: 2,
+                color: lineColor,
               },
             ];
           }
           font = { ...font, font: 'bold ' + font.font, fill: lineColor };
 
           const fractionPartsList = [];
-          for (let cur in curFractionItems) {
-            const fraction = game.add.text(
-              curFractionItems[cur].x,
-              curFractionItems[cur].y,
-              curFractionItems[cur].text,
+          for (let i = 0; i < 2; i++) {
+            const item = game.add.text(
+              curFractionItems[i].x,
+              curFractionItems[i].y,
+              curFractionItems[i].text,
               font
             );
-            fraction.lineHeight = 30;
-            fractionPartsList.push(fraction);
+            item.lineHeight = 30;
+            fractionPartsList.push(item);
+          }
+
+          if (curFractionItems[2]) {
+            const line = game.add.geom.line(
+              curFractionItems[2].x0,
+              curFractionItems[2].y,
+              curFractionItems[2].x1,
+              curFractionItems[2].y,
+              curFractionItems[2].lineWidth,
+              curFractionItems[2].color
+            );
+            line.anchor(0.5, 0);
+            fractionPartsList.push(line);
+          } else {
+            fractionPartsList.push(null);
           }
 
           curBlock.fraction = {
@@ -532,7 +545,7 @@ const squareOne = {
         const curFraction = validBlocks[i].fraction;
         const curFractionString = curFraction.labels[0].name;
         let curFractionSign = i !== '0' ? '+' : '';
-        if (curFraction.labels[2].name === '-') {
+        if (curFraction.labels[1].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
         }
@@ -622,14 +635,17 @@ const squareOne = {
       );
       fractionResult.lineHeight = 70;
       renderList.push(fractionResult);
-      renderList.push(
-        game.add.text(
-          nextX,
-          y0,
-          mmc === 1 || resultNominatorUnsigned === 0 ? '' : '___',
-          font
-        )
+      const fractionLine = game.add.geom.line(
+        nextX,
+        y0 + 15,
+        nextX + 60,
+        y0 + 15,
+        4,
+        colors.black,
+        mmc === 1 || resultNominatorUnsigned === 0 ? 0 : 1
       );
+      fractionLine.anchor(0.5, 0);
+      renderList.push(fractionLine);
 
       // Fraction result simplified setup
       const mdcAux = game.math.mdc(resultNominator, mmc);
@@ -646,7 +662,16 @@ const squareOne = {
           game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
         );
         renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
-        renderList.push(game.add.text(nextX, y0, '__', font));
+        const fractionLine = game.add.geom.line(
+          nextX,
+          y0 + 15,
+          nextX + 60,
+          y0 + 15,
+          4,
+          colors.black
+        );
+        fractionLine.anchor(0.5, 0);
+        renderList.push(fractionLine);
       }
 
       // Decimal result
@@ -657,7 +682,7 @@ const squareOne = {
       // renderList.push(game.add.text(nextX, y0 + 35, result, font));
 
       //let resultWidth = ('' + result).length * widthOfChar;
-      let resultWidth = '__'.length * widthOfChar;
+      let resultWidth = '_'.length * widthOfChar;
       const cardWidth = nextX - x0 + resultWidth + padding * 2;
       card.width = cardWidth;
 
@@ -848,7 +873,7 @@ const squareOne = {
         if (showFractions) {
           self.stack.list.forEach((block) => {
             block.fraction.labels.forEach((lbl) => {
-              lbl.alpha = 0;
+              if (lbl) lbl.alpha = 0;
             });
           });
         }
@@ -896,7 +921,7 @@ const squareOne = {
 
             self.stack.list[i].alpha = alpha;
             self.stack.list[i].fraction.labels.forEach((lbl) => {
-              lbl.alpha = alpha;
+              if (lbl) lbl.alpha = alpha;
             });
           }
           self.stack.selectedIndex = cur.blockIndex;
@@ -919,7 +944,7 @@ const squareOne = {
           for (let i in self.stack.list) {
             self.stack.list[i].alpha = 1;
             self.stack.list[i].fraction.labels.forEach((lbl) => {
-              lbl.alpha = 1;
+              if (lbl) lbl.alpha = 1;
             });
           }
           self.stack.selectedIndex = undefined;

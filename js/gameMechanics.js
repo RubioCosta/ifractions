@@ -688,6 +688,22 @@ const game = {
             get y1WithAnchor() {
               return this.y1 - this.width * this.y1Anchor;
             },
+            get x() {
+              return this.x0;
+            },
+            get y() {
+              return this.y0;
+            },
+            set x(x0) {
+              const distance = this.x1 - this.x0;
+              this.x0 = x0;
+              this.x1 = x0 + distance;
+            },
+            set y(y0) {
+              const distance = this.y1 - this.y0;
+              this.y0 = y0;
+              this.y1 = y0 + distance;
+            },
           };
           const width =
             (med.x1 - x0) * (med.x1 - x0) + (med.y1 - y0) * (med.y1 - y0);

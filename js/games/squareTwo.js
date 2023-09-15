@@ -263,7 +263,15 @@ const squareTwo = {
       yLabel = y0 + self.control.blockHeight + 40;
 
       blocks.fractions[0] = game.add.text(xLabel, yLabel, '', font);
-      blocks.fractions[1] = game.add.text(xLabel, yLabel + 10, '___', font);
+      blocks.fractions[1] = game.add.geom.line(
+        xLabel,
+        yLabel + 10,
+        xLabel + 50,
+        yLabel + 10,
+        2,
+        lineColor
+      );
+      blocks.fractions[1].anchor(0.5, 0);
       blocks.fractions[0].alpha = 0;
       blocks.fractions[1].alpha = 0;
 

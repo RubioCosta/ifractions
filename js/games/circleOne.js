@@ -334,15 +334,11 @@ const circleOne = {
               text: '1',
             },
             {
-              x: fractionX,
-              y: curCircleY - 2,
-              text: '',
-            },
-            {
               x: fractionX - 25,
               y: curCircleY + 10,
               text: curDirection === 'left' ? '-' : '',
             },
+            null,
           ];
         } else {
           curAngleDegree = 360 / curDivisor;
@@ -369,29 +365,48 @@ const circleOne = {
               text: `1\n${curDivisor}`,
             },
             {
-              x: fractionX,
-              y: curCircleY - 2,
-              text: '__',
-            },
-            {
               x: fractionX - 35,
               y: curCircleY + 15,
               text: curDirection === 'left' ? '-' : '',
+            },
+            {
+              x0: fractionX,
+              y0: curCircleY + 2,
+              x1: fractionX + 25,
+              y1: curCircleY + 2,
+              lineWidth: 2,
+              color: curLineColor,
             },
           ];
         }
 
         if (showFractions) {
-          for (let cur in curFractionItems) {
-            const fraction = game.add.text(
-              curFractionItems[cur].x,
-              curFractionItems[cur].y,
-              curFractionItems[cur].text,
+          for (let i = 0; i < 2; i++) {
+            const item = game.add.text(
+              curFractionItems[i].x,
+              curFractionItems[i].y,
+              curFractionItems[i].text,
               font
             );
-            fraction.lineHeight = 37;
-            curCircleInfo.fraction.labels.push(fraction);
+            item.lineHeight = 37;
+            curCircleInfo.fraction.labels.push(item);
           }
+
+          if (curFractionItems[2]) {
+            const line = game.add.geom.line(
+              curFractionItems[2].x0,
+              curFractionItems[2].y0,
+              curFractionItems[2].x1,
+              curFractionItems[2].y1,
+              curFractionItems[2].lineWidth,
+              curFractionItems[2].color
+            );
+            line.anchor(0.5, 0);
+            curCircleInfo.fraction.labels.push(line);
+          } else {
+            curCircleInfo.fraction.labels.push(null);
+          }
+
           curCircleInfo.fraction.nominator = curCircleInfo.direc;
           curCircleInfo.fraction.denominator = curDivisor;
         }
@@ -591,7 +606,7 @@ const circleOne = {
         const curFraction = validCircles[i].info.fraction;
         const curFractionString = curFraction.labels[0].name;
         let curFractionSign = i !== '0' ? '+' : '';
-        if (curFraction.labels[2].name === '-') {
+        if (curFraction.labels[1].name === '-') {
           curFractionSign = '-';
           font.fill = colors.red;
         }
@@ -680,14 +695,17 @@ const circleOne = {
       );
       fractionResult.lineHeight = 70;
       renderList.push(fractionResult);
-      renderList.push(
-        game.add.text(
-          nextX,
-          y0,
-          mmc === 1 || resultNominatorUnsigned === 0 ? '' : '___',
-          font
-        )
+      const fractionLine = game.add.geom.line(
+        nextX,
+        y0 + 15,
+        nextX + 60,
+        y0 + 15,
+        4,
+        colors.black,
+        mmc === 1 || resultNominatorUnsigned === 0 ? 0 : 1
       );
+      fractionLine.anchor(0.5, 0);
+      renderList.push(fractionLine);
 
       // Fraction result simplified setup
       const mdcAux = game.math.mdc(resultNominator, mmc);
@@ -705,7 +723,17 @@ const circleOne = {
           game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
         );
         renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
-        renderList.push(game.add.text(nextX, y0, '__', font));
+
+        const fractionLine = game.add.geom.line(
+          nextX,
+          y0 + 15,
+          nextX + 60,
+          y0 + 15,
+          4,
+          colors.black
+        );
+        fractionLine.anchor(0.5, 0);
+        renderList.push(fractionLine);
       }
 
       // Decimal result
@@ -716,7 +744,7 @@ const circleOne = {
       // renderList.push(game.add.text(nextX, y0 + 35, result, font));
 
       //let resultWidth = ('' + result).length * widthOfChar;
-      let resultWidth = '__'.length * widthOfChar;
+      let resultWidth = '_'.length * widthOfChar;
       const cardWidth = nextX - x0 + resultWidth + padding * 2;
       card.width = cardWidth;
 
@@ -937,7 +965,7 @@ const circleOne = {
         if (showFractions) {
           self.circles.list.forEach((circle) => {
             circle.info.fraction.labels.forEach((labelPart) => {
-              labelPart.alpha = 0;
+              if (labelPart) labelPart.alpha = 0;
             });
           });
         }
@@ -971,7 +999,7 @@ const circleOne = {
           const alpha = i <= cur.index ? 1 : 0.4;
           self.circles.list[i].alpha = alpha;
           self.circles.list[i].info.fraction.labels.forEach((lbl) => {
-            lbl.alpha = alpha;
+            if (lbl) lbl.alpha = alpha;
           });
         }
       }
@@ -986,7 +1014,7 @@ const circleOne = {
         self.circles.list.forEach((circle) => {
           circle.alpha = alpha;
           circle.info.fraction.labels.forEach((lbl) => {
-            lbl.alpha = alpha;
+            if (lbl) lbl.alpha = alpha;
           });
         });
       }
