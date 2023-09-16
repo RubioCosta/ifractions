@@ -380,35 +380,36 @@ const circleOne = {
           ];
         }
 
-        if (showFractions) {
-          for (let i = 0; i < 2; i++) {
-            const item = game.add.text(
-              curFractionItems[i].x,
-              curFractionItems[i].y,
-              curFractionItems[i].text,
-              font
-            );
-            item.lineHeight = 37;
-            curCircleInfo.fraction.labels.push(item);
-          }
-
-          if (curFractionItems[2]) {
-            const line = game.add.geom.line(
-              curFractionItems[2].x0,
-              curFractionItems[2].y0,
-              curFractionItems[2].x1,
-              curFractionItems[2].y1,
-              curFractionItems[2].lineWidth,
-              curFractionItems[2].color
-            );
-            line.anchor(0.5, 0);
-            curCircleInfo.fraction.labels.push(line);
-          } else {
-            curCircleInfo.fraction.labels.push(null);
-          }
-
-          curCircleInfo.fraction.nominator = curCircleInfo.direc;
-          curCircleInfo.fraction.denominator = curDivisor;
+        for (let i = 0; i < 2; i++) {
+          const item = game.add.text(
+            curFractionItems[i].x,
+            curFractionItems[i].y,
+            curFractionItems[i].text,
+            font
+          );
+          item.lineHeight = 37;
+          curCircleInfo.fraction.labels.push(item);
+        }
+        if (curFractionItems[2]) {
+          const line = game.add.geom.line(
+            curFractionItems[2].x0,
+            curFractionItems[2].y0,
+            curFractionItems[2].x1,
+            curFractionItems[2].y1,
+            curFractionItems[2].lineWidth,
+            curFractionItems[2].color
+          );
+          line.anchor(0.5, 0);
+          curCircleInfo.fraction.labels.push(line);
+        } else {
+          curCircleInfo.fraction.labels.push(null);
+        }
+        curCircleInfo.fraction.nominator = curCircleInfo.direc;
+        curCircleInfo.fraction.denominator = curDivisor;
+        if (!showFractions) {
+          curCircleInfo.fraction.labels.forEach((label) => {
+            if (label) label.alpha = 0;
+          });
         }
 
         curCircle.rotate = 90;
@@ -976,9 +977,11 @@ const circleOne = {
         for (let i in self.circles.list) {
           const alpha = i <= cur.index ? 1 : 0.4;
           self.circles.list[i].alpha = alpha;
-          self.circles.list[i].info.fraction.labels.forEach((lbl) => {
-            if (lbl) lbl.alpha = alpha;
-          });
+          if (showFractions) {
+            self.circles.list[i].info.fraction.labels.forEach((lbl) => {
+              if (lbl) lbl.alpha = alpha;
+            });
+          }
         }
       }
     },
@@ -991,9 +994,11 @@ const circleOne = {
         const alpha = 1;
         self.circles.list.forEach((circle) => {
           circle.alpha = alpha;
-          circle.info.fraction.labels.forEach((lbl) => {
-            if (lbl) lbl.alpha = alpha;
-          });
+          if (showFractions) {
+            circle.info.fraction.labels.forEach((lbl) => {
+              if (lbl) lbl.alpha = alpha;
+            });
+          }
         });
       }
     },
