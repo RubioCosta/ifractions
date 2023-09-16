@@ -226,82 +226,86 @@ const squareOne = {
         self.stack.list.push(curBlock);
 
         // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
-        if (showFractions) {
-          const x = self.default.x0 + (curBlockWidth + 40) * direc;
-          const y = self.default.height + 1;
+        const x = self.default.x0 + (curBlockWidth + 40) * direc;
+        const y = self.default.height + 1;
 
-          if (curDivisor === 1) {
-            font = textStyles.h2_;
+        if (curDivisor === 1) {
+          font = textStyles.h2_;
 
-            curFractionItems = [
-              {
-                x: x,
-                y: self.default.y0 - i * y - 20,
-                text: '1',
-              },
-              {
-                x: x - 25,
-                y: self.default.y0 - i * y - 27,
-                text: gameOperation === 'minus' ? '-' : '',
-              },
-              null,
-            ];
-          } else {
-            font = textStyles.p_;
-            curFractionItems = [
-              {
-                x: x,
-                y: self.default.y0 - i * y - 40,
-                text: '1\n' + curDivisor,
-              },
-              {
-                x: x - 25,
-                y: self.default.y0 - i * y - 27,
-                text: gameOperation === 'minus' ? '-' : '',
-              },
-              {
-                x0: x,
-                y: self.default.y0 - i * y - 35,
-                x1: x + 25,
-                lineWidth: 2,
-                color: lineColor,
-              },
-            ];
-          }
-          font = { ...font, font: 'bold ' + font.font, fill: lineColor };
+          curFractionItems = [
+            {
+              x: x,
+              y: self.default.y0 - i * y - 20,
+              text: '1',
+            },
+            {
+              x: x - 25,
+              y: self.default.y0 - i * y - 27,
+              text: gameOperation === 'minus' ? '-' : '',
+            },
+            null,
+          ];
+        } else {
+          font = textStyles.p_;
+          curFractionItems = [
+            {
+              x: x,
+              y: self.default.y0 - i * y - 40,
+              text: '1\n' + curDivisor,
+            },
+            {
+              x: x - 25,
+              y: self.default.y0 - i * y - 27,
+              text: gameOperation === 'minus' ? '-' : '',
+            },
+            {
+              x0: x,
+              y: self.default.y0 - i * y - 35,
+              x1: x + 25,
+              lineWidth: 2,
+              color: lineColor,
+            },
+          ];
+        }
+        font = { ...font, font: 'bold ' + font.font, fill: lineColor };
 
-          const fractionPartsList = [];
-          for (let i = 0; i < 2; i++) {
-            const item = game.add.text(
-              curFractionItems[i].x,
-              curFractionItems[i].y,
-              curFractionItems[i].text,
-              font
-            );
-            item.lineHeight = 30;
-            fractionPartsList.push(item);
-          }
+        const fractionPartsList = [];
+        for (let i = 0; i < 2; i++) {
+          const item = game.add.text(
+            curFractionItems[i].x,
+            curFractionItems[i].y,
+            curFractionItems[i].text,
+            font
+          );
+          item.lineHeight = 30;
+          fractionPartsList.push(item);
+        }
 
-          if (curFractionItems[2]) {
-            const line = game.add.geom.line(
-              curFractionItems[2].x0,
-              curFractionItems[2].y,
-              curFractionItems[2].x1,
-              curFractionItems[2].y,
-              curFractionItems[2].lineWidth,
-              curFractionItems[2].color
-            );
-            line.anchor(0.5, 0);
-            fractionPartsList.push(line);
-          } else {
-            fractionPartsList.push(null);
-          }
+        if (curFractionItems[2]) {
+          const line = game.add.geom.line(
+            curFractionItems[2].x0,
+            curFractionItems[2].y,
+            curFractionItems[2].x1,
+            curFractionItems[2].y,
+            curFractionItems[2].lineWidth,
+            curFractionItems[2].color
+          );
+          line.anchor(0.5, 0);
+          fractionPartsList.push(line);
+        } else {
+          fractionPartsList.push(null);
+        }
 
-          curBlock.fraction = {
-            labels: fractionPartsList,
-            nominator: direc,
-            denominator: curDivisor,
-          };
+        curBlock.fraction = {
+          labels: fractionPartsList,
+          nominator: direc,
+          denominator: curDivisor,
+        };
+
+        if (!showFractions) {
+          curBlock.fraction.labels.forEach((label) => {
+            if (label) label.alpha = 0;
+          });
         }
       }
 
@@ -897,9 +901,11 @@ const squareOne = {
             const alpha = i <= cur.blockIndex ? 1 : 0.4;
 
             self.stack.list[i].alpha = alpha;
-            self.stack.list[i].fraction.labels.forEach((lbl) => {
-              if (lbl) lbl.alpha = alpha;
-            });
+            if (showFractions) {
+              self.stack.list[i].fraction.labels.forEach((lbl) => {
+                if (lbl) lbl.alpha = alpha;
+              });
+            }
           }
           self.stack.selectedIndex = cur.blockIndex;
         }
@@ -920,9 +926,11 @@ const squareOne = {
         } else {
           for (let i in self.stack.list) {
             self.stack.list[i].alpha = 1;
-            self.stack.list[i].fraction.labels.forEach((lbl) => {
-              if (lbl) lbl.alpha = 1;
-            });
+            if (showFractions) {
+              self.stack.list[i].fraction.labels.forEach((lbl) => {
+                if (lbl) lbl.alpha = 1;
+              });
+            }
           }
           self.stack.selectedIndex = undefined;
         }
