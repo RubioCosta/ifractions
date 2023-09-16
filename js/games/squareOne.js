@@ -592,38 +592,22 @@ const squareOne = {
       const result =
         ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
 
-      // let fracLine = '';
-      // const updatedNominatorsString = updatedNominators
-      //   .map((n) => {
-      //     const len = ('' + n).length;
-      //     for (let i = 0; i < len; i++) fracLine += '_';
-      //     fracLine = n < 0 ? fracLine : fracLine + '_';
-      //     return n >= 0 ? '+' + n : n;
-      //   })
-      //   .join('');
-      // const fractionMiddleX = widthOfChar * (fracLine.length / 2);
-
       // Fraction operation with least common multiple
       nextX = x0 + validBlocks.length * offsetX + 20;
-      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-      // nextX += offsetX / 2;
-      // renderList.push(game.add.text(nextX, y0, updatedNominatorsString, font));
-      // renderList.push(
-      //   game.add.text(nextX + fractionMiddleX, y0 + 70, mmc, font)
-      // );
-      // renderList.push(game.add.text(nextX, y0, fracLine, font));
 
       // Fraction result
-      //nextX += fractionMiddleX * 2 + 50;
       renderList.push(game.add.text(nextX, y0 + 35, '=', font));
 
       font.align = 'center';
-      nextX += offsetX + 40;
+      nextX += offsetX;
 
-      renderList.push(
-        game.add.text(nextX - 80, y0 + 35, result >= 0 ? '' : '-', font)
-      );
+      if (result < 0) {
+        nextX += 60;
+
+        renderList.push(game.add.text(nextX - 80, y0 + 35, '-', font));
+
+        nextX -= 30;
+      }
 
       const fractionResult = game.add.text(
         nextX,
@@ -675,13 +659,6 @@ const squareOne = {
       }
 
       // Decimal result
-      // nextX += offsetX;
-      // renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-      // nextX += offsetX / 2;
-      // renderList.push(game.add.text(nextX, y0 + 35, result, font));
-
-      //let resultWidth = ('' + result).length * widthOfChar;
       let resultWidth = '_'.length * widthOfChar;
       const cardWidth = nextX - x0 + resultWidth + padding * 2;
       card.width = cardWidth;

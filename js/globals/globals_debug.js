@@ -3,14 +3,14 @@ const isDebugMode = false;
 const debugState = {
   lang: { skip: true, lang: 'pt_BR' },
   name: { skip: true, name: 'Username' },
-  menu: { skip: true, id: 1, audioStatus: false },
+  menu: { skip: true, id: 0, audioStatus: false },
   customMenu: {
-    skip: false,
+    skip: true,
     getData: () => {
       return { mode: 'a', operation: 'plus', difficulty: 3, label: true };
     },
   },
-  map: { skip: false },
+  map: { skip: true },
   end: { skip: false, stop: false },
   moodle: {
     emulate: false,
