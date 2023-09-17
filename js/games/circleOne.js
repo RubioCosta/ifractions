@@ -4,17 +4,17 @@
 
 /** [GAME STATE]
  *
- * .....circleOne.... = gameType
- * ....../....\......
- * .....A......B..... = gameMode
+ * .....circleOne.... = gameName
+ * ....../...\.......
+ * .....a.....b...... = gameMode
  * .......\./........
  * ........|.........
  * ....../.|.\.......
- * .Plus.Minus.Mixed. = gameOperation
+ * .plus.minus.mixed. = gameOperation
  * ......\.|./.......
  * ........|.........
- * ....1,2,3,4,5..... = gameDifficulty
- * 
+ * ......1,2,3....... = gameDifficulty
+ *
  * Character : kid/balloon
  * Theme : flying in a balloon
  * Concept : 'How much the kid has to walk to get to the balloon?'
@@ -22,256 +22,129 @@
  *
  * Game modes can be :
  *
- *   A : Player can place balloon position
+ *   a : Player can place balloon position
  *       Place balloon in position (so the kid can get to it)
- *   B : Player can select # of circles
+ *   b : Player can select # of circles
  *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
  *
  * Operations can be :
  *
- *   Plus : addition of fractions
+ *   plus : addition of fractions
  *     Represented by : kid going to the right (floor positions 0..5)
- *   Minus : subtraction of fractions
+ *   minus : subtraction of fractions
  *     Represented by: kid going to the left (floor positions 5..0)
- *   Mixed : Mix addition and subtraction of fractions in same
+ *   mixed : Mix addition and subtraction of fractions in same
  *     Represented by: kid going to the left (floor positions 0..5)
  *
  * @namespace
  */
 const circleOne = {
+  ui: undefined,
+  control: undefined,
+  animation: undefined,
+  road: undefined,
+
+  circles: undefined,
+  kid: undefined,
+  balloon: undefined,
+  basket: undefined,
+  walkedPath: undefined,
 
   /**
    * Main code
    */
   create: function () {
-    // CONTROL VARIABLES
-    this.availableAnimations = [];
-    this.changeAnimationFrames = undefined;
-    this.checkAnswer = false; // Check kid inside ballon's basket
-    this.animate = false; // Start move animation
-    this.animateEnding = false; // Start ballon fly animation
-    this.hasClicked = false; // Air ballon positioned
-    this.result = false; // Game is correct
-    this.count = 0;
+    this.ui = {
+      help: undefined,
+      message: undefined,
+      continue: {
+        // modal: undefined,
+        button: undefined,
+        text: undefined,
+      },
+    };
+    this.road = {
+      x: 150,
+      y: context.canvas.height - game.image['floor_grass'].width * 1.5,
+      width: 1620,
+    };
+    this.walkedPath = [];
 
-    this.divisorsList = ''; // Used in postScore()
+    const pointWidth = (game.sprite['map_place'].width / 2) * 0.45;
+    const distanceBetweenPoints =
+      (context.canvas.width - this.road.x * 2 - pointWidth) / 5; // Distance between road points
+    const y0 = this.road.y + 20;
+    const x0 =
+      gameOperation === 'minus'
+        ? context.canvas.width - this.road.x - pointWidth / 2
+        : this.road.x + pointWidth / 2; // Initial 'x' coordinate for the kid and the baloon
 
-    let hasBaseDifficulty = false; // Will validate that level isnt too easy (has at least one '1/difficulty' fraction)
+    const diameter =
+      game.math.getRadiusFromCircunference(distanceBetweenPoints) * 2;
 
-    const startX = (gameOperation == 'Minus') ? 66 + 5 * 156 : 66;  // Initial 'x' coordinate for the kid and the baloon
-    this.correctX = startX; // Ending position, accumulative
-
-    // BACKGROUND
-
-    // Add background image
-    game.add.image(0, 0, 'bgimage');
-    // Add clouds
-    game.add.image(300, 100, 'cloud');
-    game.add.image(660, 80, 'cloud');
-    game.add.image(110, 85, 'cloud', 0.8);
-
-    // Add floor of grass
-    for (let i = 0; i < 9; i++) { game.add.image(i * 100, defaultHeight - 100, 'floor'); }
-
-    // Road
-    this.road = game.add.image(47, 515, 'road', 1.01, 0.94);
-
-    // Road points
-    const distanceBetweenPoints = 156; // Distance between road points
-
-    for (let i = 0; i <= 5; i++) {
-      game.add.image(66 + i * distanceBetweenPoints, 526, 'place_off', 0.3).anchor(0.5, 0.5);
-      game.add.text(66 + i * distanceBetweenPoints, 560, i, textStyles.h2_blue);
-    }
-
-    this.trace = game.add.geom.rect(startX - 1, 526, 1, 1, undefined, 1);
-    this.trace.alpha = 0;
-
-    // Calls function that loads navigation icons
-
-    // FOR MOODLE
-    if (moodle) {
-      navigationIcons.add(
-        false, false, false, // Left buttons
-        true, false,         // Right buttons
-        false, false
-      );
-    } else {
-      navigationIcons.add(
-        true, true, true, // Left buttons
-        true, false,      // Right buttons
-        'customMenu', this.viewHelp
-      );
-    }
-
-    // CIRCLES AND FRACTIONS
     this.circles = {
-      all: [],       // Circles objects of current level
-      label: [],     // Fractions labels
-
-      diameter: 60,  // (Fixed) diameter for circles
-      cur: 0,        // Current circle index
-      direction: [], // Circle direction : 'Right' (plus), 'Left' (minus)
-      distance: [],  // Fraction of distance between circles (used in walking animation)
-      angle: [],     // Angle in degrees : 90 / 180 / 270 / 360
-      lineColor: [], // Circle line colors (also used for tracing on floor)
-
-      direc: [],     // Can be : 1 or -1 : will be multiplied to values to easily change object direction when needed
+      diameter: diameter, // (Fixed) Circles Diameter
+      cur: 0, // Current circle index
+      list: [], // Circle objects
     };
 
-    this.balloonPlace = defaultWidth / 2; // Balloon place
+    this.control = {
+      correctX: x0, // Correct position (accumulative)
+      nextX: undefined, // Next point position
+      divisorsList: '', // used in postScore (Accumulative)
 
-    // Number of circles
-    const max = (gameOperation == 'Mixed' || gameMode == 'B') ? 6 : mapPosition + 1;
-    const min = (gameOperation == 'Mixed' && mapPosition < 2) ? 2 : mapPosition; // Mixed level has at least 2 fractions
-    const total = game.math.randomInRange(min, max); // Total number of circles
+      hasClicked: false, // Checks if user has clicked
+      checkAnswer: false, // Check kid inside ballon's basket
+      isCorrect: false, // Informs answer is correct
+      showEndInfo: false,
+      endSignX: undefined,
+      curWalkedPath: 0,
+      // mode 'b' exclusive
+      correctIndex: undefined,
+      selectedIndex: -1, // Index of clicked circle (game (b))
+      numberOfPlusFractions: undefined,
+    };
 
-    // gameMode 'B' exclusive variables
-    this.fractionIndex = -1; // Index of clicked circle (game B)
-    this.numberOfPlusFractions = game.math.randomInRange(1, total - 1);
+    const walkOffsetX = 2;
+    const walksPerDistanceBetweenPoints = distanceBetweenPoints / walkOffsetX;
+    this.animation = {
+      list: {
+        left: undefined,
+        right: undefined,
+      },
+      invertDirection: undefined,
+      animateKid: false,
+      animateBalloon: false,
+      counter: undefined,
+      walkOffsetX,
+      angleOffset: 360 / walksPerDistanceBetweenPoints,
+    };
 
-    // CIRCLES
-    const levelDirection = (gameOperation == 'Minus') ? -1 : 1;
-    const x = startX + 65 * levelDirection;
+    renderBackground('farmRoad');
 
-    for (let i = 0; i < total; i++) {
-
-      const divisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
-
-      if (divisor == gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
-
-      this.divisorsList += divisor + ','; // Add this divisor to the list of divisors (for postScore())
-
-      // Set each circle direction
-      let direction;
-
-      switch (gameOperation) {
-        case 'Plus': direction = 'Right'; break;
-        case 'Minus': direction = 'Left'; break;
-        case 'Mixed':
-          if (i < this.numberOfPlusFractions) direction = 'Right';
-          else direction = 'Left';
-          break;
-      }
-      this.circles.direction[i] = direction;
-
-      // Set each circle color
-      let lineColor, anticlockwise;
-
-      if (direction == 'Right') {
-        lineColor = colors.darkBlue;
-        this.circles.direc[i] = 1;
-        anticlockwise = true;
-      } else {
-        lineColor = colors.red;
-        this.circles.direc[i] = -1;
-        anticlockwise = false;
-      }
-      this.circles.lineColor[i] = lineColor;
-
-      // Draw circles 
-      let circle, label = [];
-
-      if (divisor == 1) {
-        circle = game.add.geom.circle(startX, 490 - i * this.circles.diameter, this.circles.diameter,
-          lineColor, 2, colors.white, 1);
-
-        circle.anticlockwise = anticlockwise;
-
-        this.circles.angle.push(360);
-
-        if (fractionLabel) {
-          label[0] = game.add.text(x, 490 - i * this.circles.diameter, divisor, textStyles.h2_blue);
-          this.circles.label.push(label);
-        }
-      } else {
-        let degree = 360 / divisor;
-
-        if (direction == 'Right') degree = 360 - degree; // Anticlockwise equivalent
-
-        circle = game.add.geom.arc(startX, 490 - i * this.circles.diameter, this.circles.diameter,
-          0, game.math.degreeToRad(degree), anticlockwise,
-          lineColor, 2, colors.white, 1);
-
-        this.circles.angle.push(degree);
-
-        if (fractionLabel) {
-          label[0] = game.add.text(x, 480 - i * this.circles.diameter + 32, divisor, textStyles.h4_blue);
-          label[1] = game.add.text(x, 488 - i * this.circles.diameter, '1', textStyles.h4_blue);
-          label[2] = game.add.text(x, 488 - i * this.circles.diameter, '___', textStyles.h4_blue);
-          this.circles.label.push(label);
-        }
-      }
-
-      circle.rotate = 90;
-
-      // If game is type B (select fractions)
-      if (gameMode == 'B') {
-        circle.alpha = 0.5;
-        circle.index = i;
-      }
-      this.circles.distance.push(Math.floor(distanceBetweenPoints / divisor));
-      this.circles.all.push(circle);
-
-      this.correctX += Math.floor(distanceBetweenPoints / divisor) * this.circles.direc[i];
-    }
-
-    // Calculate next circle
-    this.nextX = startX + this.circles.distance[0] * this.circles.direc[0];
-
-    // Check if need to restart
-    this.restart = false;
-
-    // If top circle position is out of bounds (when on the ground) or game doesnt have base difficulty, restart
-    if (this.correctX < 66 || this.correctX > 66 + 3 * 260 || !hasBaseDifficulty) {
-      this.restart = true;
-    }
-
-    // If game is type B, selectiong a random balloon place
-    if (gameMode == 'B') {
-      this.balloonPlace = startX;
-      this.endIndex = game.math.randomInRange(this.numberOfPlusFractions, this.circles.all.length);
-
-      for (let i = 0; i < this.endIndex; i++) {
-        this.balloonPlace += this.circles.distance[i] * this.circles.direc[i];
-      }
-
-      // If balloon position is out of bounds, restart
-      if (this.balloonPlace < 66 || this.balloonPlace > 66 + 5 * distanceBetweenPoints) {
-        this.restart = true;
-      }
-    }
-
-    // KID
-    this.availableAnimations['Right'] = ['Right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 4];
-    this.availableAnimations['Left'] = ['Left', [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12], 4];
-
-    this.kid = game.add.sprite(startX, 495 - this.circles.all.length * this.circles.diameter, 'kid_walk', 0, 0.8);
-    this.kid.anchor(0.5, 0.8);
-    if (gameOperation == 'Minus') {
-      this.kid.animation = this.availableAnimations['Left'];
-      this.kid.curFrame = 23;
+    // Calls function that loads navigation icons
+    // FOR MOODLE
+    if (moodle) {
+      navigation.add.right(['audio']);
     } else {
-      this.kid.animation = this.availableAnimations['Right'];
+      navigation.add.left(['back', 'menu', 'show_answer'], 'customMenu');
+      navigation.add.right(['audio']);
     }
 
-    // BALLOON
-    this.balloon = game.add.image(this.balloonPlace, 350, 'balloon', 1, 0.5);
-    this.balloon.alpha = 0.5;
-    this.balloon.anchor(0.5, 0.5);
+    const validPath = { x0, y0, distanceBetweenPoints };
 
-    this.basket = game.add.image(this.balloonPlace, 472, 'balloon_basket');
-    this.basket.anchor(0.5, 0.5);
+    this.utils.renderRoad(validPath);
 
-    // Help pointer
-    this.help = game.add.image(0, 0, 'help_pointer', 0.5);
-    this.help.anchor(0.5, 0);
-    this.help.alpha = 0;
+    const [restart, balloonX] = this.utils.renderCircles(validPath);
+    this.restart = restart;
+
+    this.utils.renderCharacters(validPath, balloonX);
+    this.utils.renderMainUI();
 
     if (!this.restart) {
       game.timer.start(); // Set a timer for the current level (used in postScore())
-      game.event.add('click', this.onInputDown);
-      game.event.add('mousemove', this.onInputOver);
+      game.event.add('click', this.events.onInputDown);
+      game.event.add('mousemove', this.events.onInputOver);
     }
   },
 
@@ -279,328 +152,1003 @@ const circleOne = {
    * Game loop
    */
   update: function () {
-    self.count++;
-
-    // Start animation
-    if (self.animate) {
-      let cur = self.circles.cur;
-      let direc = self.circles.direc[cur];
-
-      if (self.count % 2 == 0) { // Lowers animation
-        // Move kid
-        self.kid.x += 2 * direc;
-
-        // Move circles
-        for (let i in self.circles.all) {
-          self.circles.all[i].x += 2 * direc;
-        }
-
-        // Manage line on the floor
-        self.trace.width += 2 * direc;
-        self.trace.lineColor = self.circles.all[cur].lineColor;
-
-        // Change angle of current arc
-        self.circles.angle[cur] += 4.6 * direc;
-        self.circles.all[cur].angleEnd = game.math.degreeToRad(self.circles.angle[cur]);
-
-        // When finish current circle
-        let lowerCircles;
-        if (self.circles.direction[cur] == 'Right') {
-          lowerCircles = self.circles.all[cur].x >= self.nextX;
-        }
-        else if (self.circles.direction[cur] == 'Left') {
-
-          lowerCircles = self.circles.all[cur].x <= self.nextX;
-
-          // If just changed from 'right' to 'left' inform to change direction of kid animation
-          if (self.changeAnimationFrames == undefined && cur > 0 && self.circles.direction[cur - 1] == 'Right') {
-            self.changeAnimationFrames = true;
-          }
-        }
-
-        // Change direction of kid animation
-        if (self.changeAnimationFrames) {
-          self.changeAnimationFrames = false;
-
-          game.animation.stop(self.kid.animation[0]);
-
-          self.kid.animation = self.availableAnimations['Left'];
-          self.kid.curFrame = 23;
-
-          game.animation.play(self.kid.animation[0]);
-        }
-
-        if (lowerCircles) {
-          self.circles.all[cur].alpha = 0; // Cicle disappear
-          self.circles.all.forEach(cur => {
-            cur.y += self.circles.diameter; // Lower circles
-          });
-          self.kid.y += self.circles.diameter; // Lower kid
-
-          self.circles.cur++; // Update current circle
-
-          cur = self.circles.cur;
-          direc = self.circles.direc[cur];
-
-          self.nextX += self.circles.distance[cur] * direc; // Update next position
-        }
-
-        // When finish all circles (final position)
-        if (cur == self.circles.all.length || self.circles.all[cur].alpha == 0) {
-          self.animate = false;
-          self.checkAnswer = true;
-        }
-      }
+    // Starts kid animation
+    if (self.animation.animateKid) {
+      self.utils.animateKidHandler();
     }
 
     // Check if kid is inside the basket
-    if (self.checkAnswer) {
+    if (self.control.checkAnswer) {
+      self.utils.checkAnswerHandler();
+    }
+
+    // Starts balloon flying animation
+    if (self.animation.animateBalloon) {
+      self.utils.animateBalloonHandler();
+    }
+
+    game.render.all();
+  },
+
+  utils: {
+    // RENDERS
+    renderRoad: function (validPath) {
+      const directionModifier = gameOperation === 'minus' ? -1 : 1;
+      for (let i = 0; i <= 5; i++) {
+        // place
+        game.add
+          .sprite(
+            validPath.x0 +
+              i * validPath.distanceBetweenPoints * directionModifier,
+            validPath.y0,
+            'map_place',
+            0,
+            0.45
+          )
+          .anchor(0.5, 0.5);
+        // circle behind number
+        game.add.geom
+          .circle(
+            validPath.x0 +
+              i * validPath.distanceBetweenPoints * directionModifier,
+            validPath.y0 + 60,
+            60,
+            undefined,
+            0,
+            colors.white,
+            0.8
+          )
+          .anchor(0, 0.25);
+        // number
+        game.add.text(
+          validPath.x0 +
+            i * validPath.distanceBetweenPoints * directionModifier,
+          validPath.y0 + 60,
+          i * directionModifier,
+          {
+            ...textStyles.h2_,
+            font: 'bold ' + textStyles.h2_.font,
+            fill: directionModifier === 1 ? colors.green : colors.red,
+          }
+        );
+      }
+
+      self.utils.renderWalkedPath(
+        validPath.x0 - 1,
+        validPath.y0 - 5,
+        gameOperation === 'minus' ? colors.red : colors.green
+      );
+    },
+    renderWalkedPath: function (x, y, color) {
+      const path = game.add.geom.rect(x, y, 1, 1, 'transparent', 1, color, 4);
+      self.walkedPath.push(path);
+      return path;
+    },
+    renderCircles: function (validPath) {
+      let restart = false;
+      let hasBaseDifficulty = false;
+      let balloonX = context.canvas.width / 2;
+
+      const directionModifier = gameOperation === 'minus' ? -1 : 1;
+      const fractionX =
+        validPath.x0 - (self.circles.diameter - 10) * directionModifier;
+      const font = {
+        ...textStyles.h2_,
+        font: 'bold ' + textStyles.h2_.font,
+      };
+      // Number of circles
+      const max = gameOperation === 'mixed' ? 6 : curMapPosition + 1;
+
+      const min =
+        curMapPosition === 1 && (gameOperation === 'mixed' || gameMode === 'b')
+          ? 2
+          : curMapPosition; // Mixed level has at least 2 fractions
+
+      const total = game.math.randomInRange(min, max); // Total number of circles
+
+      // for mode 'b'
+      self.control.numberOfPlusFractions = game.math.randomInRange(
+        1,
+        total - 1
+      );
+
+      for (let i = 0; i < total; i++) {
+        let curDirection = undefined;
+        let curLineColor = undefined;
+        let curFillColor = undefined;
+        let curAngleDegree = undefined;
+        let curIsCounterclockwise = undefined;
+        let curFractionItems = undefined;
+        let curCircle = undefined;
+        const curCircleInfo = {
+          direction: undefined,
+          direc: undefined,
+          distance: undefined,
+          angle: undefined,
+          fraction: {
+            labels: [],
+            nominator: undefined,
+            denominator: undefined,
+          },
+        };
+        const curDivisor = game.math.randomInRange(1, gameDifficulty); // Set fraction 'divisor' (depends on difficulty)
+
+        if (curDivisor === gameDifficulty) hasBaseDifficulty = true; // True if after for ends has at least 1 '1/difficulty' fraction
+
+        self.control.divisorsList += curDivisor + ','; // Add this divisor to the list of divisors (for postScore())
+
+        // Set each circle direction
+        switch (gameOperation) {
+          case 'plus':
+            curDirection = 'right';
+            break;
+          case 'minus':
+            curDirection = 'left';
+            break;
+          case 'mixed':
+            curDirection =
+              i < self.control.numberOfPlusFractions ? 'right' : 'left';
+            break;
+        }
+        curCircleInfo.direction = curDirection;
+
+        // Set each circle visual info
+        if (curDirection === 'right') {
+          curIsCounterclockwise = true;
+          curLineColor = colors.green;
+          curFillColor = colors.greenLight;
+          curCircleInfo.direc = 1;
+        } else {
+          curIsCounterclockwise = false;
+          curLineColor = colors.red;
+          curFillColor = colors.redLight;
+          curCircleInfo.direc = -1;
+        }
+        font.fill = curLineColor;
+
+        const curCircleY =
+          validPath.y0 -
+          5 -
+          self.circles.diameter / 2 -
+          i * self.circles.diameter;
+
+        // Draw circles
+        if (curDivisor === 1) {
+          curAngleDegree = 360;
+          curCircle = game.add.geom.circle(
+            validPath.x0,
+            curCircleY,
+            self.circles.diameter,
+            curLineColor,
+            3,
+            curFillColor,
+            1
+          );
+          curCircle.counterclockwise = curIsCounterclockwise;
+          curCircleInfo.angleDegree = curAngleDegree;
+
+          curFractionItems = [
+            {
+              x: fractionX,
+              y: curCircleY + 10,
+              text: '1',
+            },
+            {
+              x: fractionX - 25,
+              y: curCircleY + 10,
+              text: curDirection === 'left' ? '-' : '',
+            },
+            null,
+          ];
+        } else {
+          curAngleDegree = 360 / curDivisor;
+          if (curDirection === 'right') curAngleDegree = 360 - curAngleDegree; // counterclockwise equivalent
+
+          curCircle = game.add.geom.arc(
+            validPath.x0,
+            curCircleY,
+            self.circles.diameter,
+            0,
+            game.math.degreeToRad(curAngleDegree),
+            curIsCounterclockwise,
+            curLineColor,
+            3,
+            curFillColor,
+            1
+          );
+          curCircleInfo.angleDegree = curAngleDegree;
+
+          curFractionItems = [
+            {
+              x: fractionX,
+              y: curCircleY - 2,
+              text: `1\n${curDivisor}`,
+            },
+            {
+              x: fractionX - 35,
+              y: curCircleY + 15,
+              text: curDirection === 'left' ? '-' : '',
+            },
+            {
+              x0: fractionX,
+              y0: curCircleY + 2,
+              x1: fractionX + 25,
+              y1: curCircleY + 2,
+              lineWidth: 2,
+              color: curLineColor,
+            },
+          ];
+        }
+
+        for (let i = 0; i < 2; i++) {
+          const item = game.add.text(
+            curFractionItems[i].x,
+            curFractionItems[i].y,
+            curFractionItems[i].text,
+            font
+          );
+          item.lineHeight = 37;
+          curCircleInfo.fraction.labels.push(item);
+        }
+        if (curFractionItems[2]) {
+          const line = game.add.geom.line(
+            curFractionItems[2].x0,
+            curFractionItems[2].y0,
+            curFractionItems[2].x1,
+            curFractionItems[2].y1,
+            curFractionItems[2].lineWidth,
+            curFractionItems[2].color
+          );
+          line.anchor(0.5, 0);
+          curCircleInfo.fraction.labels.push(line);
+        } else {
+          curCircleInfo.fraction.labels.push(null);
+        }
+        curCircleInfo.fraction.nominator = curCircleInfo.direc;
+        curCircleInfo.fraction.denominator = curDivisor;
+        if (!showFractions) {
+          curCircleInfo.fraction.labels.forEach((label) => {
+            if (label) label.alpha = 0;
+          });
+        }
+
+        curCircle.rotate = 90;
+
+        // If game is type (b) (select fractions)
+        if (gameMode === 'b') {
+          curCircle.index = i;
+        }
+
+        curCircleInfo.distance = Math.floor(
+          validPath.distanceBetweenPoints / curDivisor
+        );
+
+        // Add to the list
+        curCircle.info = curCircleInfo;
+        self.circles.list.push(curCircle);
+
+        self.control.correctX +=
+          Math.floor(validPath.distanceBetweenPoints / curDivisor) *
+          curCircle.info.direc;
+      }
+
+      // Restart if
+      // Does not have at least one fraction of type 1/difficulty
+      if (!hasBaseDifficulty) {
+        restart = true;
+      }
+
+      // Calculate next circle
+      self.control.nextX =
+        validPath.x0 +
+        self.circles.list[0].info.distance * self.circles.list[0].info.direc;
+
+      let isBeforeMin = (isAfterMax = false);
+      let finalPosition = self.control.correctX;
+      // Restart if
+      // In Game mode 'a' and 'b' : Balloon position is out of bounds
+      if (gameOperation === 'minus') {
+        isBeforeMin = finalPosition > validPath.x0;
+        isAfterMax =
+          finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
+      } else {
+        isBeforeMin = finalPosition < validPath.x0;
+        isAfterMax =
+          finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+      }
+      if (isBeforeMin || isAfterMax) restart = true;
+
+      if (gameMode === 'b') {
+        // If game is type (b), select a random balloon place
+        balloonX = validPath.x0;
+
+        self.control.correctIndex = game.math.randomInRange(
+          self.control.numberOfPlusFractions,
+          self.circles.list.length
+        );
+
+        for (let i = 0; i < self.control.correctIndex; i++) {
+          balloonX +=
+            self.circles.list[i].info.distance *
+            self.circles.list[i].info.direc;
+        }
+
+        finalPosition = balloonX;
+        // Restart if
+        // In Game mode 'b' : Top circle position is out of bounds (when on the ground)
+        if (gameOperation === 'minus') {
+          isBeforeMin = finalPosition > validPath.x0;
+          isAfterMax =
+            finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
+        } else {
+          isBeforeMin = finalPosition < validPath.x0;
+          isAfterMax =
+            finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
+        }
+        if (isBeforeMin || isAfterMax) restart = true;
+      }
+
+      return [restart, balloonX];
+    },
+    renderCharacters: function (validPath, balloonX) {
+      // KID
+      self.kid = game.add.sprite(
+        validPath.x0,
+        validPath.y0 - 32 - self.circles.list.length * self.circles.diameter,
+        'kid_walking',
+        0,
+        1.2
+      );
+      self.kid.anchor(0.5, 0.8);
+
+      self.animation.list.right = [
+        'right',
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        4,
+      ];
+      self.animation.list.left = [
+        'left',
+        [23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12],
+        4,
+      ];
+
+      if (gameOperation === 'minus') {
+        self.kid.animation = self.animation.list.left;
+        self.kid.curFrame = 23;
+      } else {
+        self.kid.animation = self.animation.list.right;
+      }
+
+      // BALLOON
+      self.balloon = game.add.image(
+        balloonX,
+        validPath.y0 - 295,
+        'balloon',
+        1.5,
+        0.5
+      );
+      self.balloon.alpha = 0.5;
+      self.balloon.anchor(0.5, 0.5);
+
+      self.basket = game.add.image(
+        balloonX,
+        validPath.y0 - 95,
+        'balloon_basket',
+        1.5
+      );
+      self.basket.alpha = 0.8;
+      self.basket.anchor(0.5, 0.5);
+    },
+    renderMainUI: function () {
+      // Help pointer
+      self.ui.help = game.add.image(0, 0, 'pointer', 2, 0);
+
+      // Intro text
+      const correctMessage =
+        gameMode === 'a'
+          ? game.lang.circleOne_intro_a
+          : game.lang.circleOne_intro_b;
+      const treatedMessage = correctMessage.split('\\n');
+      self.ui.message = [];
+      self.ui.message.push(
+        game.add.text(
+          context.canvas.width / 2,
+          170,
+          treatedMessage[0] + '\n' + treatedMessage[1],
+          textStyles.h1_
+        )
+      );
+    },
+    renderOperationUI: function () {
+      let validCircles = self.circles.list;
+      if (gameMode === 'b') {
+        validCircles = [];
+        for (let i = 0; i <= self.control.selectedIndex; i++) {
+          validCircles.push(self.circles.list[i]);
+        }
+      }
+
+      const font = textStyles.fraction;
+      font.fill = colors.green;
+
+      const nominators = [];
+      const denominators = [];
+      const renderList = [];
+
+      const padding = 100;
+      const offsetX = 100;
+      const widthOfChar = 35;
+
+      const x0 = padding;
+      const y0 = context.canvas.height / 3;
+      let nextX = x0;
+
+      const cardHeight = 400;
+      const cardX = x0 - padding;
+      const cardY = y0;
+
+      // Card
+      const card = game.add.geom.rect(
+        cardX,
+        cardY,
+        0,
+        cardHeight,
+        colors.blueLight,
+        0.5,
+        colors.blueDark,
+        8
+      );
+      card.id = 'card';
+      card.anchor(0, 0.5);
+      renderList.push(card);
+
+      // Fraction list
+      for (let i in validCircles) {
+        const curFraction = validCircles[i].info.fraction;
+        const curFractionString = curFraction.labels[0].name;
+        let curFractionSign = i !== '0' ? '+' : '';
+        if (curFraction.labels[1].name === '-') {
+          curFractionSign = '-';
+          font.fill = colors.red;
+        }
+
+        const fractionText = game.add.text(
+          x0 + i * offsetX + offsetX / 2,
+          curFractionString === '1' ? y0 + 40 : y0,
+          curFractionString,
+          font
+        );
+        fractionText.lineHeight = 70;
+
+        renderList.push(
+          game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
+        );
+        renderList.push(fractionText);
+        renderList.push(
+          game.add.text(
+            x0 + offsetX / 2 + i * offsetX,
+            y0,
+            curFractionString === '1' ? '' : '_',
+            font
+          )
+        );
+
+        nominators.push(curFraction.nominator);
+        denominators.push(curFraction.denominator);
+      }
+
+      // Setup for fraction operation with least common multiple
+      font.fill = colors.black;
+      const updatedNominators = [];
+      const mmc = game.math.mmcArray(denominators);
+      let resultNominator = 0;
+      for (let i in nominators) {
+        const temp = nominators[i] * (mmc / denominators[i]);
+        updatedNominators.push(temp);
+        resultNominator += temp;
+      }
+      const resultNominatorUnsigned =
+        resultNominator < 0 ? -resultNominator : resultNominator;
+      const resultAux = resultNominator / mmc;
+      const result =
+        ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
+
+      // Fraction operation with least common multiple
+      nextX = x0 + validCircles.length * offsetX + 20;
+
+      // Fraction result
+      renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+      font.align = 'center';
+      nextX += offsetX;
+
+      if (result < 0) {
+        nextX -= 30;
+
+        renderList.push(game.add.text(nextX, y0 + 35, '-', font));
+
+        nextX += 60;
+      }
+
+      const fractionResult = game.add.text(
+        nextX,
+        mmc === 1 || resultNominatorUnsigned === 0 ? y0 + 40 : y0,
+        mmc === 1 || resultNominatorUnsigned === 0
+          ? resultNominatorUnsigned
+          : resultNominatorUnsigned + '\n' + mmc,
+        font
+      );
+      fractionResult.lineHeight = 70;
+      renderList.push(fractionResult);
+
+      const fractionLine = game.add.geom.line(
+        nextX,
+        y0 + 15,
+        nextX + 60,
+        y0 + 15,
+        4,
+        colors.black,
+        mmc === 1 || resultNominatorUnsigned === 0 ? 0 : 1
+      );
+      fractionLine.anchor(0.5, 0);
+      renderList.push(fractionLine);
+
+      // Fraction result simplified setup
+      const mdcAux = game.math.mdc(resultNominator, mmc);
+      const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
+      if (mdc !== 1 && resultNominatorUnsigned !== 0) {
+        // alert(mdc + ' ' + resultNominatorUnsigned);
+        nextX += offsetX;
+        renderList.push(game.add.text(nextX, y0 + 35, '=', font));
+
+        nextX += offsetX;
+        renderList.push(
+          game.add.text(nextX - 50, y0 + 35, result > 0 ? '' : '-', font)
+        );
+        renderList.push(
+          game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
+        );
+        renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
+
+        const fractionLine = game.add.geom.line(
+          nextX,
+          y0 + 15,
+          nextX + 60,
+          y0 + 15,
+          4,
+          colors.black
+        );
+        fractionLine.anchor(0.5, 0);
+        renderList.push(fractionLine);
+      }
+
+      // Decimal result
+      let resultWidth = '_'.length * widthOfChar;
+      const cardWidth = nextX - x0 + resultWidth + padding * 2;
+      card.width = cardWidth;
+
+      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
+
+      // Center Card
+      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
+
+      self.fractionOperationUI = renderList;
+
+      return endSignX;
+    },
+    renderEndUI: () => {
+      let btnColor = colors.green;
+      let btnText = game.lang.continue;
+
+      if (!self.control.isCorrect) {
+        btnColor = colors.red;
+        btnText = game.lang.retry;
+      }
+
+      // continue button
+      self.ui.continue.button = game.add.geom.rect(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 100,
+        450,
+        100,
+        btnColor
+      );
+      self.ui.continue.button.anchor(0.5, 0.5);
+      self.ui.continue.text = game.add.text(
+        context.canvas.width / 2,
+        context.canvas.height / 2 + 16 + 100,
+        btnText,
+        textStyles.btn
+      );
+    },
+
+    // UPDATE
+    animateKidHandler: function () {
+      let canLowerCircles = undefined;
+      let curCircle = self.circles.list[self.circles.cur];
+      let curDirec = curCircle.info.direc;
+
+      // Move
+      self.circles.list.forEach((circle) => {
+        circle.x += self.animation.walkOffsetX * curDirec;
+      });
+      self.kid.x += self.animation.walkOffsetX * curDirec;
+      self.walkedPath[self.control.curWalkedPath].width +=
+        self.animation.walkOffsetX * curDirec;
+
+      // Update arc
+      curCircle.info.angleDegree += self.animation.angleOffset * curDirec;
+      curCircle.angleEnd = game.math.degreeToRad(curCircle.info.angleDegree);
+
+      // When finish current circle
+      if (curCircle.info.direction === 'right') {
+        canLowerCircles = curCircle.x >= self.control.nextX;
+      } else if (curCircle.info.direction === 'left') {
+        canLowerCircles = curCircle.x <= self.control.nextX;
+        // If just changed from 'right' to 'left' inform to change direction of kid animation
+        if (
+          self.animation.invertDirection === undefined &&
+          self.circles.cur > 0 &&
+          self.circles.list[self.circles.cur - 1].info.direction === 'right'
+        ) {
+          self.animation.invertDirection = true;
+        }
+      }
+
+      // Change direction of kid animation
+      if (self.animation.invertDirection) {
+        self.animation.invertDirection = false;
+        game.animation.stop(self.kid.animation[0]);
+
+        self.kid.animation = self.animation.list.left;
+        self.kid.curFrame = 23;
+        game.animation.play('left');
+
+        self.control.curWalkedPath = 1;
+        self.utils.renderWalkedPath(
+          curCircle.x,
+          self.walkedPath[0].y + 8,
+          colors.red
+        );
+      }
+
+      if (canLowerCircles) {
+        // Hide current circle
+        curCircle.alpha = 0;
+
+        // Lowers kid and other circles
+        self.circles.list.forEach((circle) => {
+          circle.y += self.circles.diameter;
+        });
+        self.kid.y += self.circles.diameter;
+
+        self.circles.cur++; // Update index of current circle
+
+        if (self.circles.list[self.circles.cur]) {
+          curCircle = self.circles.list[self.circles.cur];
+          curDirec = curCircle.info.direc;
+          self.control.nextX += curCircle.info.distance * curDirec; // Update next position
+        }
+      }
+
+      // When finish all circles (final position)
+      if (
+        self.circles.cur === self.circles.list.length ||
+        curCircle.alpha === 0
+      ) {
+        self.animation.animateKid = false;
+        self.control.checkAnswer = true;
+      }
+    },
+    checkAnswerHandler: function () {
       game.timer.stop();
 
       game.animation.stop(self.kid.animation[0]);
 
-      if (self.checkOverlap(self.basket, self.kid)) {
-        self.result = true; // Answer is correct
-        self.kid.curFrame = (self.kid.curFrame < 12) ? 24 : 25;
-        if (audioStatus) game.audio.okSound.play();
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'ok').anchor(0.5, 0.5);
+      self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
+
+      const x = self.utils.renderOperationUI();
+
+      if (self.control.isCorrect) {
         completedLevels++;
-        if (debugMode) console.log('Completed Levels: ' + completedLevels);
+        self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
+        if (audioStatus) game.audio.okSound.play();
+        game.add
+          .image(x + 50, context.canvas.height / 3, 'answer_correct')
+          .anchor(0.5, 0.5);
+        if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
-        self.result = false; // Answer is incorrect
         if (audioStatus) game.audio.errorSound.play();
-        game.add.image(defaultWidth / 2, defaultHeight / 2, 'error').anchor(0.5, 0.5);
+        game.add
+          .image(x, context.canvas.height / 3, 'answer_wrong')
+          .anchor(0.5, 0.5);
       }
 
-      self.postScore();
+      self.fetch.postScore();
 
-      self.animateEnding = true;
-      self.checkAnswer = false;
+      self.control.checkAnswer = false;
+      self.animation.counter = 0;
 
-      self.count = 0;
-    }
-
-    // Balloon flying animation
-    if (self.animateEnding) {
+      self.animation.animateBalloon = true;
+    },
+    animateBalloonHandler: function () {
+      self.animation.counter++;
       self.balloon.y -= 2;
       self.basket.y -= 2;
 
-      if (self.result) self.kid.y -= 2;
+      if (self.control.isCorrect) self.kid.y -= 2;
 
-      if (self.count >= 140) {
-        if (self.result) mapMove = true;
-        else mapMove = false;
+      if (self.animation.counter === 100) {
+        self.utils.renderEndUI();
+        self.control.showEndInfo = true;
 
-        game.state.start('map');
+        if (self.control.isCorrect) canGoToNextMapPosition = true;
+        else canGoToNextMapPosition = false;
       }
-    }
+    },
+    endLevel: function () {
+      game.state.start('map');
+    },
 
-    game.render.all();
-  },
-
-  /**
-   * (in gameMode 'B') Function called when cursor is over a valid circle
-   * 
-   * @param {object} cur circle the cursor is over
-   */
-  overCircle: function (cur) {
-    if (!self.hasClicked) {
-      document.body.style.cursor = 'pointer';
-      for (let i in self.circles.all) {
-        self.circles.all[i].alpha = (i <= cur.index) ? 1 : 0.5;
+    // INFORMATION
+    /**
+     * Show correct answer
+     */
+    showAnswer: function () {
+      if (!self.control.hasClicked) {
+        // On gameMode (a)
+        if (gameMode === 'a') {
+          self.ui.help.x = self.control.correctX - 20;
+          self.ui.help.y = self.road.y;
+          // On gameMode (b)
+        } else {
+          self.ui.help.x = self.circles.list[self.control.correctIndex - 1].x;
+          self.ui.help.y = self.circles.list[self.control.correctIndex - 1].y; // -            self.circles.diameter / 2;
+        }
+        self.ui.help.alpha = 1;
       }
-    }
-  },
+    },
 
-  /**
-   * (in gameMode 'B') Function called when cursor is out of a valid circle
-   */
-  outCircle: function () {
-    if (!self.hasClicked) {
-      document.body.style.cursor = 'auto';
-      self.circles.all.forEach(cur => {
-        cur.alpha = 0.5;
-      });
-    }
-  },
+    // HANDLERS
+    /**
+     * (in gameMode 'b') Function called when player clicked over a valid circle
+     *
+     * @param {number|object} cur clicked circle
+     */
+    clickCircleHandler: function (cur) {
+      if (!self.control.hasClicked) {
+        // On gameMode (a)
+        if (gameMode === 'a') {
+          self.balloon.x = cur;
+          self.basket.x = cur;
+        }
 
-  /**
-   * (in gameMode 'B') Function called when player clicked over a valid circle
-   * 
-   * @param {number|object} cur clicked circle
-   */
-  clicked: function (cur) {
-    if (!self.hasClicked) {
+        // On gameMode (b)
+        if (gameMode === 'b') {
+          document.body.style.cursor = 'auto';
 
-      // On gameMode A
-      if (gameMode == 'A') {
-        self.balloon.x = cur;
-        self.basket.x = cur;
-        // On gameMode B
+          for (let i in self.circles.list) {
+            if (i <= cur.index) {
+              self.circles.list[i].alpha = 1; // Keep selected circle
+              self.control.selectedIndex = cur.index;
+            } else {
+              self.circles.list[i].alpha = 0; // Hide unselected circle
+              self.kid.y += self.circles.diameter; // Lower kid to selected circle
+            }
+          }
+        }
+
+        if (audioStatus) game.audio.popSound.play();
+
+        // Hide fractions
+        if (showFractions) {
+          self.circles.list.forEach((circle) => {
+            circle.info.fraction.labels.forEach((labelPart) => {
+              if (labelPart) labelPart.alpha = 0;
+            });
+          });
+        }
+
+        // Hide solution pointer
+        if (self.ui.help != undefined) self.ui.help.alpha = 0;
+
+        self.ui.message[0].alpha = 0;
+
+        navigation.disableIcon(navigation.showAnswerIcon);
+
+        self.balloon.alpha = 1;
+        self.basket.alpha = 1;
+        self.walkedPath[self.control.curWalkedPath].alpha = 1;
+
+        self.control.hasClicked = true;
+        self.animation.animateKid = true;
+
+        game.animation.play(self.kid.animation[0]);
       }
-      else if (gameMode == 'B') {
-
-        document.body.style.cursor = 'auto';
-
-        for (let i in self.circles.all) {
-          if (i <= cur.index) {
-            self.circles.all[i].alpha = 1; // Keep selected circle
-            self.fractionIndex = cur.index;
-          } else {
-            self.circles.all[i].alpha = 0;  // Hide unselected circle
-            self.kid.y += self.circles.diameter;  // Lower kid to selected circle
+    },
+    /**
+     * (in gameMode 'b') Function called when cursor is over a valid circle
+     *
+     * @param {object} cur circle the cursor is over
+     */
+    overCircleHandler: function (cur) {
+      if (!self.control.hasClicked) {
+        document.body.style.cursor = 'pointer';
+        for (let i in self.circles.list) {
+          const alpha = i <= cur.index ? 1 : 0.4;
+          self.circles.list[i].alpha = alpha;
+          if (showFractions) {
+            self.circles.list[i].info.fraction.labels.forEach((lbl) => {
+              if (lbl) lbl.alpha = alpha;
+            });
           }
         }
       }
+    },
+    /**
+     * (in gameMode 'b') Function called when cursor leaves a valid circle
+     */
+    outCircleHandler: function () {
+      if (!self.control.hasClicked) {
+        document.body.style.cursor = 'auto';
+        const alpha = 1;
+        self.circles.list.forEach((circle) => {
+          circle.alpha = alpha;
+          if (showFractions) {
+            circle.info.fraction.labels.forEach((lbl) => {
+              if (lbl) lbl.alpha = alpha;
+            });
+          }
+        });
+      }
+    },
+  },
 
-      if (audioStatus) game.audio.beepSound.play();
+  events: {
+    /**
+     * Called by mouse click event
+     *
+     * @param {object} mouseEvent contains the mouse click coordinates
+     */
+    onInputDown: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
 
-      // Hide fractions
-      if (fractionLabel) {
-        self.circles.label.forEach(cur => {
-          cur.forEach(cur => { cur.alpha = 0; });
+      // GAME MODE A : click road
+      if (gameMode === 'a') {
+        const isValid =
+          y > 150 && x >= self.road.x && x <= self.road.x + self.road.width;
+        if (isValid) self.utils.clickCircleHandler(x);
+      }
+
+      // GAME MODE B : click circle
+      if (gameMode === 'b') {
+        self.circles.list.forEach((circle) => {
+          const isValid =
+            game.math.distanceToPointer(
+              x,
+              circle.xWithAnchor,
+              y,
+              circle.yWithAnchor
+            ) <=
+            (circle.diameter / 2) * circle.scale;
+          if (isValid) self.utils.clickCircleHandler(circle);
         });
       }
 
-      // Hide solution pointer
-      if (self.help != undefined) self.help.alpha = 0;
-
-      self.balloon.alpha = 1;
-      self.trace.alpha = 1;
-
-      self.hasClicked = true;
-      self.animate = true;
-
-      game.animation.play(this.kid.animation[0]);
-    }
-  },
-
-  /**
-   * Checks if 2 images overlap
-   * 
-   * @param {object} spriteA image 1
-   * @param {object} spriteB image 2
-   * 
-   * @returns {boolean} true if there is overlap
-   */
-  checkOverlap: function (spriteA, spriteB) {
-    const xA = spriteA.x;
-    const xB = spriteB.x;
-
-    // Consider it comming from both sides
-    if (Math.abs(xA - xB) > 14) return false;
-    else return true;
-  },
-
-  /**
-   * Display correct answer
-   */
-  viewHelp: function () {
-    if (!self.hasClicked) {
-      // On gameMode A
-      if (gameMode == 'A') {
-        self.help.x = self.correctX;
-        self.help.y = 490;
-        // On gameMode B
-      } else {
-        self.help.x = self.circles.all[self.endIndex - 1].x;
-        self.help.y = self.circles.all[self.endIndex - 1].y - self.circles.diameter / 2;
-      }
-      self.help.alpha = 0.7;
-    }
-  },
-
-  /**
-   * Called by mouse click event
-   *
-   * @param {object} mouseEvent contains the mouse click coordinates
-   */
-  onInputDown: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-
-    // GAME MODE A : click road
-    if (gameMode == 'A') {
-      const cur = self.road;
-
-      const valid = y > 60 && (x >= cur.xWithAnchor && x <= (cur.xWithAnchor + cur.width * cur.scale));
-      if (valid) self.clicked(x);
-    }
-
-    // GAME MODE B : click circle
-    if (gameMode == 'B') {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
-        if (valid) self.clicked(cur);
-      });
-    }
-
-    navigationIcons.onInputDown(x, y);
-
-    game.render.all();
-  },
-
-  /**
-   * Called by mouse move event
-   *
-   * @param {object} mouseEvent contains the mouse move coordinates
-   */
-  onInputOver: function (mouseEvent) {
-    const x = mouseEvent.offsetX;
-    const y = mouseEvent.offsetY;
-    let flag = false;
-
-    // GAME MODE A : balloon follow mouse
-    if (gameMode == 'A' && !self.hasClicked) {
-      if (game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8) {
-        self.balloon.x = x;
-        self.basket.x = x;
-      }
-
-      document.body.style.cursor = 'auto';
-    }
-
-    // GAME MODE B : hover circle
-    if (gameMode == 'B' && !self.hasClicked) {
-      self.circles.all.forEach(cur => {
-        const valid = game.math.distanceToPointer(x, cur.xWithAnchor, y, cur.yWithAnchor) <= (cur.diameter / 2) * cur.scale;
-        if (valid) {
-          self.overCircle(cur);
-          flag = true;
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          if (audioStatus) game.audio.popSound.play();
+          self.utils.endLevel();
         }
-      });
-      if (!flag) self.outCircle();
-    }
+      }
 
-    navigationIcons.onInputOver(x, y);
+      navigation.onInputDown(x, y);
 
-    game.render.all();
+      game.render.all();
+    },
+
+    /**
+     * Called by mouse move event
+     *
+     * @param {object} mouseEvent contains the mouse move coordinates
+     */
+    onInputOver: function (mouseEvent) {
+      const x = game.math.getMouse(mouseEvent).x;
+      const y = game.math.getMouse(mouseEvent).y;
+      let isOverCircle = false;
+
+      // GAME MODE A : balloon follow mouse
+      if (gameMode === 'a' && !self.control.hasClicked) {
+        if (
+          game.math.distanceToPointer(x, self.balloon.x, y, self.balloon.y) > 8
+        ) {
+          self.balloon.x = x;
+          self.basket.x = x;
+        }
+        document.body.style.cursor = 'auto';
+      }
+
+      // GAME MODE B : hover circle
+      if (gameMode === 'b' && !self.control.hasClicked) {
+        self.circles.list.forEach((circle) => {
+          const isValid =
+            game.math.distanceToPointer(
+              x,
+              circle.xWithAnchor,
+              y,
+              circle.yWithAnchor
+            ) <=
+            (circle.diameter / 2) * circle.scale;
+          if (isValid) {
+            self.utils.overCircleHandler(circle);
+            isOverCircle = true;
+          }
+        });
+        if (!isOverCircle) self.utils.outCircleHandler();
+      }
+
+      // Continue button
+      if (self.control.showEndInfo) {
+        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+          // If pointer is over icon
+          document.body.style.cursor = 'pointer';
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1.1;
+          self.ui.continue.text.style = textStyles.btnLg;
+        } else {
+          // If pointer is not over icon
+          document.body.style.cursor = 'auto';
+          self.ui.continue.button.scale =
+            self.ui.continue.button.initialScale * 1;
+          self.ui.continue.text.style = textStyles.btn;
+        }
+      }
+
+      navigation.onInputOver(x, y);
+
+      game.render.all();
+    },
   },
 
-  /**
-   * Saves players data after level ends - to be sent to database <br>
-   * 
-   * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
-   * 
-   * @see /php/squareOne.js
-   */
-  postScore: function () {
-    // Creates string that is going to be sent to db
-    const data = '&line_game=' + gameShape
-      + '&line_mode=' + gameMode
-      + '&line_oper=' + gameOperation
-      + '&line_leve=' + gameDifficulty
-      + '&line_posi=' + mapPosition
-      + '&line_resu=' + self.result
-      + '&line_time=' + game.timer.elapsed
-      + '&line_deta='
-      + 'numCircles:' + self.circles.all.length
-      + ', valCircles: ' + self.divisorsList
-      + ' balloonX: ' + self.basket.x
-      + ', selIndex: ' + self.fractionIndex;
+  fetch: {
+    /**
+     * Saves players data after level ends - to be sent to database <br>
+     *
+     * Attention: the 'line_' prefix data table must be compatible to data table fields (MySQL server)
+     *
+     * @see /php/squareOne.js
+     */
+    postScore: function () {
+      // Creates string that is going to be sent to db
+      const data =
+        '&line_game=' +
+        gameShape +
+        '&line_mode=' +
+        gameMode +
+        '&line_oper=' +
+        gameOperation +
+        '&line_leve=' +
+        gameDifficulty +
+        '&line_posi=' +
+        curMapPosition +
+        '&line_resu=' +
+        self.control.isCorrect +
+        '&line_time=' +
+        game.timer.elapsed +
+        '&line_deta=' +
+        'numCircles:' +
+        self.circles.list.length +
+        ', valCircles: ' +
+        self.control.divisorsList +
+        ' balloonX: ' +
+        self.basket.x +
+        ', selIndex: ' +
+        self.control.selectedIndex;
 
-    // FOR MOODLE
-    sendToDB(data);
-  }
-
+      // FOR MOODLE
+      sendToDatabase(data);
+    },
+  },
 };
