@@ -294,6 +294,8 @@ const customMenuState = {
     x = getFrameInfo().x + offsetW;
     y = getFrameInfo().y + offsetH / 2;
 
+    if (!gameMode) gameMode = gameList[gameId].gameMode[0];
+
     for (
       let i = 0;
       i < curGame.assets.customMenu.gameModeBtn.length;
@@ -311,8 +313,8 @@ const customMenuState = {
 
       icon.gameMode = curGame.gameMode[i];
       icon.iconType = 'gameMode';
-      if (i == 0) {
-        gameMode = icon.gameMode;
+
+      if (gameList[gameId].gameMode[i] == gameMode) {
         icon.curFrame = 1;
       }
 
@@ -328,6 +330,8 @@ const customMenuState = {
       getFrameInfo().height,
       curGame.gameOperation.length - 1
     );
+
+    if (!gameOperation) gameOperation = gameList[gameId].gameOperation[0];
 
     let icon;
 
@@ -346,8 +350,7 @@ const customMenuState = {
       icon.gameOperation = curGame.gameOperation[i];
       icon.iconType = 'gameOperation';
 
-      if (i == 0) {
-        gameOperation = icon.gameOperation;
+      if (gameList[gameId].gameOperation[i] == gameOperation) {
         icon.curFrame = 1;
       }
 
@@ -365,6 +368,8 @@ const customMenuState = {
 
     y = getFrameInfo().y + offsetH / 3;
 
+    if (!gameDifficulty) gameDifficulty = 1;
+
     if (gameName === 'squareTwo') x -= 70;
 
     for (let i = 0; i < curGame.gameDifficulty; i++) {
@@ -376,8 +381,7 @@ const customMenuState = {
       icon.difficulty = i + 1;
       icon.iconType = 'difficulty';
 
-      if (i == 0) {
-        gameDifficulty = icon.difficulty;
+      if (i == gameDifficulty - 1) {
         icon.curFrame = 0;
       }
       self.menuIcons.push(icon);
