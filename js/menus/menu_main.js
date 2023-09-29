@@ -16,7 +16,13 @@ const menuState = {
       // Student role
 
       playerName = game.lang.student; // TODO pegar o nome do aluno no bd do moodle
-      getiLMContent();
+      try {
+        getiLMContent();
+      } catch (error) {
+        console.error(
+          'Game error: Could not load the iLM Content on Moodle. ' + error
+        );
+      }
     } else {
       // FOR MOODLE
       if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true')
