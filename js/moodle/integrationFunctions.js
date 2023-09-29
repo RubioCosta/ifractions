@@ -237,6 +237,24 @@ const breakString = function (text) {
 const updateGlobalVariables = function (infoGame, infoResults) {
   // Update game variables to content received from game file
   gameName = infoGame['gameName'];
+  if (infoGame['gameID']) {
+    gameId = infoGame['gameId'];
+  } else {
+    switch (gameName) {
+      case 'squareOne':
+        gameId = 0;
+        break;
+      case 'circleOne':
+        gameId = 1;
+        break;
+      case 'squareTwo':
+        gameId = 2;
+        break;
+      default:
+        gameId = 0;
+    }
+  }
+
   gameShape = infoGame['gameShape'];
   gameMode = infoGame['gameMode'];
   gameOperation = infoGame['gameOperation'];
@@ -259,10 +277,4 @@ const updateGlobalVariables = function (infoGame, infoResults) {
     // If assignment WAS NOT previously completed, calls 'customMenu' after all is loaded.
     game.state.start('customMenu');
   }
-};
-
-moodleVar = {
-  hits: [0, 0, 0, 0],
-  errors: [0, 0, 0, 0],
-  time: [0, 0, 0, 0],
 };
