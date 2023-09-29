@@ -66,8 +66,10 @@ const navigation = {
   },
 
   disableIcon: (icon) => {
-    icon.alpha = 0;
-    icon.isDisabled = true;
+    if (icon) {
+      icon.alpha = 0;
+      icon.isDisabled = true;
+    }
   },
 
   onInputDown: (x, y) => {
