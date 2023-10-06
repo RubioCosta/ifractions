@@ -137,7 +137,12 @@ const menuState = {
    * Displays game menu information boxes.
    */
   showInfoBox: function (icon) {
-    if (gameList?.[icon.id]?.assets?.menu?.infoBox) {
+    if (
+      gameList[icon.id] &&
+      gameList[icon.id].assets &&
+      gameList[icon.id].assets.menu &&
+      gameList[icon.id].assets.menu.infoBox
+    ) {
       self.infoBox.style.display = 'block';
 
       const data = gameList[icon.id].assets.menu.infoBox();
