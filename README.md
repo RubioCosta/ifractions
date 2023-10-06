@@ -47,18 +47,33 @@ Follow the description below based on in which platform you want to run iFractio
 ## Releases:
 
 * A new version will be available soon!
+
   * Bug fixes 
+
   * GUI changes
+
   * Code refactoring
+
 * [v2.0.0](http://200.144.254.107/git/LInE/Ifractions-web/src/release-2.0.0) (stable)
+
   * Bug fixes
+
   * No longer uses Phaser.io
+
     * Now iFractions implements its own game mechanics
+
   * Add Moodle integration
+
     * Now iFractions is a part of the iAssign package and can be integrated to Moodle
+
   * New available language: Italian
+
   * GUI changes
+
   * Code refactoring and documenting
+
 * [v1.0.0](http://200.144.254.107/git/LInE/Ifractions-web/src/release-1.0.0) (deprecated)
+
   * Uses Phaser.io to handle game mechanics
+  
   * Available languages: Spanish, Portuguese, English and French.
