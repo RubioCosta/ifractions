@@ -122,7 +122,7 @@ const game = {
       } else {
         self.create(); // Calls create()
         game.render.all(); // After create() ends, renders media on canvas
-        if (self?.restart) {
+        if (self && self.restart) {
           // If needed, restart state
           game.state.start(game.state.name);
         } else {
@@ -510,9 +510,10 @@ const game = {
       } else {
         const med = {
           typeOfMedia: 'text',
-          name: style?.increaseLetterSpacing
-            ? text.split('').join(String.fromCharCode(8202))
-            : text,
+          name:
+            style && style.increaseLetterSpacing
+              ? text.split('').join(String.fromCharCode(8202))
+              : text,
 
           x: x || game.add.default.x,
           y: y || game.add.default.y,
