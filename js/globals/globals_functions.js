@@ -154,7 +154,10 @@ const navigation = {
 const sendToDatabase = function (extraData) {
   // FOR MOODLE
   if (moodle) {
-    if (self.result) moodleVar.hits[curMapPosition - 1]++;
+    alert("i'm calling getAnswer again on sendToDatabase()");
+    console.clear();
+    console.log(self.control.isCorrect);
+    if (self.control.isCorrect) moodleVar.hits[curMapPosition - 1]++;
     else moodleVar.errors[curMapPosition - 1]++;
 
     moodleVar.time[curMapPosition - 1] += game.timer.elapsed;
@@ -168,6 +171,10 @@ const sendToDatabase = function (extraData) {
       encodeURIComponent(grade) +
       '&iLM_PARAM_ArchiveContent=' +
       encodeURIComponent(report);
+
+    console.log(grade);
+    console.log(report);
+    console.log(moodleVar);
 
     const init = {
       method: 'POST',
@@ -201,6 +208,9 @@ const sendToDatabase = function (extraData) {
       '&line_lang=' +
       langString +
       extraData;
+
+    console.log('----------------');
+    console.log(data);
 
     const url = 'php/save.php';
 

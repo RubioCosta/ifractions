@@ -38,6 +38,8 @@ function getParameterByName(name) {
 function getAnswer() {
   let str = '';
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+    alert("(getAnswer) I'm a student sending results (getAnswer())");
+
     // Student - sending results
     str +=
       'gameName:' +
@@ -65,7 +67,10 @@ function getAnswer() {
         moodleVar.time[i] +
         '}';
     }
+    console.log(str);
   } else {
+    alert("(getAnswer) I'm a professor creating an assignment (getAnswer())");
+
     // Professor - creating new assignment
     if (!gameName) {
       alert(game.lang.error_must_select_game);
@@ -102,12 +107,27 @@ function getAnswer() {
  */
 function getEvaluation() {
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') {
+    alert(
+      "(getEvaluation) I'm a student getting an evaluation (getEvaluation())"
+    );
+
     // Student
     let i;
     for (i = 0; i < moodleVar.hits.length && moodleVar.hits[i] == 1; i++);
     const grade = i / 4;
-    parent.getEvaluationCallback(grade); // Sends grade to moodle db
+    // console.clear();
+    // console.log(grade);
+    try {
+      parent.getEvaluationCallback(grade); // Sends grade to moodle db
+    } catch (error) {
+      console.error('Game error: Could not send evaluation. ' + error);
+    }
+    console.log('done');
     return grade;
+  } else {
+    alert(
+      "(getEvaluation) I'm a professor getting an evaluation (getEvaluation())"
+    );
   }
 }
 
@@ -116,21 +136,30 @@ function getEvaluation() {
  * Holds the parameters passed by the iAssign to the iLM via URL.
  */
 const iLMparameters = {
-  /**
-   * This parameter gets the role in which the iLM is being used: <br>
-   * - if true, the user is creating a new iLM (as professor) <br>
-   * - if false, the user is solving the iLM (as student), value=false
-   */
-  iLM_PARAM_SendAnswer: getParameterByName('iLM_PARAM_SendAnswer'), // Checks if you're student (false) or professor (true)
-  /**
-   * This parameter is used when the user is opening an iLM to solve it. <br>
+  /** This parameter is used when the user is opening an iLM to solve it. <br>
    * It holds a URL with the path to the game file (assignment/iLM) created by the professor. <br>
    * Example: http://myschool.edu/moodle/mod/iassign/ilm_security.php?id=3&token=b3660dd4de0b0e9bb01fea6cc8f02ccd&view=1
    *
    * The first parameter, 'token', can be used only once.
-   * Once the iLM gets the game file, the token is destroied (for security).
-   */
+   * Once the iLM gets the game file, the token is destroied (for security).*/
+
+  // This parameter must receive from iAssign the URL of the iLM content
+  // Example: http://myschool.edu/moodle/mod/iassign/ilm_security.php?id=3&token=b3660dd4de0b0e9bb01fea6cc8f02ccd&view=1
+  // The first parameter, 'token', can be used only once, after sending its content to the iLM, iAssign will erase the file (avoiding "peeping")
   iLM_PARAM_Assignment: getParameterByName('iLM_PARAM_Assignment'),
+
+  /** This parameter gets the role in which the iLM is being used: <br>
+   * - if true, the user is creating a new iLM (as professor) <br>
+   * - if false, the user is solving the iLM (as student), value=false */
+
+  // iLM_PARAM_SendAnswer = true <=> iLM MUST NOT send any answer to the server
+  iLM_PARAM_SendAnswer: getParameterByName('iLM_PARAM_SendAnswer'), // Checks if you're student (false) or professor (true)
+
+  /**
+   * if iLM_PARAM_Authoring == true <=> iLM WILL be used by TEACHER to create a new exercise
+   */
+  iLM_PARAM_Authoring: getParameterByName('iLM_PARAM_Authoring'),
+
   /**
    * Gets current moodle language.
    */
@@ -138,6 +167,7 @@ const iLMparameters = {
   iLM_PARAM_ServerToGetAnswerURL: getParameterByName(
     'iLM_PARAM_ServerToGetAnswerURL'
   ),
+  iLM_PARAM_ArchiveContent: getParameterByName('iLM_PARAM_ArchiveContent'),
 };
 
 /**
