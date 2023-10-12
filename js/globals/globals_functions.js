@@ -169,10 +169,6 @@ const sendToDatabase = function (extraData) {
       '&iLM_PARAM_ArchiveContent=' +
       encodeURIComponent(report);
 
-    console.log(grade);
-    console.log(report);
-    console.log(moodleVar);
-
     const init = {
       method: 'POST',
       body: data,
@@ -205,9 +201,6 @@ const sendToDatabase = function (extraData) {
       '&line_lang=' +
       langString +
       extraData;
-
-    console.log('----------------');
-    console.log(data);
 
     const url = 'php/save.php';
 

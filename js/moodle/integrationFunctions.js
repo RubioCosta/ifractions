@@ -67,7 +67,6 @@ function getAnswer() {
         moodleVar.time[i] +
         '}';
     }
-    console.log(str);
   } else {
     // Professor role: creating new assignment
     if (!gameName) {
