@@ -112,10 +112,6 @@ function getEvaluation() {
     for (i = 0; i < moodleVar.hits.length && moodleVar.hits[i] == 1; i++);
     const grade = i / 4;
     return grade;
-  } else {
-    alert(
-      "(getEvaluation) I'm a professor getting an evaluation (getEvaluation())"
-    );
   }
 }
 
