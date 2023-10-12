@@ -37,8 +37,8 @@ function getParameterByName(name) {
  */
 function getAnswer() {
   let str = '';
+  // Student role: sending results
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') {
-    // Student - sending results
     str +=
       'gameName:' +
       gameName +
@@ -52,6 +52,8 @@ function getAnswer() {
       gameDifficulty +
       '\nshowFractions:' +
       showFractions +
+      '\ngameId:' +
+      gameId +
       '\nresults:';
     for (let i = 0; i < moodleVar.hits.length; i++) {
       str +=
@@ -66,7 +68,7 @@ function getAnswer() {
         '}';
     }
   } else {
-    // Professor - creating new assignment
+    // Professor role: creating new assignment
     if (!gameName) {
       alert(game.lang.error_must_select_game);
       return x;
@@ -86,7 +88,9 @@ function getAnswer() {
       '\ngameDifficulty:' +
       gameDifficulty +
       '\nshowFractions:' +
-      showFractions;
+      showFractions +
+      '\ngameId:' +
+      gameId;
   }
 
   return str;
@@ -101,15 +105,19 @@ function getAnswer() {
  * @returns {number} student's grade for the current assignment : real number between 0.0 and 1.0
  */
 function getEvaluation() {
+  // Student role
   if (iLMparameters.iLM_PARAM_SendAnswer == 'false') {
-    // Student
     let i;
     for (i = 0; i < moodleVar.hits.length && moodleVar.hits[i] == 1; i++);
     const grade = i / 4;
-    parent.getEvaluationCallback(grade); // Sends grade to moodle db
     return grade;
   }
 }
+
+// function getEvaluationCallbackHandler() {
+//   const grade = getEvaluation();
+//   parent.getEvaluationCallback(grade); // Sends grade to moodle db
+// }
 
 /** [Functions used by iAssign]
  *
@@ -117,27 +125,28 @@ function getEvaluation() {
  */
 const iLMparameters = {
   /**
-   * This parameter gets the role in which the iLM is being used: <br>
-   * - if true, the user is creating a new iLM (as professor) <br>
-   * - if false, the user is solving the iLM (as student), value=false
-   */
-  iLM_PARAM_SendAnswer: getParameterByName('iLM_PARAM_SendAnswer'), // Checks if you're student (false) or professor (true)
-  /**
-   * This parameter is used when the user is opening an iLM to solve it. <br>
-   * It holds a URL with the path to the game file (assignment/iLM) created by the professor. <br>
-   * Example: http://myschool.edu/moodle/mod/iassign/ilm_security.php?id=3&token=b3660dd4de0b0e9bb01fea6cc8f02ccd&view=1
-   *
-   * The first parameter, 'token', can be used only once.
-   * Once the iLM gets the game file, the token is destroied (for security).
+   * This parameter must receive from iAssign the URL of the iLM content. <br>
+   * Example: http://myschool.edu/moodle/mod/iassign/ilm_security.php?id=3&token=b3660dd4de0b0e9bb01fea6cc8f02ccd&view=1<br>
+   * Obs.: the first url parameter, 'token', can be used only once, after sending its content to the iLM, iAssign will erase the file (avoiding "peeping")
    */
   iLM_PARAM_Assignment: getParameterByName('iLM_PARAM_Assignment'),
+
+  /**
+   * if true => iLM MUST NOT send any answer to the server
+   */
+  iLM_PARAM_SendAnswer: getParameterByName('iLM_PARAM_SendAnswer'), // Checks if you're student (false) or professor (true)
+
+  /**
+   * if true => iLM WILL be used by TEACHER to create a new exercise
+   */
+  iLM_PARAM_Authoring: getParameterByName('iLM_PARAM_Authoring'),
+  iLM_PARAM_ServerToGetAnswerURL: getParameterByName(
+    'iLM_PARAM_ServerToGetAnswerURL'
+  ),
   /**
    * Gets current moodle language.
    */
   lang: getParameterByName('lang'),
-  iLM_PARAM_ServerToGetAnswerURL: getParameterByName(
-    'iLM_PARAM_ServerToGetAnswerURL'
-  ),
 };
 
 /**
@@ -195,7 +204,7 @@ const breakString = function (text) {
         results = line[1].replace(/^\s+|\s+$/g, '');
       }
     } catch (Error) {
-      console.error('Game error: sintax error.');
+      console.error('Game error: sintax error. ' + Error);
     }
   });
 
@@ -216,7 +225,7 @@ const breakString = function (text) {
             results['l' + i][key] = parseInt(value);
           }
         } catch (Error) {
-          console.error('Game error: sintax error.');
+          console.error('Game error: sintax error. ' + Error);
         }
       });
       i++;
@@ -231,13 +240,13 @@ const breakString = function (text) {
  * - calls state 'customMenu' if the assignment WAS NOT previously completed. <br>
  * - calls state 'studentReport' otherwise.
  *
- * @param {object} info game information
+ * @param {object} infoGame game information
  * @param {undefined|object} infoResults student answer (if there is any)
  */
 const updateGlobalVariables = function (infoGame, infoResults) {
   // Update game variables to content received from game file
   gameName = infoGame['gameName'];
-  if (infoGame['gameID']) {
+  if (infoGame['gameId']) {
     gameId = infoGame['gameId'];
   } else {
     switch (gameName) {
