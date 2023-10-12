@@ -447,6 +447,8 @@ const squareTwo = {
       );
     },
     startDelayHandler: () => {
+      game.timer.stop();
+
       self.control.animationDelay++;
 
       if (self.control.animationDelay === 50) {
