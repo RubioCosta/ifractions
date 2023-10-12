@@ -154,7 +154,7 @@ const navigation = {
 const sendToDatabase = function (extraData) {
   // FOR MOODLE
   if (moodle) {
-    if (self.result) moodleVar.hits[curMapPosition - 1]++;
+    if (self.control.isCorrect) moodleVar.hits[curMapPosition - 1]++;
     else moodleVar.errors[curMapPosition - 1]++;
 
     moodleVar.time[curMapPosition - 1] += game.timer.elapsed;
