@@ -39,7 +39,11 @@
  */
 const moodle = false;
 
-let moodleVar;
+let moodleVar = {
+  hits: [0, 0, 0, 0],
+  errors: [0, 0, 0, 0],
+  time: [0, 0, 0, 0],
+};
 
 /**
  * Index of the current game in gameList array

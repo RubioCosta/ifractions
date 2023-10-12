@@ -16,18 +16,25 @@ const menuState = {
       // Student role
 
       playerName = game.lang.student; // TODO pegar o nome do aluno no bd do moodle
-      getiLMContent();
+      try {
+        getiLMContent();
+      } catch (error) {
+        console.error(
+          'Game error: Could not load the iLM Content on Moodle. ' + error
+        );
+      }
     } else {
       // FOR MOODLE
-      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true')
+      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') {
         playerName = game.lang.professor;
-
-      // reset game values
-      gameId = null;
-      gameMode = null;
-      gameOperation = null;
-      gameDifficulty = null;
-      showFractions = true;
+      } else {
+        // reset game values
+        gameId = null;
+        gameMode = null;
+        gameOperation = null;
+        gameDifficulty = null;
+        showFractions = true;
+      }
 
       renderBackground();
 

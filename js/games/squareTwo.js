@@ -447,6 +447,8 @@ const squareTwo = {
       );
     },
     startDelayHandler: () => {
+      game.timer.stop();
+
       self.control.animationDelay++;
 
       if (self.control.animationDelay === 50) {
@@ -736,7 +738,7 @@ const squareTwo = {
         gameShape +
         '&line_mode=' +
         gameMode +
-        '&line_oper=Equal' +
+        '&line_oper=equal' +
         '&line_leve=' +
         gameDifficulty +
         '&line_posi=' +
