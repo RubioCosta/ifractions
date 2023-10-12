@@ -50,10 +50,10 @@ function getAnswer() {
       gameOperation +
       '\ngameDifficulty:' +
       gameDifficulty +
-      '\nshowFractions:' +
-      showFractions +
       '\ngameId:' +
       gameId +
+      '\nshowFractions:' +
+      showFractions +
       '\nresults:';
     for (let i = 0; i < moodleVar.hits.length; i++) {
       str +=
@@ -88,10 +88,10 @@ function getAnswer() {
       gameOperation +
       '\ngameDifficulty:' +
       gameDifficulty +
-      '\nshowFractions:' +
-      showFractions +
       '\ngameId:' +
-      gameId;
+      gameId +
+      '\nshowFractions:' +
+      showFractions;
   }
 
   return str;
@@ -264,7 +264,6 @@ const updateGlobalVariables = function (infoGame, infoResults) {
         gameId = 0;
     }
   }
-
   gameShape = infoGame['gameShape'];
   gameMode = infoGame['gameMode'];
   gameOperation = infoGame['gameOperation'];

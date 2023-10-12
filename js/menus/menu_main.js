@@ -25,15 +25,16 @@ const menuState = {
       }
     } else {
       // FOR MOODLE
-      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true')
+      if (moodle && iLMparameters.iLM_PARAM_SendAnswer == 'true') {
         playerName = game.lang.professor;
-
-      // reset game values
-      gameId = null;
-      gameMode = null;
-      gameOperation = null;
-      gameDifficulty = null;
-      showFractions = true;
+      } else {
+        // reset game values
+        gameId = null;
+        gameMode = null;
+        gameOperation = null;
+        gameDifficulty = null;
+        showFractions = true;
+      }
 
       renderBackground();
 
