@@ -61,5 +61,6 @@ errors=Errors
 time=Time
 results=RESULTS
 student=Student
+submit=Submit
 professor=Professor
 scale=Scale
