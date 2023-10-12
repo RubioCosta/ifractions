@@ -37,7 +37,7 @@
  * - if true, on moodle <br>
  * - if false, on a server
  */
-const moodle = true;
+const moodle = false;
 
 let moodleVar = {
   hits: [0, 0, 0, 0],
