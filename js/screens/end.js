@@ -115,15 +115,9 @@ const endState = {
       }
     }
 
-    if (self.control.endLevel) {
-      // FOR MOODLE
-      if (!moodle) {
-        completedLevels = 0;
-        game.state.start('menu');
-      } else {
-        // FOR MOODLE
-        parent.location.reload(true);
-      }
+    if (!moodle && self.control.endLevel) {
+      completedLevels = 0;
+      game.state.start('menu');
     }
 
     game.render.all();
@@ -194,23 +188,28 @@ const endState = {
     },
     renderEndUI: () => {
       const btnY = context.canvas.height / 2;
+      let btnTextFont = textStyles.btn;
 
       // Continue Button
-      self.ui.continue.button = game.add.geom.rect(
-        context.canvas.width / 2,
-        btnY,
-        600,
-        100,
-        colors.green
-      );
-      self.ui.continue.button.anchor(0.5, 0.5);
+      if (!moodle) {
+        self.ui.continue.button = game.add.geom.rect(
+          context.canvas.width / 2,
+          btnY,
+          600,
+          100,
+          colors.green
+        );
+        self.ui.continue.button.anchor(0.5, 0.5);
+      } else {
+        btnTextFont = { ...btnTextFont, fill: colors.blue };
+      }
 
       // Continue button text
       self.ui.continue.text = game.add.text(
         context.canvas.width / 2,
         btnY + 16,
-        game.lang.back_to_menu,
-        textStyles.btn
+        moodle ? game.lang.submit : game.lang.back_to_menu,
+        btnTextFont
       );
 
       // Title
@@ -235,7 +234,7 @@ const endState = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
-      if (self.control.waitUserAction) {
+      if (!moodle && self.control.waitUserAction) {
         if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           if (audioStatus) game.audio.popSound.play();
           self.control.endLevel = true;
@@ -251,9 +250,8 @@ const endState = {
     onInputOver: function (mouseEvent) {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
-      let overIcon;
 
-      if (self.control.waitUserAction) {
+      if (!moodle && self.control.waitUserAction) {
         if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
           // If pointer is over icon
           document.body.style.cursor = 'pointer';
