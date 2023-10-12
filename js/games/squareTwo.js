@@ -736,7 +736,7 @@ const squareTwo = {
         gameShape +
         '&line_mode=' +
         gameMode +
-        '&line_oper=Equal' +
+        '&line_oper=equal' +
         '&line_leve=' +
         gameDifficulty +
         '&line_posi=' +
