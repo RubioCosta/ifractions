@@ -345,7 +345,7 @@ const game = {
             };
             img.src = url[1];
           } catch (error) {
-            game.loadHandler.cachedOneFile('image');
+            // game.loadHandler.cachedOneFile('image');
             console.error(
               'Game error: unkown image error "' + url[0] + '" - ' + error
             );
@@ -394,7 +394,10 @@ const game = {
             img.src = url[1];
             img.frames = url[2];
           } catch (error) {
-            'Game error: unkown sprite error "' + url[0] + '" - ' + error;
+            // game.loadHandler.cachedOneFile('sprite');
+            console.error(
+              'Game error: unkown sprite error "' + url[0] + '" - ' + error
+            );
           }
         });
       }
