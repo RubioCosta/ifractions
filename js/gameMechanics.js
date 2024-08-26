@@ -237,7 +237,13 @@ const game = {
       game.lang = {}; // Clear previously loaded language
 
       fetch(url, { mode: 'same-origin' })
-        .then((response) => response.text())
+        .then((response) => {
+          if (!response.ok)
+            throw new Error(
+              'Game error: translation not found "' + url[0] + '".'
+            );
+          return response.text();
+        })
         .then((text) => {
           const lines = text.split('\n');
           game.loadHandler.type.lang.length = lines.length;
@@ -246,7 +252,7 @@ const game = {
             try {
               const msg = line.split('=');
               if (msg.length !== 2)
-                throw Error('Game error: sintax error in i18y file');
+                throw Error('Game error: sintax error in i18y file.');
               game.lang[msg[0].trim()] = msg[1].trim();
             } catch (error) {
               console.error(error.message);
@@ -255,6 +261,7 @@ const game = {
           });
         })
         .catch((error) => {
+          game.loadHandler.cachedOneFile('lang');
           console.error(error);
         });
     },
@@ -279,12 +286,21 @@ const game = {
 
         urls.forEach((url) => {
           fetch(url[1][1], { mode: 'same-origin' })
-            .then((response) => response.blob())
+            .then((response) => {
+              // Since 4xx and 5xx responses aren't network errors, there's nothing to catch. Throw error manually.
+              if (!response.ok)
+                throw new Error(
+                  'Game error: audio not found "' + url[0] + '".'
+                );
+              return response.blob();
+            })
             .then((data) => {
               game.audio[url[0]] = new Audio(URL.createObjectURL(data));
               game.loadHandler.cachedOneFile('audio');
             })
+            // Fetch promises only reject with a TypeError when a network error occurs.
             .catch((error) => {
+              game.loadHandler.cachedOneFile('audio');
               console.error(error);
             });
         });
@@ -310,20 +326,30 @@ const game = {
         game.loadHandler.max += urls.length;
 
         urls.forEach((url) => {
-          const img = new Image();
-          img.onload = () => {
-            game.image[url[0]] = img;
+          try {
+            const img = new Image();
+            img.onload = () => {
+              game.image[url[0]] = img;
+              game.loadHandler.cachedOneFile('image');
+            };
+            img.onerror = () => {
+              console.error(
+                'Game error: image not found "' +
+                  url[0] +
+                  '". Loading fallback image.'
+              );
+              // loads fallback image
+              game.image[url[0]] = img;
+              img.src = fallbackImgUrl;
+              game.loadHandler.cachedOneFile('image');
+            };
+            img.src = url[1];
+          } catch (error) {
             game.loadHandler.cachedOneFile('image');
-          };
-          img.onerror = () => {
             console.error(
-              'Game error: image "' + url[0] + '" not found in sourse files.'
+              'Game error: unkown image error "' + url[0] + '" - ' + error
             );
-            game.image[url[0]] = img;
-            img.src = fallbackImgUrl;
-            game.loadHandler.cachedOneFile('image');
-          };
-          img.src = url[1];
+          }
         });
       }
     },
@@ -354,7 +380,12 @@ const game = {
               game.loadHandler.cachedOneFile('sprite');
             };
             img.onerror = () => {
-              console.error('Game error: sprite not found');
+              console.error(
+                'Game error: sprite not found "' +
+                  url[0] +
+                  '". Loading fallback image.'
+              );
+              // loads fallback sprite
               game.sprite[url[0]] = img;
               img.src = fallbackImgUrl;
               img.frames = 1;
@@ -363,7 +394,7 @@ const game = {
             img.src = url[1];
             img.frames = url[2];
           } catch (error) {
-            console.error(error);
+            'Game error: unkown sprite error "' + url[0] + '" - ' + error;
           }
         });
       }
@@ -391,7 +422,11 @@ const game = {
      */
     image: function (x, y, img, scale, alpha) {
       if (x == undefined || y == undefined || img == undefined)
-        console.error('Game error: missing parameters.');
+        console.error(
+          'Game error: Could not render image "' +
+            img +
+            '". Missing required parameters.'
+        );
       else if (game.image[img] == undefined)
         console.error('Game error: image not found in cache: ' + img + '.');
       else {
@@ -446,9 +481,13 @@ const game = {
      */
     sprite: function (x, y, img, curFrame, scale, alpha) {
       if (x == undefined || y == undefined || img == undefined)
-        console.error('Game error: missing parameters.');
+        console.error(
+          'Game error: Could not render sprite "' +
+            img +
+            '". Missing required parameters.'
+        );
       else if (game.sprite[img] == undefined)
-        console.error('Game error: sprite not found in cache: ' + img + '.');
+        console.error('Game error: sprite not found in cache "' + img + '".');
       else {
         const med = {
           typeOfMedia: 'sprite',
@@ -506,7 +545,9 @@ const game = {
         text == undefined ||
         style == undefined
       ) {
-        console.error('Game error: missing parameters.');
+        console.error(
+          'Game error: Could not render text. Missing required parameters.'
+        );
       } else {
         const med = {
           typeOfMedia: 'text',
@@ -582,7 +623,9 @@ const game = {
         lineWidth
       ) {
         if (x == undefined || y == undefined || width == undefined)
-          console.error('Game error: missing parameters.');
+          console.error(
+            'Game error: Could not render rectangle. Missing required parameters.'
+          );
         else {
           const med = {
             typeOfMedia: 'rect',
@@ -647,7 +690,9 @@ const game = {
        */
       line: function (x0, y0, x1, y1, lineWidth, lineColor, alpha) {
         if (x0 == undefined || y0 == undefined)
-          console.error('Game error: missing parameters.');
+          console.error(
+            'Game error: Could not render line. Missing required parameters.'
+          );
         else {
           const med = {
             typeOfMedia: 'line',
@@ -737,7 +782,9 @@ const game = {
         alpha
       ) {
         if (x == undefined || y == undefined || diameter == undefined)
-          console.error('Game error: missing parameters.');
+          console.error(
+            'Game error: Could not render circle. Missing required parameters.'
+          );
         else {
           const med = {
             typeOfMedia: 'arc',
@@ -827,7 +874,9 @@ const game = {
           angleStart == undefined ||
           angleEnd == undefined
         )
-          console.error('Game error: missing parameters.');
+          console.error(
+            'Game error: Could not render arc. Missing required parameters.'
+          );
         else {
           const med = {
             typeOfMedia: 'arc',
