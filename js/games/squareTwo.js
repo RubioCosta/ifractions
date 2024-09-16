@@ -154,17 +154,17 @@ const squareTwo = {
         yA = yB + 3 * self.control.blockHeight + 30;
       }
 
-      // Possible points for (a)
-      const points = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
+      // Possible subdivisionList for (a)
+      const subdivisionList = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
 
-      // Random index for 'points'
+      // Random index for 'subdivision'
       const randomIndex = game.math.randomInRange(
         (gameDifficulty - 1) * 2 + 1,
         (gameDifficulty - 1) * 2 + 3
       );
 
       // Number of subdivisions of (a) and (b) (blocks)
-      const totalBlocksA = points[randomIndex];
+      const totalBlocksA = subdivisionList[randomIndex];
       const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
       const blockWidthA = self.control.blockWidth / totalBlocksA;
@@ -172,11 +172,23 @@ const squareTwo = {
 
       if (isDebugMode) {
         console.log(
-          `Difficulty: ${gameDifficulty}\ncur index: ${randomIndex}, (min index: ${
-            (gameDifficulty - 1) * 2 + 1
-          }, max index: ${
-            (gameDifficulty - 1) * 2 + 3
-          })\ntotal blocks a: ${totalBlocksA}, total blocks b: ${totalBlocksB}`
+          '------------------------------' +
+            '\nGame Map Position: ' +
+            curMapPosition +
+            '\n------------------------ setup' +
+            '\narray: [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20]' +
+            '\nMin index ((gameDifficulty - 1) * 2 + 1): ' +
+            ((gameDifficulty - 1) * 2 + 1) +
+            '\nMax index ((gameDifficulty - 1) * 2 + 3): ' +
+            ((gameDifficulty - 1) * 2 + 3) +
+            '\n------------------------ this' +
+            '\nget random min max for A: array[' +
+            randomIndex +
+            '] = ' +
+            totalBlocksA +
+            '\nget random divisor for B: ' +
+            totalBlocksB +
+            '\n------------------------------'
         );
       }
 
