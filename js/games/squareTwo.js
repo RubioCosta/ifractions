@@ -322,7 +322,6 @@ const squareTwo = {
       );
     },
     renderOperationUI: () => {
-      // ?
       const uiList = [
         ...self.blocks.top.list,
         ...self.blocks.bottom.list,
