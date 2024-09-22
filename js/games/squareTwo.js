@@ -342,6 +342,16 @@ const squareTwo = {
         self.blocks.top.list.length,
         self.blocks.bottom.list.length,
       ];
+
+      if (gameMode === 'b') {
+        const leftNom = nominators[0];
+        const leftDenom = denominators[0];
+        nominators[0] = nominators[1];
+        denominators[0] = denominators[1];
+        nominators[1] = leftNom;
+        denominators[1] = leftDenom;
+      }
+
       const renderList = [];
 
       const padding = 100;
