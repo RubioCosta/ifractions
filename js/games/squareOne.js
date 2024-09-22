@@ -156,7 +156,7 @@ const squareOne = {
       curIndex: -1,
       /**
        * (a) correct floor x coord - equiv to all in STACK
-       * (b) correct floor x coord - equiv to correct in STACK (fixed) (generated)
+       * (b) generated floor x coord - equiv to correct in STACK (fixed) (generated)
        */
       correctX: undefined,
     };

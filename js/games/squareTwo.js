@@ -245,7 +245,7 @@ const squareTwo = {
         blocks.list.push(curBlock);
 
         // Auxiliar blocks (lower alpha)
-        const alpha = showFractions ? 0.2 : 0;
+        const alpha = 0.2;
         const curYAux = y0 + self.control.blockHeight + 10;
         const curAuxBlock = game.add.geom.rect(
           curX,
@@ -268,8 +268,8 @@ const squareTwo = {
         font: 'bold ' + textStyles.h4_.font,
         fill: lineColor,
       };
-
       blocks.label = game.add.text(xLabel, yLabel, blocks.list.length, font);
+      blocks.label.alpha = showFractions ? 1 : 0;
 
       // 'selected blocks/fraction' label for (a) : at the bottom of (a)
       yLabel = y0 + self.control.blockHeight + 40;
@@ -322,6 +322,7 @@ const squareTwo = {
       );
     },
     renderOperationUI: () => {
+      // ?
       const uiList = [
         ...self.blocks.top.list,
         ...self.blocks.bottom.list,
@@ -580,7 +581,8 @@ const squareTwo = {
           self.blocks[curSet].list.length
         }`;
 
-        self.blocks[curSet].fractions[1].alpha = 1;
+        // End fraction line
+        self.blocks[curSet].fractions[1].alpha = showFractions ? 1 : 0;
 
         self.blocks[curSet].hasClicked = true; // Inform player have clicked in current block set
         self.blocks[curSet].animate = true; // Let it initiate animation
@@ -627,7 +629,8 @@ const squareTwo = {
           self.blocks[curSet].fractions[0].x = newX;
           self.blocks[curSet].fractions[1].x = newX;
 
-          self.blocks[curSet].fractions[0].alpha = 1;
+          // End fraction nominator and denominator
+          self.blocks[curSet].fractions[0].alpha = showFractions ? 1 : 0;
         }
       }
     },

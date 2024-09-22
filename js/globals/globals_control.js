@@ -452,7 +452,7 @@ const gameList = [
           game.add.text(
             x + 5 * offsetW,
             y + offsetH + 50,
-            game.lang.show + '\n' + game.lang.aux_rectangle,
+            game.lang.show + '\n' + game.lang.title,
             textStyles.h4_
           );
         },
