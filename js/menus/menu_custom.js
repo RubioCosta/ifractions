@@ -271,6 +271,7 @@ const customMenuState = {
     infoIcon.id = 'gameDifficulty';
     self.menuIcons.push(infoIcon);
 
+    // Label 'Show Fractions'
     gameList[gameId].assets.customMenu.auxiliarTitle(x, y, offsetW, offsetH);
   },
 

@@ -37,15 +37,15 @@
  * @namespace
  */
 const squareOne = {
-  default: undefined,
+  control: undefined, // level related data
+  default: undefined, // level related default values
 
-  ui: undefined,
-  control: undefined,
-  animation: undefined,
-
+  ui: undefined, // graphic elements
+  animation: undefined, // animation control
   tractor: undefined,
-  stack: undefined,
-  floor: undefined,
+
+  stack: undefined, // stack blocks info
+  floor: undefined, // floor blocks info
 
   /**
    * Main code
@@ -115,21 +115,50 @@ const squareOne = {
 
     this.stack = {
       list: [],
+      /**
+       * (a) all blocks (fixed) (random)
+       * (b) (updates) user selection
+       */
       selectedIndex: undefined,
-      correctIndex: undefined, // (gameMode 'b') index of the CORRECT 'stacked' block
-
-      curIndex: 0, // (needs to be 0)
-
+      /**
+       * (a) UNDEFINED
+       * (b) subsection of blocks (fixed) (random)
+       */
+      correctIndex: undefined,
+      /**
+       * (a/b) (updates) cur index (for animation/check control)
+       *
+       * initial value: 0
+       */
+      curIndex: 0,
+      /**
+       * (a/b) (updates) end of current stack block x coord
+       */
       curBlockEndX: undefined,
     };
     this.floor = {
       list: [],
+      /**
+       * (a) (updates) user selection
+       * (b) subsection of floor blocks (fixed) (generated)
+       */
       selectedIndex: undefined,
-      correctIndex: undefined, // (gameMode 'a') index of the CORRECT 'floor' block
-
-      curIndex: -1, // (needs to be -1)
-
-      correctX: undefined, // 'x' coordinate of CORRECT 'floor' block
+      /**
+       * (a) correct floor index - equiv to all in STACK
+       * (b) UNDEFINED
+       */
+      correctIndex: undefined,
+      /**
+       * (a/b) (updates) cur index (for animation/check control)
+       *
+       * initial value: -1
+       */
+      curIndex: -1,
+      /**
+       * (a) correct floor x coord - equiv to all in STACK
+       * (b) generated floor x coord - equiv to correct in STACK (fixed) (generated)
+       */
+      correctX: undefined,
     };
 
     let [restart, correctXA] = this.utils.renderStackedBlocks(
@@ -188,50 +217,15 @@ const squareOne = {
     renderStackedBlocks: (direc, lineColor, fillColor, lineWidth, divisor) => {
       let restart = false;
       let hasBaseDifficulty = false; // Will be true after next for loop if level has at least one '1/difficulty' fraction (if false, restart)
+      const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum # of stacked blocks for the level
+      const total = game.math.randomInRange(curMapPosition + 2, max); // Total # of stacked blocks for the level
 
-      const max = gameMode == 'b' ? 10 : curMapPosition + 4; // Maximum number of stacked blocks for the level
-      const total = game.math.randomInRange(curMapPosition + 2, max); // Current number of stacked blocks for the level
-
-      let correctXA = self.default.x0 + self.default.width * direc;
-      for (let i = 0; i < total; i++) {
-        let curFractionItems = undefined;
-        let font = undefined;
-
-        let curDivisor = game.math.randomInRange(1, gameDifficulty); // Set divisor for fraction
-        if (curDivisor === gameDifficulty) hasBaseDifficulty = true;
-        if (curDivisor === 3) curDivisor = 4; // Make sure valid divisors are 1, 2 and 4 (not 3)
-
-        const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
-        self.control.divisorsList += curDivisor + ','; // List of divisors (for postScore())
-        correctXA += curBlockWidth * direc;
-
-        const curBlock = game.add.geom.rect(
-          self.default.x0,
-          self.default.y0 - i * self.default.height - lineWidth,
-          curBlockWidth,
-          self.default.height,
-          fillColor,
-          1,
-          lineColor,
-          lineWidth
-        );
-        curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 1);
-        curBlock.blockValue = divisor / curDivisor;
-
-        // If game mode is (b), adding events to stacked blocks
-        if (gameMode == 'b') {
-          curBlock.blockIndex = i;
-        }
-
-        self.stack.list.push(curBlock);
-
-        // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
-        const x = self.default.x0 + (curBlockWidth + 40) * direc;
-        const y = self.default.height + 1;
+      const renderLabels = (curDivisor, x, y, i, curBlock) => {
+        let font, curFractionItems;
+        const fractionPartsList = [];
 
         if (curDivisor === 1) {
           font = textStyles.h2_;
-
           curFractionItems = [
             {
               x: x,
@@ -269,7 +263,6 @@ const squareOne = {
         }
         font = { ...font, font: 'bold ' + font.font, fill: lineColor };
 
-        const fractionPartsList = [];
         for (let i = 0; i < 2; i++) {
           const item = game.add.text(
             curFractionItems[i].x,
@@ -307,6 +300,56 @@ const squareOne = {
             if (label) label.alpha = 0;
           });
         }
+      };
+      const shouldRestart = (hasBaseDifficulty, correctXA) => {
+        if (
+          !hasBaseDifficulty ||
+          (gameOperation == 'plus' &&
+            (correctXA < self.default.x0 + self.default.width ||
+              correctXA > self.default.x0 + 8 * self.default.width)) ||
+          (gameOperation == 'minus' &&
+            (correctXA < self.default.x0 - 8 * self.default.width ||
+              correctXA > self.default.x0 - self.default.width))
+        )
+          return true;
+        return false;
+      };
+
+      let correctXA = self.default.x0 + self.default.width * direc; // Equivalent x coordinate on the floor
+
+      // Render blocks
+      for (let i = 0; i < total; i++) {
+        let curDivisor = game.math.randomInRange(1, gameDifficulty); // Set divisor for current fraction
+        if (curDivisor === gameDifficulty) hasBaseDifficulty = true;
+        if (curDivisor === 3) curDivisor = 4; // Make sure valid divisors are 1, 2 and 4 (not 3)
+
+        const curBlockWidth = self.default.width / curDivisor; // Current width is a fraction of the default
+        self.control.divisorsList += curDivisor + ','; // Documenting list of divisors (for postScore())
+        correctXA += curBlockWidth * direc;
+
+        const curBlock = game.add.geom.rect(
+          self.default.x0,
+          self.default.y0 - i * self.default.height - lineWidth,
+          curBlockWidth,
+          self.default.height,
+          fillColor,
+          1,
+          lineColor,
+          lineWidth
+        );
+        curBlock.anchor(gameOperation === 'minus' ? 1 : 0, 1);
+        curBlock.blockValue = divisor / curDivisor;
+
+        // If game mode is (b), add events to stacked blocks
+        if (gameMode === 'b') curBlock.blockIndex = i;
+
+        // Add to stack blocks list
+        self.stack.list.push(curBlock);
+
+        // If 'show fractions' is turned on, create labels that display the fractions on the side of each block
+        const x = self.default.x0 + (curBlockWidth + 40) * direc;
+        const y = self.default.height + 1;
+        renderLabels(curDivisor, x, y, i, curBlock);
       }
 
       // Computer generated correct stack index
@@ -318,28 +361,32 @@ const squareOne = {
         self.default.x0 + self.stack.list[0].width * direc;
 
       // Check for errors (level too easy for its difficulty or end position out of bounds)
-      if (
-        !hasBaseDifficulty ||
-        (gameOperation == 'plus' &&
-          (correctXA < self.default.x0 + self.default.width ||
-            correctXA > self.default.x0 + 8 * self.default.width)) ||
-        (gameOperation == 'minus' &&
-          (correctXA < self.default.x0 - 8 * self.default.width ||
-            correctXA > self.default.x0 - self.default.width))
-      ) {
-        restart = true; // If any error is found restart the level
-      }
+      restart = shouldRestart(hasBaseDifficulty, correctXA);
 
-      if (isDebugMode)
+      if (isDebugMode) {
         console.log(
-          'Stacked blocks: ' +
-            total +
-            ' (min: ' +
-            (curMapPosition + 2) +
-            ', max: ' +
-            max +
-            ')'
+          `------------------------------
+            \nGame Map Position: ${curMapPosition} 
+            \n------------------------ setup stack 
+            \nMin blocks (curMapPosition + 2): ${curMapPosition + 2}
+            ${
+              gameMode === 'a'
+                ? `\nMax blocks (A mode) (curMapPosition + 4):  ${
+                    curMapPosition + 4
+                  }`
+                : '\nMax blocks (B mode): 10'
+            } 
+            \nTotal blocks (random min..max): ${total} 
+            \nPossible divisors (random 1..gameDifficulty / if 3 then 4): 1..${
+              gameDifficulty == 3 ? 4 : gameDifficulty
+            } 
+            \n(Checks if has 1/diff or floor x is out of bounds)
+            `
         );
+
+        if (restart) console.log('Error during level setup. Retrying...');
+        else console.log('Successfull level setup!');
+      }
 
       return [restart, correctXA];
     },
@@ -349,11 +396,37 @@ const squareOne = {
     renderFloorBlocks: (direc, lineColor, lineWidth, divisor, correctXA) => {
       let correctXB = 0;
       let total = 8 * divisor; // Number of floor blocks
-
       const blockWidth = self.default.width / divisor; // Width of each floor block
 
-      // If game is type (b), selectiong a random floor x position
-      if (gameMode == 'b') {
+      const renderLabels = () => {
+        for (let i = 0; i <= 8; i++) {
+          const x = self.default.x0 + (i + 1) * self.default.width * direc;
+          const y = self.default.y0 + self.default.height + 45 - 65;
+
+          let numberX = x;
+          let numberText = i;
+          let numberCircleSize = 45;
+          let numberFont = {
+            ...textStyles.h3_,
+            fill: lineColor,
+            font: 'bold ' + textStyles.h3_.font,
+          };
+          if (gameOperation === 'minus') {
+            numberX = i !== 0 ? x - 2 : x;
+            numberText = -i;
+            numberCircleSize = 45;
+            numberFont.font = 'bold ' + textStyles.h4_.font;
+          }
+
+          game.add.geom
+            .circle(x, y, numberCircleSize, undefined, 0, colors.white, 1)
+            .anchor(0, 0.25);
+          game.add.text(numberX, y + 2, numberText, numberFont);
+        }
+      };
+
+      // If game is type (b), select a random floor x position
+      if (gameMode === 'b') {
         self.stack.correctIndex = game.math.randomInRange(
           0,
           self.stack.list.length - 1
@@ -366,23 +439,24 @@ const squareOne = {
         }
       }
 
-      let flag = true;
-
-      for (let i = 0; i < total; i++) {
+      // Render floor blocks
+      for (let i = 0, shouldUpdateIndex = true; i < total; i++) {
         const curX =
           self.default.x0 + (self.default.width + i * blockWidth) * direc;
 
-        if (flag && gameMode == 'a') {
+        // If game is type (a), iterate until find equivalent floor index
+        if (gameMode === 'a' && shouldUpdateIndex) {
           if (
             (gameOperation == 'plus' && curX >= correctXA) ||
             (gameOperation == 'minus' && curX <= correctXA)
           ) {
             self.floor.correctIndex = i - 1; // Set index of correct floor block
-            flag = false;
+            shouldUpdateIndex = false;
           }
         }
 
-        if (gameMode == 'b') {
+        // If game is type (b), stop iterating after find equivalent floor block
+        if (gameMode === 'b') {
           if (
             (gameOperation == 'plus' && curX >= correctXB) ||
             (gameOperation == 'minus' && curX <= correctXB)
@@ -392,7 +466,7 @@ const squareOne = {
           }
         }
 
-        // Create floor block
+        // Render floor block
         const curBlock = game.add.geom.rect(
           curX,
           self.default.y0,
@@ -407,46 +481,44 @@ const squareOne = {
         curBlock.anchor(anchor, 0);
         curBlock.blockValue = 1;
 
-        // If game is type (a), adding events to floor blocks
-        if (gameMode == 'a') {
+        // If game is type (a), add events to floor blocks
+        if (gameMode === 'a') {
           curBlock.fillColor = 'transparent';
           curBlock.blockIndex = i;
         }
 
-        // Add current label to group of labels
+        // Add current block to list
         self.floor.list.push(curBlock);
       }
 
-      // Computer generated correct floor index
-      if (gameMode === 'b') self.floor.selectedIndex = total - 1;
-
-      if (gameMode == 'a') self.floor.correctX = correctXA;
-      else if (gameMode == 'b') self.floor.correctX = correctXB;
+      if (gameMode === 'b') {
+        self.floor.selectedIndex = total - 1; // Computer generated correct floor index
+        self.floor.correctX = correctXB;
+      } else {
+        self.floor.correctX = correctXA;
+      }
 
       // Creates labels on the floor to display the numbers
-      for (let i = 0; i <= 8; i++) {
-        const x = self.default.x0 + (i + 1) * self.default.width * direc;
-        const y = self.default.y0 + self.default.height + 45 - 65;
+      renderLabels();
 
-        let numberX = x;
-        let numberText = i;
-        let numberCircleSize = 45;
-        let numberFont = {
-          ...textStyles.h3_,
-          fill: lineColor,
-          font: 'bold ' + textStyles.h3_.font,
-        };
-        if (gameOperation === 'minus') {
-          numberX = i !== 0 ? x - 2 : x;
-          numberText = -i;
-          numberCircleSize = 45;
-          numberFont.font = 'bold ' + textStyles.h4_.font;
-        }
-
-        game.add.geom
-          .circle(x, y, numberCircleSize, undefined, 0, colors.white, 1)
-          .anchor(0, 0.25);
-        game.add.text(numberX, y + 2, numberText, numberFont);
+      if (isDebugMode) {
+        console.log(
+          `------------------------ setup floor
+            \nDivisor (gameDifficulty / if 3 then 4): ${divisor}
+            ${
+              gameMode === 'a'
+                ? `\nTotal blocks (A) (divisor * 8): ${divisor} * 8 = ${
+                    divisor * 8
+                  }`
+                : `\nTotal blocks (B) (((equiv. to stack))): ${self.floor.list.length}`
+            }
+            ${
+              gameMode === 'a'
+                ? `\nCorrect index (A) (((equival. to stack))): ${self.floor.correctIndex}`
+                : ''
+            }
+            `
+        );
       }
     },
     renderCharacters: () => {
@@ -474,7 +546,7 @@ const squareOne = {
       else self.ui.help.anchor(0.2, 0);
 
       // Selection Arrow
-      if (gameMode == 'a') {
+      if (gameMode === 'a') {
         self.ui.arrow = game.add.image(
           self.default.arrowX0,
           self.default.y0,
@@ -820,7 +892,7 @@ const squareOne = {
     showAnswer: () => {
       if (!self.control.hasClicked) {
         // On gameMode (a)
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           const aux = self.floor.list[0];
           self.ui.help.x =
             self.floor.correctX - (aux.width / 2) * self.control.direc;
@@ -868,7 +940,7 @@ const squareOne = {
         // Save selected index
         curSet.selectedIndex = clickedIndex;
 
-        if (gameMode == 'a') {
+        if (gameMode === 'a') {
           self.ui.arrow.alpha = 0;
         } else {
           // update list size
@@ -981,7 +1053,7 @@ const squareOne = {
       let isOverFloor = false;
       let isOverStack = false;
 
-      if (gameMode == 'a') {
+      if (gameMode === 'a') {
         self.floor.list.forEach((cur) => {
           // hover floor blocks
           if (game.math.isOverIcon(x, y, cur)) {
@@ -1001,7 +1073,7 @@ const squareOne = {
         if (!isOverFloor) self.utils.outHandler('a');
       }
 
-      if (gameMode == 'b') {
+      if (gameMode === 'b') {
         // hover stack blocks
         self.stack.list.forEach((cur) => {
           if (game.math.isOverIcon(x, y, cur)) {

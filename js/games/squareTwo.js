@@ -154,17 +154,17 @@ const squareTwo = {
         yA = yB + 3 * self.control.blockHeight + 30;
       }
 
-      // Possible points for (a)
-      const points = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
+      // Possible subdivisionList for (a)
+      const subdivisionList = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
 
-      // Random index for 'points'
+      // Random index for 'subdivision'
       const randomIndex = game.math.randomInRange(
         (gameDifficulty - 1) * 2 + 1,
         (gameDifficulty - 1) * 2 + 3
       );
 
       // Number of subdivisions of (a) and (b) (blocks)
-      const totalBlocksA = points[randomIndex];
+      const totalBlocksA = subdivisionList[randomIndex];
       const totalBlocksB = game.math.randomDivisor(totalBlocksA);
 
       const blockWidthA = self.control.blockWidth / totalBlocksA;
@@ -172,11 +172,23 @@ const squareTwo = {
 
       if (isDebugMode) {
         console.log(
-          `Difficulty: ${gameDifficulty}\ncur index: ${randomIndex}, (min index: ${
-            (gameDifficulty - 1) * 2 + 1
-          }, max index: ${
-            (gameDifficulty - 1) * 2 + 3
-          })\ntotal blocks a: ${totalBlocksA}, total blocks b: ${totalBlocksB}`
+          '------------------------------' +
+            '\nGame Map Position: ' +
+            curMapPosition +
+            '\n------------------------ setup' +
+            '\narray: [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20]' +
+            '\nMin index ((gameDifficulty - 1) * 2 + 1): ' +
+            ((gameDifficulty - 1) * 2 + 1) +
+            '\nMax index ((gameDifficulty - 1) * 2 + 3): ' +
+            ((gameDifficulty - 1) * 2 + 3) +
+            '\n------------------------ this' +
+            '\nget random min max for A: array[' +
+            randomIndex +
+            '] = ' +
+            totalBlocksA +
+            '\nget random divisor for B: ' +
+            totalBlocksB +
+            '\n------------------------------'
         );
       }
 
@@ -233,7 +245,7 @@ const squareTwo = {
         blocks.list.push(curBlock);
 
         // Auxiliar blocks (lower alpha)
-        const alpha = showFractions ? 0.2 : 0;
+        const alpha = 0.2;
         const curYAux = y0 + self.control.blockHeight + 10;
         const curAuxBlock = game.add.geom.rect(
           curX,
@@ -256,8 +268,8 @@ const squareTwo = {
         font: 'bold ' + textStyles.h4_.font,
         fill: lineColor,
       };
-
       blocks.label = game.add.text(xLabel, yLabel, blocks.list.length, font);
+      blocks.label.alpha = showFractions ? 1 : 0;
 
       // 'selected blocks/fraction' label for (a) : at the bottom of (a)
       yLabel = y0 + self.control.blockHeight + 40;
@@ -330,6 +342,16 @@ const squareTwo = {
         self.blocks.top.list.length,
         self.blocks.bottom.list.length,
       ];
+
+      if (gameMode === 'b') {
+        const leftNom = nominators[0];
+        const leftDenom = denominators[0];
+        nominators[0] = nominators[1];
+        denominators[0] = denominators[1];
+        nominators[1] = leftNom;
+        denominators[1] = leftDenom;
+      }
+
       const renderList = [];
 
       const padding = 100;
@@ -568,7 +590,8 @@ const squareTwo = {
           self.blocks[curSet].list.length
         }`;
 
-        self.blocks[curSet].fractions[1].alpha = 1;
+        // End fraction line
+        self.blocks[curSet].fractions[1].alpha = showFractions ? 1 : 0;
 
         self.blocks[curSet].hasClicked = true; // Inform player have clicked in current block set
         self.blocks[curSet].animate = true; // Let it initiate animation
@@ -615,7 +638,8 @@ const squareTwo = {
           self.blocks[curSet].fractions[0].x = newX;
           self.blocks[curSet].fractions[1].x = newX;
 
-          self.blocks[curSet].fractions[0].alpha = 1;
+          // End fraction nominator and denominator
+          self.blocks[curSet].fractions[0].alpha = showFractions ? 1 : 0;
         }
       }
     },
