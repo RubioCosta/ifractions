@@ -1,4 +1,4 @@
-/*!999999 - Create Data Base to iFractions with name 'ifractions2 */
+/*!999999 - Create Data Base to iFractions with name 'db_ifractions */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,7 +14,7 @@
 --
 -- Current Database: `db_ifractions`
 -- On Linux, create iFractions data base with command:
--- $ mysql -p -u root < reate_ifractions_data_base.sql
+-- $ mysql -p -u root < create_ifractions_data_base.sql
 --
 
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `db_ifractions` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
