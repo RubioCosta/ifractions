@@ -37,7 +37,8 @@ Considering the **database name** to be `db_ifractins` and the **table name** to
 		PRIMARY KEY (line_id)
 	) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = latin1;
 
-Note that each column has the prefix `line_`.
+Note that each column has the prefix `line_`. On Linux you can use our model "create_ifractions_data_base.sql" and the following command line to create the data base do iFractions:
+... $ mysql -p -u root < create_ifractions_data_base.sql
 
 ## 2) `save.php`
 
