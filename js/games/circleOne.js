@@ -560,6 +560,16 @@ const circleOne = {
       );
     },
     renderOperationUI: function () {
+      /**
+       * if game mode A:
+       * - left: selected balloon position (user selection)
+       * - right: line created from the stack of arcs (pre-set)
+       *
+       * if game mode B:
+       * - left: line created from the stack of arcs (user selection)
+       * - right: baloon position (pre-set)
+       */
+
       let validCircles = self.circles.list;
       if (gameMode === 'b') {
         validCircles = [];
