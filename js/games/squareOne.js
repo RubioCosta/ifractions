@@ -574,6 +574,251 @@ const squareOne = {
         )
       );
     },
+    renderOperationUI_: () => {
+      /**
+       *
+       * (DOING)
+       * if game mode A:
+       * - left: (1) selected floor position (user selection)
+       * - right: (2) expected floor position equivalent to the stack of blocks (pre-set)
+       *
+       * (TODO)
+       * if game mode B:
+       * - left: (3) floor position equivalent to the stack of blocks (user selection)
+       * - right: (4) generated floor position (pre-set)
+       */
+
+      const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
+
+      const renderFloorFractions = (lastIndex, divisor, msg) => {
+        if (gameMode === 'a') {
+          const operator = gameOperation === 'minus' ? '-' : '+';
+          const index = lastIndex;
+          const blocks = index + 1;
+
+          const valueReal = blocks / divisor;
+          const valueFloor = Math.floor(valueReal);
+          const valueRest = valueReal - valueFloor;
+
+          let fracNomin = (fracDenomin = fracLine = '');
+          // adds sign on the left of the equation
+          if (gameOperation === 'minus') {
+            fracNomin += ' ';
+            fracDenomin += ' ';
+            fracLine += operator;
+          }
+          // 1 _ _
+          if (valueFloor) {
+            fracNomin += ' ';
+            fracDenomin += ' ';
+            fracLine += valueFloor;
+          }
+          // _ + _
+          if (valueFloor && valueRest) {
+            fracNomin += ' ';
+            fracDenomin += ' ';
+            fracLine += operator;
+          }
+          // _ _ 1/5
+          if (valueRest) {
+            fracNomin += `${valueRest * divisor}`;
+            fracDenomin += `${divisor}`;
+            fracLine += '-';
+          }
+
+          // console.log(msg);
+          // console.log(`i: ${index} | #: ${blocks} | real: ${valueReal}`);
+          // console.log(`frac: ${fracNomin}`);
+          // console.log(`frac: ${fracLine}`);
+          // console.log(`frac: ${fracDenomin}`);
+
+          return [fracNomin, fracDenomin, fracLine, valueReal];
+        }
+      };
+
+      const renderStackFractions = (lastIndex, msg) => {
+        if (gameMode === 'a') {
+          const operator = gameOperation === 'minus' ? '-' : '+';
+          const index = lastIndex;
+          const blocks = index + 1;
+
+          const nominators = [];
+          const denominators = [];
+          const values = [];
+          let valueReal = 0;
+          let fracNomin = (fracDenomin = fracLine = '');
+
+          for (let i = 0; i < blocks; i++) {
+            const m = self.stack.list[i].fraction.denominator || 1;
+            const temp = self.stack.list[i].fraction.nominator || 0;
+            const n = gameOperation === 'minus' ? -temp : +temp;
+            const nm = n / m;
+            nominators[i] = n + 0;
+            denominators[i] = m + 0;
+            values[i] = nm;
+            valueReal += nm;
+          }
+
+          for (let i = 0; i < blocks; i++) {
+            const valueReal = values[i];
+            const valueFloor = Math.floor(valueReal);
+            const valueRest = valueReal - valueFloor;
+
+            if (i > 0 || gameOperation === 'minus') {
+              fracNomin += ' ';
+              fracDenomin += ' ';
+              fracLine += operator;
+            }
+            if (valueFloor && !valueRest) {
+              fracNomin += ' ';
+              fracDenomin += ' ';
+              fracLine += valueFloor;
+            }
+            if (valueRest) {
+              fracNomin += `${nominators[i]}`;
+              fracDenomin += `${denominators[i]}`;
+              fracLine += '-';
+            }
+          }
+
+          // console.log(msg);
+          // console.log(`i: ${index} | #: ${blocks}`);
+          // console.log(`frac: ${fracNomin}`);
+          // console.log(`frac: ${fracLine}`);
+          // console.log(`frac: ${fracDenomin}`);
+
+          return [fracNomin, fracDenomin, fracLine, valueReal];
+        }
+      };
+
+      // Config
+      const font = textStyles.fraction;
+      font.fill = colors.black;
+
+      const renderList = [];
+
+      const padding = 100;
+      const offsetX = 100;
+      const widthOfChar = 35;
+
+      const x0 = padding;
+      const y0 = context.canvas.height / 3;
+      let nextX = x0;
+
+      const cardHeight = 400;
+      const cardX = x0 - padding;
+      const cardY = y0;
+
+      // Card
+      const card = game.add.geom.rect(
+        cardX,
+        cardY,
+        0,
+        cardHeight,
+        colors.blueLight,
+        0.5,
+        colors.blueDark,
+        8
+      );
+      card.id = 'card';
+      card.anchor(0, 0.5);
+      renderList.push(card);
+
+      // Fraction setup
+      console.clear();
+      const [floorNominators, floorDenominators, floorLines, floorValue] =
+        renderFloorFractions(
+          self.floor.selectedIndex,
+          divisor,
+          'LEFT SIDE - a fração escolhida no chão é...\n\n'
+        );
+      renderFloorFractions(
+        self.floor.correctIndex,
+        divisor,
+        '\n\nRIGHT SIDE 1 - a fração CORRETA no chão é...\n\n'
+      );
+      const [stackNominators, stackDenominators, stackLines, stackValue] =
+        renderStackFractions(
+          self.stack.selectedIndex,
+          '\n\nRIGHT SIDE 2 - a fração CORRETA na stack é...\n\n'
+        );
+
+      // Left part of the operation
+      const fraction1 = game.add.text(
+        x0 + offsetX / 2,
+        y0,
+        floorNominators,
+        font,
+        60
+      );
+      const fraction2 = game.add.text(
+        x0 + offsetX / 2,
+        y0 + 70,
+        floorDenominators,
+        font,
+        60
+      );
+      const fraction3 = game.add.text(
+        x0 + offsetX / 2,
+        y0 + 35,
+        floorLines,
+        font,
+        60
+      );
+      renderList.push(fraction1);
+      renderList.push(fraction2);
+      renderList.push(fraction3);
+
+      // Middle sign
+      nextX = x0 + (floorNominators.length + 2) * widthOfChar;
+      let comparisonSign = '=';
+      font.fill = colors.green;
+      if (floorValue != stackValue) {
+        font.fill = colors.red;
+        comparisonSign = floorValue > stackValue ? '>' : '<';
+      }
+      renderList.push(game.add.text(nextX, y0 + 35, comparisonSign, font));
+
+      // Right part of the operation
+      font.fill = colors.black;
+      const fractionRes1 = game.add.text(
+        nextX + offsetX / 2,
+        y0,
+        stackNominators,
+        font,
+        60
+      );
+      const fractionRes2 = game.add.text(
+        nextX + offsetX / 2,
+        y0 + 70,
+        stackDenominators,
+        font,
+        60
+      );
+      const fractionRes3 = game.add.text(
+        nextX + offsetX / 2,
+        y0 + 35,
+        stackLines,
+        font,
+        60
+      );
+      renderList.push(fractionRes1);
+      renderList.push(fractionRes2);
+      renderList.push(fractionRes3);
+
+      const resultWidth = (stackNominators.length + 2) * widthOfChar;
+      const cardWidth = nextX - x0 + resultWidth + padding * 2;
+      card.width = cardWidth;
+
+      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
+
+      // Center Card
+      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
+
+      self.fractionOperationUI = renderList;
+
+      return endSignX;
+    },
     renderOperationUI: () => {
       let validBlocks = [];
       const lastValidIndex =
@@ -843,7 +1088,11 @@ const squareOne = {
           ? self.floor.selectedIndex === self.floor.correctIndex
           : self.stack.selectedIndex === self.stack.correctIndex;
 
-      const x = self.utils.renderOperationUI();
+      // TODO: remove this when finish updatng feedback msg
+      const x =
+        gameMode === 'a'
+          ? self.utils.renderOperationUI()
+          : self.utils.renderOperationUI_();
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
