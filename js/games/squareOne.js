@@ -574,7 +574,7 @@ const squareOne = {
         )
       );
     },
-    renderOperationUI_: () => {
+    renderOperationUI_new: () => {
       /**
        *
        * (DOING)
@@ -691,11 +691,9 @@ const squareOne = {
         }
       };
 
-      // Config
+      // Initial setup
       const font = textStyles.fraction;
       font.fill = colors.black;
-
-      const renderList = [];
 
       const padding = 100;
       const offsetX = 100;
@@ -709,7 +707,9 @@ const squareOne = {
       const cardX = x0 - padding;
       const cardY = y0;
 
-      // Card
+      const renderList = [];
+
+      // Render Card
       const card = game.add.geom.rect(
         cardX,
         cardY,
@@ -743,39 +743,41 @@ const squareOne = {
           '\n\nRIGHT SIDE 2 - a fração CORRETA na stack é...\n\n'
         );
 
-      // Left part of the operation
-      const fraction1 = game.add.text(
+      // Render left part of the operation
+      const nom = game.add.text(
         x0 + offsetX / 2,
         y0,
         floorNominators,
         font,
         60
       );
-      const fraction2 = game.add.text(
+      const denom = game.add.text(
         x0 + offsetX / 2,
         y0 + 70,
         floorDenominators,
         font,
         60
       );
-      const fraction3 = game.add.text(
+      const lines = game.add.text(
         x0 + offsetX / 2,
         y0 + 35,
         floorLines,
         font,
         60
       );
-      renderList.push(fraction1);
-      renderList.push(fraction2);
-      renderList.push(fraction3);
+      renderList.push(nom);
+      renderList.push(denom);
+      renderList.push(lines);
 
-      // Middle sign
+      // Render middle sign
       nextX = x0 + (floorNominators.length + 2) * widthOfChar;
-      let comparisonSign = '=';
       font.fill = colors.green;
+      let comparisonSign = '=';
       if (floorValue != stackValue) {
         font.fill = colors.red;
-        comparisonSign = floorValue > stackValue ? '>' : '<';
+        let leftSideIsLarger = floorValue > stackValue;
+        if (gameOperation === 'minus') leftSideIsLarger = !leftSideIsLarger;
+        comparisonSign = leftSideIsLarger ? '>' : '<';
       }
       renderList.push(game.add.text(nextX, y0 + 35, comparisonSign, font));
 
@@ -1091,8 +1093,8 @@ const squareOne = {
       // TODO: remove this when finish updatng feedback msg
       const x =
         gameMode === 'a'
-          ? self.utils.renderOperationUI()
-          : self.utils.renderOperationUI_();
+          ? self.utils.renderOperationUI_new()
+          : self.utils.renderOperationUI();
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
