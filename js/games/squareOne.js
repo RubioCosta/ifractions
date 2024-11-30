@@ -574,7 +574,7 @@ const squareOne = {
         )
       );
     },
-    renderOperationUI_new: () => {
+    renderOperationUI: () => {
       /**
        *
        * (DOING)
@@ -821,180 +821,6 @@ const squareOne = {
 
       return endSignX;
     },
-    renderOperationUI: () => {
-      let validBlocks = [];
-      const lastValidIndex =
-        gameMode === 'a' ? self.stack.curIndex : self.stack.selectedIndex;
-      for (let i = 0; i <= lastValidIndex; i++) {
-        validBlocks.push(self.stack.list[i]);
-      }
-
-      const font = textStyles.fraction;
-      font.fill = colors.green;
-
-      const nominators = [];
-      const denominators = [];
-      const renderList = [];
-
-      const padding = 100;
-      const offsetX = 100;
-      const widthOfChar = 35;
-
-      const x0 = padding;
-      const y0 = context.canvas.height / 3;
-      let nextX = x0;
-
-      const cardHeight = 400;
-      const cardX = x0 - padding;
-      const cardY = y0; // + cardHeight / 4;
-
-      // Card
-      const card = game.add.geom.rect(
-        cardX,
-        cardY,
-        0,
-        cardHeight,
-        colors.blueLight,
-        0.5,
-        colors.blueDark,
-        8
-      );
-      card.id = 'card';
-      card.anchor(0, 0.5);
-      renderList.push(card);
-
-      // Fraction list
-      for (let i in validBlocks) {
-        const curFraction = validBlocks[i].fraction;
-        const curFractionString = curFraction.labels[0].name;
-        let curFractionSign = i !== '0' ? '+' : '';
-        if (curFraction.labels[1].name === '-') {
-          curFractionSign = '-';
-          font.fill = colors.red;
-        }
-
-        const fraction = game.add.text(
-          x0 + i * offsetX + offsetX / 2,
-          curFractionString === '1' ? y0 + 40 : y0,
-          curFractionString,
-          font,
-          60
-        );
-        fraction.lineHeight = 70;
-
-        renderList.push(
-          game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
-        );
-        renderList.push(fraction);
-        renderList.push(
-          game.add.text(
-            x0 + offsetX / 2 + i * offsetX,
-            y0,
-            curFractionString === '1' ? '' : '_',
-            font
-          )
-        );
-
-        nominators.push(curFraction.nominator);
-        denominators.push(curFraction.denominator);
-      }
-
-      // Setup for fraction operation with least common multiple
-      font.fill = colors.black;
-      const updatedNominators = [];
-      const mmc = game.math.mmcArray(denominators);
-      let resultNominator = 0;
-      for (let i in nominators) {
-        const temp = nominators[i] * (mmc / denominators[i]);
-        updatedNominators.push(temp);
-        resultNominator += temp;
-      }
-      const resultNominatorUnsigned =
-        resultNominator < 0 ? -resultNominator : resultNominator;
-      const resultAux = resultNominator / mmc;
-      const result =
-        ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
-
-      // Fraction operation with least common multiple
-      nextX = x0 + validBlocks.length * offsetX + 20;
-
-      // Fraction result
-      renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-      font.align = 'center';
-      nextX += offsetX;
-
-      if (result < 0) {
-        nextX += 60;
-
-        renderList.push(game.add.text(nextX - 80, y0 + 35, '-', font));
-
-        nextX -= 30;
-      }
-
-      const fractionResult = game.add.text(
-        nextX,
-        mmc === 1 || resultNominatorUnsigned === 0 ? y0 + 40 : y0,
-        mmc === 1 || resultNominatorUnsigned === 0
-          ? resultNominatorUnsigned
-          : resultNominatorUnsigned + '\n' + mmc,
-        font
-      );
-      fractionResult.lineHeight = 70;
-      renderList.push(fractionResult);
-      const fractionLine = game.add.geom.line(
-        nextX,
-        y0 + 15,
-        nextX + 60,
-        y0 + 15,
-        4,
-        colors.black,
-        mmc === 1 || resultNominatorUnsigned === 0 ? 0 : 1
-      );
-      fractionLine.anchor(0.5, 0);
-      renderList.push(fractionLine);
-
-      // Fraction result simplified setup
-      const mdcAux = game.math.mdc(resultNominator, mmc);
-      const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
-      if (mdc !== 1 && resultNominatorUnsigned !== 0) {
-        nextX += offsetX;
-        renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-        nextX += offsetX;
-        renderList.push(
-          game.add.text(nextX - 50, y0 + 35, result > 0 ? '' : '-', font)
-        );
-        renderList.push(
-          game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
-        );
-        renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
-        const fractionLine = game.add.geom.line(
-          nextX,
-          y0 + 15,
-          nextX + 60,
-          y0 + 15,
-          4,
-          colors.black
-        );
-        fractionLine.anchor(0.5, 0);
-        renderList.push(fractionLine);
-      }
-
-      // Decimal result
-      let resultWidth = '_'.length * widthOfChar;
-      const cardWidth = nextX - x0 + resultWidth + padding * 2;
-      card.width = cardWidth;
-
-      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
-
-      // Center Card
-      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
-
-      self.fractionOperationUI = renderList;
-
-      return endSignX;
-    },
     renderEndUI: () => {
       let btnColor = colors.green;
       let btnText = game.lang.continue;
@@ -1090,7 +916,7 @@ const squareOne = {
           ? self.floor.selectedIndex === self.floor.correctIndex
           : self.stack.selectedIndex === self.stack.correctIndex;
 
-      const x = self.utils.renderOperationUI_new();
+      const x = self.utils.renderOperationUI();
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
