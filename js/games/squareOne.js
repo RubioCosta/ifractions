@@ -577,12 +577,10 @@ const squareOne = {
     renderOperationUI: () => {
       /**
        *
-       * (DOING)
        * if game mode A:
        * - left: (1) selected floor position (user selection)
        * - right: (2) expected floor position equivalent to the stack of blocks (pre-set)
        *
-       * (TODO)
        * if game mode B:
        * - left: (3) floor position equivalent to the stack of blocks (user selection)
        * - right: (4) generated floor position (pre-set)
@@ -590,7 +588,7 @@ const squareOne = {
 
       const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
-      const renderFloorFractions = (lastIndex, divisor, msg) => {
+      const renderFloorFractions = (lastIndex, divisor) => {
         const operator = gameOperation === 'minus' ? '-' : '+';
         const index = lastIndex;
         const blocks = index + 1;
@@ -628,7 +626,7 @@ const squareOne = {
         return [fracNomin, fracDenomin, fracLine, valueReal];
       };
 
-      const renderStackFractions = (lastIndex, msg) => {
+      const renderStackFractions = (lastIndex) => {
         const operator = gameOperation === 'minus' ? '-' : '+';
         const index = lastIndex;
         const blocks = index + 1;
@@ -713,18 +711,18 @@ const squareOne = {
       const [floorNominators, floorDenominators, floorLines, floorValue] =
         renderFloorFractions(
           self.floor.selectedIndex,
-          divisor,
-          'LEFT SIDE - a fração escolhida no chão é...\n\n'
+          divisor
+          // 'LEFT SIDE - a fração escolhida no chão é...\n\n'
         );
       renderFloorFractions(
         self.floor.correctIndex,
-        divisor,
-        '\n\nRIGHT SIDE 1 - a fração CORRETA no chão é...\n\n'
+        divisor
+        // '\n\nRIGHT SIDE 1 - a fração CORRETA no chão é...\n\n'
       );
       const [stackNominators, stackDenominators, stackLines, stackValue] =
         renderStackFractions(
-          self.stack.selectedIndex,
-          '\n\nRIGHT SIDE 2 - a fração CORRETA na stack é...\n\n'
+          self.stack.selectedIndex
+          // '\n\nRIGHT SIDE 2 - a fração CORRETA na stack é...\n\n'
         );
 
       const renderFloorOperationLine = (x) => {
