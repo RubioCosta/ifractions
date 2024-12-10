@@ -133,6 +133,7 @@ const circleOne = {
 
     const validPath = { x0, y0, distanceBetweenPoints };
 
+    // this.utils.renderRoadBlocks();
     this.utils.renderRoad(validPath);
 
     const [restart, balloonX] = this.utils.renderCircles(validPath);
@@ -171,11 +172,40 @@ const circleOne = {
   },
 
   utils: {
+    renderRoadBlocks: function () {
+      const pointWidth = (game.sprite['map_place'].width / 2) * 0.45;
+      const roadX = self.road.x + pointWidth / 2;
+
+      const roadWidth = self.road.width - pointWidth;
+      const roadMainDivisions = 5;
+      const roadSubdivisions = gameDifficulty === 3 ? 4 : gameDifficulty;
+      const roadDivisions = roadMainDivisions * roadSubdivisions;
+
+      const blockWidth = roadWidth / roadDivisions;
+      const blockHeight = 50;
+      const blockList = [];
+
+      for (let i = 0; i < roadDivisions; i++) {
+        const block = game.add.geom.rect(
+          roadX + i * blockWidth,
+          self.road.y,
+          blockWidth,
+          blockHeight,
+          'transparent',
+          0.5,
+          colors.red,
+          2
+        );
+        block.info = { index: i };
+        blockList.push(block);
+      }
+      console.log(blockList);
+    },
     // RENDERS
     renderRoad: function (validPath) {
       const directionModifier = gameOperation === 'minus' ? -1 : 1;
       for (let i = 0; i <= 5; i++) {
-        // place
+        // Gray place
         game.add
           .sprite(
             validPath.x0 +
@@ -186,7 +216,7 @@ const circleOne = {
             0.45
           )
           .anchor(0.5, 0.5);
-        // circle behind number
+        // White circle behind number
         game.add.geom
           .circle(
             validPath.x0 +
@@ -199,7 +229,7 @@ const circleOne = {
             0.8
           )
           .anchor(0, 0.25);
-        // number
+        // Number
         game.add.text(
           validPath.x0 +
             i * validPath.distanceBetweenPoints * directionModifier,
