@@ -815,43 +815,45 @@ const circleOne = {
 
       const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
-      // const renderFloorFractions = (lastIndex, divisor) => {
-      //   const operator = gameOperation === 'minus' ? '-' : '+';
-      //   const index = lastIndex;
-      //   const blocks = index + 1;
+      const renderFloorFractions = (lastIndex) => {
+        const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
-      //   const valueReal = blocks / divisor;
-      //   const valueFloor = Math.floor(valueReal);
-      //   const valueRest = valueReal - valueFloor;
+        const operator = gameOperation === 'minus' ? '-' : '+';
+        const index = lastIndex;
+        const blocks = index + 1;
 
-      //   let fracNomin = (fracDenomin = fracLine = '');
-      //   // adds sign on the left of the equation
-      //   if (gameOperation === 'minus') {
-      //     fracNomin += ' ';
-      //     fracDenomin += ' ';
-      //     fracLine += operator;
-      //   }
-      //   // 1 _ _
-      //   if (valueFloor) {
-      //     fracNomin += ' ';
-      //     fracDenomin += ' ';
-      //     fracLine += valueFloor;
-      //   }
-      //   // _ + _
-      //   if (valueFloor && valueRest) {
-      //     fracNomin += ' ';
-      //     fracDenomin += ' ';
-      //     fracLine += operator;
-      //   }
-      //   // _ _ 1/5
-      //   if (valueRest) {
-      //     fracNomin += `${valueRest * divisor}`;
-      //     fracDenomin += `${divisor}`;
-      //     fracLine += '-';
-      //   }
+        const valueReal = blocks / divisor;
+        const valueFloor = Math.floor(valueReal);
+        const valueRest = valueReal - valueFloor;
 
-      //   return [fracNomin, fracDenomin, fracLine, valueReal];
-      // };
+        let fracNomin = (fracDenomin = fracLine = '');
+        // adds sign on the left of the equation
+        if (gameOperation === 'minus') {
+          fracNomin += ' ';
+          fracDenomin += ' ';
+          fracLine += operator;
+        }
+        // 1 _ _
+        if (valueFloor) {
+          fracNomin += ' ';
+          fracDenomin += ' ';
+          fracLine += valueFloor;
+        }
+        // _ + _
+        if (valueFloor && valueRest) {
+          fracNomin += ' ';
+          fracDenomin += ' ';
+          fracLine += operator;
+        }
+        // _ _ 1/5
+        if (valueRest) {
+          fracNomin += `${valueRest * divisor}`;
+          fracDenomin += `${divisor}`;
+          fracLine += '-';
+        }
+
+        return [fracNomin, fracDenomin, fracLine, valueReal];
+      };
 
       const renderStackFractions = (lastIndex) => {
         const operator = gameOperation === 'minus' ? '-' : '+';
@@ -897,24 +899,7 @@ const circleOne = {
           }
         }
 
-        console.log(fracNomin, fracDenomin, fracLine, valueReal);
         return [fracNomin, fracDenomin, fracLine, valueReal];
-      };
-
-      const xyz = () => {
-        const x0 = +self.road.x;
-        // console.log(x0);
-        const xEnd = +self.road.width;
-        // console.log(xEnd);
-        const blockWidth = +xEnd / 5;
-        // console.log(blockWidth);
-        const selectedX = +self.balloon.x;
-        // console.log(selectedX);
-
-        let count = (selectedX - x0) / blockWidth;
-        count = Math.floor(count);
-        // console.log(count);
-        return count;
       };
 
       // Initial setup
@@ -951,60 +936,39 @@ const circleOne = {
       renderList.push(card);
 
       // Fraction setup
-      // console.clear();
-      // const [floorNominators, floorDenominators, floorLines, floorValue] =
-      //   renderFloorFractions(self.floor.selectedIndex, divisor);
-      console.log(self);
+      const [floorNominators, floorDenominators, floorLines, floorValue] =
+        renderFloorFractions(self.blocks.cur.info.index);
       const [stackNominators, stackDenominators, stackLines, stackValue] =
         renderStackFractions(self.circles.cur - 1);
 
       const renderFloorOperationLine = (x) => {
         font.fill = colors.black;
-        const floorNom = game.add.text(x + offsetX / 2, y0, '', font, 60);
+        const floorNom = game.add.text(
+          x + offsetX / 2,
+          y0,
+          floorNominators,
+          font,
+          60
+        );
         const floorDenom = game.add.text(
           x + offsetX / 2,
           y0 + 70,
-          '',
+          floorDenominators,
           font,
           60
         );
         const floorLin = game.add.text(
           x + offsetX / 2,
           y0 + 35,
-          xyz(),
+          floorLines,
           font,
           60
         );
         renderList.push(floorNom);
         renderList.push(floorDenom);
         renderList.push(floorLin);
-        return;
-        // font.fill = colors.black;
-        // const floorNom = game.add.text(
-        //   x + offsetX / 2,
-        //   y0,
-        //   floorNominators,
-        //   font,
-        //   60
-        // );
-        // const floorDenom = game.add.text(
-        //   x + offsetX / 2,
-        //   y0 + 70,
-        //   floorDenominators,
-        //   font,
-        //   60
-        // );
-        // const floorLin = game.add.text(
-        //   x + offsetX / 2,
-        //   y0 + 35,
-        //   floorLines,
-        //   font,
-        //   60
-        // );
-        // renderList.push(floorNom);
-        // renderList.push(floorDenom);
-        // renderList.push(floorLin);
       };
+
       const renderStackOperationLine = (x) => {
         font.fill = colors.black;
         const stackNom = game.add.text(
@@ -1034,31 +998,28 @@ const circleOne = {
       };
 
       // Render LEFT part of the operation
-      // if (gameMode === 'a') renderFloorOperationLine(x0);
-      // else renderStackOperationLine(x0);
-      renderFloorOperationLine(x0);
+      if (gameMode === 'a') renderFloorOperationLine(x0);
+      else renderStackOperationLine(x0);
 
-      // let curNominators = gameMode === 'a' ? floorNominators : stackNominators;
-      let curNominators = '1';
+      let curNominators = gameMode === 'a' ? floorNominators : stackNominators;
       nextX = x0 + (curNominators.length + 2) * widthOfChar;
 
       // Render middle sign - equal by default
       font.fill = colors.green;
       let comparisonSign = '=';
       // Render middle sign - if not equal
-      // if (floorValue != stackValue) {
-      //   font.fill = colors.red;
-      //   let leftSideIsLarger = floorValue > stackValue;
-      //   if (gameMode === 'b') leftSideIsLarger = !leftSideIsLarger;
-      //   if (gameOperation === 'minus') leftSideIsLarger = !leftSideIsLarger;
-      //   comparisonSign = leftSideIsLarger ? '>' : '<';
-      // }
+      if (floorValue != stackValue) {
+        font.fill = colors.red;
+        let leftSideIsLarger = floorValue > stackValue;
+        if (gameMode === 'b') leftSideIsLarger = !leftSideIsLarger;
+        if (gameOperation === 'minus') leftSideIsLarger = !leftSideIsLarger;
+        comparisonSign = leftSideIsLarger ? '>' : '<';
+      }
       renderList.push(game.add.text(nextX, y0 + 35, comparisonSign, font));
 
       // Render RIGHT part of the operationf
-      // if (gameMode === 'a')
-      renderStackOperationLine(nextX);
-      // else renderFloorOperationLine(nextX);
+      if (gameMode === 'a') renderStackOperationLine(nextX);
+      else renderFloorOperationLine(nextX);
 
       curNominators = gameMode === 'a' ? stackNominators : floorNominators;
       const resultWidth = (curNominators.length + 2) * widthOfChar;
@@ -1186,7 +1147,10 @@ const circleOne = {
 
       self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
 
-      const x = self.utils.renderOperationUI_new();
+      const x =
+        gameMode === 'a'
+          ? self.utils.renderOperationUI_new()
+          : self.utils.renderOperationUI();
 
       if (self.control.isCorrect) {
         completedLevels++;
