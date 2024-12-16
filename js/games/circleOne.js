@@ -1147,11 +1147,7 @@ const circleOne = {
 
       self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
 
-      const x =
-        gameMode === 'a'
-          ? self.utils.renderOperationUI_new()
-          : self.utils.renderOperationUI();
-
+      const x = self.utils.renderOperationUI_new();
       if (self.control.isCorrect) {
         completedLevels++;
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
@@ -1411,7 +1407,6 @@ const circleOne = {
           self.road.x,
           self.road.width
         );
-        console.log(isValidX);
         if (isValidX) {
           // GAME MODE A : balloon follow mouse
           self.blocks.cur = self.blocks.list[0];
