@@ -1345,7 +1345,8 @@ const circleOne = {
     /** TODO */
     isOverBlock: function (x, blockX, blockWidth) {
       if (
-        (gameOperation === 'plus' && x >= blockX && x < blockX + blockWidth) ||
+        gameOperation === 'plus' ||
+        (gameOperation === 'mixed' && x >= blockX && x < blockX + blockWidth) ||
         (gameOperation === 'minus' && x <= blockX && x > blockX + blockWidth)
       )
         return true;
@@ -1355,7 +1356,8 @@ const circleOne = {
     isOverRoad: function (x, y, roadX, roadWidth) {
       if (y > 150) {
         if (
-          (gameOperation === 'plus' && x >= roadX && x < roadX + roadWidth) ||
+          gameOperation === 'plus' ||
+          (gameOperation === 'mixed' && x >= roadX && x < roadX + roadWidth) ||
           (gameOperation === 'minus' &&
             x <= roadX &&
             x > roadX + roadWidth * self.control.directionModifier)
@@ -1367,7 +1369,8 @@ const circleOne = {
     /** TODO */
     fillCurrentBlock: function (x, blockX, block) {
       block.fillColor =
-        (gameOperation === 'plus' && x > blockX) ||
+        gameOperation === 'plus' ||
+        (gameOperation === 'mixed' && x > blockX) ||
         (gameOperation === 'minus' && x < blockX)
           ? colors.red
           : 'transparent';
@@ -1443,6 +1446,7 @@ const circleOne = {
           self.road.x,
           self.road.width
         );
+        console.log(isValidX);
         if (isValidX) {
           // GAME MODE A : balloon follow mouse
           self.blocks.cur = self.blocks.list[0];
