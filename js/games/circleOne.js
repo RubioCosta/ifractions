@@ -1186,8 +1186,7 @@ const circleOne = {
 
       self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
 
-      const x = self.utils.renderOperationUI();
-      // const x = self.utils.renderOperationUI_new();
+      const x = self.utils.renderOperationUI_new();
 
       if (self.control.isCorrect) {
         completedLevels++;
@@ -1345,8 +1344,9 @@ const circleOne = {
     /** TODO */
     isOverBlock: function (x, blockX, blockWidth) {
       if (
-        gameOperation === 'plus' ||
-        (gameOperation === 'mixed' && x >= blockX && x < blockX + blockWidth) ||
+        ((gameOperation === 'plus' || gameOperation === 'mixed') &&
+          x >= blockX &&
+          x < blockX + blockWidth) ||
         (gameOperation === 'minus' && x <= blockX && x > blockX + blockWidth)
       )
         return true;
@@ -1356,8 +1356,9 @@ const circleOne = {
     isOverRoad: function (x, y, roadX, roadWidth) {
       if (y > 150) {
         if (
-          gameOperation === 'plus' ||
-          (gameOperation === 'mixed' && x >= roadX && x < roadX + roadWidth) ||
+          ((gameOperation === 'plus' || gameOperation === 'mixed') &&
+            x >= roadX &&
+            x < roadX + roadWidth) ||
           (gameOperation === 'minus' &&
             x <= roadX &&
             x > roadX + roadWidth * self.control.directionModifier)
@@ -1369,8 +1370,8 @@ const circleOne = {
     /** TODO */
     fillCurrentBlock: function (x, blockX, block) {
       block.fillColor =
-        gameOperation === 'plus' ||
-        (gameOperation === 'mixed' && x > blockX) ||
+        ((gameOperation === 'plus' || gameOperation === 'mixed') &&
+          x > blockX) ||
         (gameOperation === 'minus' && x < blockX)
           ? colors.red
           : 'transparent';
