@@ -1367,6 +1367,7 @@ const circleOne = {
           self.utils.clickCircleHandler(
             self.blocks.cur.x + self.blocks.cur.width
           );
+          document.body.style.cursor = 'auto';
         }
       }
 
@@ -1426,6 +1427,8 @@ const circleOne = {
           self.balloon.x = newX;
           self.basket.x = newX;
 
+          document.body.style.cursor = 'pointer';
+        } else {
           document.body.style.cursor = 'auto';
         }
       }
