@@ -530,6 +530,13 @@ const circleOne = {
         }
 
         finalPosition = balloonX;
+
+        self.blocks.list.forEach((cur) => {
+          self.utils.fillCurrentBlock(balloonX, cur.x, cur);
+          if (self.utils.isOverBlock(balloonX, cur.x, cur.width, cur))
+            self.blocks.cur = cur;
+        });
+
         // Restart if
         // In Game mode 'b' : Top circle position is out of bounds (when on the ground)
         if (gameOperation === 'minus') {
