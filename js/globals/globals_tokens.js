@@ -259,6 +259,8 @@ const url = {
       // Game images
       ['balloon', baseUrl + 'characters/balloon/balloon.png'],
       ['balloon_basket', baseUrl + 'characters/balloon/balloon_basket.png'],
+      ['kite', baseUrl + 'characters/balloon/kite.png'],
+      ['kite_line', baseUrl + 'characters/balloon/kite_line.png'],
     ],
     sprite: [
       // Game sprites
