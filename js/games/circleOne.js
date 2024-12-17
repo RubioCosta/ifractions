@@ -622,7 +622,7 @@ const circleOne = {
         )
       );
     },
-    renderOperationUI: () => {
+    renderOperationUI: function () {
       /**
        * if game mode A:
        * - left: selected balloon position (user selection)
@@ -854,7 +854,7 @@ const circleOne = {
 
       return endSignX;
     },
-    renderEndUI: () => {
+    renderEndUI: function () {
       let btnColor = colors.green;
       let btnText = game.lang.continue;
 
