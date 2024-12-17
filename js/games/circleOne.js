@@ -622,194 +622,7 @@ const circleOne = {
         )
       );
     },
-    renderOperationUI: function () {
-      /**
-       * if game mode A:
-       * - left: selected balloon position (user selection)
-       * - right: line created from the stack of arcs (pre-set)
-       *
-       * if game mode B:
-       * - left: line created from the stack of arcs (user selection)
-       * - right: baloon position (pre-set)
-       */
-
-      let validCircles = self.circles.list;
-      if (gameMode === 'b') {
-        validCircles = [];
-        for (let i = 0; i <= self.control.selectedIndex; i++) {
-          validCircles.push(self.circles.list[i]);
-        }
-      }
-
-      const font = textStyles.fraction;
-      font.fill = colors.green;
-
-      const nominators = [];
-      const denominators = [];
-      const renderList = [];
-
-      const padding = 100;
-      const offsetX = 100;
-      const widthOfChar = 35;
-
-      const x0 = padding;
-      const y0 = context.canvas.height / 3;
-      let nextX = x0;
-
-      const cardHeight = 400;
-      const cardX = x0 - padding;
-      const cardY = y0;
-
-      // Card
-      const card = game.add.geom.rect(
-        cardX,
-        cardY,
-        0,
-        cardHeight,
-        colors.blueLight,
-        0.5,
-        colors.blueDark,
-        8
-      );
-      card.id = 'card';
-      card.anchor(0, 0.5);
-      renderList.push(card);
-
-      // Fraction list
-      for (let i in validCircles) {
-        const curFraction = validCircles[i].info.fraction;
-        const curFractionString = curFraction.labels[0].name;
-        let curFractionSign = i !== '0' ? '+' : '';
-        if (curFraction.labels[1].name === '-') {
-          curFractionSign = '-';
-          font.fill = colors.red;
-        }
-
-        const fractionText = game.add.text(
-          x0 + i * offsetX + offsetX / 2,
-          curFractionString === '1' ? y0 + 40 : y0,
-          curFractionString,
-          font
-        );
-        fractionText.lineHeight = 70;
-
-        renderList.push(
-          game.add.text(x0 + i * offsetX, y0 + 35, curFractionSign, font)
-        );
-        renderList.push(fractionText);
-        renderList.push(
-          game.add.text(
-            x0 + offsetX / 2 + i * offsetX,
-            y0,
-            curFractionString === '1' ? '' : '_',
-            font
-          )
-        );
-
-        nominators.push(curFraction.nominator);
-        denominators.push(curFraction.denominator);
-      }
-
-      // Setup for fraction operation with least common multiple
-      font.fill = colors.black;
-      const updatedNominators = [];
-      const mmc = game.math.mmcArray(denominators);
-      let resultNominator = 0;
-      for (let i in nominators) {
-        const temp = nominators[i] * (mmc / denominators[i]);
-        updatedNominators.push(temp);
-        resultNominator += temp;
-      }
-      const resultNominatorUnsigned =
-        resultNominator < 0 ? -resultNominator : resultNominator;
-      const resultAux = resultNominator / mmc;
-      const result =
-        ('' + resultAux).length > 4 ? resultAux.toFixed(2) : resultAux;
-
-      // Fraction operation with least common multiple
-      nextX = x0 + validCircles.length * offsetX + 20;
-
-      // Fraction result
-      renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-      font.align = 'center';
-      nextX += offsetX;
-
-      if (result < 0) {
-        nextX -= 30;
-
-        renderList.push(game.add.text(nextX, y0 + 35, '-', font));
-
-        nextX += 60;
-      }
-
-      const fractionResult = game.add.text(
-        nextX,
-        mmc === 1 || resultNominatorUnsigned === 0 ? y0 + 40 : y0,
-        mmc === 1 || resultNominatorUnsigned === 0
-          ? resultNominatorUnsigned
-          : resultNominatorUnsigned + '\n' + mmc,
-        font
-      );
-      fractionResult.lineHeight = 70;
-      renderList.push(fractionResult);
-
-      const fractionLine = game.add.geom.line(
-        nextX,
-        y0 + 15,
-        nextX + 60,
-        y0 + 15,
-        4,
-        colors.black,
-        mmc === 1 || resultNominatorUnsigned === 0 ? 0 : 1
-      );
-      fractionLine.anchor(0.5, 0);
-      renderList.push(fractionLine);
-
-      // Fraction result simplified setup
-      const mdcAux = game.math.mdc(resultNominator, mmc);
-      const mdc = mdcAux < 0 ? -mdcAux : mdcAux;
-      if (mdc !== 1 && resultNominatorUnsigned !== 0) {
-        // alert(mdc + ' ' + resultNominatorUnsigned);
-        nextX += offsetX;
-        renderList.push(game.add.text(nextX, y0 + 35, '=', font));
-
-        nextX += offsetX;
-        renderList.push(
-          game.add.text(nextX - 50, y0 + 35, result > 0 ? '' : '-', font)
-        );
-        renderList.push(
-          game.add.text(nextX, y0, resultNominatorUnsigned / mdc, font)
-        );
-        renderList.push(game.add.text(nextX, y0 + 70, mmc / mdc, font));
-
-        const fractionLine = game.add.geom.line(
-          nextX,
-          y0 + 15,
-          nextX + 60,
-          y0 + 15,
-          4,
-          colors.black
-        );
-        fractionLine.anchor(0.5, 0);
-        renderList.push(fractionLine);
-      }
-
-      // Decimal result
-      let resultWidth = '_'.length * widthOfChar;
-      const cardWidth = nextX - x0 + resultWidth + padding * 2;
-      card.width = cardWidth;
-
-      const endSignX = (context.canvas.width - cardWidth) / 2 + cardWidth;
-
-      // Center Card
-      moveList(renderList, (context.canvas.width - cardWidth) / 2, 0);
-
-      self.fractionOperationUI = renderList;
-
-      return endSignX;
-    },
-    renderOperationUI_new: () => {
+    renderOperationUI: () => {
       /**
        * if game mode A:
        * - left: selected balloon position (user selection)
@@ -819,8 +632,6 @@ const circleOne = {
        * - left: line created from the stack of arcs (user selection)
        * - right: baloon position (pre-set)
        */
-
-      const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
       const renderFloorFractions = (lastIndex) => {
         const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
@@ -834,7 +645,7 @@ const circleOne = {
         const valueRest = valueReal - valueFloor;
 
         let fracNomin = (fracDenomin = fracLine = '');
-        // adds sign on the left of the equation
+        // Adds sign on the left of the equation
         if (gameOperation === 'minus') {
           fracNomin += ' ';
           fracDenomin += ' ';
@@ -1154,7 +965,7 @@ const circleOne = {
 
       self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
 
-      const x = self.utils.renderOperationUI_new();
+      const x = self.utils.renderOperationUI();
       if (self.control.isCorrect) {
         completedLevels++;
         self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
