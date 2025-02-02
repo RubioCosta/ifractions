@@ -264,6 +264,7 @@ const url = {
     ],
     sprite: [
       // Game sprites
+      ['kid_standing', baseUrl + 'characters/kid/lost.png', 6],
       ['kid_running', baseUrl + 'characters/kid/running.png', 12],
     ],
     audio: [],

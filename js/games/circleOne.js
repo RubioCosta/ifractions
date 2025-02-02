@@ -957,7 +957,24 @@ const circleOne = {
       const x = self.utils.renderOperationUI();
       if (self.control.isCorrect) {
         completedLevels++;
-        self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
+        // self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
+        // console.log(self.kid);
+        self.kid.alpha = 0;
+        const kidStanding = game.add.sprite(
+          self.kid.x,
+          self.kid.y,
+          'kid_standing',
+          5,
+          1.2
+        );
+        kidStanding.anchor(0.5, 0.8);
+        self.kid = kidStanding;
+        self.kid.alpha = 1;
+
+        self.kite_line.alpha = 0;
+        self.kite.x += 25;
+        self.kite.y -= 40;
+
         if (audioStatus) game.audio.okSound.play();
         game.add
           .image(x + 50, context.canvas.height / 3, 'answer_correct')
@@ -979,15 +996,16 @@ const circleOne = {
     },
     animateBalloonHandler: function () {
       self.animation.counter++;
-      self.kite.y -= 2;
-      self.kite_line.y -= 2;
-
-      if (self.control.isCorrect) self.kid.y -= 2;
-
+      // self.kite.y -= 2;
+      // self.kite_line.y -= 2;
+      // if (self.control.isCorrect) self.kid.y -= 2;
+      if (self.animation.counter % 40 === 0) {
+        const ballonMove = self.animation.counter % 80 === 0 ? -3 : 3;
+        self.kite.y += ballonMove;
+      }
       if (self.animation.counter === 100) {
         self.utils.renderEndUI();
         self.control.showEndInfo = true;
-
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
       }
