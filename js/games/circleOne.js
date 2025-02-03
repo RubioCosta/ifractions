@@ -590,6 +590,11 @@ const circleOne = {
       self.kite_line = game.add.image(kiteX, validPath.y0 - 30, 'kite_line', 2);
       self.kite_line.alpha = 0.8;
       self.kite_line.anchor(0.5, 0);
+
+      if (gameMode === 'b') {
+        self.kite_line.alpha = 1;
+        self.kite.alpha = 1;
+      }
     },
     renderMainUI: function () {
       // Help pointer
