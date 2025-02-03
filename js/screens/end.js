@@ -11,8 +11,7 @@ const endState = {
   control: undefined,
 
   character: undefined,
-  balloon: undefined,
-  basket: undefined,
+  kite: undefined,
 
   /**
    * Main code
@@ -76,42 +75,23 @@ const endState = {
 
     self.control.counter++;
 
-    // Balloon falling
-    if (self.control.preAnimate) {
-      const speedY = 3,
-        speedX = 2;
-      if (self.basket.y < context.canvas.height - 240) {
-        self.balloon.y += speedY;
-        self.basket.y += speedY;
-        self.character.y += speedY;
-
-        self.balloon.x += speedX;
-        self.basket.x += speedX;
-        self.character.x += speedX;
-      } else {
-        self.control.preAnimate = false;
-        self.control.animate = true;
-        game.animation.play(self.character.animation[0]);
-      }
-    }
-
-    if (gameName == 'circleOne') {
-      if (self.control.counter % 40 === 0) {
-        self.balloon.x += 5 * self.control.direc;
-        self.control.direc *= -1;
-      }
-    }
-
     // Character running
     if (self.control.animate) {
       if (self.character.x <= 1550) {
         self.character.x += 4;
+        if (self.kite) self.kite.x += 4;
       } else {
         self.control.animate = false;
         game.animation.stop(self.character.animation[0]);
         self.character.alpha = 0;
+        if (self.kite) self.kite.alpha = 0;
         self.control.waitUserAction = true;
         self.utils.renderEndUI();
+      }
+
+      if (self.kite && self.character.x % 40 === 0) {
+        const kiteMovement = self.character.x % 80 === 0 ? 3 : -3;
+        self.kite.y += kiteMovement;
       }
     }
 
@@ -149,7 +129,7 @@ const endState = {
         3
       );
 
-      // percentage label
+      // Percentage label
       game.add.text(
         context.canvas.width - x0 + 160,
         y0 + 33,
@@ -168,23 +148,20 @@ const endState = {
     renderCharacters: () => {
       gameList[gameId].assets.end.building();
 
+      if (gameName === 'circleOne') {
+        self.kite = game.add.image(
+          0 + 10,
+          context.canvas.height - 240 + 20,
+          'kite_reverse',
+          1.8,
+          1
+        );
+        self.kite.anchor(1, 1);
+      }
+
       self.character = gameList[gameId].assets.end.character();
       self.character.animation =
         gameList[gameId].assets.end.characterAnimation();
-
-      if (gameName === 'circleOne') {
-        self.control.preAnimate = true;
-        self.control.animate = false;
-
-        // Balloon
-        self.balloon = game.add.image(0, -350, 'balloon', 1.5);
-        self.balloon.anchor(0.5, 0.5);
-
-        self.basket = game.add.image(0, -150, 'balloon_basket', 1.5);
-        self.basket.anchor(0.5, 0.5);
-
-        self.character.curFrame = 6;
-      }
     },
     renderEndUI: () => {
       const btnY = context.canvas.height / 2;

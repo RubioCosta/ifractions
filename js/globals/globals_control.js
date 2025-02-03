@@ -413,7 +413,13 @@ const gameList = [
           3,
         ],
         character: () => {
-          const char = game.add.sprite(0, -152, 'kid_running', 0, 1.05);
+          const char = game.add.sprite(
+            0,
+            context.canvas.height - 240,
+            'kid_running',
+            0,
+            1.05
+          );
           char.anchor(0.5, 0.5);
           return char;
         },

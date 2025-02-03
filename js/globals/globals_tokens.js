@@ -257,10 +257,9 @@ const url = {
       ['house', baseUrl + 'scene/building_house.png'],
       ['school', baseUrl + 'scene/building_school.png'],
       // Game images
-      ['balloon', baseUrl + 'characters/balloon/balloon.png'],
-      ['balloon_basket', baseUrl + 'characters/balloon/balloon_basket.png'],
-      ['kite', baseUrl + 'characters/balloon/kite.png'],
-      ['kite_line', baseUrl + 'characters/balloon/kite_line.png'],
+      ['kite', baseUrl + 'characters/kite/kite.png'],
+      ['kite_reverse', baseUrl + 'characters/kite/kite_reverse.png'],
+      ['kite_line', baseUrl + 'characters/kite/kite_line.png'],
     ],
     sprite: [
       // Game sprites

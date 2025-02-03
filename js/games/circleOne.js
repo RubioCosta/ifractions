@@ -72,7 +72,7 @@ const circleOne = {
         context.canvas.height - game.image['floor_grass'].width * 1.5;
       const defaultWidth = 1620;
 
-      // Initial 'x' coordinate for the kid and the baloon
+      // Initial 'x' coordinate for the kid and the kite
       const x =
         gameOperation === 'minus'
           ? context.canvas.width - defaultX - _pointWidth / 2
@@ -139,7 +139,7 @@ const circleOne = {
       },
       invertDirection: undefined,
       animateKid: false,
-      animateBalloon: false, // TODO
+      animateKite: false, // TODO
       counter: undefined,
       walkOffsetX,
       angleOffset: 360 / walksPerDistanceBetweenPoints,
@@ -188,9 +188,9 @@ const circleOne = {
       self.utils.checkAnswerHandler();
     }
 
-    // Starts balloon flying animation
-    if (self.animation.animateBalloon) {
-      self.utils.animateBalloonHandler();
+    // Starts kite moving animation
+    if (self.animation.animateKite) {
+      self.utils.animateKiteHandler();
     }
 
     game.render.all();
@@ -992,16 +992,16 @@ const circleOne = {
       self.control.checkAnswer = false;
       self.animation.counter = 0;
 
-      self.animation.animateBalloon = true;
+      self.animation.animateKite = true;
     },
-    animateBalloonHandler: function () {
+    animateKiteHandler: function () {
       self.animation.counter++;
       // self.kite.y -= 2;
       // self.kite_line.y -= 2;
       // if (self.control.isCorrect) self.kid.y -= 2;
       if (self.animation.counter % 40 === 0) {
-        const ballonMove = self.animation.counter % 80 === 0 ? -3 : 3;
-        self.kite.y += ballonMove;
+        const kiteMovement = self.animation.counter % 80 === 0 ? -3 : 3;
+        self.kite.y += kiteMovement;
       }
       if (self.animation.counter === 100) {
         self.utils.renderEndUI();
