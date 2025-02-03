@@ -171,6 +171,16 @@ const gameList = [
         gameModeBtn: ['mode_0', 'mode_1'],
         gameOperationBtn: ['operation_plus', 'operation_minus'],
         gameModeDescription: ['s1_a_description', 's1_b_description'],
+        gameOperationDescription: [
+          'op_plus_description',
+          'op_minus_description',
+        ],
+        gameDifficultyDescription: [
+          'diff_1_description',
+          'diff_2_description',
+          'diff_3_description',
+        ],
+        gameLabelDescription: 'label_description',
         auxiliarTitle: (x, y, offsetW, offsetH) => {
           game.add.text(
             x + 5 * offsetW,
@@ -314,6 +324,17 @@ const gameList = [
       customMenu: {
         gameModeBtn: ['mode_2', 'mode_3'],
         gameModeDescription: ['c1_a_description', 'c1_b_description'],
+        gameOperationDescription: [
+          'op_plus_description',
+          'op_minus_description',
+          'op_mixed_description',
+        ],
+        gameDifficultyDescription: [
+          'diff_1_description',
+          'diff_2_description',
+          'diff_3_description',
+        ],
+        gameLabelDescription: 'label_description',
         gameOperationBtn: [
           'operation_plus',
           'operation_minus',
@@ -451,6 +472,15 @@ const gameList = [
         gameModeBtn: ['mode_4', 'mode_5'],
         gameOperationBtn: ['operation_equals'],
         gameModeDescription: ['s2_a_description', 's2_b_description'],
+        gameOperationDescription: ['op_equals_description'],
+        gameDifficultyDescription: [
+          's2_diff_1_description',
+          's2_diff_2_description',
+          's2_diff_3_description',
+          's2_diff_4_description',
+          's2_diff_5_description',
+        ],
+        gameLabelDescription: 'label_description',
         auxiliarTitle: (x, y, offsetW, offsetH) => {
           game.add.text(
             x + 5 * offsetW,

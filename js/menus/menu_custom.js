@@ -40,10 +40,10 @@ const customMenuState = {
         fill: colors.green,
       });
       // Subtitle : <game mode>
-      this.lbl_game = game.add.text(
+      this.lbl_description = game.add.text(
         context.canvas.width / 2,
         170,
-        '...',
+        '',
         textStyles.h2_
       );
 
@@ -65,7 +65,7 @@ const customMenuState = {
       let y = getFrameInfo().y;
 
       this.renderSectionTitles(x, y, offsetW, offsetH);
-      this.renderCheckBox(x, y, offsetW, offsetH);
+      this.renderCheckBox(x, y, offsetW, offsetH, curGame);
       this.renderModeSection(x, y, offsetW, offsetH, curGame);
       this.renderOperationSection(x, y, offsetW, offsetH, curGame);
       this.renderDifficultySection(x, y, offsetW, offsetH, curGame);
@@ -284,7 +284,7 @@ const customMenuState = {
     gameList[gameId].assets.customMenu.auxiliarTitle(x, y, offsetW, offsetH);
   },
 
-  renderCheckBox: function (x, y, offsetW, offsetH) {
+  renderCheckBox: function (x, y, offsetW, offsetH, curGame) {
     y += 60;
     const frame = showFractions ? 1 : 0;
 
@@ -297,6 +297,8 @@ const customMenuState = {
     );
     selectionBox.anchor(0.5, 0.5);
     selectionBox.iconType = 'selectionBox';
+    selectionBox.description = curGame.assets.customMenu.gameLabelDescription;
+
     self.menuIcons.push(selectionBox);
   },
 
@@ -321,8 +323,7 @@ const customMenuState = {
       );
       icon.anchor(0.5, 0.5);
 
-      icon.gameModeDescription =
-        curGame.assets.customMenu.gameModeDescription[i];
+      icon.description = curGame.assets.customMenu.gameModeDescription[i];
       icon.gameMode = curGame.gameMode[i];
       icon.iconType = 'gameMode';
 
@@ -358,6 +359,7 @@ const customMenuState = {
         1
       );
       icon.anchor(0.5, 0.5);
+      icon.description = curGame.assets.customMenu.gameOperationDescription[i];
 
       icon.gameOperation = curGame.gameOperation[i];
       icon.iconType = 'gameOperation';
@@ -390,6 +392,7 @@ const customMenuState = {
 
       const icon = game.add.sprite(curX, y - 5, 'btn_square', 1, 0.8);
       icon.anchor(0.5, 0.5);
+      icon.description = curGame.assets.customMenu.gameDifficultyDescription[i];
       icon.difficulty = i + 1;
       icon.iconType = 'difficulty';
 
@@ -480,13 +483,14 @@ const customMenuState = {
    * @param {object} icon icon for the game mode
    */
   showTitle: function (icon) {
-    self.lbl_game.name = game.lang[icon.gameModeDescription];
+    if (icon.iconType !== 'infoIcon')
+      self.lbl_description.name = game.lang[icon.description];
   },
 
   /**
    * Remove the description the game mode from screen
    */
   clearTitle: function () {
-    self.lbl_game.name = '';
+    self.lbl_description.name = '';
   },
 };
