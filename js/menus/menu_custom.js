@@ -39,6 +39,13 @@ const customMenuState = {
         ...textStyles.h1_,
         fill: colors.green,
       });
+      // Subtitle : <game mode>
+      this.lbl_game = game.add.text(
+        context.canvas.width / 2,
+        170,
+        '...',
+        textStyles.h2_
+      );
 
       // Loads navigation icons
       navigation.add.left(['back'], 'menu');
@@ -213,6 +220,7 @@ const customMenuState = {
     if (overIcon) {
       // If pointer is over icon
       document.body.style.cursor = 'pointer';
+      self.showTitle(self.menuIcons[overIcon]);
       self.menuIcons.forEach((cur) => {
         if (cur.iconType == self.menuIcons[overIcon].iconType) {
           // If its in the same icon category
@@ -228,6 +236,7 @@ const customMenuState = {
       });
     } else {
       // If pointer is not over icon
+      self.clearTitle();
       if (self.enterText) self.enterText.style = textStyles.btn;
       self.menuIcons.forEach((cur) => {
         cur.scale = cur.initialScale;
@@ -312,6 +321,8 @@ const customMenuState = {
       );
       icon.anchor(0.5, 0.5);
 
+      icon.gameModeDescription =
+        curGame.assets.customMenu.gameModeDescription[i];
       icon.gameMode = curGame.gameMode[i];
       icon.iconType = 'gameMode';
 
@@ -461,5 +472,21 @@ const customMenuState = {
     ${data.img}`;
 
     document.querySelector('.ifr-modal__infobox').innerHTML = content;
+  },
+
+  /**
+   * Display the description the game mode on screen
+   *
+   * @param {object} icon icon for the game mode
+   */
+  showTitle: function (icon) {
+    self.lbl_game.name = game.lang[icon.gameModeDescription];
+  },
+
+  /**
+   * Remove the description the game mode from screen
+   */
+  clearTitle: function () {
+    self.lbl_game.name = '';
   },
 };

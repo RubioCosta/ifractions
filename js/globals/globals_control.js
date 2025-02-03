@@ -170,6 +170,7 @@ const gameList = [
       customMenu: {
         gameModeBtn: ['mode_0', 'mode_1'],
         gameOperationBtn: ['operation_plus', 'operation_minus'],
+        gameModeDescription: ['s1_a_description', 's1_b_description'],
         auxiliarTitle: (x, y, offsetW, offsetH) => {
           game.add.text(
             x + 5 * offsetW,
@@ -312,6 +313,7 @@ const gameList = [
       },
       customMenu: {
         gameModeBtn: ['mode_2', 'mode_3'],
+        gameModeDescription: ['c1_a_description', 'c1_b_description'],
         gameOperationBtn: [
           'operation_plus',
           'operation_minus',
@@ -448,6 +450,7 @@ const gameList = [
       customMenu: {
         gameModeBtn: ['mode_4', 'mode_5'],
         gameOperationBtn: ['operation_equals'],
+        gameModeDescription: ['s2_a_description', 's2_b_description'],
         auxiliarTitle: (x, y, offsetW, offsetH) => {
           game.add.text(
             x + 5 * offsetW,
