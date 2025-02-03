@@ -1001,9 +1001,11 @@ const circleOne = {
     },
     animateKiteHandler: function () {
       self.animation.counter++;
-      // self.kite.y -= 2;
-      // self.kite_line.y -= 2;
-      // if (self.control.isCorrect) self.kid.y -= 2;
+
+      if (!self.control.isCorrect) {
+        self.kite.y -= 2;
+        self.kite_line.y -= 2;
+      }
       if (self.animation.counter % 40 === 0) {
         const kiteMovement = self.animation.counter % 80 === 0 ? -3 : 3;
         self.kite.y += kiteMovement;
