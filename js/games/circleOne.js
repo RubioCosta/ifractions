@@ -15,17 +15,17 @@
  * ........|.........
  * ......1,2,3....... = gameDifficulty
  *
- * Character : kid/balloon
- * Theme : flying in a balloon
- * Concept : 'How much the kid has to walk to get to the balloon?'
+ * Character : kid/kite
+ * Theme : getting the kite on the floor
+ * Concept : 'How much the kid has to walk to get to the kite?'
  * Represent fractions as : circles/arcs
  *
  * Game modes can be :
  *
- *   a : Player can place balloon position
- *       Place balloon in position (so the kid can get to it)
+ *   a : Player can place kite position
+ *       Place kite in position (so the kid can get to it)
  *   b : Player can select # of circles
- *       Selects number of circles (that represent distance kid needs to walk to get to the balloon)
+ *       Selects number of circles (that represent distance kid needs to walk to get to the kite)
  *
  * Operations can be :
  *
@@ -46,8 +46,8 @@ const circleOne = {
 
   circles: undefined,
   kid: undefined,
-  balloon: undefined,
-  basket: undefined,
+  kite: undefined,
+  kite_line: undefined,
   walkedPath: undefined,
 
   /**
@@ -72,7 +72,7 @@ const circleOne = {
         context.canvas.height - game.image['floor_grass'].width * 1.5;
       const defaultWidth = 1620;
 
-      // Initial 'x' coordinate for the kid and the baloon
+      // Initial 'x' coordinate for the kid and the kite
       const x =
         gameOperation === 'minus'
           ? context.canvas.width - defaultX - _pointWidth / 2
@@ -119,7 +119,7 @@ const circleOne = {
       divisorsList: '', // used in postScore (Accumulative)
 
       hasClicked: false, // Checks if user has clicked
-      checkAnswer: false, // Check kid inside ballon's basket
+      checkAnswer: false, // Check kid on top of kiteline
       isCorrect: false, // Informs answer is correct
       showEndInfo: false,
       endSignX: undefined,
@@ -139,7 +139,7 @@ const circleOne = {
       },
       invertDirection: undefined,
       animateKid: false,
-      animateBalloon: false,
+      animateKite: false, // TODO
       counter: undefined,
       walkOffsetX,
       angleOffset: 360 / walksPerDistanceBetweenPoints,
@@ -161,10 +161,10 @@ const circleOne = {
     this.utils.renderRoadBlocks();
     this.utils.renderRoad(validPath);
 
-    const [restart, balloonX] = this.utils.renderCircles(validPath);
+    const [restart, kiteX] = this.utils.renderCircles(validPath);
     this.restart = restart;
 
-    this.utils.renderCharacters(validPath, balloonX);
+    this.utils.renderCharacters(validPath, kiteX);
     this.utils.renderMainUI();
 
     if (!this.restart) {
@@ -183,14 +183,14 @@ const circleOne = {
       self.utils.animateKidHandler();
     }
 
-    // Check if kid is inside the basket
+    // Check if kid is on top of kite line
     if (self.control.checkAnswer) {
       self.utils.checkAnswerHandler();
     }
 
-    // Starts balloon flying animation
-    if (self.animation.animateBalloon) {
-      self.utils.animateBalloonHandler();
+    // Starts kite moving animation
+    if (self.animation.animateKite) {
+      self.utils.animateKiteHandler();
     }
 
     game.render.all();
@@ -282,7 +282,7 @@ const circleOne = {
     renderCircles: function (validPath) {
       let restart = false;
       let hasBaseDifficulty = false;
-      let balloonX = context.canvas.width / 2;
+      let kiteX = context.canvas.width / 2;
 
       const fractionX =
         validPath.x0 -
@@ -502,7 +502,7 @@ const circleOne = {
       let isBeforeMin = (isAfterMax = false);
       let finalPosition = self.control.correctX;
       // Restart if
-      // In Game mode 'a' and 'b' : Balloon position is out of bounds
+      // In Game mode 'a' and 'b' : Kite position is out of bounds
       if (gameOperation === 'minus') {
         isBeforeMin = finalPosition > validPath.x0;
         isAfterMax =
@@ -515,8 +515,8 @@ const circleOne = {
       if (isBeforeMin || isAfterMax) restart = true;
 
       if (gameMode === 'b') {
-        // If game is type (b), select a random balloon place
-        balloonX = validPath.x0;
+        // If game is type (b), select a random kite place
+        kiteX = validPath.x0;
 
         self.control.correctIndex = game.math.randomInRange(
           self.control.numberOfPlusFractions,
@@ -524,16 +524,16 @@ const circleOne = {
         );
 
         for (let i = 0; i < self.control.correctIndex; i++) {
-          balloonX +=
+          kiteX +=
             self.circles.list[i].info.distance *
             self.circles.list[i].info.direc;
         }
 
-        finalPosition = balloonX;
+        finalPosition = kiteX;
 
         self.blocks.list.forEach((cur) => {
-          self.utils.fillCurrentBlock(balloonX, cur.x, cur);
-          if (self.utils.isOverBlock(balloonX, cur.x, cur.width, cur))
+          self.utils.fillCurrentBlock(kiteX, cur.x, cur);
+          if (self.utils.isOverBlock(kiteX, cur.x, cur.width, cur))
             self.blocks.cur = cur;
         });
 
@@ -551,9 +551,9 @@ const circleOne = {
         if (isBeforeMin || isAfterMax) restart = true;
       }
 
-      return [restart, balloonX];
+      return [restart, kiteX];
     },
-    renderCharacters: function (validPath, balloonX) {
+    renderCharacters: function (validPath, kiteX) {
       // KID
       self.kid = game.add.sprite(
         validPath.x0,
@@ -582,25 +582,19 @@ const circleOne = {
         self.kid.animation = self.animation.list.right;
       }
 
-      // BALLOON
-      self.balloon = game.add.image(
-        balloonX,
-        validPath.y0 - 295,
-        'balloon',
-        1.5,
-        0.5
-      );
-      self.balloon.alpha = 0.5;
-      self.balloon.anchor(0.5, 0.5);
+      // KITE
+      self.kite = game.add.image(kiteX, validPath.y0 - 295, 'kite', 1.8, 0.5);
+      self.kite.alpha = 0.5;
+      self.kite.anchor(0, 0.5);
 
-      self.basket = game.add.image(
-        balloonX,
-        validPath.y0 - 95,
-        'balloon_basket',
-        1.5
-      );
-      self.basket.alpha = 0.8;
-      self.basket.anchor(0.5, 0.5);
+      self.kite_line = game.add.image(kiteX, validPath.y0 - 30, 'kite_line', 2);
+      self.kite_line.alpha = 0.8;
+      self.kite_line.anchor(0.5, 0);
+
+      if (gameMode === 'b') {
+        self.kite_line.alpha = 1;
+        self.kite.alpha = 1;
+      }
     },
     renderMainUI: function () {
       // Help pointer
@@ -625,7 +619,7 @@ const circleOne = {
     renderOperationUI: function () {
       /**
        * if game mode A:
-       * - left: selected balloon position (user selection)
+       * - left: selected kite position (user selection)
        * - right: correct sum of stack of arcs (pre-set)
        *
        * if game mode B:
@@ -674,7 +668,6 @@ const circleOne = {
       };
 
       const renderStackFractions = (lastIndex) => {
-        const operator = gameOperation === 'minus' ? '-' : '+';
         const index = lastIndex;
         const blocks = index + 1;
 
@@ -683,11 +676,10 @@ const circleOne = {
         const values = [];
         let valueReal = 0;
         let fracNomin = (fracDenomin = fracLine = '');
-
         for (let i = 0; i < blocks; i++) {
           const m = self.circles.list[i].info.fraction.denominator || 1;
           const temp = self.circles.list[i].info.fraction.nominator || 0;
-          const n = gameOperation === 'minus' ? -temp : +temp;
+          const n = temp < 0 ? -temp : +temp;
           const nm = n / m;
           nominators[i] = n + 0;
           denominators[i] = m + 0;
@@ -699,6 +691,8 @@ const circleOne = {
           const valueReal = values[i];
           const valueFloor = Math.floor(valueReal);
           const valueRest = valueReal - valueFloor;
+          const operator =
+            self.circles.list[i].info.fraction.nominator < 0 ? '-' : '+';
 
           if (i > 0 || gameOperation === 'minus') {
             fracNomin += ' ';
@@ -963,12 +957,29 @@ const circleOne = {
 
       game.animation.stop(self.kid.animation[0]);
 
-      self.control.isCorrect = game.math.isOverlap(self.basket, self.kid);
+      self.control.isCorrect = game.math.isOverlap(self.kite_line, self.kid);
 
       const x = self.utils.renderOperationUI();
       if (self.control.isCorrect) {
         completedLevels++;
-        self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
+        // self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
+        // console.log(self.kid);
+        self.kid.alpha = 0;
+        const kidStanding = game.add.sprite(
+          self.kid.x,
+          self.kid.y,
+          'kid_standing',
+          5,
+          1.2
+        );
+        kidStanding.anchor(0.5, 0.8);
+        self.kid = kidStanding;
+        self.kid.alpha = 1;
+
+        self.kite_line.alpha = 0;
+        self.kite.x += 25;
+        self.kite.y -= 40;
+
         if (audioStatus) game.audio.okSound.play();
         game.add
           .image(x + 50, context.canvas.height / 3, 'answer_correct')
@@ -986,19 +997,22 @@ const circleOne = {
       self.control.checkAnswer = false;
       self.animation.counter = 0;
 
-      self.animation.animateBalloon = true;
+      self.animation.animateKite = true;
     },
-    animateBalloonHandler: function () {
+    animateKiteHandler: function () {
       self.animation.counter++;
-      self.balloon.y -= 2;
-      self.basket.y -= 2;
 
-      if (self.control.isCorrect) self.kid.y -= 2;
-
+      if (!self.control.isCorrect) {
+        self.kite.y -= 2;
+        self.kite_line.y -= 2;
+      }
+      if (self.animation.counter % 40 === 0) {
+        const kiteMovement = self.animation.counter % 80 === 0 ? -3 : 3;
+        self.kite.y += kiteMovement;
+      }
       if (self.animation.counter === 100) {
         self.utils.renderEndUI();
         self.control.showEndInfo = true;
-
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
       }
@@ -1036,8 +1050,8 @@ const circleOne = {
       if (!self.control.hasClicked) {
         // On gameMode (a)
         if (gameMode === 'a') {
-          self.balloon.x = cur;
-          self.basket.x = cur;
+          self.kite.x = cur;
+          self.kite_line.x = cur;
         }
 
         // On gameMode (b)
@@ -1073,8 +1087,8 @@ const circleOne = {
 
         navigation.disableIcon(navigation.showAnswerIcon);
 
-        self.balloon.alpha = 1;
-        self.basket.alpha = 1;
+        self.kite.alpha = 1;
+        self.kite_line.alpha = 1;
         self.walkedPath[self.control.curWalkedPath].alpha = 1;
 
         self.control.hasClicked = true;
@@ -1227,7 +1241,7 @@ const circleOne = {
           self.road.width
         );
         if (isValidX) {
-          // GAME MODE A : balloon follow mouse
+          // GAME MODE A : kite follow mouse
           self.blocks.cur = self.blocks.list[0];
           self.blocks.list.forEach((cur) => {
             self.utils.fillCurrentBlock(x, cur.x, cur);
@@ -1235,8 +1249,8 @@ const circleOne = {
               self.blocks.cur = cur;
           });
           const newX = self.blocks.cur.x + self.blocks.cur.width;
-          self.balloon.x = newX;
-          self.basket.x = newX;
+          self.kite.x = newX;
+          self.kite_line.x = newX;
 
           document.body.style.cursor = 'pointer';
         } else {
@@ -1316,8 +1330,8 @@ const circleOne = {
         self.circles.list.length +
         ', valCircles: ' +
         self.control.divisorsList +
-        ' balloonX: ' +
-        self.basket.x +
+        ' kiteX: ' +
+        self.kite_line.x +
         ', selIndex: ' +
         self.control.selectedIndex;
 

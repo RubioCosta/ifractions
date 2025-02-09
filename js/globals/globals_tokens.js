@@ -173,7 +173,7 @@ const url = {
       ['c1-A-h', baseUrl + 'info_box/c1-A-h.png'],
       ['c1-B-h', baseUrl + 'info_box/c1-B-h.png'],
       ['c1-diff-1', baseUrl + 'info_box/c1-diff-1.png'],
-      ['c1-diff-5', baseUrl + 'info_box/c1-diff-5.png'],
+      ['c1-diff-3', baseUrl + 'info_box/c1-diff-3.png'],
       ['c1-label', baseUrl + 'info_box/c1-label.png'],
       ['map-c1s2', baseUrl + 'info_box/map-c1s2.png'],
       ['map-s1', baseUrl + 'info_box/map-s1.png'],
@@ -257,11 +257,13 @@ const url = {
       ['house', baseUrl + 'scene/building_house.png'],
       ['school', baseUrl + 'scene/building_school.png'],
       // Game images
-      ['balloon', baseUrl + 'characters/balloon/balloon.png'],
-      ['balloon_basket', baseUrl + 'characters/balloon/balloon_basket.png'],
+      ['kite', baseUrl + 'characters/kite/kite.png'],
+      ['kite_reverse', baseUrl + 'characters/kite/kite_reverse.png'],
+      ['kite_line', baseUrl + 'characters/kite/kite_line.png'],
     ],
     sprite: [
       // Game sprites
+      ['kid_standing', baseUrl + 'characters/kid/lost.png', 6],
       ['kid_running', baseUrl + 'characters/kid/running.png', 12],
     ],
     audio: [],
