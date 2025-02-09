@@ -46,7 +46,7 @@ Follow the description below based on in which platform you want to run iFractio
 
 ## Releases:
 
-### A new version will be available soon!
+### [v3.0.0](http://200.144.254.107/git/LInE/Ifractions-web/src/release-3.0.0) (stable)
 
 * Bug fixes 
 
@@ -54,7 +54,7 @@ Follow the description below based on in which platform you want to run iFractio
 
 * Code refactoring
 
-### [v2.0.0](http://200.144.254.107/git/LInE/Ifractions-web/src/release-2.0.0) (stable)
+### [v2.0.0](http://200.144.254.107/git/LInE/Ifractions-web/src/release-2.0.0) (deprecated)
 
 * Bug fixes
 
