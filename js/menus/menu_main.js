@@ -92,6 +92,7 @@ const menuState = {
         infoIcon.anchor(0.5, 0.5);
         infoIcon.iconType = 'infoIcon';
         infoIcon.id = i;
+        infoIcon.description = 'info_description';
         this.menuIcons.push(infoIcon);
       }
 
@@ -192,10 +193,13 @@ const menuState = {
    * @param {object} icon icon for the game
    */
   showTitle: function (icon) {
-    const number =
-      gameList[icon.gameId].gameName.slice(-3) == 'One' ? 'I' : 'II';
-    const shape = gameList[icon.gameId].gameName.slice(0, -3);
-    self.lbl_game.name = game.lang[shape] + ' ' + number;
+    if (icon.iconType === 'game') {
+      const number =
+        gameList[icon.gameId].gameName.slice(-3) == 'One' ? 'I' : 'II';
+      const shape = gameList[icon.gameId].gameName.slice(0, -3);
+      self.lbl_game.name = game.lang[shape] + ' ' + number;
+    } else if (icon.iconType === 'infoIcon')
+      self.lbl_game.name = game.lang.info_description;
   },
 
   /**
@@ -252,7 +256,10 @@ const menuState = {
     if (overIcon) {
       // If pointer is over icon
       document.body.style.cursor = 'pointer';
-      if (self.menuIcons[overIcon].iconType == 'game')
+      if (
+        self.menuIcons[overIcon].iconType == 'game' ||
+        self.menuIcons[overIcon].iconType == 'infoIcon'
+      )
         self.showTitle(self.menuIcons[overIcon]);
       self.menuIcons.forEach((cur) => {
         if (cur.iconType == self.menuIcons[overIcon].iconType) {
