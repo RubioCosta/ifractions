@@ -483,7 +483,7 @@ const customMenuState = {
    * @param {object} icon icon for the game mode
    */
   showTitle: function (icon) {
-    if (icon.iconType !== 'infoIcon')
+    if (icon.iconType !== 'infoIcon' && icon.iconType !== 'enter')
       self.lbl_description.name = game.lang[icon.description];
   },
 
