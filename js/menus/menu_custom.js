@@ -260,6 +260,7 @@ const customMenuState = {
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameMode';
+    infoIcon.description = 'info_description';
     self.menuIcons.push(infoIcon);
 
     // Label 'Operations'
@@ -269,6 +270,7 @@ const customMenuState = {
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameOperation';
+    infoIcon.description = 'info_description';
     self.menuIcons.push(infoIcon);
 
     // Label 'Difficulties'
@@ -278,6 +280,7 @@ const customMenuState = {
     infoIcon.anchor(0.5, 0.5);
     infoIcon.iconType = 'infoIcon';
     infoIcon.id = 'gameDifficulty';
+    infoIcon.description = 'info_description';
     self.menuIcons.push(infoIcon);
 
     // Label 'Show Fractions'
@@ -483,7 +486,7 @@ const customMenuState = {
    * @param {object} icon icon for the game mode
    */
   showTitle: function (icon) {
-    if (icon.iconType !== 'infoIcon' && icon.iconType !== 'enter')
+    if (icon.iconType !== 'enter')
       self.lbl_description.name = game.lang[icon.description];
   },
 
