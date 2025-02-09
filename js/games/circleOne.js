@@ -668,7 +668,6 @@ const circleOne = {
       };
 
       const renderStackFractions = (lastIndex) => {
-        const operator = gameOperation === 'minus' ? '-' : '+';
         const index = lastIndex;
         const blocks = index + 1;
 
@@ -677,11 +676,10 @@ const circleOne = {
         const values = [];
         let valueReal = 0;
         let fracNomin = (fracDenomin = fracLine = '');
-
         for (let i = 0; i < blocks; i++) {
           const m = self.circles.list[i].info.fraction.denominator || 1;
           const temp = self.circles.list[i].info.fraction.nominator || 0;
-          const n = gameOperation === 'minus' ? -temp : +temp;
+          const n = temp < 0 ? -temp : +temp;
           const nm = n / m;
           nominators[i] = n + 0;
           denominators[i] = m + 0;
@@ -693,6 +691,8 @@ const circleOne = {
           const valueReal = values[i];
           const valueFloor = Math.floor(valueReal);
           const valueRest = valueReal - valueFloor;
+          const operator =
+            self.circles.list[i].info.fraction.nominator < 0 ? '-' : '+';
 
           if (i > 0 || gameOperation === 'minus') {
             fracNomin += ' ';
