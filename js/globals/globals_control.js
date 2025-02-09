@@ -382,7 +382,7 @@ const gameList = [
                 <img width=100% src="${game.image['c1-diff-1'].src}">
               </td>
               <td style="border-left: 4px solid white">
-                <img width=100% src="${game.image['c1-diff-5'].src}">
+                <img width=100% src="${game.image['c1-diff-3'].src}">
               </td>
             </tr>
           </table>

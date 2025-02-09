@@ -173,7 +173,7 @@ const url = {
       ['c1-A-h', baseUrl + 'info_box/c1-A-h.png'],
       ['c1-B-h', baseUrl + 'info_box/c1-B-h.png'],
       ['c1-diff-1', baseUrl + 'info_box/c1-diff-1.png'],
-      ['c1-diff-5', baseUrl + 'info_box/c1-diff-5.png'],
+      ['c1-diff-3', baseUrl + 'info_box/c1-diff-3.png'],
       ['c1-label', baseUrl + 'info_box/c1-label.png'],
       ['map-c1s2', baseUrl + 'info_box/map-c1s2.png'],
       ['map-s1', baseUrl + 'info_box/map-s1.png'],
