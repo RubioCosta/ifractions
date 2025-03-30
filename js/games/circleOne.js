@@ -684,7 +684,9 @@ const circleOne = {
           nominators[i] = n + 0;
           denominators[i] = m + 0;
           values[i] = nm;
-          valueReal += nm;
+          if (gameOperation === 'mixed')
+            valueReal = temp < 0 ? valueReal - nm : valueReal + nm;
+          else valueReal += nm;
         }
 
         for (let i = 0; i < blocks; i++) {
