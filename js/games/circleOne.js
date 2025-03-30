@@ -500,7 +500,7 @@ const circleOne = {
         self.circles.list[0].info.distance * self.circles.list[0].info.direc;
 
       let isBeforeMin = (isAfterMax = false);
-      let finalPosition = self.control.correctX;
+      let finalPosition = self.control.correctX.toFixed(1);
       // Restart if
       // In Game mode 'a' and 'b' : Kite position is out of bounds
       if (gameOperation === 'minus') {
@@ -508,7 +508,7 @@ const circleOne = {
         isAfterMax =
           finalPosition < validPath.x0 - 5 * validPath.distanceBetweenPoints;
       } else {
-        isBeforeMin = finalPosition < validPath.x0;
+        isBeforeMin = finalPosition <= validPath.x0;
         isAfterMax =
           finalPosition > validPath.x0 + 5 * validPath.distanceBetweenPoints;
       }
@@ -684,7 +684,9 @@ const circleOne = {
           nominators[i] = n + 0;
           denominators[i] = m + 0;
           values[i] = nm;
-          valueReal += nm;
+          if (gameOperation === 'mixed')
+            valueReal = temp < 0 ? valueReal - nm : valueReal + nm;
+          else valueReal += nm;
         }
 
         for (let i = 0; i < blocks; i++) {
