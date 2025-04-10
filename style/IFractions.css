@@ -121,3 +121,9 @@
 .ifr-infoBox__menu__img {
   width: 60%; 
 }
+
+.ifr-cardInfo__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
