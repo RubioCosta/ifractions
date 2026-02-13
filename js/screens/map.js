@@ -180,7 +180,9 @@ const mapState = {
       navigation.add.left(['back', 'menu'], 'customMenu');
     }
 
+    
     game.event.add('click', this.onInputDown);
+   
     game.event.add('mousemove', this.onInputOver);
   },
 
@@ -245,6 +247,11 @@ const mapState = {
   onInputDown: function (mouseEvent) {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
+
+    if (!self.waitUserAction) {
+      navigation.onInputDown(x, y);
+    return;
+  }
 
     if (game.math.isOverIcon(x, y, self.continueButton)) {
       if (audioStatus) game.audio.popSound.play();
