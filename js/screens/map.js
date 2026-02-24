@@ -246,6 +246,12 @@ const mapState = {
     const x = game.math.getMouse(mouseEvent).x;
     const y = game.math.getMouse(mouseEvent).y;
 
+     // bloqueia clique antes da hora
+  if (!self.waitUserAction) {
+    navigation.onInputDown(x, y);
+    return;
+  }
+
     if (game.math.isOverIcon(x, y, self.continueButton)) {
       if (audioStatus) game.audio.popSound.play();
       self.loadGame();
