@@ -41,7 +41,10 @@ CREATE TABLE `ifractions` (
   `line_mappos` int(5) NOT NULL,
   `line_result` varchar(6) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `line_time` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  -- squareOne: numBlocks, valBlocks, blockIndex, floorIndex
+  -- squareTwo: numBlocksA, valueA, numBlocksB, valueB
   `line_details` varchar(120) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `challenge_answered_yes` tinyint(1) DEFAULT NULL COMMENT 'squareTwo only: 1=yes, 0=no, NULL=not applicable',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

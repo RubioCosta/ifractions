@@ -243,6 +243,9 @@ const url = {
       // Map buildings
       ['house', baseUrl + 'scene/building_house.png'],
       ['school', baseUrl + 'scene/building_school.png'],
+      // UI images
+      ['challenge', baseUrl + 'scene/challenge.png'],
+      ['result-bg', baseUrl + 'scene/background-result.png'],
     ],
     sprite: [
       // Game sprites

@@ -51,6 +51,7 @@ $ip = clientIP();
 
 // /js/globals/globals_functions.js: data = line_ip=120.0.0.1&line_name=name&line_lang=pt_BR
 // /js/games/squareOne.js: data += &line_game=square&line_mode=a&line_oper=plus&line_leve=1&line_posi=1&line_resu=true&line_time=3&line_deta=numBlocks:3, valBlocks: 1,1,1, blockIndex: 2, floorIndex: 2;url=php/save.php
+// /js/games/squareTwo.js: data += &line_game=square&line_mode=a&line_oper=equal&line_leve=1&line_posi=1&line_resu=true&line_time=3&line_deta=numBlocksA: 8, valueA: 4, numBlocksB: 2, valueB: 1&challenge_answered_yes=true
 $name = $_REQUEST["line_name"];
 $date = date("Y-m-d H:i:s");
 $lang = $_REQUEST["line_lang"];
@@ -62,6 +63,7 @@ $posi = $_REQUEST["line_posi"];
 $resu = $_REQUEST["line_resu"];
 $time = $_REQUEST["line_time"];
 $deta = $_REQUEST["line_deta"];
+$challenge_answered_yes = isset($_REQUEST["challenge_answered_yes"]) ? (int)($_REQUEST["challenge_answered_yes"] === 'true') : null;
 
 $nameUnchanged = $name; // /js/preMenu.js: playerName
 
@@ -72,9 +74,9 @@ if (is_object($lang))
 
 // Table 'ifractions': line_id line_hostip line_playername line_datetime line_lang line_game line_mode line_operator line_level line_mappos line_result line_time line_details
 $sql = "INSERT INTO $tablename
-(line_hostip, line_playername, line_datetime, line_lang, line_game, line_mode, line_operator, line_level, line_mappos, line_result, line_time, line_details)
+(line_hostip, line_playername, line_datetime, line_lang, line_game, line_mode, line_operator, line_level, line_mappos, line_result, line_time, line_details, challenge_answered_yes)
 VALUES
-('$ip', '$name', '$date', '$lang', '$game', '$mode', '$oper', $leve, $posi, '$resu', $time, '$deta')";
+('$ip', '$name', '$date', '$lang', '$game', '$mode', '$oper', $leve, $posi, '$resu', $time, '$deta', " . ($challenge_answered_yes === null ? "NULL" : $challenge_answered_yes) . ")";
 
 // Register in database
 if ($conn->query($sql) === TRUE) {
