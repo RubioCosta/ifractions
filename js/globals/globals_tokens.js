@@ -246,6 +246,7 @@ const url = {
       // UI images
       ['challenge', baseUrl + 'scene/challenge.png'],
       ['result-bg', baseUrl + 'scene/background-result.png'],
+      ['result-bg-multiply', baseUrl + 'scene/background-result-multiply.png'],
     ],
     sprite: [
       // Game sprites

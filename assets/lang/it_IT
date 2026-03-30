@@ -21,6 +21,7 @@ s2_challenge_subtitle=Riesci a scoprirlo?\nSuccede qualcosa di curioso con quest
 s2_challenge_question=Queste frazioni rappresentano\nla stessa quantità?
 s2_explain_title=Come fanno queste\nfrazioni a essere uguali?
 s2_explain_body_correct=Dividiamo numeratore e denominatore per lo stesso numero.\nCambiamo solo il modo di rappresentarla.
+s2_explain_body_correct_multiply=Moltiplichiamo numeratore e denominatore per lo stesso numero.\nCambiamo solo il modo di rappresentarla.
 s2_explain_body_wrong=Queste frazioni non sono equivalenti.
 s2_explain_body_factor_prefix=Poiché
 s2_explain_body_factor_suffix=è uguale a 1, il valore della frazione non cambia.

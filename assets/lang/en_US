@@ -21,6 +21,7 @@ s2_challenge_subtitle=Can you figure it out?\nSomething curious happens with the
 s2_challenge_question=Do these fractions represent\nthe same quantity?
 s2_explain_title=How are these fractions equal?
 s2_explain_body_correct=We divide the numerator and denominator by the same number.\nWe only change the way we represent it.
+s2_explain_body_correct_multiply=We multiply the numerator and denominator by the same number.\nWe only change the way we represent it.
 s2_explain_body_wrong=These fractions are not equivalent.
 s2_explain_body_factor_prefix=Since
 s2_explain_body_factor_suffix=equals 1, the value of the fraction does not change.

@@ -21,6 +21,7 @@ s2_challenge_subtitle=¿Puedes descubrirlo?\nAlgo curioso sucede con estas fracc
 s2_challenge_question=¿Estas fracciones representan\nla misma cantidad?
 s2_explain_title=¿Cómo son iguales estas fracciones?
 s2_explain_body_correct=Dividimos el numerador y el denominador por el mismo número.\nSolo cambiamos la forma de representarlo.
+s2_explain_body_correct_multiply=Multiplicamos el numerador y el denominador por el mismo número.\nSolo cambiamos la forma de representarlo.
 s2_explain_body_wrong=Estas fracciones no son equivalentes.
 s2_explain_body_factor_prefix=Como
 s2_explain_body_factor_suffix=es igual a 1, el valor de la fracción no cambia.

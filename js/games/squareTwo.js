@@ -187,16 +187,37 @@ const squareTwo = {
 
       // Possible subdivisionList for (a)
       const subdivisionList = [2, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
+      const minIndex = (gameDifficulty - 1) * 2 + 1;
+      const maxIndex = (gameDifficulty - 1) * 2 + 3;
 
-      // Random index for 'subdivision'
-      const randomIndex = game.math.randomInRange(
-        (gameDifficulty - 1) * 2 + 1,
-        (gameDifficulty - 1) * 2 + 3
-      );
+      // Build a shuffled pool of all (A, B) pairs for this difficulty and
+      // iterate through it so the same combination never repeats until all
+      // possibilities have been exhausted, then reshuffle and start again.
+      if (
+        !squareTwo._configPool ||
+        squareTwo._configPoolDifficulty !== gameDifficulty ||
+        squareTwo._configIndex >= squareTwo._configPool.length
+      ) {
+        const allPairs = [];
+        for (let i = minIndex; i <= maxIndex; i++) {
+          const a = subdivisionList[i];
+          for (let b = 2; b < a; b++) {
+            if (a % b === 0) allPairs.push({ a, b });
+          }
+        }
+        // Fisher-Yates shuffle
+        for (let i = allPairs.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allPairs[i], allPairs[j]] = [allPairs[j], allPairs[i]];
+        }
+        squareTwo._configPool = allPairs;
+        squareTwo._configPoolDifficulty = gameDifficulty;
+        squareTwo._configIndex = 0;
+      }
 
       // Number of subdivisions of (a) and (b) (blocks)
-      const totalBlocksA = subdivisionList[randomIndex];
-      const totalBlocksB = game.math.randomDivisor(totalBlocksA);
+      const { a: totalBlocksA, b: totalBlocksB } =
+        squareTwo._configPool[squareTwo._configIndex++];
 
       const blockWidthA = self.control.blockWidth / totalBlocksA;
       const blockWidthB = self.control.blockWidth / totalBlocksB;
@@ -213,12 +234,11 @@ const squareTwo = {
             '\nMax index ((gameDifficulty - 1) * 2 + 3): ' +
             ((gameDifficulty - 1) * 2 + 3) +
             '\n------------------------ this' +
-            '\nget random min max for A: array[' +
-            randomIndex +
-            '] = ' +
+            '\ntotalBlocksA: ' +
             totalBlocksA +
-            '\nget random divisor for B: ' +
+            '\ntotalBlocksB: ' +
             totalBlocksB +
+            '\npool index: ' + (squareTwo._configIndex - 1) + '/' + squareTwo._configPool.length +
             '\n------------------------------'
         );
       }
@@ -888,7 +908,7 @@ const squareTwo = {
       const cardBottom = cardTop + imgH; // 948
 
       // 1. Background image + title text (image has the 🔍 icon, we add the text)
-      game.add.image(cx, cy, 'result-bg').anchor(0.5, 0.5);
+      game.add.image(cx, cy, gameMode === 'b' ? 'result-bg-multiply' : 'result-bg').anchor(0.5, 0.5);
       const titleText = withNewlines(game.lang.s2_explain_title);
       const titleY = cardTop + (titleText.includes('\n') ? 42 : 62);
       game.add.text(cx, titleY, titleText, {
@@ -909,7 +929,8 @@ const squareTwo = {
         smallNum = self.blocks.top.selectedAmount; smallDen = self.blocks.top.list.length;
         smallLineColor = colors.blueDark; smallFillColor = colors.blue;
       }
-      const factor = bigDen / smallDen;
+      const factorRaw = (gameMode === 'b') ? smallDen / bigDen : bigDen / smallDen;
+      const factor = Number.isInteger(factorRaw) ? factorRaw : parseFloat(factorRaw.toFixed(1));
       const fracStyle = { ...textStyles.fraction, fill: colors.blueDark, align: 'center' };
 
       // 2. Fraction numbers — placed over the image's fraction bar template
@@ -917,7 +938,7 @@ const squareTwo = {
       // x centres measured from image: left≈24%, mid≈47%, right≈75%
       const numY = cardTop + 238; // numerator baseline
       const c1 = cardLeft + 315;  // left fraction  (≈ 626)
-      const c3 = cardLeft + 610;  // centre fraction (≈ 921)
+      const c3 = cardLeft + (gameMode === 'b' ? 635 : 610);  // centre fraction (≈ 921)
       const c5 = cardLeft + 975;  // right fraction  (≈ 1286)
       game.add.text(c1, numY, bigNum + '\n' + bigDen, fracStyle, 65);
       game.add.text(c3, numY, factor + '\n' + factor, fracStyle, 65);
@@ -944,12 +965,14 @@ const squareTwo = {
       }
       // Badge — image already draws the star, just overlay the text
       const badgeCenterY = barsTop + barH / 2;
+      const badgeFontSize = Number.isInteger(factorRaw) ? 40 : 30;
       game.add.text(cx, badgeCenterY - 8, factor + '/' + factor + ' = 1', {
-        ...textStyles.h4_, fill: colors.blueDark, font: 'bold 40px Arial, sans-serif',
+        ...textStyles.h4_, fill: colors.blueDark, font: `bold ${badgeFontSize}px Arial, sans-serif`,
       });
 
       // 4. Body text — below the star area, image body zone starts ~560px from image top
-      const bodyParts = withNewlines(game.lang.s2_explain_body_correct).split('\n');
+      const bodyKey = (gameMode === 'b') ? 's2_explain_body_correct_multiply' : 's2_explain_body_correct';
+      const bodyParts = withNewlines(game.lang[bodyKey]).split('\n');
       const line1Raw = bodyParts[0];
       const wrapAt = 42;
       const wrapPos = line1Raw.lastIndexOf(' ', wrapAt);
@@ -1064,7 +1087,7 @@ const squareTwo = {
     runEndAnimation: function () {
       self.control.animationDelay++;
 
-      if (self.control.animationDelay === 100) {
+      if (self.control.animationDelay === 1) {
         if (self.control.isCorrect) {
           self.utils.renderExplanationUI();
         } else {
