@@ -163,6 +163,11 @@ const url = {
       // ['close', baseUrl + 'icons_interactive/close.png'],
       ['info', baseUrl + 'icons_interactive/info.png'],
       ['pointer', baseUrl + 'icons_interactive/pointer.png'],
+      // squareOne game UI images (loaded at boot so they are always in cache)
+      ['challenge-card', baseUrl + 'scene/challenge-card.png'],
+      ['circular-question', baseUrl + 'scene/circular-question.png'],
+      ['question-mark-with-arrow', baseUrl + 'scene/question-mark-with-arrow.png'],
+      ['end-tractor-game', baseUrl + 'scene/end-tractor-game.png'],
       // Menu icons - Games
       ['game_0', baseUrl + 'icons_menu/squareOne.png'], // Square I
       ['game_1', baseUrl + 'icons_menu/circleOne.png'], // Circle I

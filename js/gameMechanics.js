@@ -236,7 +236,7 @@ const game = {
 
       game.lang = {}; // Clear previously loaded language
 
-      fetch(url, { mode: 'same-origin' })
+      fetch(url + '?v=' + Date.now(), { mode: 'same-origin' })
         .then((response) => {
           if (!response.ok)
             throw new Error(
@@ -250,10 +250,12 @@ const game = {
           game.loadHandler.max += lines.length;
           lines.forEach((line) => {
             try {
-              const msg = line.split('=');
-              if (msg.length !== 2)
+              const eqIdx = line.indexOf('=');
+              if (eqIdx < 1)
                 throw Error('Game error: sintax error in i18y file.');
-              game.lang[msg[0].trim()] = msg[1].trim();
+              const key = line.slice(0, eqIdx).trim();
+              const value = line.slice(eqIdx + 1).trim();
+              game.lang[key] = value;
             } catch (error) {
               console.error(error.message);
             }

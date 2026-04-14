@@ -67,8 +67,8 @@ const squareOne = {
       arrow: undefined,
       help: undefined,
       message: undefined,
-      continue: {
-        // modal: undefined,
+      challenge: {},
+      explanation: {
         button: undefined,
         text: undefined,
       },
@@ -83,6 +83,10 @@ const squareOne = {
       isCorrect: false, // Checks player 'answer'
 
       count: 0, // An 'x' position counter used in the tractor animation
+
+      showChallenge: false, // When true, challenge modal is displayed (blocks interaction gated)
+      showExplanation: false, // When true, explanation modal is displayed at end of level
+      challengeAnsweredYes: null, // null = not yet answered, true = accepted challenge
     };
     this.animation = {
       animateTractor: false, // When true allows game to run 'tractor animation' code in update (turns animation of the moving tractor ON/OFF)
@@ -177,14 +181,11 @@ const squareOne = {
       correctXA
     );
     this.utils.renderCharacters();
-    this.utils.renderMainUI();
-
     this.restart = restart;
-    if (!this.restart) {
-      game.timer.start(); // Set a timer for the current level (used in postScore())
-      game.event.add('click', this.events.onInputDown);
-      game.event.add('mousemove', this.events.onInputOver);
-    }
+    this.utils.renderChallengeUI();
+    // Events added now so challenge button is clickable; game block interaction gated by showChallenge flag
+    game.event.add('click', this.events.onInputDown);
+    game.event.add('mousemove', this.events.onInputOver);
   },
 
   /**
@@ -539,6 +540,179 @@ const squareOne = {
         self.tractor.curFrame = 5;
       }
     },
+    renderChallengeUI: () => {
+      const cx = context.canvas.width / 2;
+      const withNewlines = (s) => (s == null ? '' : String(s).replace(/\\n/g, '\n'));
+      const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
+
+      // challenge-card.png is 2544×396px; scale 0.27 → 687×107px
+      const ribbonScale = 0.27;
+      const ribbonH = Math.round(396 * ribbonScale); // ≈ 107px
+      const ribbonY = 30;
+
+      // Challenge ribbon image at top center
+      self.ui.challenge.image = game.add.image(cx, ribbonY, 'challenge-card', ribbonScale, 1);
+      self.ui.challenge.image.anchor(0.5, 0);
+
+      // Title overlaid on ribbon (nudged down slightly to visual center of ribbon)
+      const ribbonCenterY = ribbonY + ribbonH / 2 + 8;
+      self.ui.challenge.title = game.add.text(
+        cx, ribbonCenterY,
+        withNewlines(game.lang.s1_challenge_title),
+        { ...textStyles.h2_, fill: colors.white, font: 'bold ' + textStyles.h2_.font }
+      );
+      self.ui.challenge.title.anchor(0.5, 0.5);
+
+      // Subtitle lines below the ribbon
+      const ribbonBottom = ribbonY + ribbonH;
+      const subtitleLines = withNewlines(game.lang.s1_challenge_subtitle).split('\n');
+      self.ui.challenge.subtitleTop = game.add.text(
+        cx, ribbonBottom + 48,
+        subtitleLines[0] || '',
+        { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
+      );
+      self.ui.challenge.subtitleTop.anchor(0.5, 0.5);
+
+      self.ui.challenge.subtitleBottom = game.add.text(
+        cx, ribbonBottom + 100,
+        subtitleLines.slice(1).join('\n'),
+        { ...textStyles.h3_, fill: colors.blue }
+      );
+      self.ui.challenge.subtitleBottom.anchor(0.5, 0.5);
+
+      // "Blocos a carregar:" label above the stacked blocks
+      const stackTopY = self.default.y0 - self.stack.list.length * self.default.height;
+      // Center label over the block stack (x0 is the edge; blocks extend inward by direc)
+      const labelX = self.default.x0 + self.default.width / 2 * self.control.direc;
+      self.ui.challenge.blocksLabel = game.add.text(
+        labelX, stackTopY - 50,
+        withNewlines(game.lang.s1_blocks_label),
+        { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
+      );
+      self.ui.challenge.blocksLabel.anchor(0.5, 0.5);
+
+      // question-mark-with-arrow.png is 1230×864px; scale 0.20 → 246×173px
+      // Placed at the correct floor hole position, bottom of image at floor level
+      const holeIdx = gameMode === 'b' ? self.floor.selectedIndex : self.floor.correctIndex;
+      const correctFloorBlock = self.floor.list[holeIdx];
+      const markerX = correctFloorBlock
+        ? correctFloorBlock.x + (correctFloorBlock.width / 2) * (gameOperation === 'minus' ? -1 : 1)
+        : cx;
+      self.ui.challenge.holeMarker = game.add.image(
+        markerX, self.default.y0 - 10,
+        'question-mark-with-arrow',
+        0.20, 1
+      );
+      self.ui.challenge.holeMarker.anchor(0.5, 1);
+
+      // Question card – right half, moved up from center
+      const cardW = 520; const cardH = 260;
+      const cardX = cx + (gameOperation === 'minus' ? -200 : 200);
+      const cardY = context.canvas.height / 2 - 80;
+      self.ui.challenge.card = game.add.geom.rect(
+        cardX, cardY, cardW, cardH, colors.white, 0.95, colors.blueMenuLine, 4
+      );
+      self.ui.challenge.card.anchor(0.5, 0.5);
+
+      // Question text: split into two lines at the midpoint word to fit inside card
+      const rawQuestion = withNewlines(game.lang.s1_challenge_question);
+      const qWords = rawQuestion.replace(/\n/g, ' ').split(' ');
+      const mid = Math.ceil(qWords.length / 2);
+      const questionWrapped = qWords.slice(0, mid).join(' ') + '\n' + qWords.slice(mid).join(' ');
+      self.ui.challenge.question = game.add.text(
+        cardX, cardY - 65,
+        questionWrapped,
+        { ...textStyles.h3_, fill: colors.blueDark, font: 'bold ' + textStyles.h3_.font }
+      );
+      self.ui.challenge.question.anchor(0.5, 0.5);
+
+      // Fraction equation: "1 + ½ + ... =" as text, then circle — group centered at cardX
+      // Show only the blocks that will fill the hole (0 → stack.correctIndex) in both modes
+      const stackEndIdx = self.stack.correctIndex ?? (self.stack.list.length - 1);
+      const equationParts = self.stack.list.slice(0, stackEndIdx + 1).map(block => {
+        const den = block.fraction.denominator;
+        return FRAC_UNICODE[den] ?? `1/${den}`;
+      });
+      const circleScale = 0.20;
+      const circleR = 35;
+      const gap = 10;
+      const eqStyle = { ...textStyles.h3_, fill: colors.blueDark };
+      const maxW = cardW - 80; // max group width before wrapping
+
+      context.save();
+      context.font = '38px Arial, sans-serif';
+
+      const isMinus = gameOperation === 'minus';
+      const eqSep   = isMinus ? ' - ' : ' + ';
+      const eqFirst = isMinus ? '-' + equationParts[0] : equationParts[0];
+      const eqRest  = equationParts.slice(1).join(eqSep);
+      const eqBody  = eqFirst + (eqRest ? eqSep + eqRest : '');
+      const fullStr = eqBody + ' =';
+      const fullW = context.measureText(fullStr).width;
+
+      if (fullW + gap + circleR * 2 <= maxW) {
+        // Single line — group centered at cardX
+        const eqY = cardY + 42;
+        const textX = cardX - gap / 2 - circleR;
+        const circleX = cardX + fullW / 2 + gap / 2;
+        self.ui.challenge.equation = game.add.text(textX, eqY, fullStr, eqStyle);
+        self.ui.challenge.equationCircle = game.add.image(circleX, eqY - 14, 'circular-question', circleScale, 1);
+        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+      } else {
+        // Two lines — split parts roughly in half
+        const mid = Math.ceil(equationParts.length / 2);
+        const line1Parts = isMinus
+          ? '-' + equationParts[0] + (mid > 1 ? eqSep + equationParts.slice(1, mid).join(eqSep) : '')
+          : equationParts.slice(0, mid).join(eqSep);
+        const line1Str = line1Parts + eqSep.trimEnd();
+        const line2Str = equationParts.slice(mid).join(eqSep) + ' =';
+        const line2W = context.measureText(line2Str).width;
+
+        const line1Y = cardY + 28;
+        const line2Y = cardY + 68;
+
+        // Both lines centered at cardX; circle goes right of line 2 text
+        self.ui.challenge.equation = game.add.text(cardX, line1Y, line1Str, eqStyle);
+        self.ui.challenge.equationLine2 = game.add.text(cardX, line2Y, line2Str, eqStyle);
+        const line2CircleX = cardX + line2W / 2 + gap + circleR;
+        self.ui.challenge.equationCircle = game.add.image(line2CircleX, line2Y - 14, 'circular-question', circleScale, 1);
+        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+      }
+
+      context.restore();
+
+      // Accept button – directly below the card
+      const btnW = cardW; const btnH = 90;
+      const btnY = cardY + cardH / 2 + 65;
+      self.ui.challenge.button = game.add.geom.rect(cardX, btnY, btnW, btnH, '#e09800', 1);
+      self.ui.challenge.button.anchor(0.5, 0.5);
+      self.ui.challenge.buttonText = game.add.text(
+        cardX, btnY + 14,
+        withNewlines(game.lang.s1_challenge_accept),
+        textStyles.btn
+      );
+      self.ui.challenge.buttonText.anchor(0.5, 0.5);
+
+      self.control.showChallenge = true;
+    },
+
+    acceptChallenge: () => {
+      self.control.challengeAnsweredYes = true;
+      // Hide all challenge overlay elements
+      Object.values(self.ui.challenge).forEach(el => {
+        if (el && typeof el.alpha !== 'undefined') el.alpha = 0;
+      });
+      self.control.showChallenge = false;
+
+      // Show main game UI (intro message, selection arrow)
+      self.utils.renderMainUI();
+
+      // Start timer now that challenge has been accepted
+      if (!self.restart) {
+        game.timer.start();
+      }
+    },
+
     renderMainUI: () => {
       // Help pointer
       self.ui.help = game.add.image(0, 0, 'pointer', 1.7, 0);
@@ -819,30 +993,158 @@ const squareOne = {
 
       return endSignX;
     },
-    renderEndUI: () => {
-      let btnColor = colors.green;
-      let btnText = game.lang.continue;
+    renderExplanationUI: () => {
+      const cx = context.canvas.width / 2;
+      const cy = context.canvas.height / 2;
+      const withNewlines = (s) => (s == null ? '' : String(s).replace(/\\n/g, '\n'));
+      const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
+      const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
+      // WRONG ANSWER: just a button, no extra background rectangle
       if (!self.control.isCorrect) {
-        btnColor = colors.red;
-        btnText = game.lang.retry;
+        context.font = textStyles.btn.font;
+        const retryText = game.lang.retry || 'Retry';
+        const btnW = Math.max(420, context.measureText(retryText).width + 120);
+        const btnH = 80; const btnCY = cy + 60;
+        self.ui.explanation.button = game.add.geom.rect(cx, btnCY, btnW, btnH, colors.red);
+        self.ui.explanation.button.anchor(0.5, 0.5);
+        self.ui.explanation.text = game.add.text(cx, btnCY + 14, retryText, textStyles.btn);
+        self.control.showExplanation = true;
+        return;
       }
 
-      // continue button
-      self.ui.continue.button = game.add.geom.rect(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 100,
-        450,
-        100,
-        btnColor
-      );
-      self.ui.continue.button.anchor(0.5, 0.5);
-      self.ui.continue.text = game.add.text(
-        context.canvas.width / 2,
-        context.canvas.height / 2 + 16 + 100,
-        btnText,
-        textStyles.btn
-      );
+      // CORRECT ANSWER: full explanation card — positions based on actual image dimensions
+      const naturalW = game.image['end-tractor-game'].width;
+      const naturalH = game.image['end-tractor-game'].height;
+      const canvasW  = context.canvas.width;
+      const canvasH  = context.canvas.height;
+      const imgScale = Math.min((canvasW * 0.92) / naturalW, (canvasH * 0.92) / naturalH);
+      const imgW = naturalW * imgScale;
+      const imgH = naturalH * imgScale;
+      const cardTop    = cy - imgH / 2;
+      const cardBottom = cy + imgH / 2;
+      const cardLeft   = cx - imgW / 2;
+
+      // Background image — scaled to fit canvas
+      const bgImg = game.add.image(cx, cy, 'end-tractor-game');
+      bgImg.anchor(0.5, 0.5);
+      bgImg.scale = imgScale;
+
+      // Title overlaid on the image's top blue bar (no emoji — image already has magnifying glass)
+      const titleText = withNewlines(game.lang.s1_explain_title);
+      game.add.text(cx + imgW * 0.04, cardTop + imgH * 0.07, titleText, {
+        ...textStyles.h3_, fill: colors.white, font: 'bold ' + textStyles.h3_.font,
+      });
+
+      // Step labels below the image's built-in circles (image already draws 1 → 2 → 3)
+      const stepTexts = [
+        withNewlines(game.lang.s1_explain_step1),
+        withNewlines(game.lang.s1_explain_step2),
+        withNewlines(game.lang.s1_explain_step3),
+      ];
+      const stepFont = `24px ${font.families.default}`;
+      const stepStyle = { ...textStyles.p_, fill: colors.blueDark, font: stepFont };
+      const stepsLine1Y = cardTop + imgH * 0.245;
+      const stepsLine2Y = stepsLine1Y + 26;
+      // Positions centred under each circle in the background image
+      const stepCenters = [
+        cardLeft + imgW * 0.28,
+        cardLeft + imgW * 0.50,
+        cardLeft + imgW * 0.75,
+      ];
+      stepCenters.forEach((sx, idx) => {
+        const lines = stepTexts[idx].split('\n');
+        game.add.text(sx, stepsLine1Y, lines[0] || '', stepStyle);
+        if (lines[1]) game.add.text(sx, stepsLine2Y, lines[1], stepStyle);
+      });
+
+      // Fraction equation — placed in the image's equation box area
+      let holeNumerator = 0;
+      const lastIdx = self.stack.correctIndex ?? (self.stack.list.length - 1);
+      for (let i = 0; i <= lastIdx; i++) {
+        holeNumerator += divisor / self.stack.list[i].fraction.denominator;
+      }
+      const holeSize = holeNumerator / divisor;
+      const formatNum = (n) => {
+        if (Number.isInteger(n)) return String(n);
+        const whole = Math.floor(n);
+        const frac = n - whole;
+        const FRAC_MAP = { 0.25: '\u00BC', 0.5: '\u00BD', 0.75: '\u00BE' };
+        return (whole ? whole + ' + ' : '') + (FRAC_MAP[Math.round(frac * 4) / 4] ?? n.toFixed(2).replace(/0+$/, ''));
+      };
+      const equationParts = self.stack.list.slice(0, lastIdx + 1).map(block => {
+        return FRAC_UNICODE[block.fraction.denominator] ?? `1/${block.fraction.denominator}`;
+      });
+      const isMinus = gameOperation === 'minus';
+      const eqSeparator = isMinus ? ' - ' : ' + ';
+      const eqTerms = isMinus
+        ? '-' + equationParts[0] + (equationParts.length > 1 ? eqSeparator + equationParts.slice(1).join(eqSeparator) : '')
+        : equationParts.join(eqSeparator);
+      // For minus: "-3 + ¾" → "-3 - ¾" so the sign stays consistent
+      const resultStr = isMinus
+        ? '-' + formatNum(holeSize).replace(' + ', ' - ')
+        : formatNum(holeSize);
+      const equationStr = eqTerms + ' = ' + resultStr;
+      game.add.text(cx, cardTop + imgH * 0.355, equationStr, {
+        ...textStyles.h3_, fill: colors.blueDark, font: 'bold ' + textStyles.h3_.font,
+      });
+
+      // Block bars — stacked upward from ground level, height proportional to fraction
+      const groundY     = cardTop + imgH * 0.72;   // ground line where tractor sits
+      const stackTopMin = cardTop + imgH * 0.44;   // never go above equation box
+      const maxStackH   = groundY - stackTopMin;   // available vertical space
+      const barW        = imgW * 0.055;
+      const barsStartX  = cardLeft + imgW * 0.30;
+      const totalBlocks = lastIdx + 1;
+      const fillColor   = gameOperation === 'minus' ? colors.redLight : '#79d2a1';
+      const borderColor = gameOperation === 'minus' ? colors.red      : colors.green;
+
+      // Calculate proportional heights, then scale down if they exceed available space
+      const blocks = self.stack.list.slice(0, totalBlocks);
+      const rawUnitH = Math.max(48, Math.min(80, maxStackH / holeSize));
+      const rawHeights = blocks.map(b => Math.max(20, rawUnitH / b.fraction.denominator));
+      const rawTotal   = rawHeights.reduce((s, h) => s + h + 4, -4);
+      const scale      = rawTotal > maxStackH ? maxStackH / rawTotal : 1;
+      const blockHeights = rawHeights.map(h => Math.max(10, h * scale));
+      const totalStackH = blockHeights.reduce((s, h) => s + h + 4, -4);
+      let curY = groundY - totalStackH;
+      blocks.forEach((block, i) => {
+        const bh = blockHeights[i];
+        game.add.geom.rect(barsStartX, curY, barW, bh, fillColor, 0.8, borderColor, 2);
+        const fracLabel = FRAC_UNICODE[block.fraction.denominator] ?? `1/${block.fraction.denominator}`;
+        game.add.text(barsStartX + barW + 20, curY + bh / 2 + 4, fracLabel, {
+          ...textStyles.p_, fill: colors.blueDark, font: `20px ${font.families.default}`,
+        });
+        curY += bh + 4;
+      });
+
+      // Hole label — text only, centred over the image's built-in blue rounded rectangle
+      const holeLabelCX = cardLeft + imgW * 0.675;
+      const holeLabelCY = cardTop  + imgH * 0.588;
+      const holeWords = (game.lang.s1_hole_label || 'Hole of size').split(' ');
+      const holeMid = Math.ceil(holeWords.length / 2);
+      const holeLabelLine1 = holeWords.slice(0, holeMid).join(' ');
+      const holeLabelLine2 = holeWords.slice(holeMid).join(' ');
+      const holeLabelLine3 = (isMinus ? '-' : '') + formatNum(holeSize).replace(' + ', ' - ');
+      const holeFont = `bold 24px ${font.families.default}`;
+      const holeLineH = 24;
+      game.add.text(holeLabelCX, holeLabelCY - holeLineH,  holeLabelLine1, { ...textStyles.p_, fill: colors.white, font: holeFont });
+      game.add.text(holeLabelCX, holeLabelCY,               holeLabelLine2, { ...textStyles.p_, fill: colors.white, font: holeFont });
+      game.add.text(holeLabelCX, holeLabelCY + holeLineH,  holeLabelLine3, { ...textStyles.p_, fill: colors.white, font: holeFont });
+
+      // Body text
+      const bodyLines = withNewlines(game.lang.s1_explain_body).split('\n');
+      game.add.text(cx, cardBottom - imgH * 0.20, bodyLines[0], { ...textStyles.p_, fill: colors.blueDark });
+      if (bodyLines[1]) {
+        game.add.text(cx, cardBottom - imgH * 0.13, bodyLines[1], { ...textStyles.p_, fill: colors.blueDark });
+      }
+
+      // Continue button — anchored at centre so hover scale grows evenly from centre
+      const btnW = imgW * 0.38; const btnH = 62; const btnCY = cardBottom - imgH * 0.07;
+      self.ui.explanation.button = game.add.geom.rect(cx, btnCY, btnW, btnH, colors.green);
+      self.ui.explanation.button.anchor(0.5, 0.5);
+      self.ui.explanation.text = game.add.text(cx, btnCY + 14, game.lang.continue, textStyles.btn);
+      self.control.showExplanation = true;
     },
 
     // UPDATE HANDLERS
@@ -914,22 +1216,18 @@ const squareOne = {
           ? self.floor.selectedIndex === self.floor.correctIndex
           : self.stack.selectedIndex === self.stack.correctIndex;
 
-      const x = self.utils.renderOperationUI();
+      const feedbackX = context.canvas.width * 0.75;
+      const feedbackY = context.canvas.height / 3;
 
       // Give feedback to player and turns on sprite animation
       if (self.control.isCorrect) {
         completedLevels++; // Increases number os finished levels
         if (audioStatus) game.audio.okSound.play();
         game.animation.play(self.tractor.animation[0]);
-        game.add
-          .image(x + 50, context.canvas.height / 3, 'answer_correct')
-          .anchor(0.5, 0.5);
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
       } else {
         if (audioStatus) game.audio.errorSound.play();
-        game.add
-          .image(x, context.canvas.height / 3, 'answer_wrong')
-          .anchor(0.5, 0.5);
+        game.add.image(feedbackX, feedbackY, 'answer_wrong').anchor(0.5, 0.5);
       }
 
       self.fetch.postScore();
@@ -945,8 +1243,7 @@ const squareOne = {
       if (self.control.isCorrect) self.tractor.x += self.animation.speed;
 
       if (self.control.count === 100) {
-        self.utils.renderEndUI();
-        self.control.showEndInfo = true;
+        self.utils.renderExplanationUI();
 
         if (self.control.isCorrect) canGoToNextMapPosition = true;
         else canGoToNextMapPosition = false;
@@ -984,7 +1281,7 @@ const squareOne = {
      * Function called by self.events.onInputDown() when player clicks on a valid rectangle.
      */
     clickHandler: (clickedIndex, curSet) => {
-      if (!self.control.hasClicked && !self.animation.animateEnding) {
+      if (!self.control.hasClicked && !self.animation.animateEnding && !self.control.showChallenge) {
         document.body.style.cursor = 'auto';
         // Play beep sound
         if (audioStatus) game.audio.popSound.play();
@@ -1091,6 +1388,22 @@ const squareOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
+      // Challenge modal: block all game interaction until accepted
+      if (self.control.showChallenge) {
+        if (game.math.isOverIcon(x, y, self.ui.challenge.button)) {
+          if (audioStatus) game.audio.popSound.play();
+          self.utils.acceptChallenge();
+        }
+        navigation.onInputDown(x, y);
+        game.render.all();
+        return;
+      }
+
+      // Hide intro message on first click after challenge acceptance
+      if (!self.control.hasClicked && self.ui.message && self.ui.message[0]) {
+        self.ui.message[0].alpha = 0;
+      }
+
       // click blocks
       const curSet = gameMode == 'a' ? self.floor : self.stack;
       for (let i in curSet.list) {
@@ -1100,9 +1413,9 @@ const squareOne = {
         }
       }
 
-      // Continue button
-      if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
+      // Explanation button
+      if (self.control.showExplanation) {
+        if (game.math.isOverIcon(x, y, self.ui.explanation.button)) {
           if (audioStatus) game.audio.popSound.play();
           self.utils.endLevel();
         }
@@ -1124,51 +1437,64 @@ const squareOne = {
       let isOverFloor = false;
       let isOverStack = false;
 
-      if (gameMode === 'a') {
-        self.floor.list.forEach((cur) => {
-          // hover floor blocks
-          if (game.math.isOverIcon(x, y, cur)) {
-            isOverFloor = true;
-            self.utils.overHandler(cur);
-          }
-          // move arrow
-          if (
-            !self.control.hasClicked &&
-            !self.animation.animateEnding &&
-            game.math.isOverIcon(x, self.default.y0, cur)
-          ) {
-            self.ui.arrow.x = x;
-          }
-        });
+      if (!self.control.showChallenge) {
+        if (gameMode === 'a') {
+          self.floor.list.forEach((cur) => {
+            // hover floor blocks
+            if (game.math.isOverIcon(x, y, cur)) {
+              isOverFloor = true;
+              self.utils.overHandler(cur);
+            }
+            // move arrow
+            if (
+              !self.control.hasClicked &&
+              !self.animation.animateEnding &&
+              game.math.isOverIcon(x, self.default.y0, cur)
+            ) {
+              self.ui.arrow.x = x;
+            }
+          });
 
-        if (!isOverFloor) self.utils.outHandler('a');
+          if (!isOverFloor) self.utils.outHandler('a');
+        }
+
+        if (gameMode === 'b') {
+          // hover stack blocks
+          self.stack.list.forEach((cur) => {
+            if (game.math.isOverIcon(x, y, cur)) {
+              isOverStack = true;
+              self.utils.overHandler(cur);
+            }
+          });
+          if (!isOverStack) self.utils.outHandler('b');
+        }
       }
 
-      if (gameMode === 'b') {
-        // hover stack blocks
-        self.stack.list.forEach((cur) => {
-          if (game.math.isOverIcon(x, y, cur)) {
-            isOverStack = true;
-            self.utils.overHandler(cur);
-          }
-        });
-        if (!isOverStack) self.utils.outHandler('b');
-      }
-
-      // Continue button
-      if (self.control.showEndInfo) {
-        if (game.math.isOverIcon(x, y, self.ui.continue.button)) {
-          // If pointer is over icon
+      // Challenge accept button hover
+      if (self.control.showChallenge && self.ui.challenge.button) {
+        if (game.math.isOverIcon(x, y, self.ui.challenge.button)) {
           document.body.style.cursor = 'pointer';
-          self.ui.continue.button.scale =
-            self.ui.continue.button.initialScale * 1.1;
-          self.ui.continue.text.style = textStyles.btnLg;
+          self.ui.challenge.button.scale = self.ui.challenge.button.initialScale * 1.1;
+          self.ui.challenge.buttonText.style = textStyles.btnLg;
         } else {
-          // If pointer is not over icon
           document.body.style.cursor = 'auto';
-          self.ui.continue.button.scale =
-            self.ui.continue.button.initialScale * 1;
-          self.ui.continue.text.style = textStyles.btn;
+          self.ui.challenge.button.scale = self.ui.challenge.button.initialScale * 1;
+          self.ui.challenge.buttonText.style = textStyles.btn;
+        }
+      }
+
+      // Explanation button hover
+      if (self.control.showExplanation) {
+        if (game.math.isOverIcon(x, y, self.ui.explanation.button)) {
+          document.body.style.cursor = 'pointer';
+          self.ui.explanation.button.scale =
+            self.ui.explanation.button.initialScale * 1.05;
+          self.ui.explanation.text.style = textStyles.btnLg;
+        } else {
+          document.body.style.cursor = 'auto';
+          self.ui.explanation.button.scale =
+            self.ui.explanation.button.initialScale * 1;
+          self.ui.explanation.text.style = textStyles.btn;
         }
       }
 
@@ -1211,7 +1537,9 @@ const squareOne = {
         ' blockIndex: ' +
         self.stack.selectedIndex +
         ', floorIndex: ' +
-        self.floor.selectedIndex;
+        self.floor.selectedIndex +
+        '&challenge_answered_yes=' +
+        self.control.challengeAnsweredYes;
 
       // FOR MOODLE
       sendToDatabase(data);
