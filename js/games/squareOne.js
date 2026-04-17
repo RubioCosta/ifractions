@@ -545,9 +545,9 @@ const squareOne = {
       const withNewlines = (s) => (s == null ? '' : String(s).replace(/\\n/g, '\n'));
       const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
 
-      // challenge-card.png is 2544×396px; scale 0.27 → 687×107px
-      const ribbonScale = 0.27;
-      const ribbonH = Math.round(396 * ribbonScale); // ≈ 107px
+      // challenge-card.png is 786×166px; scale to ~680px wide
+      const ribbonScale = 0.87;
+      const ribbonH = Math.round(166 * ribbonScale); // ≈ 144px
       const ribbonY = 30;
 
       // Challenge ribbon image at top center
@@ -555,7 +555,7 @@ const squareOne = {
       self.ui.challenge.image.anchor(0.5, 0);
 
       // Title overlaid on ribbon (nudged down slightly to visual center of ribbon)
-      const ribbonCenterY = ribbonY + ribbonH / 2 + 8;
+      const ribbonCenterY = ribbonY + ribbonH / 2 + 2;
       self.ui.challenge.title = game.add.text(
         cx, ribbonCenterY,
         withNewlines(game.lang.s1_challenge_title),
@@ -614,15 +614,17 @@ const squareOne = {
       );
       self.ui.challenge.card.anchor(0.5, 0.5);
 
-      // Question text: split into two lines at the midpoint word to fit inside card
-      const rawQuestion = withNewlines(game.lang.s1_challenge_question);
-      const qWords = rawQuestion.replace(/\n/g, ' ').split(' ');
-      const mid = Math.ceil(qWords.length / 2);
-      const questionWrapped = qWords.slice(0, mid).join(' ') + '\n' + qWords.slice(mid).join(' ');
+      // Question text: use \n from lang file directly
+      const questionWrapped = withNewlines(game.lang.s1_challenge_question);
+      const qLines = questionWrapped.split('\n').length;
+      const qFontSize = qLines === 3 ? 30 : qLines > 3 ? 26 : 32;
+      const qLineH   = qLines >= 3 ? 34 : 40;
+      const qOffsetY  = qLines >= 3 ? -80 : -65;
       self.ui.challenge.question = game.add.text(
-        cardX, cardY - 65,
+        cardX, cardY + qOffsetY,
         questionWrapped,
-        { ...textStyles.h3_, fill: colors.blueDark, font: 'bold ' + textStyles.h3_.font }
+        { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${qFontSize}px ${font.families.default}` },
+        qLineH
       );
       self.ui.challenge.question.anchor(0.5, 0.5);
 
@@ -1000,19 +1002,6 @@ const squareOne = {
       const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
       const divisor = gameDifficulty == 3 ? 4 : gameDifficulty;
 
-      // WRONG ANSWER: just a button, no extra background rectangle
-      if (!self.control.isCorrect) {
-        context.font = textStyles.btn.font;
-        const retryText = game.lang.retry || 'Retry';
-        const btnW = Math.max(420, context.measureText(retryText).width + 120);
-        const btnH = 80; const btnCY = cy + 60;
-        self.ui.explanation.button = game.add.geom.rect(cx, btnCY, btnW, btnH, colors.red);
-        self.ui.explanation.button.anchor(0.5, 0.5);
-        self.ui.explanation.text = game.add.text(cx, btnCY + 14, retryText, textStyles.btn);
-        self.control.showExplanation = true;
-        return;
-      }
-
       // CORRECT ANSWER: full explanation card — positions based on actual image dimensions
       const naturalW = game.image['end-tractor-game'].width;
       const naturalH = game.image['end-tractor-game'].height;
@@ -1082,7 +1071,7 @@ const squareOne = {
         : equationParts.join(eqSeparator);
       // For minus: "-3 + ¾" → "-3 - ¾" so the sign stays consistent
       const resultStr = isMinus
-        ? '-' + formatNum(holeSize).replace(' + ', ' - ')
+        ? '-' + formatNum(holeSize).replace(' + ', ' e ')
         : formatNum(holeSize);
       const equationStr = eqTerms + ' = ' + resultStr;
       game.add.text(cx, cardTop + imgH * 0.355, equationStr, {
@@ -1111,7 +1100,8 @@ const squareOne = {
       blocks.forEach((block, i) => {
         const bh = blockHeights[i];
         game.add.geom.rect(barsStartX, curY, barW, bh, fillColor, 0.8, borderColor, 2);
-        const fracLabel = FRAC_UNICODE[block.fraction.denominator] ?? `1/${block.fraction.denominator}`;
+        const fracBase = FRAC_UNICODE[block.fraction.denominator] ?? `1/${block.fraction.denominator}`;
+        const fracLabel = (isMinus ? '-' : '') + fracBase;
         game.add.text(barsStartX + barW + 20, curY + bh / 2 + 4, fracLabel, {
           ...textStyles.p_, fill: colors.blueDark, font: `20px ${font.families.default}`,
         });
@@ -1125,25 +1115,54 @@ const squareOne = {
       const holeMid = Math.ceil(holeWords.length / 2);
       const holeLabelLine1 = holeWords.slice(0, holeMid).join(' ');
       const holeLabelLine2 = holeWords.slice(holeMid).join(' ');
-      const holeLabelLine3 = (isMinus ? '-' : '') + formatNum(holeSize).replace(' + ', ' - ');
+      const holeLabelLine3 = (isMinus ? '-' : '') + formatNum(holeSize).replace(' + ', ' e ');
       const holeFont = `bold 24px ${font.families.default}`;
       const holeLineH = 24;
       game.add.text(holeLabelCX, holeLabelCY - holeLineH,  holeLabelLine1, { ...textStyles.p_, fill: colors.white, font: holeFont });
       game.add.text(holeLabelCX, holeLabelCY,               holeLabelLine2, { ...textStyles.p_, fill: colors.white, font: holeFont });
       game.add.text(holeLabelCX, holeLabelCY + holeLineH,  holeLabelLine3, { ...textStyles.p_, fill: colors.white, font: holeFont });
 
-      // Body text
+      // Body text (up to 3 lines, compact spacing)
       const bodyLines = withNewlines(game.lang.s1_explain_body).split('\n');
-      game.add.text(cx, cardBottom - imgH * 0.20, bodyLines[0], { ...textStyles.p_, fill: colors.blueDark });
-      if (bodyLines[1]) {
-        game.add.text(cx, cardBottom - imgH * 0.13, bodyLines[1], { ...textStyles.p_, fill: colors.blueDark });
-      }
+      const bodyLineH = 30;
+      const bodyGap = 14; // extra gap after first line
+      const bodyStyle = { ...textStyles.p_, fill: colors.blueDark };
+      const bodyMidY = cardBottom - imgH * 0.175;
+      const totalH = (bodyLines.length - 1) * bodyLineH + (bodyLines.length > 1 ? bodyGap : 0);
+      const bodyStartY = bodyMidY - totalH / 2;
+      bodyLines.forEach((line, i) => {
+        const y = bodyStartY + (i === 0 ? 0 : bodyGap + i * bodyLineH);
+        game.add.text(cx, y, line, bodyStyle);
+      });
 
-      // Continue button — anchored at centre so hover scale grows evenly from centre
+      // Checkmark in the top-right corner of the card (~90px, scale = 90/256)
+      const checkScale = imgH * 0.13 / 256;
+      const checkImg = game.add.image(cardLeft + imgW - 16, cardTop + 16, 'answer_correct', checkScale);
+      checkImg.anchor(1, 0);
+
+      // Continue button (only reached on correct answer)
       const btnW = imgW * 0.38; const btnH = 62; const btnCY = cardBottom - imgH * 0.07;
       self.ui.explanation.button = game.add.geom.rect(cx, btnCY, btnW, btnH, colors.green);
       self.ui.explanation.button.anchor(0.5, 0.5);
       self.ui.explanation.text = game.add.text(cx, btnCY + 14, game.lang.continue, textStyles.btn);
+      self.control.showExplanation = true;
+    },
+    renderEndUI: () => {
+      const cx = context.canvas.width / 2;
+      const cy = context.canvas.height / 2;
+      let btnColor = colors.green;
+      let btnText = game.lang.continue;
+      if (!self.control.isCorrect) {
+        btnColor = colors.red;
+        btnText = game.lang.retry || 'Retry';
+      }
+      self.ui.explanation.button = game.add.geom.rect(
+        cx, cy + 100, 450, 100, btnColor
+      );
+      self.ui.explanation.button.anchor(0.5, 0.5);
+      self.ui.explanation.text = game.add.text(
+        cx, cy + 16 + 100, btnText, textStyles.btn
+      );
       self.control.showExplanation = true;
     },
 
@@ -1242,11 +1261,15 @@ const squareOne = {
       // If CORRECT ANSWER runs final tractor animation (else tractor desn't move, just wait)
       if (self.control.isCorrect) self.tractor.x += self.animation.speed;
 
-      if (self.control.count === 100) {
-        self.utils.renderExplanationUI();
+      if (!self.control.isCorrect && self.control.count === 1) {
+        self.utils.renderOperationUI();
+        self.utils.renderEndUI();
+        canGoToNextMapPosition = false;
+      }
 
-        if (self.control.isCorrect) canGoToNextMapPosition = true;
-        else canGoToNextMapPosition = false;
+      if (self.control.isCorrect && self.control.count === 100) {
+        self.utils.renderExplanationUI();
+        canGoToNextMapPosition = true;
       }
     },
     endLevel: () => {
