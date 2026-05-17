@@ -57,6 +57,7 @@ const circleOne = {
     this.ui = {
       help: undefined,
       message: undefined,
+      challenge: {},
       continue: {
         // modal: undefined,
         button: undefined,
@@ -121,6 +122,8 @@ const circleOne = {
       hasClicked: false, // Checks if user has clicked
       checkAnswer: false, // Check kid on top of kiteline
       isCorrect: false, // Informs answer is correct
+      showChallenge: false,
+      challengeAnsweredYes: null,
       showEndInfo: false,
       endSignX: undefined,
       curWalkedPath: 0,
@@ -165,10 +168,10 @@ const circleOne = {
     this.restart = restart;
 
     this.utils.renderCharacters(validPath, kiteX);
-    this.utils.renderMainUI();
+
+    this.utils.renderChallengeUI();
 
     if (!this.restart) {
-      game.timer.start(); // Set a timer for the current level (used in postScore())
       game.event.add('click', this.events.onInputDown);
       game.event.add('mousemove', this.events.onInputOver);
     }
@@ -597,6 +600,176 @@ const circleOne = {
         self.kite.alpha = 1;
       }
     },
+    renderChallengeUI: function () {
+      // Hide game kite line during challenge
+      self.kite_line.alpha = 0;
+      self.kite.alpha = 0;
+
+      const cx = context.canvas.width / 2;
+      const withNewlines = (s) => (s == null ? '' : String(s).replace(/\\n/g, '\n'));
+      const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
+
+      const ribbonScale = 0.87;
+      const ribbonH = Math.round(166 * ribbonScale);
+      const ribbonY = 30;
+
+      self.ui.challenge.image = game.add.image(cx, ribbonY, 'challenge-card', ribbonScale, 1);
+      self.ui.challenge.image.anchor(0.5, 0);
+
+      const ribbonCenterY = ribbonY + ribbonH / 2 + 2;
+      self.ui.challenge.title = game.add.text(
+        cx, ribbonCenterY,
+        withNewlines(game.lang.c1_challenge_title),
+        { ...textStyles.h2_, fill: colors.white, font: 'bold ' + textStyles.h2_.font }
+      );
+      self.ui.challenge.title.anchor(0.5, 0.5);
+
+      const ribbonBottom = ribbonY + ribbonH;
+      const subtitleLines = withNewlines(game.lang.c1_challenge_subtitle).split('\n');
+      self.ui.challenge.subtitleTop = game.add.text(
+        cx, ribbonBottom + 48,
+        subtitleLines[0] || '',
+        { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
+      );
+      self.ui.challenge.subtitleTop.anchor(0.5, 0.5);
+      self.ui.challenge.subtitleBottom = game.add.text(
+        cx, ribbonBottom + 100,
+        subtitleLines.slice(1).join('\n'),
+        { ...textStyles.h3_, fill: colors.blue }
+      );
+      self.ui.challenge.subtitleBottom.anchor(0.5, 0.5);
+
+      const topCircleY = self.road.defaultY + 20 - 5 - self.circles.diameter / 2
+        - (self.circles.list.length - 1) * self.circles.diameter;
+      const kidHeadY = self.kid ? self.kid.y - 155 : topCircleY;
+      const labelY = Math.min(topCircleY, kidHeadY) - 30;
+      self.ui.challenge.circlesLabel = game.add.text(
+        self.road.x, labelY,
+        withNewlines(game.lang.c1_circles_label),
+        { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
+      );
+      self.ui.challenge.circlesLabel.anchor(0.5, 0.5);
+
+      const cardW = 580; const cardH = 260;
+      const cardX = cx;
+      const cardY = context.canvas.height / 2 - 80;
+      self.ui.challenge.card = game.add.geom.rect(
+        cardX, cardY, cardW, cardH, colors.white, 0.95, colors.blueMenuLine, 4
+      );
+      self.ui.challenge.card.anchor(0.5, 0.5);
+
+      const questionWrapped = withNewlines(
+        gameMode === 'b' ? (game.lang.c1_challenge_question_b || game.lang.c1_challenge_question) : game.lang.c1_challenge_question
+      );
+      const qLines = questionWrapped.split('\n').length;
+      const qFontSize = qLines === 3 ? 30 : qLines > 3 ? 26 : 32;
+      const qLineH   = qLines >= 3 ? 34 : 40;
+      const qOffsetY  = qLines >= 3 ? -80 : -65;
+      self.ui.challenge.question = game.add.text(
+        cardX, cardY + qOffsetY,
+        questionWrapped,
+        { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${qFontSize}px ${font.families.default}` },
+        qLineH
+      );
+      self.ui.challenge.question.anchor(0.5, 0.5);
+
+      // Builds equation string for a slice of circles; globalStart tracks
+      // sign context so the very first circle of the whole equation has no
+      // leading '+' even when called for a sub-range.
+      const buildEqStr = (slice, globalStart) => {
+        return slice.map((circle, i) => {
+          const den = circle.info.fraction.denominator;
+          const nom = circle.info.fraction.nominator; // 1 or -1
+          const frac = FRAC_UNICODE[den] ?? `1/${den}`;
+          if (globalStart + i === 0) return nom < 0 ? '-' + frac : frac;
+          return (nom < 0 ? ' - ' : ' + ') + frac;
+        }).join('');
+      };
+
+      const circleScale = 0.20;
+      const circleR = 35;
+      const gap = 10;
+      const eqStyle = { ...textStyles.h3_, fill: colors.blueDark };
+      const maxW = cardW - 80;
+      const n = self.circles.list.length;
+
+      context.save();
+      context.font = '38px Arial, sans-serif';
+
+      const fullStr = buildEqStr(self.circles.list, 0) + ' =';
+      const fullW = context.measureText(fullStr).width;
+
+      if (fullW + gap + circleR * 2 <= maxW) {
+        const eqY = cardY + 42;
+        const textX = cardX - gap / 2 - circleR;
+        const circleX = cardX + fullW / 2 + gap / 2;
+        self.ui.challenge.equation = game.add.text(textX, eqY, fullStr, eqStyle);
+        self.ui.challenge.equationCircle = game.add.image(circleX, eqY - 14, 'circular-question', circleScale, 1);
+        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+      } else {
+        const mid = Math.ceil(n / 2);
+        const nextNom = self.circles.list[mid].info.fraction.nominator;
+        const connector = nextNom < 0 ? ' -' : ' +';
+        const line1Str = buildEqStr(self.circles.list.slice(0, mid), 0) + connector;
+        const line2Str = self.circles.list.slice(mid).map((circle, i) => {
+          const den = circle.info.fraction.denominator;
+          const nom = circle.info.fraction.nominator;
+          const frac = FRAC_UNICODE[den] ?? `1/${den}`;
+          if (i === 0) return frac; // connector already shown at end of line 1
+          return (nom < 0 ? ' - ' : ' + ') + frac;
+        }).join('') + ' =';
+        const line2W = context.measureText(line2Str).width;
+
+        const line1Y = cardY + 28;
+        const line2Y = cardY + 68;
+
+        self.ui.challenge.equation = game.add.text(cardX, line1Y, line1Str, eqStyle);
+        self.ui.challenge.equationLine2 = game.add.text(cardX, line2Y, line2Str, eqStyle);
+        const line2CircleX = cardX + line2W / 2 + gap + circleR;
+        self.ui.challenge.equationCircle = game.add.image(line2CircleX, line2Y - 14, 'circular-question', circleScale, 1);
+        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+      }
+
+      context.restore();
+
+      // Decorative kite rendered AFTER the card so it appears in front of it
+      // Positioned to the right of the card, same scale/anchor as the game kite
+      const kiteImg = gameOperation === 'minus' ? 'kite_reverse' : 'kite';
+      const decorX = cardX + cardW / 2 + 80;
+      const decorLineY = self.road.defaultY - 10;
+      const decorKiteY = self.road.defaultY - 275;
+      self.ui.challenge.kiteLineDecor = game.add.image(decorX, decorLineY, 'kite_line', 2, 1);
+      self.ui.challenge.kiteLineDecor.anchor(0.5, 0);
+      self.ui.challenge.kiteDecor = game.add.image(decorX, decorKiteY, kiteImg, 1.8, 1);
+      self.ui.challenge.kiteDecor.anchor(0, 0.5);
+
+      const btnW = cardW; const btnH = 90;
+      const btnY = cardY + cardH / 2 + 65;
+      self.ui.challenge.button = game.add.geom.rect(cardX, btnY, btnW, btnH, '#e09800', 1);
+      self.ui.challenge.button.anchor(0.5, 0.5);
+      self.ui.challenge.buttonText = game.add.text(
+        cardX, btnY + 14,
+        withNewlines(game.lang.c1_challenge_accept),
+        textStyles.btn
+      );
+      self.ui.challenge.buttonText.anchor(0.5, 0.5);
+
+      self.control.showChallenge = true;
+    },
+
+    acceptChallenge: function () {
+      self.control.challengeAnsweredYes = true;
+      Object.values(self.ui.challenge).forEach(el => {
+        if (el && typeof el.alpha !== 'undefined') el.alpha = 0;
+      });
+      // Restore game kite and line
+      self.kite_line.alpha = gameMode === 'b' ? 1 : 0.8;
+      self.kite.alpha = gameMode === 'b' ? 1 : 0.5;
+      self.control.showChallenge = false;
+      self.utils.renderMainUI();
+      if (!self.restart) game.timer.start();
+    },
+
     renderMainUI: function () {
       // Help pointer
       self.ui.help = game.add.image(0, 0, 'pointer', 2, 0);
@@ -851,6 +1024,154 @@ const circleOne = {
 
       return endSignX;
     },
+    renderExplanationUI: function () {
+      const cx = context.canvas.width / 2;
+      const cy = context.canvas.height / 2;
+      const withNewlines = (s) => (s == null ? '' : String(s).replace(/\\n/g, '\n'));
+      const FRAC_UNICODE = { 1: '1', 2: '\u00BD', 4: '\u00BC' };
+
+      // Reuse end-tractor-game background image (globally loaded)
+      const naturalW = game.image['end-tractor-game'].width;
+      const naturalH = game.image['end-tractor-game'].height;
+      const imgScale = Math.min((context.canvas.width * 0.92) / naturalW, (context.canvas.height * 0.92) / naturalH);
+      const imgW = naturalW * imgScale;
+      const imgH = naturalH * imgScale;
+      const cardTop    = cy - imgH / 2;
+      const cardBottom = cy + imgH / 2;
+      const cardLeft   = cx - imgW / 2;
+
+      const bgImg = game.add.image(cx, cy, 'end-tractor-game');
+      bgImg.anchor(0.5, 0.5);
+      bgImg.scale = imgScale;
+
+      // Mask over the tractor scene area of the background image
+      const vizMask = game.add.geom.rect(cx, cardTop + imgH * 0.575, imgW * 0.9, imgH * 0.36, colors.white, 1);
+      vizMask.anchor(0.5, 0.5);
+
+      // Title — move up and reduce font when 2 lines to avoid overlapping steps
+      const titleText = withNewlines(game.lang.c1_explain_title);
+      const titleIsMultiline = titleText.includes('\n');
+      const titleFontSize = titleIsMultiline ? 24 : parseInt(textStyles.h3_.font);
+      const titleY = cardTop + imgH * (titleIsMultiline ? 0.04 : 0.07);
+      game.add.text(cx + imgW * 0.04, titleY, titleText,
+        { ...textStyles.h3_, fill: colors.white, font: `bold ${titleFontSize}px ${font.families.default}` }
+      );
+
+      // Step labels (same positions as squareOne explanation)
+      const stepFont = `24px ${font.families.default}`;
+      const stepStyle = { ...textStyles.p_, fill: colors.blueDark, font: stepFont };
+      const stepsLine1Y = cardTop + imgH * 0.245;
+      const stepsLine2Y = stepsLine1Y + 26;
+      const stepCenters = [cardLeft + imgW * 0.28, cardLeft + imgW * 0.50, cardLeft + imgW * 0.75];
+      [game.lang.c1_explain_step1, game.lang.c1_explain_step2, game.lang.c1_explain_step3]
+        .map(withNewlines)
+        .forEach((txt, idx) => {
+          const lines = txt.split('\n');
+          game.add.text(stepCenters[idx], stepsLine1Y, lines[0] || '', stepStyle);
+          if (lines[1]) game.add.text(stepCenters[idx], stepsLine2Y, lines[1], stepStyle);
+        });
+
+      // Compute final position
+      let totalDistance = 0;
+      self.circles.list.forEach(c => {
+        totalDistance += c.info.fraction.nominator / c.info.fraction.denominator;
+      });
+      const startPos = gameOperation === 'minus' ? 5 : 0;
+      const finalPos = startPos + totalDistance;
+
+      const formatLabel = (n) => {
+        if (Number.isInteger(n)) return String(n);
+        const whole = Math.floor(n);
+        const frac = n - whole;
+        const FM = { 0.25: '\u00BC', 0.5: '\u00BD', 0.75: '\u00BE' };
+        const f = FM[Math.round(frac * 4) / 4];
+        return f ? (whole ? String(whole) + f : f) : n.toFixed(2).replace('.', ',');
+      };
+
+      const buildEqStr = (list) => list.map((c, i) => {
+        const frac = FRAC_UNICODE[c.info.fraction.denominator] ?? `1/${c.info.fraction.denominator}`;
+        if (i === 0) return c.info.fraction.nominator < 0 ? '-' + frac : frac;
+        return (c.info.fraction.nominator < 0 ? ' - ' : ' + ') + frac;
+      }).join('');
+
+      // Equation in image's equation box area
+      const eqFontSize = self.circles.list.length <= 4 ? 38 : 30;
+      game.add.text(cx, cardTop + imgH * 0.355,
+        buildEqStr(self.circles.list) + ' = ' + formatLabel(finalPos),
+        { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${eqFontSize}px ${font.families.default}` }
+      );
+
+      // Number line
+      const lineY   = cardTop + imgH * 0.58;
+      const lineLeft  = cardLeft + imgW * 0.08;
+      const lineRight = cardLeft + imgW * 0.92;
+      const lineW   = lineRight - lineLeft;
+      const pointStep = lineW / 5;
+      const barH    = 20;
+
+      // Base bar
+      game.add.geom.rect(lineLeft, lineY - barH / 2, lineW, barH, '#d4c080', 0.5);
+
+      // Colored segment showing the walked path
+      const fillColor   = gameOperation === 'minus' ? colors.redLight : colors.greenLight;
+      const borderColor = gameOperation === 'minus' ? colors.red : colors.green;
+      const barStartX   = lineLeft + startPos * pointStep;
+      const barEndX     = lineLeft + finalPos * pointStep;
+      game.add.geom.rect(
+        Math.min(barStartX, barEndX), lineY - barH / 2,
+        Math.abs(barEndX - barStartX), barH,
+        fillColor, 0.9, borderColor, 2
+      );
+
+      // Integer position markers (0-5)
+      for (let i = 0; i <= 5; i++) {
+        const px = lineLeft + i * pointStep;
+        const markerCX = px + 18;
+        const markerCY = lineY + barH / 2 + 16;
+        game.add.geom.circle(markerCX, markerCY, 44, colors.blueDark, 2, colors.white, 1).anchor(0.5, 0.5);
+        game.add.text(markerCX - 20, markerCY - 11, String(i),
+          { ...textStyles.p_, fill: colors.blueDark, font: `bold 22px ${font.families.default}` }
+        ).anchor(0.5, 0.5);
+      }
+
+      // Orange label at final position
+      const answerX = lineLeft + finalPos * pointStep;
+      const marker = game.add.geom.rect(answerX, lineY - barH / 2 - 26, 80, 32, '#e09800', 1);
+      marker.anchor(0.5, 0.5);
+      game.add.text(answerX, lineY - barH / 2 - 17, formatLabel(finalPos),
+        { ...textStyles.p_, fill: colors.white, font: `bold 24px ${font.families.default}` }
+      );
+      game.add.geom.line(answerX, lineY - barH / 2 - 9, answerX, lineY - barH / 2, 2, '#e09800');
+
+      // Body text
+      const bodyY1 = cardTop + imgH * 0.825;
+      const bodyY2 = bodyY1 + 34;
+      const bodyPrefix = gameMode === 'b'
+        ? (game.lang.c1_explain_body_prefix_b || game.lang.c1_explain_body_prefix)
+        : game.lang.c1_explain_body_prefix;
+      game.add.text(cx, bodyY1,
+        withNewlines(bodyPrefix) + ' ' +
+        buildEqStr(self.circles.list) +
+        withNewlines(game.lang.c1_explain_body_suffix),
+        { ...textStyles.p_, fill: colors.blueDark }
+      );
+      game.add.text(cx, bodyY2, withNewlines(game.lang.c1_explain_body_line2),
+        { ...textStyles.p_, fill: colors.blue }
+      );
+
+      // Checkmark top-right
+      const checkScale = imgH * 0.13 / 256;
+      const checkImg = game.add.image(cardLeft + imgW - 16, cardTop + 16, 'answer_correct', checkScale);
+      checkImg.anchor(1, 0);
+
+      // Continue button
+      const btnW = imgW * 0.38; const btnH = 62;
+      const btnCY = cardBottom - imgH * 0.07;
+      self.ui.continue.button = game.add.geom.rect(cx, btnCY, btnW, btnH, colors.green);
+      self.ui.continue.button.anchor(0.5, 0.5);
+      self.ui.continue.text = game.add.text(cx, btnCY + 14, game.lang.continue, textStyles.btn);
+    },
+
     renderEndUI: function () {
       let btnColor = colors.green;
       let btnText = game.lang.continue;
@@ -962,11 +1283,8 @@ const circleOne = {
 
       self.control.isCorrect = game.math.isOverlap(self.kite_line, self.kid);
 
-      const x = self.utils.renderOperationUI();
       if (self.control.isCorrect) {
         completedLevels++;
-        // self.kid.curFrame = self.kid.curFrame < 12 ? 24 : 25;
-        // console.log(self.kid);
         self.kid.alpha = 0;
         const kidStanding = game.add.sprite(
           self.kid.x,
@@ -984,23 +1302,26 @@ const circleOne = {
         self.kite.y -= 40;
 
         if (audioStatus) game.audio.okSound.play();
-        game.add
-          .image(x + 50, context.canvas.height / 3, 'answer_correct')
-          .anchor(0.5, 0.5);
         if (isDebugMode) console.log('Completed Levels: ' + completedLevels);
+
+        self.fetch.postScore();
+        self.control.checkAnswer = false;
+        self.animation.counter = 0;
+        self.utils.renderExplanationUI();
+        self.control.showEndInfo = true;
+        canGoToNextMapPosition = true;
       } else {
+        const x = self.utils.renderOperationUI();
         if (audioStatus) game.audio.errorSound.play();
         game.add
           .image(x, context.canvas.height / 3, 'answer_wrong')
           .anchor(0.5, 0.5);
+
+        self.fetch.postScore();
+        self.control.checkAnswer = false;
+        self.animation.counter = 0;
+        self.animation.animateKite = true;
       }
-
-      self.fetch.postScore();
-
-      self.control.checkAnswer = false;
-      self.animation.counter = 0;
-
-      self.animation.animateKite = true;
     },
     animateKiteHandler: function () {
       self.animation.counter++;
@@ -1016,8 +1337,7 @@ const circleOne = {
       if (self.animation.counter === 100) {
         self.utils.renderEndUI();
         self.control.showEndInfo = true;
-        if (self.control.isCorrect) canGoToNextMapPosition = true;
-        else canGoToNextMapPosition = false;
+        canGoToNextMapPosition = false;
       }
     },
     endLevel: function () {
@@ -1183,6 +1503,16 @@ const circleOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
 
+      if (self.control.showChallenge) {
+        if (game.math.isOverIcon(x, y, self.ui.challenge.button)) {
+          if (audioStatus) game.audio.popSound.play();
+          self.utils.acceptChallenge();
+        }
+        navigation.onInputDown(x, y);
+        game.render.all();
+        return;
+      }
+
       // GAME MODE A : click road
       if (gameMode === 'a') {
         const isValidX = self.utils.isOverRoad(
@@ -1235,6 +1565,20 @@ const circleOne = {
       const x = game.math.getMouse(mouseEvent).x;
       const y = game.math.getMouse(mouseEvent).y;
       let isOverCircle = false;
+
+      if (self.control.showChallenge && self.ui.challenge.button) {
+        if (game.math.isOverIcon(x, y, self.ui.challenge.button)) {
+          self.ui.challenge.button.scale = self.ui.challenge.button.initialScale * 1.1;
+          self.ui.challenge.buttonText.style = textStyles.btnLg;
+          document.body.style.cursor = 'pointer';
+        } else {
+          self.ui.challenge.button.scale = self.ui.challenge.button.initialScale * 1;
+          self.ui.challenge.buttonText.style = textStyles.btn;
+          document.body.style.cursor = 'auto';
+        }
+        game.render.all();
+        return;
+      }
 
       if (gameMode === 'a' && !self.control.hasClicked) {
         const isValidX = self.utils.isOverRoad(

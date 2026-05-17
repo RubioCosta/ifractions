@@ -615,7 +615,9 @@ const squareOne = {
       self.ui.challenge.card.anchor(0.5, 0.5);
 
       // Question text: use \n from lang file directly
-      const questionWrapped = withNewlines(game.lang.s1_challenge_question);
+      const questionWrapped = withNewlines(
+        gameMode === 'a' ? (game.lang.s1_challenge_question_b || game.lang.s1_challenge_question) : game.lang.s1_challenge_question
+      );
       const qLines = questionWrapped.split('\n').length;
       const qFontSize = qLines === 3 ? 30 : qLines > 3 ? 26 : 32;
       const qLineH   = qLines >= 3 ? 34 : 40;
@@ -708,7 +710,7 @@ const squareOne = {
 
       // Show main game UI (intro message, selection arrow)
       self.utils.renderMainUI();
-
+            console.log('Starting game with config:');
       // Start timer now that challenge has been accepted
       if (!self.restart) {
         game.timer.start();
@@ -1020,7 +1022,9 @@ const squareOne = {
       bgImg.scale = imgScale;
 
       // Title overlaid on the image's top blue bar (no emoji — image already has magnifying glass)
-      const titleText = withNewlines(game.lang.s1_explain_title);
+      const titleText = withNewlines(
+        gameMode === 'a' ? (game.lang.s1_explain_title_b || game.lang.s1_explain_title) : game.lang.s1_explain_title
+      );
       game.add.text(cx + imgW * 0.04, cardTop + imgH * 0.07, titleText, {
         ...textStyles.h3_, fill: colors.white, font: 'bold ' + textStyles.h3_.font,
       });
@@ -1111,7 +1115,8 @@ const squareOne = {
       // Hole label — text only, centred over the image's built-in blue rounded rectangle
       const holeLabelCX = cardLeft + imgW * 0.675;
       const holeLabelCY = cardTop  + imgH * 0.588;
-      const holeWords = (game.lang.s1_hole_label || 'Hole of size').split(' ');
+      const holeLabelKey = gameMode === 'a' ? (game.lang.s1_hole_label_b || game.lang.s1_hole_label) : game.lang.s1_hole_label;
+      const holeWords = (holeLabelKey || 'Hole of size').split(' ');
       const holeMid = Math.ceil(holeWords.length / 2);
       const holeLabelLine1 = holeWords.slice(0, holeMid).join(' ');
       const holeLabelLine2 = holeWords.slice(holeMid).join(' ');
@@ -1123,7 +1128,8 @@ const squareOne = {
       game.add.text(holeLabelCX, holeLabelCY + holeLineH,  holeLabelLine3, { ...textStyles.p_, fill: colors.white, font: holeFont });
 
       // Body text (up to 3 lines, compact spacing)
-      const bodyLines = withNewlines(game.lang.s1_explain_body).split('\n');
+      const bodyKey = gameMode === 'a' ? (game.lang.s1_explain_body_b || game.lang.s1_explain_body) : game.lang.s1_explain_body;
+      const bodyLines = withNewlines(bodyKey).split('\n');
       const bodyLineH = 30;
       const bodyGap = 14; // extra gap after first line
       const bodyStyle = { ...textStyles.p_, fill: colors.blueDark };
@@ -1560,9 +1566,7 @@ const squareOne = {
         ' blockIndex: ' +
         self.stack.selectedIndex +
         ', floorIndex: ' +
-        self.floor.selectedIndex +
-        '&challenge_answered_yes=' +
-        self.control.challengeAnsweredYes;
+        self.floor.selectedIndex;
 
       // FOR MOODLE
       sendToDatabase(data);
