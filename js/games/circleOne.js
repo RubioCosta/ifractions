@@ -686,17 +686,32 @@ const circleOne = {
         }).join('');
       };
 
+      // Mode B: only the first correctIndex circles are the answer
+      const challengeCircles = gameMode === 'b'
+        ? self.circles.list.slice(0, self.control.correctIndex)
+        : self.circles.list;
+
+      // Hide extra circles (beyond answer count) so stack matches equation
+      if (gameMode === 'b') {
+        self.circles.list.forEach((c, i) => {
+          if (i >= self.control.correctIndex) {
+            c.alpha = 0;
+            c.info.fraction.labels.forEach(l => { if (l) l.alpha = 0; });
+          }
+        });
+      }
+
       const circleScale = 0.20;
       const circleR = 35;
       const gap = 10;
       const eqStyle = { ...textStyles.h3_, fill: colors.blueDark };
       const maxW = cardW - 80;
-      const n = self.circles.list.length;
+      const n = challengeCircles.length;
 
       context.save();
       context.font = '38px Arial, sans-serif';
 
-      const fullStr = buildEqStr(self.circles.list, 0) + ' =';
+      const fullStr = buildEqStr(challengeCircles, 0) + ' =';
       const fullW = context.measureText(fullStr).width;
 
       if (fullW + gap + circleR * 2 <= maxW) {
@@ -708,10 +723,10 @@ const circleOne = {
         self.ui.challenge.equationCircle.anchor(0.5, 0.5);
       } else {
         const mid = Math.ceil(n / 2);
-        const nextNom = self.circles.list[mid].info.fraction.nominator;
+        const nextNom = challengeCircles[mid].info.fraction.nominator;
         const connector = nextNom < 0 ? ' -' : ' +';
-        const line1Str = buildEqStr(self.circles.list.slice(0, mid), 0) + connector;
-        const line2Str = self.circles.list.slice(mid).map((circle, i) => {
+        const line1Str = buildEqStr(challengeCircles.slice(0, mid), 0) + connector;
+        const line2Str = challengeCircles.slice(mid).map((circle, i) => {
           const den = circle.info.fraction.denominator;
           const nom = circle.info.fraction.nominator;
           const frac = FRAC_UNICODE[den] ?? `1/${den}`;
@@ -735,13 +750,16 @@ const circleOne = {
       // Decorative kite rendered AFTER the card so it appears in front of it
       // Positioned to the right of the card, same scale/anchor as the game kite
       const kiteImg = gameOperation === 'minus' ? 'kite_reverse' : 'kite';
-      const decorX = cardX + cardW / 2 + 80;
+      // kite_reverse extends leftward from its anchor, so needs more offset to clear the card
+      const kiteOffset = gameOperation === 'minus' ? 250 : 80;
+      const decorX = cardX + cardW / 2 + kiteOffset;
       const decorLineY = self.road.defaultY - 10;
       const decorKiteY = self.road.defaultY - 275;
       self.ui.challenge.kiteLineDecor = game.add.image(decorX, decorLineY, 'kite_line', 2, 1);
       self.ui.challenge.kiteLineDecor.anchor(0.5, 0);
       self.ui.challenge.kiteDecor = game.add.image(decorX, decorKiteY, kiteImg, 1.8, 1);
-      self.ui.challenge.kiteDecor.anchor(0, 0.5);
+      // kite_reverse attaches at its right edge; regular kite attaches at left edge
+      self.ui.challenge.kiteDecor.anchor(gameOperation === 'minus' ? 1 : 0, 0.5);
 
       const btnW = cardW; const btnH = 90;
       const btnY = cardY + cardH / 2 + 65;
@@ -762,6 +780,17 @@ const circleOne = {
       Object.values(self.ui.challenge).forEach(el => {
         if (el && typeof el.alpha !== 'undefined') el.alpha = 0;
       });
+      // Restore extra circles hidden during challenge (mode B)
+      if (gameMode === 'b') {
+        self.circles.list.forEach((c, i) => {
+          if (i >= self.control.correctIndex) {
+            c.alpha = 1;
+            if (showFractions) {
+              c.info.fraction.labels.forEach(l => { if (l) l.alpha = 1; });
+            }
+          }
+        });
+      }
       // Restore game kite and line
       self.kite_line.alpha = gameMode === 'b' ? 1 : 0.8;
       self.kite.alpha = gameMode === 'b' ? 1 : 0.5;
@@ -1071,15 +1100,21 @@ const circleOne = {
           if (lines[1]) game.add.text(stepCenters[idx], stepsLine2Y, lines[1], stepStyle);
         });
 
+      // Mode B: use the circles the player actually selected (not the pre-set correctIndex)
+      const explainCircles = gameMode === 'b'
+        ? self.circles.list.slice(0, self.control.selectedIndex + 1)
+        : self.circles.list;
+
       // Compute final position
       let totalDistance = 0;
-      self.circles.list.forEach(c => {
+      explainCircles.forEach(c => {
         totalDistance += c.info.fraction.nominator / c.info.fraction.denominator;
       });
       const startPos = gameOperation === 'minus' ? 5 : 0;
       const finalPos = startPos + totalDistance;
 
       const formatLabel = (n) => {
+        if (n < 0) return '-' + formatLabel(-n);
         if (Number.isInteger(n)) return String(n);
         const whole = Math.floor(n);
         const frac = n - whole;
@@ -1094,10 +1129,14 @@ const circleOne = {
         return (c.info.fraction.nominator < 0 ? ' - ' : ' + ') + frac;
       }).join('');
 
+      // For minus: equation shows the displacement (totalDistance, negative)
+      // For plus/mixed: equation shows final position
+      const eqResult = gameOperation === 'minus' ? totalDistance : finalPos;
+
       // Equation in image's equation box area
-      const eqFontSize = self.circles.list.length <= 4 ? 38 : 30;
+      const eqFontSize = explainCircles.length <= 4 ? 38 : 30;
       game.add.text(cx, cardTop + imgH * 0.355,
-        buildEqStr(self.circles.list) + ' = ' + formatLabel(finalPos),
+        buildEqStr(explainCircles) + ' = ' + formatLabel(eqResult),
         { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${eqFontSize}px ${font.families.default}` }
       );
 
@@ -1113,32 +1152,39 @@ const circleOne = {
       game.add.geom.rect(lineLeft, lineY - barH / 2, lineW, barH, '#d4c080', 0.5);
 
       // Colored segment showing the walked path
+      // For minus: 0 is at lineRight, segment goes leftward by |totalDistance|
+      // For plus/mixed: 0 is at lineLeft, segment goes rightward to finalPos
       const fillColor   = gameOperation === 'minus' ? colors.redLight : colors.greenLight;
       const borderColor = gameOperation === 'minus' ? colors.red : colors.green;
-      const barStartX   = lineLeft + startPos * pointStep;
-      const barEndX     = lineLeft + finalPos * pointStep;
+      const barStartX = gameOperation === 'minus' ? lineRight : lineLeft + startPos * pointStep;
+      const barEndX   = gameOperation === 'minus' ? lineRight + totalDistance * pointStep : lineLeft + finalPos * pointStep;
       game.add.geom.rect(
         Math.min(barStartX, barEndX), lineY - barH / 2,
         Math.abs(barEndX - barStartX), barH,
         fillColor, 0.9, borderColor, 2
       );
 
-      // Integer position markers (0-5)
+      // Integer position markers
+      // For minus: shows -5,-4,-3,-2,-1,0 (0 at right)
+      // For plus/mixed: shows 0,1,2,3,4,5
       for (let i = 0; i <= 5; i++) {
         const px = lineLeft + i * pointStep;
         const markerCX = px + 18;
         const markerCY = lineY + barH / 2 + 16;
         game.add.geom.circle(markerCX, markerCY, 44, colors.blueDark, 2, colors.white, 1).anchor(0.5, 0.5);
-        game.add.text(markerCX - 20, markerCY - 11, String(i),
+        const displayVal = gameOperation === 'minus' ? (i - 5) : i;
+        game.add.text(markerCX - 20, markerCY - 11, String(displayVal),
           { ...textStyles.p_, fill: colors.blueDark, font: `bold 22px ${font.families.default}` }
         ).anchor(0.5, 0.5);
       }
 
-      // Orange label at final position
-      const answerX = lineLeft + finalPos * pointStep;
+      // Orange label at answer position
+      // For minus: answer is at totalDistance from the right (0)
+      // For plus/mixed: answer is at finalPos from the left (0)
+      const answerX = gameOperation === 'minus' ? lineRight + totalDistance * pointStep : lineLeft + finalPos * pointStep;
       const marker = game.add.geom.rect(answerX, lineY - barH / 2 - 26, 80, 32, '#e09800', 1);
       marker.anchor(0.5, 0.5);
-      game.add.text(answerX, lineY - barH / 2 - 17, formatLabel(finalPos),
+      game.add.text(answerX, lineY - barH / 2 - 17, formatLabel(eqResult),
         { ...textStyles.p_, fill: colors.white, font: `bold 24px ${font.families.default}` }
       );
       game.add.geom.line(answerX, lineY - barH / 2 - 9, answerX, lineY - barH / 2, 2, '#e09800');
@@ -1151,7 +1197,7 @@ const circleOne = {
         : game.lang.c1_explain_body_prefix;
       game.add.text(cx, bodyY1,
         withNewlines(bodyPrefix) + ' ' +
-        buildEqStr(self.circles.list) +
+        buildEqStr(explainCircles) +
         withNewlines(game.lang.c1_explain_body_suffix),
         { ...textStyles.p_, fill: colors.blueDark }
       );
