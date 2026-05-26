@@ -639,8 +639,15 @@ const circleOne = {
       );
       self.ui.challenge.subtitleBottom.anchor(0.5, 0.5);
 
+      // For mode B: lower the kid so it sits on top of the visible (correctIndex) circles
+      if (gameMode === 'b') {
+        const hiddenCount = self.circles.list.length - self.control.correctIndex;
+        self.kid.y += hiddenCount * self.circles.diameter;
+      }
+
+      const visibleCircleCount = gameMode === 'b' ? self.control.correctIndex : self.circles.list.length;
       const topCircleY = self.road.defaultY + 20 - 5 - self.circles.diameter / 2
-        - (self.circles.list.length - 1) * self.circles.diameter;
+        - (visibleCircleCount - 1) * self.circles.diameter;
       const kidHeadY = self.kid ? self.kid.y - 155 : topCircleY;
       const labelY = Math.min(topCircleY, kidHeadY) - 30;
       self.ui.challenge.circlesLabel = game.add.text(
@@ -780,8 +787,10 @@ const circleOne = {
       Object.values(self.ui.challenge).forEach(el => {
         if (el && typeof el.alpha !== 'undefined') el.alpha = 0;
       });
-      // Restore extra circles hidden during challenge (mode B)
+      // Restore kid position and extra circles hidden during challenge (mode B)
       if (gameMode === 'b') {
+        const hiddenCount = self.circles.list.length - self.control.correctIndex;
+        self.kid.y -= hiddenCount * self.circles.diameter;
         self.circles.list.forEach((c, i) => {
           if (i >= self.control.correctIndex) {
             c.alpha = 1;
