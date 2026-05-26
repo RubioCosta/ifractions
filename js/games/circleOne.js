@@ -664,7 +664,8 @@ const circleOne = {
       const qLines = questionWrapped.split('\n').length;
       const qFontSize = qLines === 3 ? 30 : qLines > 3 ? 26 : 32;
       const qLineH   = qLines >= 3 ? 34 : 40;
-      const qOffsetY  = qLines >= 3 ? -80 : -65;
+      // Shift question up to leave room for equation below
+      const qOffsetY = qLines >= 3 ? -80 : -65;
       self.ui.challenge.question = game.add.text(
         cardX, cardY + qOffsetY,
         questionWrapped,
@@ -673,66 +674,67 @@ const circleOne = {
       );
       self.ui.challenge.question.anchor(0.5, 0.5);
 
-      // Builds equation string for a slice of circles; globalStart tracks
-      // sign context so the very first circle of the whole equation has no
-      // leading '+' even when called for a sub-range.
-      const buildEqStr = (slice, globalStart) => {
-        return slice.map((circle, i) => {
-          const den = circle.info.fraction.denominator;
-          const nom = circle.info.fraction.nominator; // 1 or -1
-          const frac = FRAC_UNICODE[den] ?? `1/${den}`;
-          if (globalStart + i === 0) return nom < 0 ? '-' + frac : frac;
-          return (nom < 0 ? ' - ' : ' + ') + frac;
-        }).join('');
-      };
+      {
+        // Builds equation string
+        const buildEqStr = (slice, globalStart) => {
+          return slice.map((circle, i) => {
+            const den = circle.info.fraction.denominator;
+            const nom = circle.info.fraction.nominator;
+            const frac = FRAC_UNICODE[den] ?? `1/${den}`;
+            if (globalStart + i === 0) return nom < 0 ? '-' + frac : frac;
+            return (nom < 0 ? ' - ' : ' + ') + frac;
+          }).join('');
+        };
 
-      const challengeCircles = self.circles.list;
+        const challengeCircles = gameMode === 'b'
+          ? self.circles.list.slice(0, self.control.correctIndex)
+          : self.circles.list;
+        const circleScale = 0.20;
+        const circleR = 35;
+        const gap = 10;
+        const eqStyle = { ...textStyles.h3_, fill: colors.blueDark };
+        const maxW = cardW - 80;
+        const n = challengeCircles.length;
 
-      const circleScale = 0.20;
-      const circleR = 35;
-      const gap = 10;
-      const eqStyle = { ...textStyles.h3_, fill: colors.blueDark };
-      const maxW = cardW - 80;
-      const n = challengeCircles.length;
+        context.save();
+        context.font = '38px Arial, sans-serif';
 
-      context.save();
-      context.font = '38px Arial, sans-serif';
+        const fullStr = buildEqStr(challengeCircles, 0) + ' =';
+        const fullW = context.measureText(fullStr).width;
 
-      const fullStr = buildEqStr(challengeCircles, 0) + ' =';
-      const fullW = context.measureText(fullStr).width;
+        if (fullW + gap + circleR * 2 <= maxW) {
+          const eqY = cardY + 42;
+          const textX = cardX - gap / 2 - circleR;
+          const circleX = cardX + fullW / 2 + gap / 2;
+          self.ui.challenge.equation = game.add.text(textX, eqY, fullStr, eqStyle);
+          self.ui.challenge.equationCircle = game.add.image(circleX, eqY - 14, 'circular-question', circleScale, 1);
+          self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+        } else {
+          const mid = Math.ceil(n / 2);
+          const nextNom = challengeCircles[mid].info.fraction.nominator;
+          const connector = nextNom < 0 ? ' -' : ' +';
+          const line1Str = buildEqStr(challengeCircles.slice(0, mid), 0) + connector;
+          const line2Str = challengeCircles.slice(mid).map((circle, i) => {
+            const den = circle.info.fraction.denominator;
+            const nom = circle.info.fraction.nominator;
+            const frac = FRAC_UNICODE[den] ?? `1/${den}`;
+            if (i === 0) return frac;
+            return (nom < 0 ? ' - ' : ' + ') + frac;
+          }).join('') + ' =';
+          const line2W = context.measureText(line2Str).width;
 
-      if (fullW + gap + circleR * 2 <= maxW) {
-        const eqY = cardY + 42;
-        const textX = cardX - gap / 2 - circleR;
-        const circleX = cardX + fullW / 2 + gap / 2;
-        self.ui.challenge.equation = game.add.text(textX, eqY, fullStr, eqStyle);
-        self.ui.challenge.equationCircle = game.add.image(circleX, eqY - 14, 'circular-question', circleScale, 1);
-        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
-      } else {
-        const mid = Math.ceil(n / 2);
-        const nextNom = challengeCircles[mid].info.fraction.nominator;
-        const connector = nextNom < 0 ? ' -' : ' +';
-        const line1Str = buildEqStr(challengeCircles.slice(0, mid), 0) + connector;
-        const line2Str = challengeCircles.slice(mid).map((circle, i) => {
-          const den = circle.info.fraction.denominator;
-          const nom = circle.info.fraction.nominator;
-          const frac = FRAC_UNICODE[den] ?? `1/${den}`;
-          if (i === 0) return frac; // connector already shown at end of line 1
-          return (nom < 0 ? ' - ' : ' + ') + frac;
-        }).join('') + ' =';
-        const line2W = context.measureText(line2Str).width;
+          const line1Y = cardY + 28;
+          const line2Y = cardY + 68;
 
-        const line1Y = cardY + 28;
-        const line2Y = cardY + 68;
+          self.ui.challenge.equation = game.add.text(cardX, line1Y, line1Str, eqStyle);
+          self.ui.challenge.equationLine2 = game.add.text(cardX, line2Y, line2Str, eqStyle);
+          const line2CircleX = cardX + line2W / 2 + gap + circleR;
+          self.ui.challenge.equationCircle = game.add.image(line2CircleX, line2Y - 14, 'circular-question', circleScale, 1);
+          self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+        }
 
-        self.ui.challenge.equation = game.add.text(cardX, line1Y, line1Str, eqStyle);
-        self.ui.challenge.equationLine2 = game.add.text(cardX, line2Y, line2Str, eqStyle);
-        const line2CircleX = cardX + line2W / 2 + gap + circleR;
-        self.ui.challenge.equationCircle = game.add.image(line2CircleX, line2Y - 14, 'circular-question', circleScale, 1);
-        self.ui.challenge.equationCircle.anchor(0.5, 0.5);
+        context.restore();
       }
-
-      context.restore();
 
       // Decorative kite rendered AFTER the card so it appears in front of it
       // Positioned to the right of the card, same scale/anchor as the game kite
