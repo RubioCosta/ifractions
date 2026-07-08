@@ -616,7 +616,7 @@ const squareOne = {
 
       // Question text: use \n from lang file directly
       const questionWrapped = withNewlines(
-        gameMode === 'a' ? (game.lang.s1_challenge_question_b || game.lang.s1_challenge_question) : game.lang.s1_challenge_question
+        gameMode === 'b' ? (game.lang.s1_challenge_question_b || game.lang.s1_challenge_question) : game.lang.s1_challenge_question
       );
       const qLines = questionWrapped.split('\n').length;
       const qFontSize = qLines === 3 ? 30 : qLines > 3 ? 26 : 32;

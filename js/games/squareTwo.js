@@ -991,7 +991,12 @@ const squareTwo = {
       game.add.text(cx, bodyY + 84, line2, bodyStyleNormal);
       game.add.text(cx, bodyY + 122, line3, bodyStyleNormal);
 
-      // 5. Continue button
+      // 5. Checkmark top-right
+      const checkScale = imgH * 0.13 / 256;
+      const checkImg = game.add.image(cardLeft + imgW - 16, cardTop + 16, 'answer_correct', checkScale);
+      checkImg.anchor(1, 0);
+
+      // 6. Continue button
       const btnW = 400; const btnH = 75; const btnCenterY = cardBottom - 62;
       self.ui.explanation.button = game.add.geom.rect(
         cx - btnW / 2, btnCenterY - btnH / 2, btnW, btnH, colors.green
