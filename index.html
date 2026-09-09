@@ -45,7 +45,7 @@
 
     <!-- Information -->
 
-    <div class="panel panel-info">
+    <div id="info-panel-en" class="panel panel-info">
       <div class="panel-heading ifr-cardInfo__heading">
         <span>
           🇺🇸&nbsp;&nbsp;More information about the iFractions Project
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <div class="panel panel-info">
+    <div id="info-panel-pt" class="panel panel-info">
       <div class="panel-heading ifr-cardInfo__heading">
         <span>🇧🇷&nbsp;&nbsp;Mais informações sobre o Projeto iFrações</span>
         <img src="./assets/img/info_cards/mini_games.png" width="100px" title="Examples of iFractions mini-games" />
@@ -115,6 +115,10 @@
     <script src="./js/globals/globals_debug.js"></script>
 
     <script>
+      if (moodle) {
+        document.getElementById('info-panel-en').style.display = 'none';
+        document.getElementById('info-panel-pt').style.display = 'none';
+      }
 
       const defaultWidth = 1920; // Default width for the Canvas
       const defaultHeight = 1080; // Default height for the Canvas

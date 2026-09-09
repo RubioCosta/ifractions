@@ -33,11 +33,9 @@
 /** FOR MOODLE <br>
  *
  * iFractions can run on a server or inside moodle through iAssign. <br>
- * This variable should be set according to where it is suposed to run: <br>
- * - if true, on moodle <br>
- * - if false, on a server
+ * Detected automatically: true if iAssign passes iLM_PARAM_SendAnswer in the URL.
  */
-const moodle = false;
+const moodle = new URLSearchParams(window.location.search).has('iLM_PARAM_SendAnswer');
 
 let moodleVar = {
   hits: [0, 0, 0, 0],

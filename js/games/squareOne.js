@@ -561,7 +561,6 @@ const squareOne = {
         withNewlines(game.lang.s1_challenge_title),
         { ...textStyles.h2_, fill: colors.white, font: 'bold ' + textStyles.h2_.font }
       );
-      self.ui.challenge.title.anchor(0.5, 0.5);
 
       // Subtitle lines below the ribbon
       const ribbonBottom = ribbonY + ribbonH;
@@ -571,14 +570,12 @@ const squareOne = {
         subtitleLines[0] || '',
         { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
       );
-      self.ui.challenge.subtitleTop.anchor(0.5, 0.5);
 
       self.ui.challenge.subtitleBottom = game.add.text(
         cx, ribbonBottom + 100,
         subtitleLines.slice(1).join('\n'),
         { ...textStyles.h3_, fill: colors.blue }
       );
-      self.ui.challenge.subtitleBottom.anchor(0.5, 0.5);
 
       // "Blocos a carregar:" label above the stacked blocks
       const stackTopY = self.default.y0 - self.stack.list.length * self.default.height;
@@ -589,7 +586,6 @@ const squareOne = {
         withNewlines(game.lang.s1_blocks_label),
         { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
       );
-      self.ui.challenge.blocksLabel.anchor(0.5, 0.5);
 
       // question-mark-with-arrow.png is 1230×864px; scale 0.20 → 246×173px
       // Placed at the correct floor hole position, bottom of image at floor level
@@ -628,7 +624,6 @@ const squareOne = {
         { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${qFontSize}px ${font.families.default}` },
         qLineH
       );
-      self.ui.challenge.question.anchor(0.5, 0.5);
 
       // Fraction equation: "1 + ½ + ... =" as text, then circle — group centered at cardX
       // Show only the blocks that will fill the hole (0 → stack.correctIndex) in both modes
@@ -695,7 +690,6 @@ const squareOne = {
         withNewlines(game.lang.s1_challenge_accept),
         textStyles.btn
       );
-      self.ui.challenge.buttonText.anchor(0.5, 0.5);
 
       self.control.showChallenge = true;
     },

@@ -622,7 +622,6 @@ const circleOne = {
         withNewlines(game.lang.c1_challenge_title),
         { ...textStyles.h2_, fill: colors.white, font: 'bold ' + textStyles.h2_.font }
       );
-      self.ui.challenge.title.anchor(0.5, 0.5);
 
       const ribbonBottom = ribbonY + ribbonH;
       const subtitleLines = withNewlines(game.lang.c1_challenge_subtitle).split('\n');
@@ -631,13 +630,11 @@ const circleOne = {
         subtitleLines[0] || '',
         { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
       );
-      self.ui.challenge.subtitleTop.anchor(0.5, 0.5);
       self.ui.challenge.subtitleBottom = game.add.text(
         cx, ribbonBottom + 100,
         subtitleLines.slice(1).join('\n'),
         { ...textStyles.h3_, fill: colors.blue }
       );
-      self.ui.challenge.subtitleBottom.anchor(0.5, 0.5);
 
       const topCircleY = self.road.defaultY + 20 - 5 - self.circles.diameter / 2
         - (self.circles.list.length - 1) * self.circles.diameter;
@@ -648,7 +645,6 @@ const circleOne = {
         withNewlines(game.lang.c1_circles_label),
         { ...textStyles.h4_, fill: colors.blueDark, font: 'bold ' + textStyles.h4_.font }
       );
-      self.ui.challenge.circlesLabel.anchor(0.5, 0.5);
 
       const cardW = 580; const cardH = 260;
       const cardX = cx;
@@ -672,7 +668,6 @@ const circleOne = {
         { ...textStyles.h3_, fill: colors.blueDark, font: `bold ${qFontSize}px ${font.families.default}` },
         qLineH
       );
-      self.ui.challenge.question.anchor(0.5, 0.5);
 
       {
         // Builds equation string
@@ -759,7 +754,6 @@ const circleOne = {
         withNewlines(game.lang.c1_challenge_accept),
         textStyles.btn
       );
-      self.ui.challenge.buttonText.anchor(0.5, 0.5);
 
       self.control.showChallenge = true;
     },
@@ -1153,7 +1147,7 @@ const circleOne = {
         const displayVal = gameOperation === 'minus' ? (i - 5) : i;
         game.add.text(markerCX - 20, markerCY - 11, String(displayVal),
           { ...textStyles.p_, fill: colors.blueDark, font: `bold 22px ${font.families.default}` }
-        ).anchor(0.5, 0.5);
+        );
       }
 
       // Orange label at answer position
